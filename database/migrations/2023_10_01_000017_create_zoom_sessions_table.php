@@ -11,10 +11,9 @@ class CreateZoomSessionsTable extends Migration
         Schema::create('zoom_sessions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lessonId')->constrained('lessons');
-            $table->dateTime('startTime');
-            $table->dateTime('endTime');
-            $table->json('participants')->nullable();
+            $table->dateTime('releaseTime');
             $table->string('recordingLink')->nullable();
+            $table->string('status');
             $table->softDeletes();
             $table->timestamps();
         });

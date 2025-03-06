@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use Illuminate\Http\Request;
+use App\Http\Requests\Admin\Blog\StoreRequest;
+use App\Http\Requests\Admin\Blog\UpdateRequest;
 
 class BlogController extends Controller
 {
@@ -12,9 +14,9 @@ class BlogController extends Controller
         return Blog::all();
     }
 
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $blog = Blog::create($request->all());
+        $blog = Blog::create($request->validated());
         return response()->json($blog, 201);
     }
 
@@ -23,10 +25,10 @@ class BlogController extends Controller
         return Blog::findOrFail($id);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         $blog = Blog::findOrFail($id);
-        $blog->update($request->all());
+        $blog->update($request->validated());
         return response()->json($blog, 200);
     }
 
