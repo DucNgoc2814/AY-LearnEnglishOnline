@@ -1,5 +1,5 @@
 @extends('admin.layouts.master')
-@section('title', 'Quản lý danh mục')
+@section('title', 'Quản lý khóa học')
 @section('content')
     <div class="main_content_iner ">
         <div class="container-fluid p-0">
@@ -9,12 +9,12 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="dashboard_header_title">
-                                    <h3>Danh sách danh mục</h3>
+                                    <h3>Danh sách khóa học</h3>
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="dashboard_breadcam text-end">
-                                    <p><a href="javascript:;">Dashboard</a> <i class="fas fa-caret-right"></i> Danh mục</p>
+                                    <p><a href="javascript:;">Dashboard</a> <i class="fas fa-caret-right"></i> Khóa học</p>
                                 </div>
                             </div>
                         </div>
@@ -23,7 +23,7 @@
                 <div class="col-12">
                     <div class="QA_section">
                         <div class="white_box_tittle list_header">
-                            <h4>Danh mục</h4>
+                            <h4>Khóa học</h4>
                             <div class="box_right d-flex lms_block">
                                 <div class="serach_field_2">
                                     <div class="search_inner">
@@ -51,8 +51,13 @@
                                         <tr>
                                             <th scope="col">STT</th>
                                             <th scope="col">Tên danh mục</th>
-                                            <th scope="col">Số khóa học</th>
-                                            <th scope="col">Ngày tạo</th>
+                                            <th scope="col">Tên khóa học</th>
+                                            <th scope="col">Ảnh khóa học</th>
+                                            <th scope="col">Giá khóa học</th>
+                                            <th scope="col">Giá giảm khóa học</th>
+                                            <th scope="col">Số bài học</th>
+                                            <th scope="col">Lượt đánh giá trung bình</th>
+                                            <th scope="col">Thời gian phát hành</th>
                                             <th scope="col">Thao tác</th>
                                         </tr>
                                     </thead>
@@ -60,21 +65,26 @@
                                         @foreach ($items as $key => $item)
                                             <tr>
                                                 <td>{{ $key + 1 }}</td>
+                                                <td>{{ $item->category->name ?? 'N/A' }}</td>
                                                 <td>{{ $item->name }}</td>
-                                                <td>{{ $item->courses_count }}</td>
-                                                <td>{{ $item->created_at->format('d/m/Y') }}</td>
+                                                <td><img src="{{ asset($item->thumbnail) }}" alt="{{ $item->name }}" width="50"></td>
+                                                <td>{{ $item->price }}</td>
+                                                <td>{{ $item->salePrice }}</td>
+                                                <td>{{ $item->totalLessons() }}</td>
+                                                <td>{{ $item->ratings->avg('rating') ?? 'N/A' }}</td>
+                                                <td>{{ $item->releaseTime->format('d/m/Y') }}</td>
                                                 <td>
                                                     <div class="action_btns d-flex">
-                                                        <a href="{{ route('admin.categories.edit', $item->id) }}"
+                                                        <a href="{{ route('admin.courses.edit', $item->id) }}"
                                                             class="action_btn mr_10">
                                                             <i class="far fa-edit"></i>
                                                         </a>
-                                                        <form action="{{ route('admin.categories.destroy', $item->id) }}"
+                                                        <form action="{{ route('admin.courses.destroy', $item->id) }}"
                                                             method="POST" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="action_btn" title="Xóa"
-                                                                onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')"
+                                                                onclick="return confirm('Bạn có chắc chắn muốn xóa khóa học này?')"
                                                                 style="border: none; background: none; padding: 0;">
                                                                 <i class="fas fa-trash text-danger"></i>
                                                             </button>
@@ -98,14 +108,14 @@
     </div>
 
     <!-- Include Create Modal -->
-    @include('admin.categories.modals.create')
+    @include('admin.components.courses.modals.create')
 @endsection
 
 @push('scripts')
     <script>
         $(document).ready(function() {
             console.log('Document ready');
-            
+
             // Test modal manually
             $('.btn_1').on('click', function(e) {
                 console.log('Button clicked');
@@ -192,11 +202,11 @@
         .modal-backdrop {
             opacity: 0.5;
         }
-        
+
         .modal-backdrop.fade {
             opacity: 0;
         }
-        
+
         .modal-backdrop.show {
             opacity: 0.5;
         }
