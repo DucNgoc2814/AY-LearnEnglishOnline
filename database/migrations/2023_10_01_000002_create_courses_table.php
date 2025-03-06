@@ -11,6 +11,7 @@ class CreateCoursesTable extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('categoryId')->nullable()->constrained('categories');
+            $table->string('slug')->unique()->comment('Slug khóa học');
             $table->string('name');
             $table->text('description');
             $table->string('sortDescription')->nullable();

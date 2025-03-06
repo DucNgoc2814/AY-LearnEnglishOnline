@@ -12,8 +12,8 @@ class CreateRatingsTable extends Migration
             $table->id();
             $table->foreignId('userId')->constrained('users');
             $table->foreignId('courseId')->constrained('courses');
-            $table->integer('rating');
-            $table->text('feedback')->nullable();
+            $table->integer('rating')->comment('Điểm đánh giá từ 1-5 sao');
+            $table->text('feedback')->nullable()->comment('Nội dung đánh giá');
             $table->softDeletes();
             $table->timestamps();
         });

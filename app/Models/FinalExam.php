@@ -2,29 +2,47 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FinalExam extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
-        'courseId', 'minScore'
+        'courseId',
+        'slug',
+        'name',
+        'description',
+        'duration',
+        'minScore',
+        'maxScore',
+        'totalAttempt',
+        'maxAttempt',
+        'isRequired'
+    ];
+
+    protected $casts = [
+        'duration' => 'integer',
+        'minScore' => 'integer',
+        'maxScore' => 'integer',
+        'totalAttempt' => 'integer',
+        'maxAttempt' => 'integer',
+        'isRequired' => 'boolean'
     ];
 
     public function course()
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(Course::class, 'courseId');
     }
 
     public function questions()
     {
-        return $this->hasMany(QuestionFinalExam::class);
+        return $this->hasMany(QuestionFinalExam::class, 'finalExamId');
     }
 
     public function examResults()
     {
-        return $this->hasMany(ExamResult::class);
+        return $this->hasMany(ExamResult::class, 'finalExamId');
     }
-}
+} 

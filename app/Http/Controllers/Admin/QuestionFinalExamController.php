@@ -1,38 +1,91 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Config\CrudBasic;
 use App\Models\QuestionFinalExam;
 use Illuminate\Http\Request;
 
 class QuestionFinalExamController extends Controller
 {
+    use CrudBasic;
+
+    const MODEL = new QuestionFinalExam();
+
     public function index()
     {
-        return QuestionFinalExam::all();
+        $items = $this->getList(self::MODEL::query());
+        return view('admin.question-final-exams.index', compact('items'));
     }
 
     public function store(Request $request)
     {
-        $questionFinalExam = QuestionFinalExam::create($request->all());
-        return response()->json($questionFinalExam, 201);
-    }
+        $rules = [
+            'finalExamId' => 'required|exists:final_exams,id',
+            'question' => 'required|string',
+            'orderNumber' => 'required|integer|min:0'
+        ];
 
-    public function show($id)
-    {
-        return QuestionFinalExam::findOrFail($id);
+        $messages = [
+            'finalExamId.required' => 'Bài thi cuối khóa không được để trống',
+            'finalExamId.exists' => 'Bài thi cuối khóa không tồn tại',
+            'question.required' => 'Câu hỏi không được để trống',
+            'orderNumber.required' => 'Thứ tự không được để trống',
+            'orderNumber.min' => 'Thứ tự phải lớn hơn 0'
+        ];
+
+        $data = $request->validate($rules, $messages);
+        $result = $this->storeItem(self::MODEL, $data);
+
+        if ($result['status']) {
+            return redirect()->route('admin.question-final-exams.index')->with('success', $result['message']);
+        }
+        return redirect()->back()->with('error', $result['message'])->withInput();
     }
 
     public function update(Request $request, $id)
     {
-        $questionFinalExam = QuestionFinalExam::findOrFail($id);
-        $questionFinalExam->update($request->all());
-        return response()->json($questionFinalExam, 200);
+        $item = self::MODEL::find($id);
+        if (!$item) {
+            return redirect()->back()->with('error', 'Không tìm thấy câu hỏi');
+        }
+
+        $rules = [
+            'finalExamId' => 'required|exists:final_exams,id',
+            'question' => 'required|string',
+            'orderNumber' => 'required|integer|min:0'
+        ];
+
+        $messages = [
+            'finalExamId.required' => 'Bài thi cuối khóa không được để trống',
+            'finalExamId.exists' => 'Bài thi cuối khóa không tồn tại',
+            'question.required' => 'Câu hỏi không được để trống',
+            'orderNumber.required' => 'Thứ tự không được để trống',
+            'orderNumber.min' => 'Thứ tự phải lớn hơn 0'
+        ];
+
+        $data = $request->validate($rules, $messages);
+        $result = $this->updateItem($item, $data);
+
+        if ($result['status']) {
+            return redirect()->route('admin.question-final-exams.index')->with('success', $result['message']);
+        }
+        return redirect()->back()->with('error', $result['message'])->withInput();
     }
 
     public function destroy($id)
     {
-        QuestionFinalExam::destroy($id);
-        return response()->json(null, 204);
+        $result = $this->deleteItem(self::MODEL, $id);
+        return redirect()->back()->with($result['status'] ? 'success' : 'error', $result['message']);
     }
-}
+
+    public function show($id)
+    {
+        $result = $this->getDetail(self::MODEL::query(), $id);
+        if (!$result['status']) {
+            return redirect()->back()->with('error', $result['message']);
+        }
+        return view('admin.question-final-exams.show', ['item' => $result['data']]);
+    }
+} 

@@ -14,7 +14,7 @@ trait CrudBasic
     {
         try {
             $items = $query->orderBy('id', 'DESC')
-                          ->paginate(CrudConfig::PAGINATION['per_page']);
+                ->paginate(CrudConfig::PAGINATION['per_page']);
             return $items;
         } catch (\Exception $e) {
             return null;
@@ -76,10 +76,10 @@ trait CrudBasic
     /**
      * Xóa mềm bản ghi
      */
-    protected function deleteItem(Model $model)
+    protected function deleteItem(Model $model, $id)
     {
         try {
-            $deleted = $model->delete();
+            $deleted = $model->find($id)->delete();
             if ($deleted) {
                 return [
                     'status' => true,
@@ -130,8 +130,8 @@ trait CrudBasic
     {
         try {
             $items = $query->withTrashed()
-                          ->orderBy('id', 'DESC')
-                          ->paginate(CrudConfig::PAGINATION['per_page']);
+                ->orderBy('id', 'DESC')
+                ->paginate(CrudConfig::PAGINATION['per_page']);
             return $items;
         } catch (\Exception $e) {
             return null;
@@ -188,4 +188,4 @@ trait CrudBasic
             ];
         }
     }
-} 
+}

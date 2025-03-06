@@ -1,38 +1,62 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Config\CrudBasic;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    use CrudBasic;
+
+    protected $model = Category::class;
+
     public function index()
     {
-        return Category::all();
+        $items = $this->getList($this->model::query()->withCount('courses'));
+        return view('admin.categories.index', compact('items'));
+    }
+
+    public function create()
+    {
+        return view('admin.categories.create');
     }
 
     public function store(Request $request)
     {
-        $category = Category::create($request->all());
-        return response()->json($category, 201);
+        $result = $this->createItem($this->model::query(), $request->all());
+        return redirect()->back()->with($result['status'] ? 'success' : 'error', $result['message']);
     }
 
-    public function show($id)
+    public function edit($id)
     {
-        return Category::findOrFail($id);
+        $result = $this->getDetail($this->model::query(), $id);
+        if (!$result['status']) {
+            return redirect()->back()->with('error', $result['message']);
+        }
+        return view('admin.categories.edit', ['item' => $result['data']]);
     }
 
     public function update(Request $request, $id)
     {
-        $category = Category::findOrFail($id);
-        $category->update($request->all());
-        return response()->json($category, 200);
+        $result = $this->updateItem($this->model::query()->find($id), $request->all());
+        return redirect()->back()->with($result['status'] ? 'success' : 'error', $result['message']);
     }
 
     public function destroy($id)
     {
-        Category::destroy($id);
-        return response()->json(null, 204);
+        $result = $this->deleteItem($this->model::query()->find($id), $id);
+        return redirect()->back()->with($result['status'] ? 'success' : 'error', $result['message']);
     }
-}
+
+    public function show($id)
+    {
+        $result = $this->getDetail($this->model::query(), $id);
+        if (!$result['status']) {
+            return redirect()->back()->with('error', $result['message']);
+        }
+        return view('admin.categories.show', ['item' => $result['data']]);
+    }
+} 
