@@ -11,10 +11,33 @@ class ZoomSessionSeeder extends Seeder
     {
         ZoomSession::create([
             'lessonId' => 1,
-            'startTime' => now(),
-            'endTime' => now()->addHours(1),
-            'participants' => json_encode([1]),
+            'releaseTime' => now(),
             'recordingLink' => null,
+            'status' => 'scheduled'
+        ]);
+        ZoomSession::create([
+            'lessonId' => 2,
+            'releaseTime' => now(),
+            'recordingLink' => null,
+            'status' => 'scheduled'
+        ]);
+        ZoomSession::create([
+            'lessonId' => 3,
+            'releaseTime' => now(),
+            'recordingLink' => null,
+            'status' => 'scheduled'
+        ]);
+        ZoomSession::create([
+            'lessonId' => 4,
+            'releaseTime' => now(),
+            'recordingLink' => null,
+            'status' => 'scheduled'
+        ]);
+        ZoomSession::create([
+            'lessonId' => 5,
+            'releaseTime' => now(),
+            'recordingLink' => null,
+            'status' => 'scheduled'
         ]);
     }
 }
