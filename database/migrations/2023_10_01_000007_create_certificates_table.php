@@ -12,8 +12,13 @@ class CreateCertificatesTable extends Migration
             $table->id();
             $table->foreignId('userId')->constrained('users');
             $table->foreignId('courseId')->constrained('courses');
-            $table->dateTime('issueDate');
-            $table->string('file');
+            $table->string('certificateNumber')->unique()->comment('Số hiệu chứng chỉ');
+            $table->dateTime('issueDate')->comment('Ngày cấp chứng chỉ');
+            $table->string('file')->comment('File chứng chỉ');
+            $table->string('status')->default('pending')->comment('Trạng thái: pending/approved/rejected');
+            $table->text('note')->nullable()->comment('Ghi chú');
+            $table->foreignId('approvedBy')->nullable()->constrained('users')->comment('Người duyệt chứng chỉ');
+            $table->dateTime('approvedAt')->nullable()->comment('Thời gian duyệt');
             $table->softDeletes();
             $table->timestamps();
         });

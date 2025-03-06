@@ -15,6 +15,6 @@ class AnswerLessonTest extends Model
 
     public function questionLessonTest()
     {
-        return $this->belongsTo(QuestionLessonTest::class, 'questionLessonTestId');
+        return $this->belongsTo(QuestionLessonTest::class);
     }
 }

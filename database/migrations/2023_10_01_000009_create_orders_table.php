@@ -12,12 +12,16 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->foreignId('userId')->constrained('users');
             $table->foreignId('courseId')->constrained('courses');
-            $table->string('orderStatus');
-            $table->string('transactionId')->nullable();
-            $table->decimal('paymentAmount', 8, 2);
-            $table->decimal('price', 8, 2);
-            $table->decimal('salePercentage')->nullable();
-            $table->string('voucherCode')->nullable();
+            $table->foreignId('orderStatusId')->constrained('order_statuses');
+            
+            $table->string('transactionId')->nullable()->comment('Mã giao dịch từ cổng thanh toán');
+            $table->decimal('paymentAmount', 8, 2)->comment('Số tiền thanh toán thực tế');
+            $table->decimal('price', 8, 2)->comment('Giá gốc khóa học');
+            $table->decimal('salePercentage')->nullable()->comment('Phần trăm giảm giá');
+            $table->string('voucherCode')->nullable()->comment('Mã giảm giá nếu có');
+            $table->string('paymentMethod')->comment('Phương thức thanh toán: momo/vnpay/bank_transfer/...');
+            $table->dateTime('paymentDate')->nullable()->comment('Thời gian thanh toán thành công');
+            $table->text('note')->nullable()->comment('Ghi chú đơn hàng');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -14,6 +14,6 @@ class AnswerFinalExam extends Model
 
     public function questionFinalExam()
     {
-        return $this->belongsTo(QuestionFinalExam::class, 'questionFinalExamId');
+        return $this->belongsTo(QuestionFinalExam::class);
     }
 }

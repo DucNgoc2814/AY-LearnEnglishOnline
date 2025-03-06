@@ -2,15 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class QuestionLessonTest extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
-        'lessonTestId', 'question'
+        'lesson_test_id',
+        'content',
+        'type',
+        'score',
+        'order',
+        'explanation'
+    ];
+
+    protected $casts = [
+        'score' => 'float',
+        'order' => 'integer'
     ];
 
     public function lessonTest()
@@ -20,6 +30,6 @@ class QuestionLessonTest extends Model
 
     public function answers()
     {
-        return $this->hasMany(AnswerLessonTest::class);
+        return $this->hasMany(AnswerLessonTest::class, 'question_id');
     }
 }

@@ -10,7 +10,7 @@ class Comment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'userId', 'courseId', 'lessonId', 'content', 'timestamp', 'status'
+        'userId', 'courseId', 'lessonId', 'content', 'status'
     ];
 
     public function user()
