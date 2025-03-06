@@ -11,7 +11,7 @@ class Course extends Model
 
     protected $fillable = [
         'categoryId',
-        'name', 
+        'name',
         'slug',
         'description',
         'sortDescription',
@@ -22,7 +22,6 @@ class Course extends Model
         'rating',
         'totalRating',
         'releaseTime',
-        'type'
     ];
 
     protected $casts = [
@@ -39,7 +38,12 @@ class Course extends Model
 
     public function lessons()
     {
-        return $this->hasMany(Lesson::class);
+        return $this->hasMany(Lesson::class, 'courseId');
+    }
+
+    public function zoomSessions()
+    {
+        return $this->hasMany(ZoomSession::class, 'lessonId');
     }
 
     public function enrollments()
@@ -49,11 +53,16 @@ class Course extends Model
 
     public function ratings()
     {
-        return $this->hasMany(Rating::class);
+        return $this->hasMany(Rating::class, 'courseId');
     }
 
     public function finalExams()
     {
         return $this->hasMany(FinalExam::class);
     }
-} 
+
+    public function totalLessons()
+    {
+        return $this->lessons()->count() + $this->zoomSessions()->count();
+    }
+}
