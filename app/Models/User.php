@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
 
 class User extends Authenticatable
 {
@@ -21,6 +22,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phoneNumber',
+        'birthDate',
+        'authGoogleId',
+        'role',
+        'roleToken',
+        'refreshToken',
     ];
 
     /**
@@ -42,4 +49,50 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function progress()
+    {
+        return $this->hasMany(Progress::class);
+    }
+
+    public function examResults()
+    {
+        return $this->hasMany(ExamResult::class);
+    }
+
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
+    public function lessonTestResults()
+    {
+        return $this->hasMany(LessonTestResult::class);
+    }
+
+    public function resetPasswords()
+    {
+        return $this->hasMany(ResetPassword::class);
+    }
+
 }
