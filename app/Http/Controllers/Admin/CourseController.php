@@ -11,12 +11,13 @@ class CourseController extends Controller
 {
     use CrudBasic;
 
-    const MODEL = new Course();
+    const PATH_VIEW = 'admin.components.courses.';
+    protected $model = Course::class;
 
     public function index()
     {
-        $items = $this->getList(self::MODEL::query());
-        return view('admin.courses.index', compact('items'));
+        $items = $this->getList($this->model::query());
+        return view(self::PATH_VIEW . 'index', compact('items'));
     }
 
     public function store(Request $request)
@@ -45,17 +46,17 @@ class CourseController extends Controller
         ];
 
         $data = $request->validate($rules, $messages);
-        $result = $this->storeItem(self::MODEL, $data);
+        $result = $this->storeItem($this->model(), $data);
 
         if ($result['status']) {
-            return redirect()->route('admin.courses.index')->with('success', $result['message']);
+            return redirect()->route('admin.components.courses.index')->with('success', $result['message']);
         }
         return redirect()->back()->with('error', $result['message'])->withInput();
     }
 
     public function update(Request $request, $id)
     {
-        $item = self::MODEL::find($id);
+        $item = $this->model::find($id);
         if (!$item) {
             return redirect()->back()->with('error', 'Không tìm thấy khóa học');
         }
@@ -87,23 +88,23 @@ class CourseController extends Controller
         $result = $this->updateItem($item, $data);
 
         if ($result['status']) {
-            return redirect()->route('admin.courses.index')->with('success', $result['message']);
+            return redirect()->route('admin.components.courses.index')->with('success', $result['message']);
         }
         return redirect()->back()->with('error', $result['message'])->withInput();
     }
 
     public function destroy($id)
     {
-        $result = $this->deleteItem(self::MODEL, $id);
+        $result = $this->deleteItem($this->model::find($id), $id);
         return redirect()->back()->with($result['status'] ? 'success' : 'error', $result['message']);
     }
 
     public function show($id)
     {
-        $result = $this->getDetail(self::MODEL::query(), $id);
+        $result = $this->getDetail($this->model::query(), $id);
         if (!$result['status']) {
             return redirect()->back()->with('error', $result['message']);
         }
-        return view('admin.courses.show', ['item' => $result['data']]);
+        return view(self::PATH_VIEW . 'show', ['item' => $result['data']]);
     }
-} 
+}
