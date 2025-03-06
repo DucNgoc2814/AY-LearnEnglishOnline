@@ -104,19 +104,7 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            console.log('Document ready');
-            
-            // Test modal manually
-            $('.btn_1').on('click', function(e) {
-                console.log('Button clicked');
-                e.preventDefault();
-                var myModal = new bootstrap.Modal(document.getElementById('createCategoryModal'));
-                myModal.show();
-            });
-
-            // Check if modal exists
-            console.log('Modal element:', $('#createCategoryModal').length);
-
+            // DataTable config
             $('.table').DataTable({
                 bLengthChange: false,
                 "bDestroy": true,
@@ -135,27 +123,6 @@
                 searching: false,
             });
 
-            // Xử lý khi modal đóng
-            $('#createCategoryModal').on('hidden.bs.modal', function () {
-                $(this).find('form').trigger('reset');
-                $('.is-invalid').removeClass('is-invalid');
-                $('.invalid-feedback').remove();
-                // Xóa backdrop
-                $('.modal-backdrop').remove();
-                $('body').removeClass('modal-open');
-                $('body').css('overflow', '');
-                $('body').css('padding-right', '');
-            });
-
-            // Xử lý khi nhấn nút đóng modal
-            $('.btn-close, .btn-secondary').on('click', function() {
-                $('#createCategoryModal').modal('hide');
-                $('.modal-backdrop').remove();
-                $('body').removeClass('modal-open');
-                $('body').css('overflow', '');
-                $('body').css('padding-right', '');
-            });
-
             // Xử lý hiển thị lỗi validation trong modal nếu có
             @if(session('errors') && session('errors')->any())
                 $('#createCategoryModal').modal('show');
@@ -164,46 +131,3 @@
     </script>
 @endpush
 
-@push('styles')
-    <style>
-        .modal-header {
-            background: #f3f6f9;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-        }
-
-        .modal-content {
-            border: none;
-            border-radius: 5px;
-        }
-
-        .modal-footer {
-            border-top: 1px solid #e4e6ef;
-            background: #f3f6f9;
-            border-bottom-left-radius: 5px;
-            border-bottom-right-radius: 5px;
-        }
-
-        .primary_checkbox {
-            cursor: pointer;
-        }
-
-        /* Thêm style mới */
-        .modal-backdrop {
-            opacity: 0.5;
-        }
-        
-        .modal-backdrop.fade {
-            opacity: 0;
-        }
-        
-        .modal-backdrop.show {
-            opacity: 0.5;
-        }
-
-        body.modal-open {
-            overflow: auto !important;
-            padding-right: 0 !important;
-        }
-    </style>
-@endpush

@@ -50,16 +50,6 @@ class DatabaseSeeder extends Seeder
             CommentSeeder::class,
             CategorySeeder::class,
             VoucherSeeder::class,
-            BlogSeeder::class,
-            ResetPasswordSeeder::class,
-            ProgressSeeder::class,
-            ZoomSessionSeeder::class,
-            VideoRecordSeeder::class,
-            QuestionLessonTestSeeder::class,
-            AnswerLessonTestSeeder::class,
-            QuestionFinalExamSeeder::class,
-            AnswerFinalExamSeeder::class,
-            BannerSeeder::class,
         ]);
     }
 }

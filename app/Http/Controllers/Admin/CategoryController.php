@@ -21,6 +21,9 @@ class CategoryController extends Controller
 
     public function create()
     {
+        if(request()->ajax()) {
+            return view('admin.categories.modals.create');
+        }
         return view('admin.categories.create');
     }
 
