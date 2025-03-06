@@ -13,7 +13,6 @@ class CreateCommentsTable extends Migration
             $table->foreignId('userId')->constrained('users');
             $table->foreignId('lessonId')->nullable()->constrained('lessons');
             $table->text('content');
-            $table->string('status');
             $table->softDeletes();
             $table->timestamps();
         });

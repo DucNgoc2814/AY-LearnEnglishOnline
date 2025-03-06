@@ -11,6 +11,7 @@ class CreateLessonTestsTable extends Migration
         Schema::create('lesson_tests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lessonId')->constrained('lessons');
+            $table->string('slug')->unique()->comment('Slug bài kiểm tra');
             $table->string('name')->comment('Tên bài kiểm tra');
             $table->text('description')->nullable()->comment('Mô tả bài kiểm tra');
             $table->integer('duration')->nullable()->comment('Thời gian làm bài (giây)');

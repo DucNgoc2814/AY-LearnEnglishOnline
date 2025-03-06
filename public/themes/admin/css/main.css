@@ -1,0 +1,14 @@
+.btn_1 {
+    background-color: #567AED;
+    border: 1px solid #567AED;
+    color: #fff;
+    display: inline-block;
+    padding: 9px 25px;
+    text-transform: capitalize;
+    font-size: 14px;
+    font-weight: 400;
+    border-radius: 5px;
+    white-space: nowrap;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+}

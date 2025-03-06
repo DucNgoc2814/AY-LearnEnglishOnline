@@ -10,7 +10,7 @@
 
     <!-- <link rel="icon" href="{{ asset('themes/admin/img/logo.png') }}" type="image/png"> -->
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('themes/admin/css/bootstrap1.min.css') }}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- themefy CSS -->
     <link rel="stylesheet" href="{{ asset('themes/admin/vendors/themefy_icon/themify-icons.css') }}" />
     <!-- select2 CSS -->
@@ -44,8 +44,10 @@
     <!-- menu css  -->
     <link rel="stylesheet" href="{{ asset('themes/admin/css/metisMenu.css') }}" />
     <!-- style CSS -->
-    <link rel="stylesheet" href="{{ asset('themes/admin/css/style1.css') }}" />
     <link rel="stylesheet" href="{{ asset('themes/admin/css/colors/default.css') }}" id="colorSkinCSS">
+    <link rel="stylesheet" href="{{ asset('themes/admin/css/style1.css') }}" />
+    <link rel="stylesheet" href="{{ asset('themes/admin/css/main.css') }}" />
+    @stack('styles')
 </head>
 
 <body class="crm_body_bg">
@@ -75,7 +77,7 @@
     <!-- popper js -->
     <script src="{{ asset('themes/admin/js/popper1.min.js') }}"></script>
     <!-- bootstarp js -->
-    <script src="{{ asset('themes/admin/js/bootstrap.min.html') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- sidebar menu  -->
     <script src="{{ asset('themes/admin/js/metisMenu.js') }}"></script>
     <!-- waypoints js -->
@@ -95,8 +97,8 @@
     <script src="{{ asset('themes/admin/vendors/datatable/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('themes/admin/vendors/datatable/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('themes/admin/vendors/datatable/js/buttons.flash.min.js') }}"></script>
-    {{-- <script src="{{ asset('themes/admin/vendors/datatable/js/jszip.min.js') }}"></script> --}}
-    {{-- <script src="{{ asset('themes/admin/vendors/datatable/js/pdfmake.min.js') }}"></script> --}}
+    <script src="{{ asset('themes/admin/vendors/datatable/js/jszip.min.js') }}"></script>
+    <script src="{{ asset('themes/admin/vendors/datatable/js/pdfmake.min.js') }}"></script>
     <script src="{{ asset('themes/admin/vendors/datatable/js/vfs_fonts.js') }}"></script>
     <script src="{{ asset('themes/admin/vendors/datatable/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('themes/admin/vendors/datatable/js/buttons.print.min.js') }}"></script>
@@ -140,6 +142,7 @@
     <!-- custom js -->
     <script src="{{ asset('themes/admin/js/dashboard_init.js') }}"></script>
     <script src="{{ asset('themes/admin/js/custom.js') }}"></script>
+    @stack('scripts')
 </body>
 
 <!-- Mirrored from demo.dashboardpack.com/sales-html/ by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 05 Mar 2025 10:06:39 GMT -->

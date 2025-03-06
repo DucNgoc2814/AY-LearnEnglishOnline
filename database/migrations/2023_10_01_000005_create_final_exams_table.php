@@ -11,6 +11,7 @@ class CreateFinalExamsTable extends Migration
         Schema::create('final_exams', function (Blueprint $table) {
             $table->id();
             $table->foreignId('courseId')->constrained('courses');
+            $table->string('slug')->unique()->comment('Slug bài thi cuối khóa');
             $table->string('name')->comment('Tên bài thi cuối khóa');
             $table->text('description')->nullable()->comment('Mô tả bài thi');
             $table->integer('duration')->nullable()->comment('Thời gian làm bài (giây)');

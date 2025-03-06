@@ -17,7 +17,7 @@ class CreateCertificatesTable extends Migration
             $table->string('file')->comment('File chứng chỉ');
             $table->string('status')->default('pending')->comment('Trạng thái: pending/approved/rejected');
             $table->text('note')->nullable()->comment('Ghi chú');
-            $table->foreignId('approvedBy')->nullable()->constrained('users')->comment('Người duyệt chứng chỉ');
+            $table->foreignId('approvedBy')->nullable()->constrained('employees')->comment('Người duyệt chứng chỉ');
             $table->dateTime('approvedAt')->nullable()->comment('Thời gian duyệt');
             $table->softDeletes();
             $table->timestamps();
