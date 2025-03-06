@@ -27,6 +27,7 @@ use Database\Seeders\AnswerLessonTestSeeder;
 use Database\Seeders\QuestionFinalExamSeeder;
 use Database\Seeders\AnswerFinalExamSeeder;
 use Database\Seeders\BannerSeeder;
+use Database\Seeders\OrderStatusSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -35,8 +36,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
         $this->call([
+            OrderStatusSeeder::class,
+            CategorySeeder::class,
             UserSeeder::class,
             CourseSeeder::class,
             LessonSeeder::class,
@@ -48,8 +50,16 @@ class DatabaseSeeder extends Seeder
             OrderSeeder::class,
             RatingSeeder::class,
             CommentSeeder::class,
-            CategorySeeder::class,
             VoucherSeeder::class,
+            BlogSeeder::class,
+            ProgressSeeder::class,
+            ZoomSessionSeeder::class,
+            VideoRecordSeeder::class,
+            QuestionLessonTestSeeder::class,
+            AnswerLessonTestSeeder::class,
+            QuestionFinalExamSeeder::class,
+            AnswerFinalExamSeeder::class,
+            BannerSeeder::class,
         ]);
     }
 }

@@ -11,20 +11,18 @@ class CategoryController extends Controller
 {
     use CrudBasic;
 
+    const PATH_VIEW = 'admin.components.categories.';
     protected $model = Category::class;
 
     public function index()
     {
         $items = $this->getList($this->model::query()->withCount('courses'));
-        return view('admin.categories.index', compact('items'));
+        return view(self::PATH_VIEW . 'index', compact('items'));
     }
 
     public function create()
     {
-        if(request()->ajax()) {
-            return view('admin.categories.modals.create');
-        }
-        return view('admin.categories.create');
+        return view(self::PATH_VIEW . 'create');
     }
 
     public function store(Request $request)
@@ -39,7 +37,7 @@ class CategoryController extends Controller
         if (!$result['status']) {
             return redirect()->back()->with('error', $result['message']);
         }
-        return view('admin.categories.edit', ['item' => $result['data']]);
+        return view(self::PATH_VIEW . 'edit', ['item' => $result['data']]);
     }
 
     public function update(Request $request, $id)
@@ -60,6 +58,6 @@ class CategoryController extends Controller
         if (!$result['status']) {
             return redirect()->back()->with('error', $result['message']);
         }
-        return view('admin.categories.show', ['item' => $result['data']]);
+        return view(self::PATH_VIEW . 'show', ['item' => $result['data']]);
     }
-} 
+}
