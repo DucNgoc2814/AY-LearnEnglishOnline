@@ -13,6 +13,7 @@ class CreateAnswerLessonTestsTable extends Migration
             $table->foreignId('questionLessonTestId')->constrained('question_lesson_tests');
             $table->string('answer');
             $table->boolean('isCorrect');
+            $table->integer('order_number')->comment('Số thứ tự của câu trả lời');
             $table->softDeletes();
             $table->timestamps();
         });

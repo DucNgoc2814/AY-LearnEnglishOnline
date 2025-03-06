@@ -10,15 +10,15 @@ class CreateLessonsTable extends Migration
     {
         Schema::create('lessons', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->foreignId('courseId')->constrained('courses');
-            $table->string('type');
-            $table->string('linkVideo')->nullable();
-            $table->string('linkZoom')->nullable();
-            $table->dateTime('startTime')->nullable();
-            $table->dateTime('endTime')->nullable();
-            $table->integer('duration')->nullable();
-            $table->json('notes')->nullable();
+            $table->string('name');
+            $table->string('videoUrl')->nullable();
+            $table->text('description')->nullable();
+            $table->integer('duration')->nullable()->comment('Độ dài bài học (giây)');
+            $table->integer('orderNumber')->default(0)->comment('Thứ tự bài học trong khóa học');
+            $table->boolean('isPreview')->default(false)->comment('Bài học xem thử');
+            $table->integer('totalView')->default(0)->comment('Tổng số lượt xem');
+            $table->integer('totalComment')->default(0)->comment('Tổng số bình luận');
             $table->softDeletes();
             $table->timestamps();
         });

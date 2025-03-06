@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class LessonTestResult extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'user_id',
+        'lesson_test_id',
+        'score',
+        'time_taken',
+        'attempt_number',
+        'status'
+    ];
 
     public function user()
     {

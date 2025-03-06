@@ -13,6 +13,7 @@ class CreateAnswerFinalExamsTable extends Migration
             $table->foreignId('questionFinalExamId')->constrained('question_final_exams');
             $table->string('answer');
             $table->boolean('isCorrect');
+            $table->integer('order_number')->comment('Số thứ tự của câu trả lời');
             $table->softDeletes();
             $table->timestamps();
         });
