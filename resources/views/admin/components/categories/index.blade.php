@@ -104,6 +104,9 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+<<<<<<< HEAD:resources/views/admin/categories/index.blade.php
+            // DataTable config
+=======
             console.log('Document ready');
 
             // Test modal manually
@@ -117,6 +120,7 @@
             // Check if modal exists
             console.log('Modal element:', $('#createCategoryModal').length);
 
+>>>>>>> c57ef3065dba5b10f868c42140eceb5cbd0eecaf:resources/views/admin/components/categories/index.blade.php
             $('.table').DataTable({
                 bLengthChange: false,
                 "bDestroy": true,
@@ -135,27 +139,6 @@
                 searching: false,
             });
 
-            // Xử lý khi modal đóng
-            $('#createCategoryModal').on('hidden.bs.modal', function () {
-                $(this).find('form').trigger('reset');
-                $('.is-invalid').removeClass('is-invalid');
-                $('.invalid-feedback').remove();
-                // Xóa backdrop
-                $('.modal-backdrop').remove();
-                $('body').removeClass('modal-open');
-                $('body').css('overflow', '');
-                $('body').css('padding-right', '');
-            });
-
-            // Xử lý khi nhấn nút đóng modal
-            $('.btn-close, .btn-secondary').on('click', function() {
-                $('#createCategoryModal').modal('hide');
-                $('.modal-backdrop').remove();
-                $('body').removeClass('modal-open');
-                $('body').css('overflow', '');
-                $('body').css('padding-right', '');
-            });
-
             // Xử lý hiển thị lỗi validation trong modal nếu có
             @if(session('errors') && session('errors')->any())
                 $('#createCategoryModal').modal('show');
@@ -164,6 +147,8 @@
     </script>
 @endpush
 
+<<<<<<< HEAD:resources/views/admin/categories/index.blade.php
+=======
 @push('styles')
     <style>
         .modal-header {
@@ -207,3 +192,4 @@
         }
     </style>
 @endpush
+>>>>>>> c57ef3065dba5b10f868c42140eceb5cbd0eecaf:resources/views/admin/components/categories/index.blade.php
