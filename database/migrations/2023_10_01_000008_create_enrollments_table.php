@@ -12,8 +12,12 @@ class CreateEnrollmentsTable extends Migration
             $table->id();
             $table->foreignId('userId')->constrained('users');
             $table->foreignId('courseId')->constrained('courses');
-            $table->string('status');
-            $table->integer('progress')->nullable();
+            $table->string('status')->default('active')->comment('Trạng thái: active/completed');
+            $table->integer('progress')->default(0)->comment('Tiến độ học tập (%)');
+            $table->dateTime('startDate')->comment('Ngày bắt đầu học');
+            $table->dateTime('completionDate')->nullable()->comment('Ngày hoàn thành khóa học');
+            $table->dateTime('lastAccessDate')->nullable()->comment('Ngày học gần nhất');
+            $table->text('note')->nullable()->comment('Ghi chú');
             $table->softDeletes();
             $table->timestamps();
         });

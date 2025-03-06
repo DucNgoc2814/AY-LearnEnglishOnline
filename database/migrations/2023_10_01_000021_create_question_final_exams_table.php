@@ -12,6 +12,7 @@ class CreateQuestionFinalExamsTable extends Migration
             $table->id();
             $table->foreignId('finalExamId')->constrained('final_exams');
             $table->string('question');
+                $table->integer('STT');
             $table->softDeletes();
             $table->timestamps();
         });

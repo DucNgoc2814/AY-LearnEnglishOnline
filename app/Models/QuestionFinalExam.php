@@ -2,15 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class QuestionFinalExam extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
-        'finalExamId', 'question'
+        'final_exam_id',
+        'content',
+        'type',
+        'score',
+        'order',
+        'explanation'
+    ];
+
+    protected $casts = [
+        'score' => 'float',
+        'order' => 'integer'
     ];
 
     public function finalExam()
@@ -20,6 +30,6 @@ class QuestionFinalExam extends Model
 
     public function answers()
     {
-        return $this->hasMany(AnswerFinalExam::class);
+        return $this->hasMany(AnswerFinalExam::class, 'question_id');
     }
 }

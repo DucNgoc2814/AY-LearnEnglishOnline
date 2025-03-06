@@ -10,13 +10,10 @@ class CreateProgressTable extends Migration
     {
         Schema::create('progress', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('userId')->constrained('users');
-            $table->foreignId('courseId')->constrained('courses');
+            $table->foreignId('enrollmentId')->constrained('enrollments');
             $table->foreignId('lessonId')->nullable()->constrained('lessons');
-            $table->string('progressType');
             $table->integer('progressValue');
-            $table->dateTime('timestamp');
-            $table->string('status');
+            $table->string('status')->default('active')->comment('Trạng thái: active/completed');
             $table->softDeletes();
             $table->timestamps();
         });

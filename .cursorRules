@@ -1,0 +1,173 @@
+{
+    "editor": {
+        "indentation": {
+            "type": "spaces",
+            "size": 4
+        },
+        "line_length": {
+            "max": 120,
+            "exceptions": ["urls", "long_strings", "migrations"]
+        },
+        "end_of_line": "lf",
+        "charset": "utf-8",
+        "trim_trailing_whitespace": true,
+        "insert_final_newline": true
+    },
+
+    "php_rules": {
+        "namespace_structure": {
+            "controllers": "App\\Http\\Controllers",
+            "models": "App\\Models",
+            "services": "App\\Services",
+            "repositories": "App\\Repositories",
+            "traits": "App\\Traits",
+            "interfaces": "App\\Interfaces"
+        },
+        "class_structure": {
+            "order": [
+                "use_statements",
+                "constants",
+                "properties",
+                "constructor",
+                "public_methods",
+                "protected_methods",
+                "private_methods"
+            ],
+            "spacing": {
+                "between_methods": 1,
+                "between_properties": 1,
+                "after_namespace": 2,
+                "after_use_statements": 1
+            }
+        },
+        "method_rules": {
+            "max_lines": 20,
+            "structure": [
+                "type_hints",
+                "parameters",
+                "return_type",
+                "validation",
+                "business_logic",
+                "return"
+            ]
+        }
+    },
+
+    "naming_conventions": {
+        "php": {
+            "classes": {
+                "controllers": "{PascalCase}Controller",
+                "models": "{PascalCase}",
+                "services": "{PascalCase}Service",
+                "repositories": "{PascalCase}Repository",
+                "traits": "{PascalCase}Trait",
+                "interfaces": "{PascalCase}Interface",
+                "middleware": "{PascalCase}Middleware"
+            },
+            "methods": {
+                "regular": "camelCase()",
+                "test": "test{PascalCase}()"
+            },
+            "variables": {
+                "regular": "camelCase",
+                "private": "_camelCase",
+                "constants": "SCREAMING_SNAKE_CASE"
+            }
+        },
+        "database": {
+            "tables": "snake_case_plural",
+            "columns": "snake_case",
+            "foreign_keys": "table_name_singular_id"
+        }
+    },
+
+    "laravel_specific": {
+        "route_naming": {
+            "format": "{module}.{resource}.{action}",
+            "example": "admin.users.index"
+        },
+        "blade_templates": {
+            "naming": "kebab-case.blade.php",
+            "structure": {
+                "layouts": "resources/views/layouts",
+                "components": "resources/views/components",
+                "admin": "resources/views/admin",
+                "web": "resources/views/web"
+            }
+        },
+        "migrations": {
+            "naming": "yyyy_mm_dd_hhmmss_create_{table_name}_table.php",
+            "structure": [
+                "up_method",
+                "down_method"
+            ]
+        }
+    },
+
+    "crud_conventions": {
+        "controller_methods": {
+            "index": "Hiển thị danh sách",
+            "create": "Form tạo mới",
+            "store": "Lưu dữ liệu mới",
+            "show": "Hiển thị chi tiết",
+            "edit": "Form chỉnh sửa",
+            "update": "Cập nhật dữ liệu",
+            "destroy": "Xóa dữ liệu"
+        },
+        "response_format": {
+            "success": {
+                "status": true,
+                "message": "string",
+                "data": "mixed"
+            },
+            "error": {
+                "status": false,
+                "message": "string",
+                "errors": "array"
+            }
+        },
+        "validation": {
+            "use_form_request": true,
+            "messages_in_lang_file": true
+        }
+    },
+
+    "documentation": {
+        "required_docblocks": {
+            "class": [
+                "@package",
+                "@author",
+                "@description"
+            ],
+            "method": [
+                "@param",
+                "@return",
+                "@throws"
+            ]
+        },
+        "commit_messages": {
+            "format": "<type>(<scope>): <subject>",
+            "types": ["feat", "fix", "docs", "style", "refactor", "test", "chore"],
+            "scope": "module name or file name",
+            "subject": "start with verb, max 50 chars"
+        }
+    },
+
+    "security": {
+        "sensitive_data": [
+            ".env",
+            "storage/*.key",
+            "config/database.php"
+        ],
+        "file_permissions": {
+            "storage": "775",
+            "bootstrap/cache": "775",
+            "public/uploads": "775"
+        },
+        "validation": {
+            "sanitize_input": true,
+            "escape_output": true,
+            "prevent_xss": true
+        }
+    }
+} 
