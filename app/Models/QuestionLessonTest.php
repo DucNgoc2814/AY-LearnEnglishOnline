@@ -10,26 +10,22 @@ class QuestionLessonTest extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'lesson_test_id',
-        'content',
-        'type',
-        'score',
-        'order',
-        'explanation'
+        'lessonTestId',
+        'question',
+        'orderNumber'
     ];
 
     protected $casts = [
-        'score' => 'float',
-        'order' => 'integer'
+        'orderNumber' => 'integer'
     ];
 
     public function lessonTest()
     {
-        return $this->belongsTo(LessonTest::class);
+        return $this->belongsTo(LessonTest::class, 'lessonTestId');
     }
 
     public function answers()
     {
-        return $this->hasMany(AnswerLessonTest::class, 'question_id');
+        return $this->hasMany(AnswerLessonTest::class, 'questionLessonTestId');
     }
-}
+} 

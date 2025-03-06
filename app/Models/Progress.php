@@ -2,29 +2,37 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Progress extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
-        'userId', 'courseId', 'lessonId', 'progressType', 'progressValue', 'timestamp', 'status'
+        'enrollmentId',
+        'lessonId',
+        'watchedTime',
+        'totalTime',
+        'status',
+        'lastWatchedAt',
+        'completedAt'
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $casts = [
+        'watchedTime' => 'integer',
+        'totalTime' => 'integer',
+        'lastWatchedAt' => 'datetime',
+        'completedAt' => 'datetime'
+    ];
 
-    public function course()
+    public function enrollment()
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(Enrollment::class, 'enrollmentId');
     }
 
     public function lesson()
     {
-        return $this->belongsTo(Lesson::class);
+        return $this->belongsTo(Lesson::class, 'lessonId');
     }
-}
+} 

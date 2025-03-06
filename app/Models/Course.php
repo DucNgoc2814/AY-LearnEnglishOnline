@@ -2,20 +2,39 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Course extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
-        'name', 'description', 'price', 'type', 'learningPath', 'categoryId', 'lessons', 'paymentContent', 'totalRating'
+        'categoryId',
+        'name', 
+        'slug',
+        'description',
+        'sortDescription',
+        'price',
+        'salePrice',
+        'thumbnail',
+        'totalStudent',
+        'rating',
+        'totalRating',
+        'releaseTime',
+        'type'
+    ];
+
+    protected $casts = [
+        'price' => 'decimal:2',
+        'salePrice' => 'decimal:2',
+        'releaseTime' => 'datetime',
+        'type' => 'integer'
     ];
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'categoryId');
     }
 
     public function lessons()
@@ -28,33 +47,13 @@ class Course extends Model
         return $this->hasMany(Enrollment::class);
     }
 
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
-
     public function ratings()
     {
         return $this->hasMany(Rating::class);
     }
 
-    public function finalExam()
+    public function finalExams()
     {
-        return $this->hasOne(FinalExam::class);
+        return $this->hasMany(FinalExam::class);
     }
-
-    public function examResults()
-    {
-        return $this->hasMany(ExamResult::class);
-    }
-
-    public function certificates()
-    {
-        return $this->hasMany(Certificate::class);
-    }
-
-    public function progress()
-    {
-        return $this->hasMany(Progress::class);
-    }
-}
+} 

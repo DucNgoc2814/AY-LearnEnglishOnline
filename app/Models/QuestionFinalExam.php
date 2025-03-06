@@ -10,26 +10,22 @@ class QuestionFinalExam extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'final_exam_id',
-        'content',
-        'type',
-        'score',
-        'order',
-        'explanation'
+        'finalExamId',
+        'question',
+        'orderNumber'
     ];
 
     protected $casts = [
-        'score' => 'float',
-        'order' => 'integer'
+        'orderNumber' => 'integer'
     ];
 
     public function finalExam()
     {
-        return $this->belongsTo(FinalExam::class);
+        return $this->belongsTo(FinalExam::class, 'finalExamId');
     }
 
     public function answers()
     {
-        return $this->hasMany(AnswerFinalExam::class, 'question_id');
+        return $this->hasMany(AnswerFinalExam::class, 'questionFinalExamId');
     }
-}
+} 

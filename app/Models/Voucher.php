@@ -2,24 +2,44 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Voucher extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
-        'code', 'sale', 'startDate', 'endDate', 'usageCount', 'condition'
+        'code',
+        'sale',
+        'startDate',
+        'endDate',
+        'usageCount',
+        'maxUsage',
+        'minOrderValue',
+        'maxDiscount'
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $casts = [
+        'sale' => 'decimal:2',
+        'startDate' => 'datetime',
+        'endDate' => 'datetime',
+        'usageCount' => 'integer',
+        'maxUsage' => 'integer',
+        'minOrderValue' => 'decimal:2',
+        'maxDiscount' => 'decimal:2'
+    ];
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class, 'voucherId');
     }
-}
+
+    public function isValid()
+    {
+        $now = now();
+        return $this->startDate <= $now 
+            && $this->endDate >= $now
+            && ($this->maxUsage === null || $this->usageCount < $this->maxUsage);
+    }
+} 
