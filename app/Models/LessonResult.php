@@ -5,28 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ExamResult extends Model
+class LessonResult extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
         'userId',
-        'finalExamId',
+        'lessonTestId',
         'score',
         'timeTaken',
         'attemptNumber',
-        'status',
-        'startTime',
-        'endTime',
-        'feedback'
+        'status'
     ];
 
     protected $casts = [
         'score' => 'integer',
         'timeTaken' => 'integer',
-        'attemptNumber' => 'integer',
-        'startTime' => 'datetime',
-        'endTime' => 'datetime'
+        'attemptNumber' => 'integer'
     ];
 
     public function user()
@@ -34,13 +29,13 @@ class ExamResult extends Model
         return $this->belongsTo(User::class, 'userId');
     }
 
-    public function finalExam()
+    public function lessonTest()
     {
-        return $this->belongsTo(FinalExam::class, 'finalExamId');
+        return $this->belongsTo(LessonTest::class, 'lessonTestId');
     }
 
-    public function examResultItems()
+    public function resultItems()
     {
-        return $this->hasMany(ExamResultItem::class, 'examResultId');
+        return $this->hasMany(LessonResultItem::class, 'lessonResultId');
     }
 } 

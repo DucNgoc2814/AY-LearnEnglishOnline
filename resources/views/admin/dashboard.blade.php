@@ -254,7 +254,8 @@
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <img class="byder_thumb wh_56" src="{{ asset('themes/admin/img/Payment/1.png') }} " alt="">
+                                                <img class="byder_thumb wh_56"
+                                                    src="{{ asset('themes/admin/img/Payment/1.png') }} " alt="">
                                             </td>
                                             <td>
                                                 <div class="payment_gatway">
@@ -272,7 +273,8 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <img class="byder_thumb wh_56" src="{{ asset('themes/admin/img/Payment/1.png') }}" alt="">
+                                                <img class="byder_thumb wh_56"
+                                                    src="{{ asset('themes/admin/img/Payment/1.png') }}" alt="">
                                             </td>
                                             <td>
                                                 <div class="payment_gatway">
@@ -290,7 +292,8 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <img class="byder_thumb wh_56" src="{{ asset('themes/admin/img/Payment/1.png') }}" alt="">
+                                                <img class="byder_thumb wh_56"
+                                                    src="{{ asset('themes/admin/img/Payment/1.png') }}" alt="">
                                             </td>
                                             <td>
                                                 <div class="payment_gatway">
@@ -308,7 +311,8 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <img class="byder_thumb wh_56" src="{{ asset('themes/admin/img/Payment/1.png') }}" alt="">
+                                                <img class="byder_thumb wh_56"
+                                                    src="{{ asset('themes/admin/img/Payment/1.png') }}" alt="">
                                             </td>
                                             <td>
                                                 <div class="payment_gatway">
@@ -556,7 +560,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_34 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/1.png') }}" alt=""></div>
+                                                            src="{{ asset('themes/admin/img/customers/1.png') }}"
+                                                            alt=""></div>
                                                     <span class="f_s_14 f_w_400 color_text_1">Customer</span>
                                                 </div>
 
@@ -571,7 +576,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_34 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/2.png') }}" alt=""></div>
+                                                            src="{{ asset('themes/admin/img/customers/2.png') }}"
+                                                            alt=""></div>
                                                     <span class="f_s_14 f_w_400 color_text_1">Customer</span>
                                                 </div>
 
@@ -586,7 +592,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_34 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/3.png') }}" alt=""></div>
+                                                            src="{{ asset('themes/admin/img/customers/3.png') }}"
+                                                            alt=""></div>
                                                     <span class="f_s_14 f_w_400 color_text_1">Customer</span>
                                                 </div>
 
@@ -601,7 +608,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_34 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/4.png') }}" alt=""></div>
+                                                            src="{{ asset('themes/admin/img/customers/4.png') }}"
+                                                            alt=""></div>
                                                     <span class="f_s_14 f_w_400 color_text_1">Customer</span>
                                                 </div>
 
@@ -616,7 +624,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_34 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/5.png') }}" alt=""></div>
+                                                            src="{{ asset('themes/admin/img/customers/5.png') }}"
+                                                            alt=""></div>
                                                     <span class="f_s_14 f_w_400 color_text_1">Customer</span>
                                                 </div>
 
@@ -631,7 +640,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_34 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/6.png') }}" alt=""></div>
+                                                            src="{{ asset('themes/admin/img/customers/6.png') }}"
+                                                            alt=""></div>
                                                     <span class="f_s_14 f_w_400 color_text_1">Customer</span>
                                                 </div>
 
@@ -695,7 +705,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_34 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/pro_1.png') }}" alt=""></div>
+                                                            src="{{ asset('themes/admin/img/customers/pro_1.png') }}"
+                                                            alt=""></div>
                                                     <span class="f_s_14 f_w_400 color_text_1">Product 1</span>
                                                 </div>
 
@@ -710,7 +721,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_34 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/pro_2.png') }}" alt=""></div>
+                                                            src="{{ asset('themes/admin/img/customers/pro_2.png') }}"
+                                                            alt=""></div>
                                                     <span class="f_s_14 f_w_400 color_text_1">Product 1</span>
                                                 </div>
 
@@ -725,7 +737,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_34 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/pro_3.png') }}" alt=""></div>
+                                                            src="{{ asset('themes/admin/img/customers/pro_3.png') }}"
+                                                            alt=""></div>
                                                     <span class="f_s_14 f_w_400 color_text_1">Product 1</span>
                                                 </div>
 
@@ -740,7 +753,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_34 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/pro_4.png') }}" alt=""></div>
+                                                            src="{{ asset('themes/admin/img/customers/pro_4.png') }}"
+                                                            alt=""></div>
                                                     <span class="f_s_14 f_w_400 color_text_1">Product 1</span>
                                                 </div>
 
@@ -755,7 +769,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_34 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/pro_5.png') }}" alt=""></div>
+                                                            src="{{ asset('themes/admin/img/customers/pro_5.png') }}"
+                                                            alt=""></div>
                                                     <span class="f_s_14 f_w_400 color_text_1">Product 1</span>
                                                 </div>
 
@@ -770,7 +785,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_34 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/pro_6.png') }}" alt=""></div>
+                                                            src="{{ asset('themes/admin/img/customers/pro_6.png') }}"
+                                                            alt=""></div>
                                                     <span class="f_s_14 f_w_400 color_text_1">Product 1</span>
                                                 </div>
 
@@ -833,7 +849,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_62 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/pro_big.png') }}" alt=""></div>
+                                                            src="{{ asset('themes/admin/img/customers/pro_big.png') }}"
+                                                            alt=""></div>
                                                     <span class="f_s_20 f_w_400 color_text_3">Unique Watch</span>
                                                 </div>
 
@@ -847,7 +864,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_62 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/pro_big_1.png') }}" alt="">
+                                                            src="{{ asset('themes/admin/img/customers/pro_big_1.png') }}"
+                                                            alt="">
                                                     </div>
                                                     <span class="f_s_20 f_w_400 color_text_3">Wireless
                                                         Headphone</span>
@@ -863,7 +881,8 @@
                                             <td>
                                                 <div class="customer d-flex align-items-center">
                                                     <div class="thumb_62 mr_15 mt-0"><img class="img-fluid radius_50"
-                                                            src="{{ asset('themes/admin/img/customers/pro_big_2.png') }}" alt="">
+                                                            src="{{ asset('themes/admin/img/customers/pro_big_2.png') }}"
+                                                            alt="">
                                                     </div>
                                                     <span class="f_s_20 f_w_400 color_text_3">Sport Shoe</span>
                                                 </div>

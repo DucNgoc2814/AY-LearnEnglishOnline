@@ -2,29 +2,37 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Lesson extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
-        'name',
         'courseId',
-        'type',
+        'name',
+        'slug',
         'videoUrl',
-        'startTime',
-        'endTime',
+        'description',
         'duration',
-        'notes',
-        'sortDescription',
-        'description'
+        'orderNumber',
+        'isPreview',
+        'totalView',
+        'totalComment'
+    ];
+
+    protected $casts = [
+        'duration' => 'integer',
+        'orderNumber' => 'integer',
+        'isPreview' => 'boolean',
+        'totalView' => 'integer',
+        'totalComment' => 'integer'
     ];
 
     public function course()
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(Course::class, 'courseId');
     }
 
     public function lessonTests()
@@ -37,18 +45,13 @@ class Lesson extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function progress()
-    {
-        return $this->hasMany(Progress::class);
-    }
-
-    public function lessonTestResults()
-    {
-        return $this->hasMany(LessonTestResult::class);
-    }
-
     public function zoomSessions()
     {
         return $this->hasMany(ZoomSession::class);
     }
-}
+
+    public function progress()
+    {
+        return $this->hasMany(Progress::class);
+    }
+} 

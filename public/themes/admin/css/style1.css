@@ -4,10 +4,18 @@
 /* small mobile :320px. */
 @import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&amp;family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200&amp;display=swap");
 /* line 1, G:/admin_project/6 admin/sales/scss/_extends.scss */
-.CRM_dropdown.dropdown .dropdown-toggle:hover, .CRM_dropdown.dropdown .dropdown-toggle:focus {
-  background: -webkit-gradient(linear, left top, right top, from(#7C32FF), color-stop(70%, #A235EC), to(#C738D8));
-  background: -o-linear-gradient(left, #7C32FF 0%, #A235EC 70%, #C738D8 100%);
-  background: linear-gradient(90deg, #7C32FF 0%, #A235EC 70%, #C738D8 100%);
+.CRM_dropdown.dropdown .dropdown-toggle:hover,
+.CRM_dropdown.dropdown .dropdown-toggle:focus {
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#7c32ff),
+    color-stop(70%, #a235ec),
+    to(#c738d8)
+  );
+  background: -o-linear-gradient(left, #7c32ff 0%, #a235ec 70%, #c738d8 100%);
+  background: linear-gradient(90deg, #7c32ff 0%, #a235ec 70%, #c738d8 100%);
 }
 
 /* line 6, G:/admin_project/6 admin/sales/scss/_extends.scss */
@@ -22,7 +30,7 @@ body {
   padding: 0;
   margin: 0;
   font-size: 14px;
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 @media (min-width: 1200px) {
@@ -44,7 +52,7 @@ body {
 
 /* line 22, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .border_bottom_1px {
-  border-bottom: 1px solid #E0E2E8;
+  border-bottom: 1px solid #e0e2e8;
 }
 
 /* line 25, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -53,7 +61,8 @@ body {
 }
 
 /* line 28, G:/admin_project/6 admin/sales/scss/_reset.scss */
-input:hover, input:focus {
+input:hover,
+input:focus {
   outline: none !important;
   box-shadow: 0px 0px 0px 0px transparent !important;
 }
@@ -71,13 +80,13 @@ input:hover, input:focus {
 
 /* line 39, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .form-control {
-  border-color: #BBC1C9;
+  border-color: #bbc1c9;
 }
 
 /* line 42, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .form-control:focus {
   box-shadow: 0 0 0 0rem transparent !important;
-  border-color: #BBC1C9;
+  border-color: #bbc1c9;
 }
 
 /* line 46, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -170,8 +179,13 @@ a:hover {
 }
 
 /* line 93, G:/admin_project/6 admin/sales/scss/_reset.scss */
-h1, h2, h3, h4, h5, h6 {
-  color: #14256A;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #14256a;
   font-family: "Nunito", sans-serif;
   font-weight: 600;
   line-height: 1.2;
@@ -205,7 +219,8 @@ li {
 }
 
 /* line 116, G:/admin_project/6 admin/sales/scss/_reset.scss */
-ul, ol {
+ul,
+ol {
   margin: 0;
   padding: 0;
 }
@@ -215,13 +230,16 @@ p {
   line-height: 24px;
   font-size: 14px;
   margin-bottom: 0px;
-  color: #828BB2;
+  color: #828bb2;
   font-family: "Nunito", sans-serif;
   font-weight: 300;
 }
 
 /* line 129, G:/admin_project/6 admin/sales/scss/_reset.scss */
-a:focus, .button:focus, button:focus, .btn:focus {
+a:focus,
+.button:focus,
+button:focus,
+.btn:focus {
   text-decoration: none;
   outline: none;
   box-shadow: none;
@@ -350,12 +368,14 @@ a:focus, .button:focus, button:focus, .btn:focus {
 }
 
 /* line 204, G:/admin_project/6 admin/sales/scss/_reset.scss */
-th:focus, td:focus {
+th:focus,
+td:focus {
   outline: -webkit-focus-ring-color auto 0;
 }
 
 /* line 208, G:/admin_project/6 admin/sales/scss/_reset.scss */
-table.dataTable tbody th, table.dataTable tbody td {
+table.dataTable tbody th,
+table.dataTable tbody td {
   vertical-align: middle;
 }
 
@@ -480,7 +500,8 @@ table.dataTable tbody th, table.dataTable tbody td {
 }
 
 /* line 299, G:/admin_project/6 admin/sales/scss/_reset.scss */
-.custom_checkbox tr th:first-child, .custom_checkbox tr td:first-child {
+.custom_checkbox tr th:first-child,
+.custom_checkbox tr td:first-child {
   padding: 16px 0 16px 0 !important;
 }
 
@@ -597,8 +618,8 @@ table.dataTable tbody th, table.dataTable tbody td {
   border-radius: 0px;
   padding-left: 0;
   padding-right: 5px;
-  color: #0FC171;
-  background: #E4FFFA;
+  color: #0fc171;
+  background: #e4fffa;
   border: 0;
   padding-left: 18px;
   padding-right: 38px;
@@ -635,11 +656,13 @@ table.dataTable tbody th, table.dataTable tbody td {
   right: 20px;
   margin-top: -15px;
   right: 25px;
-  color: #0FC171;
+  color: #0fc171;
 }
 
 /* line 427, G:/admin_project/6 admin/sales/scss/_reset.scss */
-.nice_Select2:active, .nice_Select2.open, .nice_Select2:focus {
+.nice_Select2:active,
+.nice_Select2.open,
+.nice_Select2:focus {
   border-color: none;
   border: 0;
 }
@@ -800,7 +823,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 
 /* line 538, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .cu_dropdown .btn_1 {
-  padding: 11px 20px;
+  padding: 9px 20px;
 }
 
 /* line 541, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -817,7 +840,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 /* line 550, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .cu_dropdown .dropdown-menu {
   min-width: auto;
-  background-color: #14256A;
+  background-color: #14256a;
   min-width: 102px;
   left: 0 !important;
   border-radius: 0 0 5px 5px;
@@ -866,7 +889,7 @@ table.dataTable tbody th, table.dataTable tbody td {
   content: '';
   width: 15px;
   height: 15px;
-  background-color: #2E4765;
+  background-color: #2e4765;
   position: absolute;
   border-radius: 100%;
   transition: 1s;
@@ -874,7 +897,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 
 /* line 611, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .switch:checked {
-  background-color: #2E4765 !important;
+  background-color: #2e4765 !important;
 }
 
 /* line 613, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -919,7 +942,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 
 /* line 639, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .text_underline {
-  color: #14256A;
+  color: #14256a;
   text-decoration: underline;
   -webkit-transition: 0.5s;
   transition: 0.5s;
@@ -927,7 +950,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 
 /* line 643, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .text_underline:hover {
-  color: #14256A;
+  color: #14256a;
   text-decoration: underline;
 }
 
@@ -986,10 +1009,10 @@ table.dataTable tbody th, table.dataTable tbody td {
 
 /* line 686, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .list_header p {
-  color: #14256A;
+  color: #14256a;
   font-weight: 400;
   font-size: 14px;
-  color: #7F8B9F;
+  color: #7f8b9f;
   font-weight: 400;
 }
 
@@ -1112,7 +1135,9 @@ table.dataTable tbody th, table.dataTable tbody td {
 }
 
 /* line 776, G:/admin_project/6 admin/sales/scss/_reset.scss */
-.cs_modal .modal-body .nice_Select, .cs_modal .modal-body input, .cs_modal .modal-body textarea {
+.cs_modal .modal-body .nice_Select,
+.cs_modal .modal-body input,
+.cs_modal .modal-body textarea {
   height: 50px;
   line-height: 50px;
   background-color: #fff;
@@ -1129,7 +1154,9 @@ table.dataTable tbody th, table.dataTable tbody td {
 }
 
 /* line 790, G:/admin_project/6 admin/sales/scss/_reset.scss */
-.cs_modal .modal-body .nice_Select::placeholder, .cs_modal .modal-body input::placeholder, .cs_modal .modal-body textarea::placeholder {
+.cs_modal .modal-body .nice_Select::placeholder,
+.cs_modal .modal-body input::placeholder,
+.cs_modal .modal-body textarea::placeholder {
   color: #7e7172;
   font-weight: 300;
   opacity: 1;
@@ -1147,7 +1174,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 
 /* line 802, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .cs_modal .modal-body ::placeholder {
-  color: #14256A;
+  color: #14256a;
 }
 
 /* line 806, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -1186,7 +1213,9 @@ table.dataTable tbody th, table.dataTable tbody td {
 }
 
 /* line 833, G:/admin_project/6 admin/sales/scss/_reset.scss */
-.form_box .from_group .nice_Select, .form_box .from_group input, .form_box .from_group textarea {
+.form_box .from_group .nice_Select,
+.form_box .from_group input,
+.form_box .from_group textarea {
   width: 100%;
   display: block;
   background-color: #fef1f2;
@@ -1228,7 +1257,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 /* line 863, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .form_box .from_group .badge-info {
   color: #fff;
-  background-color: #2EC9B8;
+  background-color: #2ec9b8;
 }
 
 /* line 867, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -1380,13 +1409,15 @@ table.dataTable tbody th, table.dataTable tbody td {
 }
 
 /* line 991, G:/admin_project/6 admin/sales/scss/_reset.scss */
-.file_upload .btn_file_upload:hover, .file_upload .btn_file_upload:focus {
+.file_upload .btn_file_upload:hover,
+.file_upload .btn_file_upload:focus {
   color: #888888;
   border-color: #888888;
 }
 
 /* line 1000, G:/admin_project/6 admin/sales/scss/_reset.scss */
-.file_upload .input-file, .file_upload .input-file2 {
+.file_upload .input-file,
+.file_upload .input-file2 {
   width: 0.1px;
   height: 0.1px;
   opacity: 0;
@@ -1396,7 +1427,10 @@ table.dataTable tbody th, table.dataTable tbody td {
 }
 
 /* line 1007, G:/admin_project/6 admin/sales/scss/_reset.scss */
-.file_upload .input-file + .js-labelFile, .file_upload .input-file + .js-labelFile2, .file_upload .input-file2 + .js-labelFile, .file_upload .input-file2 + .js-labelFile2 {
+.file_upload .input-file + .js-labelFile,
+.file_upload .input-file + .js-labelFile2,
+.file_upload .input-file2 + .js-labelFile,
+.file_upload .input-file2 + .js-labelFile2 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1419,7 +1453,7 @@ table.dataTable tbody th, table.dataTable tbody td {
 
 /* line 1025, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .file_upload .btn:hover {
-  background-color: #2E4765;
+  background-color: #2e4765;
   color: #fff;
   border: 0;
 }
@@ -1433,7 +1467,8 @@ table.dataTable tbody th, table.dataTable tbody td {
 }
 
 /* line 1038, G:/admin_project/6 admin/sales/scss/_reset.scss */
-td:focus, th:focus {
+td:focus,
+th:focus {
   outline: none !important;
 }
 
@@ -1707,7 +1742,7 @@ td:focus, th:focus {
 
 /* line 1246, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .cs_modal .modal-header {
-  background-color: #F7FAFF;
+  background-color: #f7faff;
   padding: 23px 30px;
   border-bottom: 0px solid transparent;
 }
@@ -1731,11 +1766,12 @@ td:focus, th:focus {
 }
 
 /* line 1262, G:/admin_project/6 admin/sales/scss/_reset.scss */
-.cs_modal .modal-body input, .cs_modal .modal-body .nice_Select {
+.cs_modal .modal-body input,
+.cs_modal .modal-body .nice_Select {
   height: 50px;
   line-height: 50px;
   padding: 10px 20px;
-  border: 1px solid #F1F3F5;
+  border: 1px solid #f1f3f5;
   color: #707070;
   font-size: 14px;
   font-weight: 500;
@@ -1767,7 +1803,7 @@ td:focus, th:focus {
 .cs_modal .modal-body textarea {
   height: 168px;
   padding: 15px 20px;
-  border: 1px solid #F1F3F5;
+  border: 1px solid #f1f3f5;
   color: #707070;
   font-size: 14px;
   font-weight: 500;
@@ -1784,7 +1820,7 @@ td:focus, th:focus {
 
 /* line 1299, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .cs_modal .modal-body p a {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 1304, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -1797,8 +1833,8 @@ td:focus, th:focus {
 /* line 1310, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .cs_modal .modal-body .social_login_btn .btn_1 {
   color: #fff;
-  background-color: #3B5998;
-  border: 1px solid #3B5998;
+  background-color: #3b5998;
+  border: 1px solid #3b5998;
   margin-top: 0;
 }
 
@@ -1814,8 +1850,8 @@ td:focus, th:focus {
 
 /* line 1324, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .cs_modal .modal-body .social_login_btn .form-group:last-child .btn_1 {
-  background-color: #4285F4;
-  border: 1px solid #4285F4;
+  background-color: #4285f4;
+  border: 1px solid #4285f4;
 }
 
 /* line 1331, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -1830,7 +1866,7 @@ td:focus, th:focus {
 
 /* line 1338, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .cs_modal .modal-body .pass_forget_btn:hover {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 1346, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -1857,7 +1893,7 @@ td:focus, th:focus {
   content: "";
   height: 1px;
   width: 100%;
-  background-color: #BBC1C9;
+  background-color: #bbc1c9;
   top: 24px;
   left: 0;
   z-index: -1;
@@ -1870,7 +1906,7 @@ p a {
 
 /* line 1373, G:/admin_project/6 admin/sales/scss/_reset.scss */
 p a:hover {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 1379, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -1880,7 +1916,8 @@ p a:hover {
 }
 
 /* line 1382, G:/admin_project/6 admin/sales/scss/_reset.scss */
-.cs_check_box input, .cs_check_box label {
+.cs_check_box input,
+.cs_check_box label {
   line-height: 20px !important;
   height: auto !important;
   width: auto !important;
@@ -1964,7 +2001,7 @@ p a:hover {
   font-size: 14px;
   font-weight: 600;
   font-family: "Nunito", sans-serif;
-  color: #2E4765;
+  color: #2e4765;
   margin-bottom: 0;
 }
 
@@ -1980,8 +2017,8 @@ p a:hover {
 
 /* line 1460, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .page-item.active .page-link {
-  background-color: #2D1967;
-  border-color: #2D1967;
+  background-color: #2d1967;
+  border-color: #2d1967;
 }
 
 /* line 1463, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -1993,7 +2030,7 @@ p a:hover {
 
 /* line 1469, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .page-link {
-  color: #2D1967;
+  color: #2d1967;
 }
 
 /* line 1471, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -2006,8 +2043,8 @@ p a:hover {
 /* line 1477, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .btn-primary {
   color: #fff;
-  background-color: #2D1967;
-  border-color: #2D1967;
+  background-color: #2d1967;
+  border-color: #2d1967;
 }
 
 /* line 1482, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -2028,20 +2065,20 @@ p a:hover {
 .dashboard_header .dashboard_header_title h3 {
   font-size: 33px;
   font-weight: 600;
-  color: #2E4765;
+  color: #2e4765;
   margin-bottom: 7px;
 }
 
 /* line 1500, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .dashboard_header .dashboard_header_title h3 span {
-  color: #2D1967;
+  color: #2d1967;
 }
 
 /* line 1504, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .dashboard_header .dashboard_header_title p {
   font-size: 20px;
   font-weight: 400;
-  color: #7F8B9F;
+  color: #7f8b9f;
 }
 
 @media (max-width: 991px) {
@@ -2063,7 +2100,7 @@ p a:hover {
 .dashboard_breadcam ul li {
   font-size: 17px;
   font-weight: 400;
-  color: #2D1967;
+  color: #2d1967;
   padding-left: 14px;
   position: relative;
 }
@@ -2080,7 +2117,7 @@ p a:hover {
 
 /* line 1533, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .dashboard_breadcam ul li::before {
-  color: #2D1967;
+  color: #2d1967;
   content: "/";
   position: absolute;
   left: 4px;
@@ -2092,7 +2129,7 @@ p a:hover {
 .dashboard_breadcam ul li a {
   width: 30px;
   height: 30px;
-  background: #FFE7DF;
+  background: #ffe7df;
   border-radius: 50%;
   display: inline-block;
   line-height: 26px;
@@ -2117,18 +2154,18 @@ p a:hover {
 .header_prise h5 {
   font-size: 16px;
   font-weight: 500;
-  color: #2D1967;
+  color: #2d1967;
   margin-bottom: 0;
 }
 
 /* line 1572, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .pink_bg {
-  background: #FE80B2 !important;
+  background: #fe80b2 !important;
 }
 
 /* line 1575, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .parpel_bg {
-  background: #833CDF !important;
+  background: #833cdf !important;
 }
 
 /* line 1580, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -2354,7 +2391,7 @@ p a:hover {
 
 /* line 1721, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .color_theme {
-  color: #14256A;
+  color: #14256a;
 }
 
 /* line 1724, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -2364,12 +2401,12 @@ p a:hover {
 
 /* line 1727, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .color_gray {
-  color: #8890B5;
+  color: #8890b5;
 }
 
 /* line 1730, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .color_gray2 {
-  color: #B1B6C9;
+  color: #b1b6c9;
 }
 
 /* line 1734, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -2496,7 +2533,7 @@ p a:hover {
   font-size: 12px;
   font-weight: 400;
   display: inline-block;
-  color: #9AA5CE;
+  color: #9aa5ce;
   position: relative;
   top: -1px;
   margin-right: 0px;
@@ -2523,12 +2560,12 @@ p a:hover {
 
 /* line 1860, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .header_more_tool .dropdown .dropdown-menu a:hover {
-  color: #59748A;
+  color: #59748a;
 }
 
 /* line 1862, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .header_more_tool .dropdown .dropdown-menu a:hover i {
-  color: #59748A;
+  color: #59748a;
 }
 
 /* line 1866, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -2544,10 +2581,10 @@ p a:hover {
 .common_input input {
   height: 40px;
   line-height: 40px;
-  background-color: #F5F6FF;
+  background-color: #f5f6ff;
   border: 0;
   padding: 10px 25px;
-  color: #8890B5;
+  color: #8890b5;
   font-weight: 700;
   font-size: 14px;
   width: 100%;
@@ -2560,7 +2597,7 @@ p a:hover {
   color: #7e7172;
   font-weight: 300;
   opacity: 1;
-  background: #F5F6FF;
+  background: #f5f6ff;
 }
 
 /* line 1901, G:/admin_project/6 admin/sales/scss/_reset.scss */
@@ -2577,7 +2614,7 @@ p a:hover {
   right: -7px;
   border-radius: 50%;
   top: -10px;
-  background-color: #64C5B1;
+  background-color: #64c5b1;
   -webkit-animation: notify-pulse 1s infinite;
 }
 
@@ -2618,7 +2655,7 @@ p a:hover {
   display: block;
   color: #fff;
   line-height: 40px;
-  background: #4C6EF8;
+  background: #4c6ef8;
   font-size: 15px;
   border-radius: 30px;
   -webkit-transition: 0.3s;
@@ -2633,14 +2670,14 @@ p a:hover {
 
 /* line 1966, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .img-thumbnail {
-  background-color: #F5F6FF !important;
-  border: 1px solid #F5F6FF !important;
+  background-color: #f5f6ff !important;
+  border: 1px solid #f5f6ff !important;
   border-radius: 20px !important;
 }
 
 /* line 1972, G:/admin_project/6 admin/sales/scss/_reset.scss */
 .default_border_1px {
-  border: 1px solid #E0E2E8;
+  border: 1px solid #e0e2e8;
   box-shadow: none !important;
 }
 
@@ -2658,20 +2695,7 @@ p a:hover {
 
 /******** base color css ********/
 /* line 2, G:/admin_project/6 admin/sales/scss/_button.scss */
-.btn_1 {
-  background-color: #567AED;
-  border: 1px solid #567AED;
-  color: #fff;
-  display: inline-block;
-  padding: 11px 25px;
-  text-transform: capitalize;
-  font-size: 14px;
-  font-weight: 400;
-  border-radius: 5px;
-  white-space: nowrap;
-  -webkit-transition: 0.5s;
-  transition: 0.5s;
-}
+
 
 /* line 14, G:/admin_project/6 admin/sales/scss/_button.scss */
 .btn_1 i {
@@ -2682,7 +2706,7 @@ p a:hover {
 /* line 18, G:/admin_project/6 admin/sales/scss/_button.scss */
 .btn_1:hover {
   color: #fff;
-  background-color: #567AED;
+  background-color: #567aed;
   box-shadow: 0 3px 11px #508ff4;
 }
 
@@ -2690,19 +2714,19 @@ p a:hover {
 .btn_1.light {
   background-color: rgba(46, 71, 101, 0.1);
   border: 1px solid transparent;
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 28, G:/admin_project/6 admin/sales/scss/_button.scss */
 .btn_1.green {
   background-color: rgba(46, 201, 184, 0.1);
   border: 1px solid transparent;
-  color: #2EC9B8;
+  color: #2ec9b8;
 }
 
 /* line 33, G:/admin_project/6 admin/sales/scss/_button.scss */
 .btn_1.orange_btn {
-  background: #2D1967;
+  background: #2d1967;
   font-size: 16px;
   border: 0;
   font-weight: 400;
@@ -2711,7 +2735,7 @@ p a:hover {
 
 /* line 39, G:/admin_project/6 admin/sales/scss/_button.scss */
 .btn_1.orange_btn:hover {
-  background: #2D1967;
+  background: #2d1967;
   color: #fff;
 }
 
@@ -2745,7 +2769,7 @@ p a:hover {
 
 /* line 61, G:/admin_project/6 admin/sales/scss/_button.scss */
 .Euro_btn {
-  background-color: #F5F6FF;
+  background-color: #f5f6ff;
   color: #fff;
   display: inline-block;
   padding: 11px 43px;
@@ -2757,19 +2781,19 @@ p a:hover {
   white-space: nowrap;
   -webkit-transition: 0.5s;
   transition: 0.5s;
-  color: #9267FF;
+  color: #9267ff;
 }
 
 /* line 75, G:/admin_project/6 admin/sales/scss/_button.scss */
 .Euro_btn:hover {
-  background-color: #9267FF;
+  background-color: #9267ff;
   color: #000;
 }
 
 /* line 80, G:/admin_project/6 admin/sales/scss/_button.scss */
 .btn_2 {
-  color: #64C5B1;
-  border: 1px solid #64C5B1;
+  color: #64c5b1;
+  border: 1px solid #64c5b1;
   display: inline-block;
   padding: 11px 23px;
   text-transform: capitalize;
@@ -2785,14 +2809,14 @@ p a:hover {
 
 /* line 93, G:/admin_project/6 admin/sales/scss/_button.scss */
 .btn_2:hover {
-  background-color: #64C5B1;
-  border: 1px solid #64C5B1;
+  background-color: #64c5b1;
+  border: 1px solid #64c5b1;
   color: #fff;
 }
 
 /* line 99, G:/admin_project/6 admin/sales/scss/_button.scss */
 .btn_3 {
-  color: #14256A;
+  color: #14256a;
   border: 1px solid #e4e8ec;
   display: inline-block;
   padding: 11px 27px;
@@ -2814,8 +2838,8 @@ p a:hover {
 
 /* line 116, G:/admin_project/6 admin/sales/scss/_button.scss */
 .btn_3:hover {
-  background-color: #2E4765;
-  border: 1px solid #2E4765;
+  background-color: #2e4765;
+  border: 1px solid #2e4765;
   color: #fff;
 }
 
@@ -2836,8 +2860,8 @@ p a:hover {
 
 /* line 133, G:/admin_project/6 admin/sales/scss/_button.scss */
 .btn_4:hover {
-  background-color: #2E4765;
-  border: 1px solid #2E4765;
+  background-color: #2e4765;
+  border: 1px solid #2e4765;
   color: #fff;
 }
 
@@ -2863,8 +2887,8 @@ p a:hover {
 
 /* line 156, G:/admin_project/6 admin/sales/scss/_button.scss */
 .btn_5:hover {
-  background-color: #2E4765 !important;
-  border: 1px solid #2E4765 !important;
+  background-color: #2e4765 !important;
+  border: 1px solid #2e4765 !important;
   color: #fff;
   opacity: 1 !important;
 }
@@ -2890,7 +2914,7 @@ p a:hover {
 
 /* line 172, G:/admin_project/6 admin/sales/scss/_button.scss */
 .btn_6 {
-  color: #14256A;
+  color: #14256a;
   border: 1px solid #eee1e2;
   display: inline-block;
   padding: 11px 25px;
@@ -2907,8 +2931,8 @@ p a:hover {
 
 /* line 185, G:/admin_project/6 admin/sales/scss/_button.scss */
 .btn_6:hover {
-  background-color: #2E4765;
-  border: 1px solid #2E4765;
+  background-color: #2e4765;
+  border: 1px solid #2e4765;
   color: #fff;
 }
 
@@ -2945,8 +2969,8 @@ p a:hover {
 
 /* line 214, G:/admin_project/6 admin/sales/scss/_button.scss */
 .view_archive_btn:hover {
-  color: #2E4765;
-  border: 1px solid #2E4765;
+  color: #2e4765;
+  border: 1px solid #2e4765;
 }
 
 /* line 220, G:/admin_project/6 admin/sales/scss/_button.scss */
@@ -2963,7 +2987,7 @@ p a:hover {
 
 /* line 229, G:/admin_project/6 admin/sales/scss/_button.scss */
 .white_btn:hover {
-  background: #2D1967;
+  background: #2d1967;
   color: #fff;
 }
 
@@ -2973,7 +2997,7 @@ p a:hover {
   color: #fff;
   font-size: 16px;
   font-weight: 600;
-  background: #2D1967;
+  background: #2d1967;
   transition: .3s;
   padding: 15px 25px;
   border-radius: 3px;
@@ -3007,8 +3031,8 @@ p a:hover {
 
 /* line 265, G:/admin_project/6 admin/sales/scss/_button.scss */
 .close.white_btn2:hover {
-  background-color: #2E4765 !important;
-  border: 1px solid #2E4765 !important;
+  background-color: #2e4765 !important;
+  border: 1px solid #2e4765 !important;
   color: #fff;
   opacity: 1 !important;
 }
@@ -3036,8 +3060,8 @@ p a:hover {
 
 /* line 289, G:/admin_project/6 admin/sales/scss/_button.scss */
 .white_btn3:hover {
-  background-color: #567AED !important;
-  border: 1px solid #567AED !important;
+  background-color: #567aed !important;
+  border: 1px solid #567aed !important;
   color: #fff;
   opacity: 1 !important;
 }
@@ -3116,7 +3140,7 @@ p a:hover {
 
 /* line 354, G:/admin_project/6 admin/sales/scss/_button.scss */
 .dropdown.show .dropdown-toggle.lms_drop_1 {
-  background: #2D1967;
+  background: #2d1967;
   padding: 4px 15px;
   border-radius: 3px;
   font-size: 12px;
@@ -3128,7 +3152,7 @@ p a:hover {
   width: 102px;
   border: 0;
   color: #fff;
-  border: 1px solid #2D1967;
+  border: 1px solid #2d1967;
 }
 
 /* line 368, G:/admin_project/6 admin/sales/scss/_button.scss */
@@ -3155,7 +3179,7 @@ p a:hover {
 
 /* line 384, G:/admin_project/6 admin/sales/scss/_button.scss */
 .dropdown .dropdown-menu .dropdown-item:hover {
-  color: #2D1967;
+  color: #2d1967;
   background: transparent;
 }
 
@@ -3190,9 +3214,9 @@ p a:hover {
 
 /* line 413, G:/admin_project/6 admin/sales/scss/_button.scss */
 .white_btn_line:hover {
-  background: #2D1967;
+  background: #2d1967;
   color: #fff;
-  border: 1px solid #2D1967;
+  border: 1px solid #2d1967;
 }
 
 /* line 417, G:/admin_project/6 admin/sales/scss/_button.scss */
@@ -3221,9 +3245,9 @@ p a:hover {
 
 /* line 438, G:/admin_project/6 admin/sales/scss/_button.scss */
 .white_btn_line2:hover {
-  background: #2D1967;
+  background: #2d1967;
   color: #fff !important;
-  border: 1px solid #2D1967;
+  border: 1px solid #2d1967;
 }
 
 /* line 442, G:/admin_project/6 admin/sales/scss/_button.scss */
@@ -3235,18 +3259,24 @@ p a:hover {
 /* line 448, G:/admin_project/6 admin/sales/scss/_button.scss */
 .theme_text_btn {
   font-size: 14px;
-  color: #46D293;
+  color: #46d293;
   font-weight: 700;
 }
 
 /* line 452, G:/admin_project/6 admin/sales/scss/_button.scss */
 .theme_text_btn:hover {
-  color: #46D293;
+  color: #46d293;
 }
 
 /* line 457, G:/admin_project/6 admin/sales/scss/_button.scss */
-table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child::before,
-table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th:first-child::before {
+table.dataTable.dtr-inline.collapsed
+  > tbody
+  > tr[role="row"]
+  > td:first-child::before,
+table.dataTable.dtr-inline.collapsed
+  > tbody
+  > tr[role="row"]
+  > th:first-child::before {
   z-index: 9;
   top: 50%;
   transform: translateY(-50%);
@@ -3260,8 +3290,14 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th:first-child::
 }
 
 /* line 473, G:/admin_project/6 admin/sales/scss/_button.scss */
-table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child::before,
-table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::before {
+table.dataTable.dtr-inline.collapsed
+  > tbody
+  > tr.parent
+  > td:first-child::before,
+table.dataTable.dtr-inline.collapsed
+  > tbody
+  > tr.parent
+  > th:first-child::before {
   content: "\e622";
   box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.08), inset -6px -6px 12px white;
 }
@@ -3298,7 +3334,8 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
 }
 
 /* line 513, G:/admin_project/6 admin/sales/scss/_button.scss */
-.CRM_dropdown.dropdown .dropdown-toggle:hover, .CRM_dropdown.dropdown .dropdown-toggle:focus {
+.CRM_dropdown.dropdown .dropdown-toggle:hover,
+.CRM_dropdown.dropdown .dropdown-toggle:focus {
   color: #fff;
   border: 1px solid transparent;
   box-shadow: none;
@@ -3324,7 +3361,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
 
 /* line 540, G:/admin_project/6 admin/sales/scss/_button.scss */
 .CRM_dropdown.dropdown .dropdown-menu .dropdown-item:hover {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 547, G:/admin_project/6 admin/sales/scss/_button.scss */
@@ -3335,7 +3372,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
 /******** header css here *********/
 /* line 2, G:/admin_project/6 admin/sales/scss/_header.scss */
 .header_iner {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   position: fixed;
   top: 0;
   z-index: 99;
@@ -3343,13 +3380,13 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
   position: relative;
   border-radius: 0px;
   margin: 0;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 0;
 }
 
 /* line 27, G:/admin_project/6 admin/sales/scss/_header.scss */
 .header_iner.default_header {
-  background: #64C5B1;
+  background: #64c5b1;
   border-radius: 0;
 }
 
@@ -3472,7 +3509,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
   top: 0;
   height: 9px;
   width: 9px;
-  background-color: #2E4765;
+  background-color: #2e4765;
   border-radius: 50%;
 }
 
@@ -3583,7 +3620,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
 
 /* line 200, G:/admin_project/6 admin/sales/scss/_header.scss */
 .header_iner .nice_Select {
-  color: #929BB5;
+  color: #929bb5;
 }
 
 /* line 204, G:/admin_project/6 admin/sales/scss/_header.scss */
@@ -3634,14 +3671,14 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
   top: -10px;
   right: 15px;
   border-width: 0 11px 12px 11px;
-  border-color: transparent transparent #567AED transparent;
+  border-color: transparent transparent #567aed transparent;
   z-index: 2;
 }
 
 /* line 243, G:/admin_project/6 admin/sales/scss/_header.scss */
 .profile_info .profile_info_iner .profile_author_name {
   padding: 20px 25px;
-  background: #567AED;
+  background: #567aed;
   border-radius: 10px 15px 0px 0px;
 }
 
@@ -3678,7 +3715,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
 
 /* line 273, G:/admin_project/6 admin/sales/scss/_header.scss */
 .profile_info .profile_info_details a {
-  color: #2E4765;
+  color: #2e4765;
   font-size: 14px;
   display: block;
   padding: 10px 0;
@@ -3687,17 +3724,17 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
 
 /* line 279, G:/admin_project/6 admin/sales/scss/_header.scss */
 .profile_info .profile_info_details a:hover {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 281, G:/admin_project/6 admin/sales/scss/_header.scss */
 .profile_info .profile_info_details a:hover i {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 286, G:/admin_project/6 admin/sales/scss/_header.scss */
 .profile_info .profile_info_details i {
-  color: #2E4765;
+  color: #2e4765;
   font-size: 12px;
   margin-left: 20px;
   -webkit-transition: 0.5s;
@@ -3760,7 +3797,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
 
 /* line 329, G:/admin_project/6 admin/sales/scss/_header.scss */
 .serach_field-area .search_inner input {
-  color: #86898E;
+  color: #86898e;
   font-size: 12px;
   height: 40px;
   width: 100%;
@@ -3778,7 +3815,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
 .serach_field-area .search_inner input::placeholder {
   font-size: 12px;
   font-weight: 400;
-  color: #86898E;
+  color: #86898e;
   font-family: "Nunito", sans-serif;
 }
 
@@ -3803,7 +3840,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
 /* line 372, G:/admin_project/6 admin/sales/scss/_header.scss */
 .serach_field-area .search_inner button i {
   font-size: 14px;
-  color: #818E94;
+  color: #818e94;
 }
 
 /* line 381, G:/admin_project/6 admin/sales/scss/_header.scss */
@@ -3828,8 +3865,8 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
   padding-left: 82px;
   border: 0;
   padding-right: 15px;
-  border-bottom: 1px solid #F4F7FC;
-  background: #F5F7FD;
+  border-bottom: 1px solid #f4f7fc;
+  background: #f5f7fd;
   border-radius: 30px;
 }
 
@@ -3837,7 +3874,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
 .serach_field-area2 .search_inner input::placeholder {
   font-size: 16px;
   font-weight: 400;
-  color: #818E94;
+  color: #818e94;
   font-family: "Nunito", sans-serif;
 }
 
@@ -3862,7 +3899,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
 /* line 421, G:/admin_project/6 admin/sales/scss/_header.scss */
 .serach_field-area2 .search_inner button i {
   font-size: 14px;
-  color: #818E94;
+  color: #818e94;
 }
 
 /* line 431, G:/admin_project/6 admin/sales/scss/_header.scss */
@@ -3908,7 +3945,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
   width: 100%;
   border-radius: 5px;
   padding-left: 55px;
-  border: 1px solid #2D1967;
+  border: 1px solid #2d1967;
   padding-right: 15px;
 }
 
@@ -3940,7 +3977,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
 /* line 477, G:/admin_project/6 admin/sales/scss/_header.scss */
 .serach_field_2 .search_inner button i {
   font-size: 12px;
-  color: #2D1967;
+  color: #2d1967;
 }
 
 /* line 481, G:/admin_project/6 admin/sales/scss/_header.scss */
@@ -3949,7 +3986,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
   width: 1px;
   height: 24px;
   content: '';
-  background: #2D1967;
+  background: #2d1967;
   top: 50%;
   -webkit-transform: translateY(-50%);
   -moz-transform: translateY(-50%);
@@ -3968,7 +4005,8 @@ table.dataTable {
 }
 
 /* line 512, G:/admin_project/6 admin/sales/scss/_header.scss */
-.table td, .table th {
+.table td,
+.table th {
   padding: .75rem;
   vertical-align: top;
   border-top: 0 !important;
@@ -4007,7 +4045,7 @@ table.dataTable {
   overflow: hidden;
   overflow-y: auto;
   transition: 0.5s;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 12px 30px rgba(80, 143, 244, 0.1);
 }
 
@@ -4094,7 +4132,7 @@ table.dataTable {
 .sidebar .single_sidebar_tittle a::before {
   position: absolute;
   right: 0;
-  background: #2E4765;
+  background: #2e4765;
   width: 0px;
   top: 0;
   bottom: 0;
@@ -4107,7 +4145,7 @@ table.dataTable {
 
 /* line 88, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
 .sidebar .single_sidebar_tittle a.current_active i {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 91, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
@@ -4175,7 +4213,7 @@ table.dataTable {
 
 /* line 138, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
 .sidebar .single_sidebar_tittle:hover i {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 143, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
@@ -4308,12 +4346,14 @@ table.dataTable {
 }
 
 /* line 239, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
-.sidebar_widget .date_range .start_date, .sidebar_widget .date_range .end_date {
+.sidebar_widget .date_range .start_date,
+.sidebar_widget .date_range .end_date {
   width: 115px;
 }
 
 /* line 241, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
-.sidebar_widget .date_range .start_date input, .sidebar_widget .date_range .end_date input {
+.sidebar_widget .date_range .start_date input,
+.sidebar_widget .date_range .end_date input {
   width: 100%;
   border: 1px solid #e4e8ec;
   color: #7e7172;
@@ -4324,7 +4364,8 @@ table.dataTable {
 }
 
 /* line 250, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
-.sidebar_widget .date_range .start_date ::placeholder, .sidebar_widget .date_range .end_date ::placeholder {
+.sidebar_widget .date_range .start_date ::placeholder,
+.sidebar_widget .date_range .end_date ::placeholder {
   color: #7e7172;
 }
 
@@ -4352,14 +4393,14 @@ table.dataTable {
   align-items: center;
   position: relative;
   background: transparent;
-  color: #8890B5;
+  color: #8890b5;
   margin-top: 25px;
   font-family: "Comfortaa", cursive;
 }
 
 /* line 284, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
 .sidebar #sidebar_menu > li a.active {
-  color: #64C5B1;
+  color: #64c5b1;
 }
 
 /* line 287, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
@@ -4369,14 +4410,14 @@ table.dataTable {
   opacity: 1;
   font-size: 10px;
   right: 15px;
-  color: #A1A4B9;
+  color: #a1a4b9;
 }
 
 /* line 311, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
 .sidebar #sidebar_menu > li a i {
   font-size: 15px;
   margin-right: 12px;
-  color: #A5ADC6;
+  color: #a5adc6;
   -webkit-transition: 0.5s;
   transition: 0.5s;
 }
@@ -4404,7 +4445,7 @@ table.dataTable {
 
 /* line 343, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
 .sidebar #sidebar_menu > li.mm-active > a::after {
-  color: #8890B5;
+  color: #8890b5;
   transform: rotate(0deg) translate(0, -50%);
   opacity: 1;
   font-size: 10px;
@@ -4415,12 +4456,12 @@ table.dataTable {
 .sidebar #sidebar_menu > li.mm-active.metis_dropmenu > a {
   padding-top: 29px;
   padding-bottom: 30px;
-  color: #A5ADC6;
+  color: #a5adc6;
 }
 
 /* line 359, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
 .sidebar #sidebar_menu > li.mm-active > a i {
-  color: #A5ADC6;
+  color: #a5adc6;
 }
 
 /* line 362, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
@@ -4446,7 +4487,7 @@ table.dataTable {
 /* line 385, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
 .sidebar #sidebar_menu > li ul li a {
   font-size: 14px;
-  color: #8890B5;
+  color: #8890b5;
   font-weight: 400;
   padding: 0;
   white-space: nowrap;
@@ -4463,7 +4504,7 @@ table.dataTable {
 
 /* line 398, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
 .sidebar #sidebar_menu > li ul li a.active {
-  color: #64C5B1;
+  color: #64c5b1;
 }
 
 /* line 403, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
@@ -4577,18 +4618,21 @@ table.dataTable {
 }
 
 /* line 497, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
-.sidebar::-webkit-scrollbar-track, body::-webkit-scrollbar-track {
+.sidebar::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
   background-color: #ddd;
 }
 
 /* line 502, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
-.sidebar::-webkit-scrollbar, body::-webkit-scrollbar {
+.sidebar::-webkit-scrollbar,
+body::-webkit-scrollbar {
   width: 6px;
   background-color: #ddd;
 }
 
 /* line 507, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
-.sidebar::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb {
+.sidebar::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
   background-color: #f8dbdd;
 }
 
@@ -4636,7 +4680,7 @@ body::-webkit-scrollbar {
 /* line 552, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
 .sidebar.dark_sidebar #sidebar_menu > li.mm-active > a {
   background: #323246;
-  color: #64C5B1 !important;
+  color: #64c5b1 !important;
 }
 
 /* line 556, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
@@ -4646,7 +4690,7 @@ body::-webkit-scrollbar {
 
 /* line 559, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
 .sidebar.dark_sidebar #sidebar_menu > li ul li a.active {
-  color: #64C5B1;
+  color: #64c5b1;
 }
 
 /* line 562, G:/admin_project/6 admin/sales/scss/_sidebar.scss */
@@ -4682,7 +4726,7 @@ body::-webkit-scrollbar {
 .main-title span {
   font-size: 12px;
   font-weight: 400;
-  color: #A3A0FB;
+  color: #a3a0fb;
   display: block;
   margin-top: 6px;
 }
@@ -4759,7 +4803,7 @@ body::-webkit-scrollbar {
   background: #fff;
   font-size: 11px;
   text-transform: capitalize;
-  color: #706F9A;
+  color: #706f9a;
   border-radius: 5px;
   line-height: 25px;
   padding: 0 10px;
@@ -4768,13 +4812,13 @@ body::-webkit-scrollbar {
 
 /* line 85, G:/admin_project/6 admin/sales/scss/_body_content.scss */
 .title_btn ul li a:hover {
-  background: #A66DD4;
+  background: #a66dd4;
   color: #fff;
 }
 
 /* line 89, G:/admin_project/6 admin/sales/scss/_body_content.scss */
 .title_btn ul li a.active {
-  background: #A66DD4;
+  background: #a66dd4;
   color: #fff;
 }
 
@@ -4787,7 +4831,7 @@ body::-webkit-scrollbar {
 /* line 102, G:/admin_project/6 admin/sales/scss/_body_content.scss */
 .radial_footer .radial_footer_inner .left_footer h5 {
   font-size: 13px;
-  color: #43425D;
+  color: #43425d;
   font-weight: 500;
   margin-bottom: 0px;
   position: relative;
@@ -4798,7 +4842,7 @@ body::-webkit-scrollbar {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: #A4A1FB;
+  background: #a4a1fb;
   display: inline-block;
   position: absolute;
   left: -15px;
@@ -4808,7 +4852,7 @@ body::-webkit-scrollbar {
 /* line 119, G:/admin_project/6 admin/sales/scss/_body_content.scss */
 .radial_footer .radial_footer_inner .left_footer p {
   font-size: 12px;
-  color: #4D4F5C;
+  color: #4d4f5c;
   opacity: .5;
   font-weight: 400;
   margin-bottom: 0;
@@ -4816,7 +4860,7 @@ body::-webkit-scrollbar {
 
 /* line 128, G:/admin_project/6 admin/sales/scss/_body_content.scss */
 .radial_footer .radial_bottom {
-  border-top: 1px solid #EFEFEF;
+  border-top: 1px solid #efefef;
   text-align: center;
   padding-top: 15px;
   margin-top: 4px;
@@ -4825,20 +4869,20 @@ body::-webkit-scrollbar {
 /* line 134, G:/admin_project/6 admin/sales/scss/_body_content.scss */
 .radial_footer .radial_bottom p a {
   font-size: 12px;
-  color: #3B86FF;
+  color: #3b86ff;
   font-weight: 600;
 }
 
 /* line 143, G:/admin_project/6 admin/sales/scss/_body_content.scss */
 .blud_card {
-  background: #4567EE !important;
+  background: #4567ee !important;
   background-repeat: no-repeat;
   background-position: bottom;
 }
 
 /* line 147, G:/admin_project/6 admin/sales/scss/_body_content.scss */
 .blud_card p {
-  color: #BCD3FF;
+  color: #bcd3ff;
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 20px;
@@ -4915,7 +4959,7 @@ body::-webkit-scrollbar {
   min-height: 68vh;
   transition: .5s;
   position: relative;
-  background: #F3F4F3;
+  background: #f3f4f3;
   margin: 0;
   z-index: 22;
   border-radius: 0px;
@@ -4924,7 +4968,7 @@ body::-webkit-scrollbar {
 
 /* line 54, G:/admin_project/6 admin/sales/scss/_main_content.scss */
 .main_content .main_content_iner.default_main_contaner_iner {
-  background: #FFFFFF;
+  background: #ffffff;
 }
 
 /* line 56, G:/admin_project/6 admin/sales/scss/_main_content.scss */
@@ -4940,7 +4984,7 @@ body::-webkit-scrollbar {
   right: 0;
   height: 160px;
   z-index: -1;
-  background: #64C5B1;
+  background: #64c5b1;
   content: '';
   border-radius: 0px;
   left: 0;
@@ -5084,22 +5128,22 @@ body::-webkit-scrollbar {
 
 /* line 169, G:/admin_project/6 admin/sales/scss/_main_content.scss */
 .single_element .single_quick_activity .count_content .blue_color {
-  color: #20B1B9 !important;
+  color: #20b1b9 !important;
 }
 
 /* line 172, G:/admin_project/6 admin/sales/scss/_main_content.scss */
 .single_element .single_quick_activity .count_content .red_color {
-  color: #FF4409 !important;
+  color: #ff4409 !important;
 }
 
 /* line 175, G:/admin_project/6 admin/sales/scss/_main_content.scss */
 .single_element .single_quick_activity .count_content .deep_blue {
-  color: #016DD8 !important;
+  color: #016dd8 !important;
 }
 
 /* line 178, G:/admin_project/6 admin/sales/scss/_main_content.scss */
 .single_element .single_quick_activity .count_content .green_color {
-  color: #01D874 !important;
+  color: #01d874 !important;
 }
 
 /* line 182, G:/admin_project/6 admin/sales/scss/_main_content.scss */
@@ -5109,7 +5153,7 @@ body::-webkit-scrollbar {
   font-weight: 700;
   -webkit-transition: 0.5s;
   transition: 0.5s;
-  color: #14256A;
+  color: #14256a;
   margin-bottom: 0px;
   font-family: "Nunito", sans-serif;
   line-height: 1;
@@ -5121,7 +5165,7 @@ body::-webkit-scrollbar {
   transition: 0.5s;
   font-size: 14px;
   font-weight: 700;
-  color: #8890B5;
+  color: #8890b5;
   font-family: "Nunito", sans-serif;
   line-height: 1;
   margin-bottom: 15px;
@@ -5141,17 +5185,17 @@ body::-webkit-scrollbar {
 
 /* line 226, G:/admin_project/6 admin/sales/scss/_main_content.scss */
 .orange_bg {
-  background: #FF4409 !important;
+  background: #ff4409 !important;
 }
 
 /* line 229, G:/admin_project/6 admin/sales/scss/_main_content.scss */
 .blue_bg {
-  background: #016DD8 !important;
+  background: #016dd8 !important;
 }
 
 /* line 232, G:/admin_project/6 admin/sales/scss/_main_content.scss */
 .green_bg {
-  background: #20B1B9 !important;
+  background: #20b1b9 !important;
 }
 
 /******** main content css end *********/
@@ -5182,18 +5226,19 @@ body::-webkit-scrollbar {
 
 /* line 256, G:/admin_project/6 admin/sales/scss/_main_content.scss */
 .breadcrumb.page_bradcam.default_bradcam li {
-  color: #59748A;
+  color: #59748a;
 }
 
 /* line 258, G:/admin_project/6 admin/sales/scss/_main_content.scss */
 .breadcrumb.page_bradcam.default_bradcam li a {
-  color: #59748A;
+  color: #59748a;
 }
 
 /* line 262, G:/admin_project/6 admin/sales/scss/_main_content.scss */
-.breadcrumb.page_bradcam.default_bradcam .breadcrumb-item + .breadcrumb-item::before {
+.breadcrumb.page_bradcam.default_bradcam .breadcrumb-item
+  + .breadcrumb-item::before {
   content: ">";
-  color: #59748A;
+  color: #59748a;
 }
 
 /* line 267, G:/admin_project/6 admin/sales/scss/_main_content.scss */
@@ -5219,7 +5264,7 @@ body::-webkit-scrollbar {
 /* line 2, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .dashboard_part .notification_tab {
   padding: 27px 25px;
-  background-color: #F5ECEC;
+  background-color: #f5ecec;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -5231,12 +5276,12 @@ body::-webkit-scrollbar {
 /* line 10, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .dashboard_part .notification_tab p {
   font-size: 16px;
-  color: #14256A;
+  color: #14256a;
 }
 
 /* line 13, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .dashboard_part .notification_tab p a {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 18, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
@@ -5246,14 +5291,14 @@ body::-webkit-scrollbar {
 
 /* line 20, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .dashboard_part .hide_icon i {
-  color: #2E4765;
+  color: #2e4765;
   font-size: 10px;
 }
 
 /* line 26, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .white_box {
   padding: 30px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   border-radius: 20px;
@@ -5282,7 +5327,7 @@ body::-webkit-scrollbar {
 
 /* line 44, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .white_card {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
@@ -5301,7 +5346,7 @@ body::-webkit-scrollbar {
 /* line 57, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .white_box_50px {
   padding: 43px 45px 38px 50px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
   border-radius: 15px;
@@ -5455,14 +5500,15 @@ body::-webkit-scrollbar {
 
 /* line 172, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .QA_section .QA_table .table {
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 10px;
   margin-bottom: 35px;
   padding-top: 20px;
 }
 
 /* line 180, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
-.QA_section .QA_table th, .QA_section .QA_table td {
+.QA_section .QA_table th,
+.QA_section .QA_table td {
   font-weight: 400;
   padding: 10px 15px;
   vertical-align: middle;
@@ -5476,7 +5522,7 @@ body::-webkit-scrollbar {
 
 /* line 188, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .QA_section .QA_table .question_content:hover {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 192, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
@@ -5505,7 +5551,7 @@ body::-webkit-scrollbar {
 
 /* line 211, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .QA_section .QA_table tbody .btn_1 {
-  background: #65F9B3;
+  background: #65f9b3;
   color: #fff;
   border: 0;
   font-size: 8px;
@@ -5532,24 +5578,27 @@ body::-webkit-scrollbar {
 }
 
 /* line 233, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
-.QA_section .QA_table tbody th, .QA_section .QA_table tbody td {
+.QA_section .QA_table tbody th,
+.QA_section .QA_table tbody td {
   font-size: 14px;
   font-weight: 400;
   border-bottom: 0;
 }
 
 /* line 245, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
-.QA_section .QA_table tbody th.pending, .QA_section .QA_table tbody td.pending {
-  color: #E09079;
+.QA_section .QA_table tbody th.pending,
+.QA_section .QA_table tbody td.pending {
+  color: #e09079;
   text-transform: uppercase;
   font-size: 12px;
   font-weight: 500;
 }
 
 /* line 252, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
-.QA_section .QA_table tbody th.priority_hight, .QA_section .QA_table tbody td.priority_hight {
+.QA_section .QA_table tbody th.priority_hight,
+.QA_section .QA_table tbody td.priority_hight {
   font-size: 14px;
-  color: #D7598F;
+  color: #d7598f;
   font-weight: 400;
 }
 
@@ -5568,7 +5617,7 @@ body::-webkit-scrollbar {
 
 /* line 274, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .QA_section .QA_table .view_btn {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 276, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
@@ -5588,14 +5637,14 @@ body::-webkit-scrollbar {
   border: 0px solid transparent;
   font-size: 13px;
   font-weight: 700;
-  color: #64C5B1;
+  color: #64c5b1;
   white-space: nowrap;
   text-transform: capitalize;
   font-family: "Nunito", sans-serif;
   border: 0;
   background: #fff;
   border: 0 !important;
-  background: #F8FAFF;
+  background: #f8faff;
 }
 
 /* line 296, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
@@ -5680,7 +5729,7 @@ body::-webkit-scrollbar {
 
 /* line 355, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .chart_box_1 .box_header .box_header_right .legend_circle ul li {
-  color: #828BB2;
+  color: #828bb2;
   font-size: 12px;
   font-weight: 400;
   margin-right: 30px;
@@ -5710,7 +5759,7 @@ body::-webkit-scrollbar {
 
 /* line 382, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .dashboard_breadcam p {
-  color: #6F658D;
+  color: #6f658d;
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 0;
@@ -5723,14 +5772,15 @@ body::-webkit-scrollbar {
 
 /* line 390, G:/admin_project/6 admin/sales/scss/_dashboard_part.scss */
 .dashboard_breadcam p a {
-  color: #6F658D;
+  color: #6f658d;
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 0;
 }
 
 /* line 4, G:/admin_project/6 admin/sales/scss/_form_style.scss */
-.form_style .form-group label, .form_style .form-group p {
+.form_style .form-group label,
+.form_style .form-group p {
   font-size: 14px;
   font-weight: 300;
   text-transform: capitalize;
@@ -5786,7 +5836,7 @@ body::-webkit-scrollbar {
 
 /* line 29, G:/admin_project/6 admin/sales/scss/_revenue_part.scss */
 .revenue_part .courses_duration h6 i {
-  color: #2E4765;
+  color: #2e4765;
   position: absolute;
   left: 0;
   top: 2px;
@@ -5835,7 +5885,7 @@ body::-webkit-scrollbar {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #BBC1C9;
+  border: 1px solid #bbc1c9;
   border-left: 0px solid transparent;
   -webkit-transition: 0.5s;
   transition: 0.5s;
@@ -5843,7 +5893,7 @@ body::-webkit-scrollbar {
 
 /* line 35, G:/admin_project/6 admin/sales/scss/_payment_setting.scss */
 .payment_methord .payment_methord_logo .single_logo_iner:first-child {
-  border-left: 1px solid #BBC1C9;
+  border-left: 1px solid #bbc1c9;
   border-radius: 5px 0 0 5px;
 }
 
@@ -5859,7 +5909,7 @@ body::-webkit-scrollbar {
 
 /* line 45, G:/admin_project/6 admin/sales/scss/_payment_setting.scss */
 .payment_methord .payment_methord_logo .single_logo_iner.active {
-  border: 1px solid #2E4765 !important;
+  border: 1px solid #2e4765 !important;
 }
 
 /* line 54, G:/admin_project/6 admin/sales/scss/_payment_setting.scss */
@@ -5872,7 +5922,7 @@ body::-webkit-scrollbar {
   width: 100%;
   background-color: #fef1f2;
   border-radius: 5px;
-  border: 1px solid #F1F3F5;
+  border: 1px solid #f1f3f5;
   padding: 12px 20px;
 }
 
@@ -5888,7 +5938,7 @@ body::-webkit-scrollbar {
   display: inline-block;
   padding: 12px 20px;
   max-width: 85px;
-  color: #9C9C9C;
+  color: #9c9c9c;
 }
 
 /* line 76, G:/admin_project/6 admin/sales/scss/_payment_setting.scss */
@@ -5900,14 +5950,14 @@ body::-webkit-scrollbar {
 .form_group .nice_Select {
   background-color: #fef1f2;
   margin-right: 10px;
-  color: #9C9C9C;
+  color: #9c9c9c;
 }
 
 /* line 86, G:/admin_project/6 admin/sales/scss/_payment_setting.scss */
 .checkbox label {
   margin-bottom: 0;
   margin-top: 25px;
-  color: #9C9C9C;
+  color: #9c9c9c;
   margin-left: 8px;
 }
 
@@ -5923,13 +5973,13 @@ body::-webkit-scrollbar {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #F3F4F3;
-  background: #64C5B1;
+  background: #f3f4f3;
+  background: #64c5b1;
 }
 
 /* line 16, G:/admin_project/6 admin/sales/scss/_footer.scss */
 .footer_part.default_footer {
-  background: #F5F6FF;
+  background: #f5f6ff;
 }
 
 /* line 18, G:/admin_project/6 admin/sales/scss/_footer.scss */
@@ -5953,11 +6003,11 @@ body::-webkit-scrollbar {
 
 /* line 30, G:/admin_project/6 admin/sales/scss/_footer.scss */
 .footer_part .footer_iner.text-center {
-  background: #FFFFFF;
+  background: #ffffff;
   padding: 27px 0;
   margin: 0 15px;
   border-radius: 5px;
-  background: #64C5B1;
+  background: #64c5b1;
 }
 
 /* line 37, G:/admin_project/6 admin/sales/scss/_footer.scss */
@@ -6014,7 +6064,7 @@ body::-webkit-scrollbar {
 
 /* line 17, G:/admin_project/6 admin/sales/scss/_breadcrumb.scss */
 .breadcrumb_content .active {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 20, G:/admin_project/6 admin/sales/scss/_breadcrumb.scss */
@@ -6079,22 +6129,22 @@ body::-webkit-scrollbar {
 
 /* line 57, G:/admin_project/6 admin/sales/scss/_breadcrumb.scss */
 .breadcrumb_content .sa_breadcrumb_iner a:hover {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 58, G:/admin_project/6 admin/sales/scss/_breadcrumb.scss */
 .breadcrumb_content .sa_breadcrumb_iner a:hover:after {
-  background-color: #2E4765;
+  background-color: #2e4765;
 }
 
 /* line 63, G:/admin_project/6 admin/sales/scss/_breadcrumb.scss */
 .breadcrumb_content .sa_breadcrumb_iner a:last-child {
-  color: #2E4765;
+  color: #2e4765;
 }
 
 /* line 65, G:/admin_project/6 admin/sales/scss/_breadcrumb.scss */
 .breadcrumb_content .sa_breadcrumb_iner a:last-child:after {
-  background-color: #2E4765;
+  background-color: #2e4765;
 }
 
 /********* breadcrumd css end **********/
@@ -6246,14 +6296,14 @@ canvas#highlights {
 .income_servay .count_content h3 {
   font-size: 30px;
   font-weight: 600;
-  color: #2E4765;
+  color: #2e4765;
   line-height: 1;
   margin-bottom: 5px;
 }
 
 /* line 64, G:/admin_project/6 admin/sales/scss/_lms_category.scss */
 .income_servay .count_content h3 span {
-  color: #2E4765;
+  color: #2e4765;
   font-weight: 600;
   line-height: 1;
 }
@@ -6262,7 +6312,7 @@ canvas#highlights {
 .income_servay .count_content p {
   font-size: 14px;
   font-weight: 400;
-  color: #B2B5C0;
+  color: #b2b5c0;
   line-height: 1;
 }
 
@@ -6295,14 +6345,14 @@ canvas#highlights {
 .staf_list_wrapper .single_staf h4 {
   font-size: 22px;
   font-weight: 600;
-  color: #2E4765;
+  color: #2e4765;
   margin-bottom: 3px;
 }
 
 /* line 102, G:/admin_project/6 admin/sales/scss/_lms_category.scss */
 .staf_list_wrapper .single_staf p {
   font-size: 14px;
-  color: #818E94;
+  color: #818e94;
   font-weight: 500;
 }
 
@@ -6311,12 +6361,12 @@ canvas#highlights {
   width: 39px;
   height: 39px;
   border-radius: 7px;
-  background: #EFF1F7;
+  background: #eff1f7;
   position: absolute;
   top: -89px;
   right: 0;
   font-size: 18px !important;
-  background: #EFF1F7 !important;
+  background: #eff1f7 !important;
   color: #141124;
 }
 
@@ -6327,7 +6377,7 @@ canvas#highlights {
 
 /* line 126, G:/admin_project/6 admin/sales/scss/_lms_category.scss */
 .owl-carousel .owl-nav button:hover {
-  background: #16BBE5 !important;
+  background: #16bbe5 !important;
   color: #fff;
 }
 
@@ -6359,7 +6409,7 @@ canvas#highlights {
 
 /* line 152, G:/admin_project/6 admin/sales/scss/_lms_category.scss */
 .Activity_timeline ul li .activity_bell {
-  background: #3BB0BD;
+  background: #3bb0bd;
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -6378,7 +6428,7 @@ canvas#highlights {
 .Activity_timeline ul li .activity_wrap h6 {
   font-size: 18px;
   font-weight: 700;
-  color: #2E4765;
+  color: #2e4765;
   margin-right: 30px;
   margin-bottom: 0;
   line-height: 28px;
@@ -6388,7 +6438,7 @@ canvas#highlights {
 .Activity_timeline ul li .activity_wrap p {
   font-size: 14px;
   line-height: 28px;
-  color: #8890B5;
+  color: #8890b5;
   font-weight: 400;
 }
 
@@ -6403,7 +6453,7 @@ canvas#highlights {
 .barfiller {
   width: 100%;
   height: 8px;
-  background: #F8F9FF;
+  background: #f8f9ff;
   position: relative;
   margin-bottom: 30px;
   border-radius: 30px;
@@ -6437,22 +6487,22 @@ canvas#highlights {
 
 /* line 221, G:/admin_project/6 admin/sales/scss/_lms_category.scss */
 .barfiller#bar1 .tip {
-  color: #508FF4;
+  color: #508ff4;
 }
 
 /* line 226, G:/admin_project/6 admin/sales/scss/_lms_category.scss */
 .barfiller#bar2 .tip {
-  color: #FFBF43;
+  color: #ffbf43;
 }
 
 /* line 231, G:/admin_project/6 admin/sales/scss/_lms_category.scss */
 .barfiller#bar3 .tip {
-  color: #4BE69D;
+  color: #4be69d;
 }
 
 /* line 236, G:/admin_project/6 admin/sales/scss/_lms_category.scss */
 .barfiller#bar4 .tip {
-  color: #9267FF;
+  color: #9267ff;
 }
 
 /* line 243, G:/admin_project/6 admin/sales/scss/_lms_category.scss */
@@ -6464,7 +6514,7 @@ canvas#highlights {
 .single_social_media .icon_media {
   width: 72px;
   height: 68px;
-  background: #508FF4;
+  background: #508ff4;
   font-size: 38px;
   text-align: center;
   line-height: 72px;
@@ -6476,23 +6526,23 @@ canvas#highlights {
 
 /* line 256, G:/admin_project/6 admin/sales/scss/_lms_category.scss */
 .single_social_media .icon_media.twitter_bg {
-  background: #43CCFF;
+  background: #43ccff;
 }
 
 /* line 259, G:/admin_project/6 admin/sales/scss/_lms_category.scss */
 .single_social_media .icon_media.youtube_bg {
-  background: #FF0000;
+  background: #ff0000;
 }
 
 /* line 262, G:/admin_project/6 admin/sales/scss/_lms_category.scss */
 .single_social_media .icon_media.insta_bg {
-  background: #FF72B9;
+  background: #ff72b9;
 }
 
 /* line 267, G:/admin_project/6 admin/sales/scss/_lms_category.scss */
 .single_social_media .media_contet span {
   font-size: 16px;
-  color: #8890B5;
+  color: #8890b5;
   font-weight: 700;
   display: block;
   margin-bottom: 10px;
@@ -6502,7 +6552,7 @@ canvas#highlights {
 .single_social_media .media_contet h4 {
   font-size: 35px;
   font-weight: 700;
-  color: #14256A;
+  color: #14256a;
   margin-bottom: 0;
 }
 
@@ -6526,15 +6576,17 @@ canvas#highlights {
 }
 
 /* line 3, G:/admin_project/6 admin/sales/scss/_summer_note.scss */
-.note-editor.note-frame .note-popover .note-popover-content, .note-editor.note-frame .note-toolbar {
+.note-editor.note-frame .note-popover .note-popover-content,
+.note-editor.note-frame .note-toolbar {
   padding: 4px 15px 8px 15px;
   margin: 0;
   border-radius: 5px 5px 0 0;
-  background-color: #64C5B1;
+  background-color: #64c5b1;
 }
 
 /* line 12, G:/admin_project/6 admin/sales/scss/_summer_note.scss */
-.note-editor.note-frame .note-btn i, .note-editor.note-frame .note-current-fontname {
+.note-editor.note-frame .note-btn i,
+.note-editor.note-frame .note-current-fontname {
   color: #7e7172;
   font-size: 12px;
 }
@@ -6554,13 +6606,13 @@ canvas#highlights {
 /* line 26, G:/admin_project/6 admin/sales/scss/_summer_note.scss */
 .note-editor.note-frame .note-btn:hover {
   color: #fff;
-  background: #4C6EF8;
+  background: #4c6ef8;
 }
 
 /* line 30, G:/admin_project/6 admin/sales/scss/_summer_note.scss */
 .note-editor.note-frame .note-btn:hover i {
   color: #fff;
-  background: #4C6EF8;
+  background: #4c6ef8;
 }
 
 /* line 34, G:/admin_project/6 admin/sales/scss/_summer_note.scss */
@@ -6651,19 +6703,20 @@ canvas#highlights {
 /* line 31, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .gj-picker-md table tr td.today div {
   color: #fff;
-  background: #FF4409;
+  background: #ff4409;
   border-radius: 50%;
 }
 
 /* line 36, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .gj-picker-md table tr td.gj-cursor-pointer div:hover {
   border-radius: 50%;
-  background: #FF4409;
+  background: #ff4409;
   color: #fff;
 }
 
 /* line 42, G:/admin_project/6 admin/sales/scss/_common_component.scss */
-.gj-picker-md div[role="navigator"] div:first-child, .gj-picker-md div[role="navigator"] div:last-child {
+.gj-picker-md div[role="navigator"] div:first-child,
+.gj-picker-md div[role="navigator"] div:last-child {
   max-width: 42px;
   background: #fef1f2;
   color: #000;
@@ -6675,7 +6728,8 @@ canvas#highlights {
 }
 
 /* line 51, G:/admin_project/6 admin/sales/scss/_common_component.scss */
-.gj-picker-md div[role="navigator"] div:first-child i, .gj-picker-md div[role="navigator"] div:last-child i {
+.gj-picker-md div[role="navigator"] div:first-child i,
+.gj-picker-md div[role="navigator"] div:last-child i {
   font-weight: 900;
   font-size: 14px;
 }
@@ -6823,7 +6877,8 @@ canvas#highlights {
 }
 
 /* line 179, G:/admin_project/6 admin/sales/scss/_common_component.scss */
-.result_modal_table_form .table tbody th, .result_modal_table_form .table tbody td {
+.result_modal_table_form .table tbody th,
+.result_modal_table_form .table tbody td {
   color: #7e7172;
   font-size: 13px !important;
   color: #7e7172;
@@ -6909,7 +6964,7 @@ canvas#highlights {
 /* line 243, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .common_date_picker input {
   width: 100%;
-  border: 1px solid #F1F3F5;
+  border: 1px solid #f1f3f5;
   border-radius: 3px;
   height: 40px;
   line-height: 40px;
@@ -6995,10 +7050,10 @@ canvas#highlights {
   line-height: 30px;
   padding: 0 30px 0 20px;
   font-size: 12px;
-  color: #FF4409;
+  color: #ff4409;
   font-weight: 400;
   background: #ffff;
-  border: 1px solid #FF4409;
+  border: 1px solid #ff4409;
   border-radius: 30px;
   position: relative;
 }
@@ -7021,9 +7076,9 @@ canvas#highlights {
 
 /* line 343, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .tagInput_field .bootstrap-tagsinput .badge [data-role="remove"]:hover::after {
-  background: #FF4409;
+  background: #ff4409;
   color: #fff;
-  border-color: #FF4409;
+  border-color: #ff4409;
 }
 
 /* line 348, G:/admin_project/6 admin/sales/scss/_common_component.scss */
@@ -7099,7 +7154,8 @@ canvas#highlights {
   border-radius: 50%;
   vertical-align: -6px;
   margin-right: 15px;
-  transition: background-color 150ms 200ms, transform 350ms cubic-bezier(0.78, -1.22, 0.17, 1.89);
+  transition: background-color 150ms 200ms,
+    transform 350ms cubic-bezier(0.78, -1.22, 0.17, 1.89);
 }
 
 /* line 419, G:/admin_project/6 admin/sales/scss/_common_component.scss */
@@ -7108,7 +7164,7 @@ canvas#highlights {
   width: 0px;
   height: 1px;
   border-radius: 2px;
-  background: #FF4409;
+  background: #ff4409;
   position: absolute;
   transform: rotate(38deg);
   top: 13px;
@@ -7126,7 +7182,7 @@ canvas#highlights {
   width: 0;
   height: 1px;
   border-radius: 2px;
-  background: #FF4409;
+  background: #ff4409;
   position: absolute;
   transform: rotate(305deg);
   top: 12.8px;
@@ -7155,9 +7211,9 @@ canvas#highlights {
 
 /* line 469, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .custom_lms_radio_2 input[type="radio"]:checked + label span {
-  background-color: #FF4409;
+  background-color: #ff4409;
   transform: scale(1);
-  border-color: #FF4409;
+  border-color: #ff4409;
 }
 
 /* line 474, G:/admin_project/6 admin/sales/scss/_common_component.scss */
@@ -7176,9 +7232,9 @@ canvas#highlights {
 
 /* line 487, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .custom_lms_radio_2 input[type="radio"]:checked + label:hover span {
-  background-color: #FF4409;
+  background-color: #ff4409;
   transform: scale(1.25);
-  border-color: #FF4409;
+  border-color: #ff4409;
 }
 
 /* line 492, G:/admin_project/6 admin/sales/scss/_common_component.scss */
@@ -7258,7 +7314,9 @@ canvas#highlights {
 }
 
 /* line 563, G:/admin_project/6 admin/sales/scss/_common_component.scss */
-.indvisual_form .nice_Select, .indvisual_form input, .indvisual_form textarea {
+.indvisual_form .nice_Select,
+.indvisual_form input,
+.indvisual_form textarea {
   height: 50px;
   line-height: 50px;
   background-color: #fff;
@@ -7275,7 +7333,9 @@ canvas#highlights {
 }
 
 /* line 577, G:/admin_project/6 admin/sales/scss/_common_component.scss */
-.indvisual_form .nice_Select::placeholder, .indvisual_form input::placeholder, .indvisual_form textarea::placeholder {
+.indvisual_form .nice_Select::placeholder,
+.indvisual_form input::placeholder,
+.indvisual_form textarea::placeholder {
   color: #7e7172;
   font-weight: 300;
   opacity: 1;
@@ -7317,7 +7377,7 @@ canvas#highlights {
 
 /* line 615, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .list_counter_wrapper .single_list_counter {
-  border-bottom: 1px solid #F1F3F5;
+  border-bottom: 1px solid #f1f3f5;
   padding: 35px 0 26px 87px;
 }
 
@@ -7342,34 +7402,34 @@ canvas#highlights {
 /* line 630, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .list_counter_wrapper .single_list_counter p {
   font-size: 17px;
-  color: #6F658D;
+  color: #6f658d;
   margin-bottom: 0;
   padding-top: 15px;
 }
 
 /* line 639, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .green_color {
-  color: #01D874 !important;
+  color: #01d874 !important;
 }
 
 /* line 642, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .blue_color {
-  color: #20B1B9 !important;
+  color: #20b1b9 !important;
 }
 
 /* line 645, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .deep_blue {
-  color: #016DD8 !important;
+  color: #016dd8 !important;
 }
 
 /* line 648, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .deep_blue_2 {
-  color: #4567EE !important;
+  color: #4567ee !important;
 }
 
 /* line 651, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .red_color {
-  color: #FF4409 !important;
+  color: #ff4409 !important;
 }
 
 /* line 657, G:/admin_project/6 admin/sales/scss/_common_component.scss */
@@ -7384,7 +7444,7 @@ canvas#highlights {
 .activity_progressbar .single_progressbar h6 {
   font-size: 16px;
   font-weight: 400;
-  color: #2D1967;
+  color: #2d1967;
 }
 
 /* line 667, G:/admin_project/6 admin/sales/scss/_common_component.scss */
@@ -7394,7 +7454,7 @@ canvas#highlights {
 
 /* line 669, G:/admin_project/6 admin/sales/scss/_common_component.scss */
 .activity_progressbar .single_progressbar .barfiller .tip {
-  color: #2D1967 !important;
+  color: #2d1967 !important;
   font-size: 12px;
 }
 
@@ -7467,7 +7527,7 @@ canvas#highlights {
 .dataTables_paginate a {
   width: 32px;
   height: 32px;
-  background: #FFFFFF !important;
+  background: #ffffff !important;
   border-radius: 3px !important;
   text-align: center !important;
   line-height: 32px;
@@ -7478,7 +7538,7 @@ canvas#highlights {
 
 /* line 40, G:/admin_project/6 admin/sales/scss/_projects.scss */
 .dataTables_paginate a.current {
-  background: #4C6EF8 !important;
+  background: #4c6ef8 !important;
   box-shadow: 0px 5px 10px rgba(59, 118, 239, 0.3) !important;
   border: 0 !important;
   color: #fff !important;
@@ -7486,7 +7546,7 @@ canvas#highlights {
 
 /* line 46, G:/admin_project/6 admin/sales/scss/_projects.scss */
 .dataTables_paginate a:hover {
-  background: #4C6EF8 !important;
+  background: #4c6ef8 !important;
   box-shadow: 0px 5px 10px rgba(59, 118, 239, 0.3);
   border: 0 !important;
   color: #fff !important;
@@ -7505,7 +7565,9 @@ canvas#highlights {
 }
 
 /* line 62, G:/admin_project/6 admin/sales/scss/_projects.scss */
-.dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
   cursor: default;
   color: #fff !important;
   border: 0;
@@ -7521,10 +7583,11 @@ canvas#highlights {
 }
 
 /* line 74, G:/admin_project/6 admin/sales/scss/_projects.scss */
-.dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
   color: #fff !important;
-  border: 1px solid #4C6EF8;
-  background-color: #4C6EF8 !important;
+  border: 1px solid #4c6ef8;
+  background-color: #4c6ef8 !important;
 }
 
 /* line 1, G:/admin_project/6 admin/sales/scss/_pie.scss */
@@ -7672,7 +7735,8 @@ canvas#highlights {
 }
 
 /* line 109, G:/admin_project/6 admin/sales/scss/_profilebox.scss */
-.card-profile .card-links .fa:focus, .card-profile .card-links .fa:hover {
+.card-profile .card-links .fa:focus,
+.card-profile .card-links .fa:hover {
   text-decoration: none;
 }
 
@@ -7966,7 +8030,7 @@ canvas#highlights {
   -ms-border-radius: 50%;
   -o-border-radius: 50%;
   border-radius: 50%;
-  background-color: #4567EE;
+  background-color: #4567ee;
   -webkit-box-shadow: 0px 5px 24px 0px rgba(0, 0, 0, 0.43);
   -moz-box-shadow: 0px 5px 24px 0px rgba(0, 0, 0, 0.43);
   -ms-box-shadow: 0px 5px 24px 0px rgba(0, 0, 0, 0.43);
@@ -8157,7 +8221,7 @@ canvas#highlights {
 /* line 537, G:/admin_project/6 admin/sales/scss/_profilebox.scss */
 .profile-cart_2::after {
   content: " ";
-  background-image: linear-gradient(135deg, #4567EE 10%, #4567EE 100%);
+  background-image: linear-gradient(135deg, #4567ee 10%, #4567ee 100%);
   clip-path: circle(50% at 50% 1%);
   display: block;
   min-height: 500px;
@@ -8293,9 +8357,10 @@ canvas#highlights {
 }
 
 /* line 660, G:/admin_project/6 admin/sales/scss/_profilebox.scss */
-.profile_card_5 .msg-btn, .profile_card_5 .follow-btn {
-  background: #4567EE;
-  border: 1px solid  #4567EE;
+.profile_card_5 .msg-btn,
+.profile_card_5 .follow-btn {
+  background: #4567ee;
+  border: 1px solid #4567ee;
   padding: 10px 25px;
   color: #231e39;
   border-radius: 3px;
@@ -8313,7 +8378,7 @@ canvas#highlights {
 /* line 674, G:/admin_project/6 admin/sales/scss/_profilebox.scss */
 .profile_card_5 .follow-btn:hover {
   color: #231e39;
-  background: #4567EE;
+  background: #4567ee;
   transition: .5s;
 }
 
@@ -8328,7 +8393,7 @@ canvas#highlights {
 
 /* line 686, G:/admin_project/6 admin/sales/scss/_profilebox.scss */
 .profile_card_5 i:hover {
-  color: #4567EE;
+  color: #4567ee;
 }
 
 /* line 1, G:/admin_project/6 admin/sales/scss/_chart_box.scss */
@@ -8451,7 +8516,7 @@ canvas#highlights {
   position: relative;
   position: relative;
   padding: 13px 20px;
-  background: #4C6EF8;
+  background: #4c6ef8;
   box-shadow: 0px 5px 10px rgba(76, 110, 248, 0.3);
   color: #fff;
   -webkit-transition: 0.3s;
@@ -8479,7 +8544,7 @@ canvas#highlights {
 
 /* line 47, G:/admin_project/6 admin/sales/scss/_faq.scss */
 .accordion_custom .card .card-header h2 a.collapsed {
-  background: #F5F6FF;
+  background: #f5f6ff;
   color: #415094;
   box-shadow: none;
   -webkit-border-radius: 10px;
@@ -8560,7 +8625,7 @@ canvas#highlights {
   position: relative;
   position: relative;
   padding: 13px 20px;
-  background: #4C6EF8;
+  background: #4c6ef8;
   box-shadow: 0px 5px 10px rgba(76, 110, 248, 0.3);
   color: #fff;
   -webkit-transition: 0.3s;
@@ -8588,7 +8653,7 @@ canvas#highlights {
 
 /* line 127, G:/admin_project/6 admin/sales/scss/_faq.scss */
 .accordion_custom2 .card .card-header h2 a.collapsed {
-  background: #F5F6FF;
+  background: #f5f6ff;
   color: #415094;
   box-shadow: none;
   -webkit-border-radius: 0px;
@@ -8610,7 +8675,7 @@ canvas#highlights {
 /* line 143, G:/admin_project/6 admin/sales/scss/_faq.scss */
 .accordion_custom2 .card .card-body {
   padding: 24px 20px 30px 20px;
-  background: #F5F6FF;
+  background: #f5f6ff;
 }
 
 /* line 149, G:/admin_project/6 admin/sales/scss/_faq.scss */
@@ -8722,7 +8787,7 @@ canvas#highlights {
 .messages_box_area .messages_list ul li a .message_pre_left p {
   font-size: 13px;
   font-weight: 300;
-  color: #676B84;
+  color: #676b84;
   margin-bottom: 0;
 }
 
@@ -8786,19 +8851,20 @@ canvas#highlights {
 
 /* line 267, G:/admin_project/6 admin/sales/scss/_faq.scss */
 .messages_box_area .messages_chat .single_message_chat .message_content_view {
-  background: #F5F6FF;
+  background: #f5f6ff;
   border-radius: 10px;
   padding: 30px;
 }
 
 /* line 271, G:/admin_project/6 admin/sales/scss/_faq.scss */
 .messages_box_area .messages_chat .single_message_chat .message_content_view.red_border {
-  border: 1px solid #4C6EF8;
-  background: #4C6EF8;
+  border: 1px solid #4c6ef8;
+  background: #4c6ef8;
 }
 
 /* line 274, G:/admin_project/6 admin/sales/scss/_faq.scss */
-.messages_box_area .messages_chat .single_message_chat .message_content_view.red_border span, .messages_box_area .messages_chat .single_message_chat .message_content_view.red_border p {
+.messages_box_area .messages_chat .single_message_chat .message_content_view.red_border span,
+.messages_box_area .messages_chat .single_message_chat .message_content_view.red_border p {
   color: #fff;
 }
 
@@ -8812,7 +8878,7 @@ canvas#highlights {
 .messages_box_area .messages_chat .single_message_chat .message_content_view p {
   font-size: 13px;
   font-weight: 300;
-  color: #676B84;
+  color: #676b84;
   line-height: 26px;
 }
 
@@ -8846,7 +8912,7 @@ canvas#highlights {
 .messages_box_area .messages_chat .single_message_chat .message_pre_left p {
   font-size: 12px;
   font-weight: 300;
-  color: #676B84;
+  color: #676b84;
   margin-bottom: 0;
 }
 
@@ -8925,7 +8991,7 @@ canvas#highlights {
 
 /* line 361, G:/admin_project/6 admin/sales/scss/_faq.scss */
 .messages_box_area .messages_chat .message_send_field input {
-  color: #676B84;
+  color: #676b84;
   font-size: 13px;
   height: 40px;
   width: 100%;
@@ -8937,7 +9003,7 @@ canvas#highlights {
 
 /* line 370, G:/admin_project/6 admin/sales/scss/_faq.scss */
 .messages_box_area .messages_chat .message_send_field input::placeholder {
-  color: #676B84;
+  color: #676b84;
   font-weight: 300;
   opacity: 1;
 }
@@ -8982,7 +9048,7 @@ canvas#highlights {
 
 /* line 37, G:/admin_project/6 admin/sales/scss/_mailbox.scss */
 .email-sidebar ul li a:hover i {
-  color: #4C6EF8;
+  color: #4c6ef8;
 }
 
 /* line 41, G:/admin_project/6 admin/sales/scss/_mailbox.scss */
@@ -9042,7 +9108,7 @@ canvas#highlights {
 /* line 44, ../../../../../../xampp/htdocs/CRM_frontend/admin/public/frontend/scss/_predefine.scss */
 /* line 96, G:/admin_project/6 admin/sales/scss/_mailbox.scss */
 .primary_checkbox input:checked ~ .checkmark {
-  background: #4C6EF8 !important;
+  background: #4c6ef8 !important;
   box-shadow: 0px 5px 10px rgba(59, 118, 239, 0.3) !important;
   transition: .3s;
 }
@@ -9057,7 +9123,7 @@ canvas#highlights {
   top: 0px;
   left: 3px;
   text-indent: 1px;
-  color: #828BB2;
+  color: #828bb2;
   background-color: transparent;
   border: 0px;
   -webkit-transform: rotate(8deg);
@@ -9085,7 +9151,7 @@ canvas#highlights {
   height: 18px;
   background: transparent;
   border-radius: 50px;
-  border: 1px solid #828BB2;
+  border: 1px solid #828bb2;
   transition: .3s;
   transform: scale(1);
 }
@@ -9159,8 +9225,8 @@ canvas#highlights {
 .blue_button {
   font-size: 12px;
   font-weight: 600;
-  color: #2F90F7;
-  background: #E7F3FE;
+  color: #2f90f7;
+  background: #e7f3fe;
   display: inline-block;
   padding: 4px 16px;
   border-radius: 30px;
@@ -9171,7 +9237,7 @@ canvas#highlights {
   font-size: 10px;
   font-weight: 400;
   color: #fff;
-  background: #508FF4;
+  background: #508ff4;
   display: inline-block;
   border-radius: 3px;
   padding: 4px 14px;
@@ -9184,19 +9250,19 @@ canvas#highlights {
 
 /* line 82, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .notification_btn.yellow_btn {
-  background: #FFBF43;
+  background: #ffbf43;
   color: #fff;
 }
 
 /* line 86, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .notification_btn.green_btn {
-  background: #4BE69D;
+  background: #4be69d;
   color: #fff;
 }
 
 /* line 90, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .notification_btn.violate_btn {
-  background: #9267FF;
+  background: #9267ff;
   color: #fff;
 }
 
@@ -9257,57 +9323,57 @@ canvas#highlights {
 
 /* line 132, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .color_blue {
-  color: #2F90F7;
+  color: #2f90f7;
 }
 
 /* line 135, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .color_blue2 {
-  color: #8AC6FB;
+  color: #8ac6fb;
 }
 
 /* line 138, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .color_parpel {
-  color: #833CDF;
+  color: #833cdf;
 }
 
 /* line 141, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .color_pink {
-  color: #FE80B2;
+  color: #fe80b2;
 }
 
 /* line 144, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .color_yellow {
-  color: #FFCB24;
+  color: #ffcb24;
 }
 
 /* line 148, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .theme_bg_1 {
-  background: #2D1967 !important;
+  background: #2d1967 !important;
 }
 
 /* line 151, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .theme_color_1 {
-  color: #2D1967 !important;
+  color: #2d1967 !important;
 }
 
 /* line 154, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .theme_color_2 {
-  color: #833CDF !important;
+  color: #833cdf !important;
 }
 
 /* line 157, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .theme_color_3 {
-  color: #FE80B2 !important;
+  color: #fe80b2 !important;
 }
 
 /* line 160, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .theme_color_4 {
-  color: #FE80B2 !important;
+  color: #fe80b2 !important;
 }
 
 /* line 163, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .theme_color_5 {
-  color: #2FF0F7 !important;
+  color: #2ff0f7 !important;
 }
 
 /* line 166, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
@@ -9667,13 +9733,13 @@ canvas#highlights {
 /* -------------------------------------------------------------------------- */
 /* line 419, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .single_update_news {
-  border-bottom: 1px solid #F3F4F3;
+  border-bottom: 1px solid #f3f4f3;
   padding: 15px 0 17px 0;
 }
 
 /* line 422, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .single_update_news:first-child {
-  border-top: 1px solid #F3F4F3;
+  border-top: 1px solid #f3f4f3;
 }
 
 /* line 425, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
@@ -9693,7 +9759,7 @@ canvas#highlights {
 
 /* line 437, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .monthly_plan_wraper .total_blance {
-  background: #F8FAFF;
+  background: #f8faff;
   border-radius: 5px;
   padding: 18px 30px;
 }
@@ -9720,7 +9786,8 @@ canvas#highlights {
 }
 
 /* line 459, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
-.dashboard_w_map .jvectormap-zoomin, .dashboard_w_map .jvectormap-zoomout {
+.dashboard_w_map .jvectormap-zoomin,
+.dashboard_w_map .jvectormap-zoomout {
   width: 20px;
   height: 20px;
 }
@@ -9731,7 +9798,9 @@ canvas#highlights {
 }
 
 /* line 466, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
-.dashboard_w_map .jvectormap-zoomin, .dashboard_w_map .jvectormap-zoomout, .dashboard_w_map .jvectormap-goback {
+.dashboard_w_map .jvectormap-zoomin,
+.dashboard_w_map .jvectormap-zoomout,
+.dashboard_w_map .jvectormap-goback {
   position: absolute;
   left: auto;
   right: 0;
@@ -9751,12 +9820,12 @@ canvas#highlights {
 .single_progressbar h6 {
   font-size: 14px;
   font-weight: 400;
-  color: #14256A;
+  color: #14256a;
 }
 
 /* line 489, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .single_progressbar .barfiller span {
-  color: #8890B5 !important;
+  color: #8890b5 !important;
   font-size: 11px;
 }
 
@@ -9780,27 +9849,27 @@ canvas#highlights {
 /* line 511, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .sales_unit_footer .single_sales p {
   font-size: 11px;
-  color: #C2E6DF;
+  color: #c2e6df;
   font-weight: 400;
 }
 
 /* line 515, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .sales_unit_footer .single_sales p span {
-  color: #64C5B1;
+  color: #64c5b1;
   margin-right: 5px;
   margin-left: 3px;
 }
 
 /* line 520, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .sales_unit_footer .single_sales p i {
-  color: #64C5B1;
+  color: #64c5b1;
 }
 
 /* line 524, G:/admin_project/6 admin/sales/scss/_byer_table.scss */
 .sales_unit_footer .single_sales h3 {
   font-size: 26px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-bottom: 0;
   margin: 0px 0;
 }
@@ -9815,7 +9884,7 @@ canvas#highlights {
 
 /* line 8, G:/admin_project/6 admin/sales/scss/_notification.scss */
 .notification_wrapper .single_notification .notification_info h4 {
-  color: #2E4765;
+  color: #2e4765;
   margin-bottom: 0;
 }
 
@@ -9823,7 +9892,7 @@ canvas#highlights {
 .notification_wrapper .single_notification .notification_info p {
   font-size: 13px;
   font-weight: 400;
-  color: #7F8B9F;
+  color: #7f8b9f;
 }
 
 /* line 21, G:/admin_project/6 admin/sales/scss/_notification.scss */
@@ -9831,28 +9900,28 @@ canvas#highlights {
   width: 27px;
   height: 28px;
   border-radius: 5px;
-  background: #C9F7F5;
+  background: #c9f7f5;
   flex: 27px 0 0;
 }
 
 /* line 27, G:/admin_project/6 admin/sales/scss/_notification.scss */
 .color_bg.color_lite_pink {
-  background: #FFE2E5;
+  background: #ffe2e5;
 }
 
 /* line 30, G:/admin_project/6 admin/sales/scss/_notification.scss */
 .color_bg.color_lite_violate {
-  background: #E2E4FF;
+  background: #e2e4ff;
 }
 
 /* line 33, G:/admin_project/6 admin/sales/scss/_notification.scss */
 .color_bg.color_lite_green {
-  background: #E2FFF0;
+  background: #e2fff0;
 }
 
 /* line 36, G:/admin_project/6 admin/sales/scss/_notification.scss */
 .color_bg.color_lite_yellow {
-  background: #FDFFE2;
+  background: #fdffe2;
 }
 
 /* line 40, G:/admin_project/6 admin/sales/scss/_notification.scss */
@@ -9908,7 +9977,7 @@ canvas#highlights {
 /* line 75, G:/admin_project/6 admin/sales/scss/_notification.scss */
 .property_wrapper .single_property .property_content a h4 {
   font-size: 29px;
-  color: #2E4765;
+  color: #2e4765;
   font-weight: 700;
   margin-bottom: 0;
 }
@@ -9922,14 +9991,14 @@ canvas#highlights {
 
 /* line 83, G:/admin_project/6 admin/sales/scss/_notification.scss */
 .property_wrapper .single_property .property_content a h4.Up_name {
-  color: #D1D1D1;
+  color: #d1d1d1;
 }
 
 /* line 87, G:/admin_project/6 admin/sales/scss/_notification.scss */
 .property_wrapper .single_property .property_content a.property_location {
   font-size: 14px;
-  color: #2F90F7;
-  background: #E7F3FE;
+  color: #2f90f7;
+  background: #e7f3fe;
   display: inline-block;
   padding: 10px 14px;
   display: inline-flex;
@@ -9947,7 +10016,7 @@ canvas#highlights {
 /* line 103, G:/admin_project/6 admin/sales/scss/_notification.scss */
 .property_wrapper .single_property .property_content p {
   font-size: 14px;
-  color: #7F8B9F;
+  color: #7f8b9f;
   font-weight: 400;
 }
 
@@ -9963,7 +10032,7 @@ canvas#highlights {
 
 /* line 117, G:/admin_project/6 admin/sales/scss/_notification.scss */
 .weather_box {
-  background: #0090FF;
+  background: #0090ff;
 }
 
 /* line 119, G:/admin_project/6 admin/sales/scss/_notification.scss */
@@ -10011,7 +10080,7 @@ canvas#highlights {
 .weather_box .weather_header .weather_info p {
   font-size: 22px;
   display: inline-block;
-  color: #FFFFFF;
+  color: #ffffff;
   vertical-align: top;
   font-weight: 400;
 }
@@ -10035,7 +10104,7 @@ canvas#highlights {
 .weather_box .weather_content ul li span.selcias {
   font-size: 71px;
   font-weight: 700;
-  color: #FFDC7B;
+  color: #ffdc7b;
   text-transform: uppercase;
 }
 
@@ -10142,8 +10211,8 @@ canvas#highlights {
 
 /* line 35, G:/admin_project/6 admin/sales/scss/_datepicker.scss */
 .default-datepicker .datepicker-inline .datepicker .datepicker--content .datepicker--days .datepicker--cells .datepicker--cell-day:hover {
-  background: #64C5B1;
-  border: 2px solid #64C5B1;
+  background: #64c5b1;
+  border: 2px solid #64c5b1;
   color: #fff;
 }
 
@@ -10230,7 +10299,8 @@ canvas#highlights {
 }
 
 /* line 107, G:/admin_project/6 admin/sales/scss/_datepicker.scss */
-.default-datepicker .datepicker--nav-title, .default-datepicker .datepicker--nav-action {
+.default-datepicker .datepicker--nav-title,
+.default-datepicker .datepicker--nav-action {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -10248,19 +10318,20 @@ canvas#highlights {
   color: #fff !important;
   border-radius: 38%;
   font-weight: bold;
-  border: 2px solid #64C5B1;
-  background: #64C5B1;
+  border: 2px solid #64c5b1;
+  background: #64c5b1;
 }
 
 /* line 127, G:/admin_project/6 admin/sales/scss/_datepicker.scss */
 .default-datepicker .datepicker--cell.-focus- {
-  background: #64C5B1;
-  border: 2px solid #64C5B1;
+  background: #64c5b1;
+  border: 2px solid #64c5b1;
   color: #fff;
 }
 
 /* line 134, G:/admin_project/6 admin/sales/scss/_datepicker.scss */
-.datepicker--cell-day.-other-month-, .datepicker--cell-year.-other-decade- {
+.datepicker--cell-day.-other-month-,
+.datepicker--cell-year.-other-decade- {
   color: #dedede;
 }
 
@@ -10275,20 +10346,20 @@ canvas#highlights {
 /* line 146, G:/admin_project/6 admin/sales/scss/_datepicker.scss */
 .datepicker--cell.-selected- {
   border: none;
-  background: #64C5B1;
+  background: #64c5b1;
   color: #fff;
 }
 
 /* line 151, G:/admin_project/6 admin/sales/scss/_datepicker.scss */
 .datepicker--cell.-selected-.-current- {
   border: none;
-  background: #64C5B1;
+  background: #64c5b1;
   color: #fff;
 }
 
 /* line 157, G:/admin_project/6 admin/sales/scss/_datepicker.scss */
 .default-datepicker .datepicker-inline .datepicker .datepicker--content .datepicker--days .datepicker--cells .datepicker--cell.-selected- {
-  background: #64C5B1;
+  background: #64c5b1;
   color: #fff;
   border-radius: 38%;
   position: relative;
@@ -10296,7 +10367,7 @@ canvas#highlights {
 
 /* line 165, G:/admin_project/6 admin/sales/scss/_datepicker.scss */
 .datepicker--cell.-focus- {
-  background: #64C5B1;
+  background: #64c5b1;
   color: #fff;
 }
 
@@ -10305,12 +10376,12 @@ canvas#highlights {
   color: #000;
   border-radius: 5px;
   font-weight: bold;
-  border: 2px solid #64C5B1;
+  border: 2px solid #64c5b1;
 }
 
 /* line 175, G:/admin_project/6 admin/sales/scss/_datepicker.scss */
 .default-datepicker .datepicker-inline .datepicker .datepicker--content .datepicker--days .datepicker--cells .datepicker--cell-day.-other-month- {
-  color: #8890B5;
+  color: #8890b5;
 }
 
 /* line 2, G:/admin_project/6 admin/sales/scss/_error_page.scss */
@@ -10511,7 +10582,10 @@ canvas#highlights {
   height: 44px;
 }
 
-@media (-webkit-min-device-pixel-ratio: 1.1), (-webkit-min-device-pixel-ratio: 1.09375), (min-resolution: 105dpi), (min-resolution: 1.1dppx) {
+@media (-webkit-min-device-pixel-ratio: 1.1),
+  (-webkit-min-device-pixel-ratio: 1.09375),
+  (min-resolution: 105dpi),
+  (min-resolution: 1.1dppx) {
   /* line 55, G:/admin_project/6 admin/sales/scss/_photoswip.scss */
   .pswp--svg .pswp__button,
   .pswp--svg .pswp__button--arrow--left:before,
@@ -10652,7 +10726,7 @@ canvas#highlights {
 .pswp__share-tooltip {
   z-index: 1620;
   position: absolute;
-  background: #FFF;
+  background: #fff;
   top: 56px;
   border-radius: 2px;
   display: block;
@@ -10722,7 +10796,7 @@ a.pswp__share--facebook:before {
   top: -12px;
   right: 15px;
   border: 6px solid transparent;
-  border-bottom-color: #FFF;
+  border-bottom-color: #fff;
   -webkit-pointer-events: none;
   -moz-pointer-events: none;
   pointer-events: none;
@@ -10731,7 +10805,7 @@ a.pswp__share--facebook:before {
 /* line 242, G:/admin_project/6 admin/sales/scss/_photoswip.scss */
 a.pswp__share--facebook:hover {
   background: #3e5c9a;
-  color: #FFF;
+  color: #fff;
 }
 
 /* line 247, G:/admin_project/6 admin/sales/scss/_photoswip.scss */
@@ -10742,18 +10816,18 @@ a.pswp__share--facebook:hover:before {
 /* line 251, G:/admin_project/6 admin/sales/scss/_photoswip.scss */
 a.pswp__share--twitter:hover {
   background: #55acee;
-  color: #FFF;
+  color: #fff;
 }
 
 /* line 256, G:/admin_project/6 admin/sales/scss/_photoswip.scss */
 a.pswp__share--pinterest:hover {
-  background: #CCC;
+  background: #ccc;
   color: #ce272d;
 }
 
 /* line 261, G:/admin_project/6 admin/sales/scss/_photoswip.scss */
 a.pswp__share--download:hover {
-  background: #DDD;
+  background: #ddd;
 }
 
 /* line 265, G:/admin_project/6 admin/sales/scss/_photoswip.scss */
@@ -10764,7 +10838,7 @@ a.pswp__share--download:hover {
   height: 44px;
   font-size: 13px;
   line-height: 44px;
-  color: #FFF;
+  color: #fff;
   opacity: .75;
   padding: 0 10px;
 }
@@ -10781,7 +10855,7 @@ a.pswp__share--download:hover {
 /* line 285, G:/admin_project/6 admin/sales/scss/_photoswip.scss */
 .pswp__caption small {
   font-size: 11px;
-  color: #BBB;
+  color: #bbb;
 }
 
 /* line 290, G:/admin_project/6 admin/sales/scss/_photoswip.scss */
@@ -10792,7 +10866,7 @@ a.pswp__share--download:hover {
   font-size: 13px;
   padding: 10px;
   line-height: 20px;
-  color: #CCC;
+  color: #ccc;
 }
 
 /* line 300, G:/admin_project/6 admin/sales/scss/_photoswip.scss */
@@ -10880,7 +10954,7 @@ a.pswp__share--download:hover {
   box-sizing: border-box;
   width: 14px;
   height: 14px;
-  border: 2px solid #FFF;
+  border: 2px solid #fff;
   border-radius: 50%;
   border-left-color: transparent;
   border-bottom-color: transparent;
@@ -11151,7 +11225,8 @@ a.pswp__share--download:hover {
   -webkit-transition: -webkit-transform 333ms cubic-bezier(0.4, 0, 0.22, 1);
   transition: -webkit-transform 333ms cubic-bezier(0.4, 0, 0.22, 1);
   transition: transform 333ms cubic-bezier(0.4, 0, 0.22, 1);
-  transition: transform 333ms cubic-bezier(0.4, 0, 0.22, 1), -webkit-transform 333ms cubic-bezier(0.4, 0, 0.22, 1);
+  transition: transform 333ms cubic-bezier(0.4, 0, 0.22, 1),
+    -webkit-transform 333ms cubic-bezier(0.4, 0, 0.22, 1);
 }
 
 /* line 622, G:/admin_project/6 admin/sales/scss/_photoswip.scss */
@@ -11221,12 +11296,12 @@ a.pswp__share--download:hover {
   font-size: 14px;
   line-height: 16px;
   margin-top: -8px;
-  color: #CCC;
+  color: #ccc;
 }
 
 /* line 683, G:/admin_project/6 admin/sales/scss/_photoswip.scss */
 .pswp__error-msg a {
-  color: #CCC;
+  color: #ccc;
   text-decoration: underline;
 }
 
@@ -11302,7 +11377,7 @@ a.pswp__share--download:hover {
 /*# sourceMappingURL=photoswipe.css.map */
 /* line 2, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
 .Menu_NOtification_Wrap {
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0px 10px 15px rgba(6, 0, 8, 0.22);
   border-radius: 10px;
   position: absolute;
@@ -11340,7 +11415,7 @@ a.pswp__share--download:hover {
 .Menu_NOtification_Wrap .notification_Header {
   padding: 15px 20px;
   border-radius: 10px 10px 0px 0px;
-  background: #64C5B1;
+  background: #64c5b1;
 }
 
 /* line 29, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
@@ -11397,7 +11472,7 @@ a.pswp__share--download:hover {
 /* line 70, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
 .Menu_NOtification_Wrap .nofity_footer {
   padding: 13px 20px;
-  background: #F5F7F9;
+  background: #f5f7f9;
   border-radius: 0 0 10px 10px;
 }
 
@@ -11409,7 +11484,7 @@ a.pswp__share--download:hover {
 /* line 84, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
 .CHAT_MESSAGE_POPUPBOX {
   width: 360px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 5px;
   position: fixed;
   bottom: 40px;
@@ -11439,7 +11514,7 @@ a.pswp__share--download:hover {
 
 /* line 107, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
 .CHAT_MESSAGE_POPUPBOX .CHAT_POPUP_HEADER {
-  background: #64C5B1;
+  background: #64c5b1;
   border-radius: 5px 5px 0px 0px;
   padding: 27px 20px;
   position: relative;
@@ -11504,14 +11579,14 @@ a.pswp__share--download:hover {
 
 /* line 160, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
 .CHAT_MESSAGE_POPUPBOX .chat_input_box {
-  background: #F5F7FB;
+  background: #f5f7fb;
   border-radius: 0px 0px 5px 5px;
   padding-right: 10px;
 }
 
 /* line 164, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
 .CHAT_MESSAGE_POPUPBOX .chat_input_box input {
-  background: #F5F7FB;
+  background: #f5f7fb;
   height: 50px;
   border: 0;
   padding-left: 20px;
@@ -11520,7 +11595,7 @@ a.pswp__share--download:hover {
 
 /* line 170, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
 .CHAT_MESSAGE_POPUPBOX .chat_input_box input::placeholder {
-  color: #707DB7;
+  color: #707db7;
   font-size: 13px;
   font-weight: 400;
 }
@@ -11532,9 +11607,9 @@ a.pswp__share--download:hover {
 
 /* line 177, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
 .CHAT_MESSAGE_POPUPBOX .chat_input_box .input-group-append .btn {
-  background: #F5F7FB;
+  background: #f5f7fb;
   font-size: 20px;
-  color: #A0A7C9;
+  color: #a0a7c9;
   padding: 0;
   line-height: 40px;
   position: relative;
@@ -11556,7 +11631,7 @@ a.pswp__share--download:hover {
 
 /* line 195, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
 .CHAT_MESSAGE_POPUPBOX .chat_input_box .input-group-append .btn input::placeholder {
-  color: #707DB7;
+  color: #707db7;
   font-size: 13px;
   font-weight: 400;
 }
@@ -11613,7 +11688,7 @@ a.pswp__share--download:hover {
 
 /* line 238, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
 .CHAT_MESSAGE_POPUPBOX .CHAT_POPUP_BODY .CHATING_SENDER.CHATING_RECEIVEr .SEND_SMS_VIEW {
-  background: #FF606D;
+  background: #ff606d;
 }
 
 /* line 242, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
@@ -11630,7 +11705,7 @@ a.pswp__share--download:hover {
 
 /* line 250, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
 .CHAT_MESSAGE_POPUPBOX .CHAT_POPUP_BODY .CHATING_SENDER .SEND_SMS_VIEW {
-  background: #4567EE;
+  background: #4567ee;
   border-radius: 5px;
   padding: 10px 15px;
 }
@@ -11638,7 +11713,7 @@ a.pswp__share--download:hover {
 /* line 254, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
 .CHAT_MESSAGE_POPUPBOX .CHAT_POPUP_BODY .CHATING_SENDER .SEND_SMS_VIEW p {
   font-size: 13px;
-  color: #FFFFFF;
+  color: #ffffff;
   font-weight: 400;
   line-height: 23px;
 }
@@ -11646,92 +11721,92 @@ a.pswp__share--download:hover {
 /* Spinner */
 /* line 3, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .theme_loder_1 div::after {
-  background: #2D1967 !important;
+  background: #2d1967 !important;
 }
 
 /* line 6, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .blue_loder div::after {
-  background: #2F90F7 !important;
+  background: #2f90f7 !important;
 }
 
 /* line 9, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .perpel_loder div::after {
-  background: #833CDF !important;
+  background: #833cdf !important;
 }
 
 /* line 12, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .pink_loder div::after {
-  background: #FE80B2 !important;
+  background: #fe80b2 !important;
 }
 
 /* line 15, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .yellow_loder div::after {
-  background: #FFCB24 !important;
+  background: #ffcb24 !important;
 }
 
 /* line 19, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .green_loder div::after {
-  background: #2FF0F7 !important;
+  background: #2ff0f7 !important;
 }
 
 /* line 23, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .Ring_1 div {
-  border-color: #2D1967  transparent transparent transparent !important;
+  border-color: #2d1967 transparent transparent transparent !important;
 }
 
 /* line 26, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .Ring_2 div {
-  border-color: #2F90F7 transparent transparent transparent !important;
+  border-color: #2f90f7 transparent transparent transparent !important;
 }
 
 /* line 29, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .Ring_3 div {
-  border-color: #833CDF transparent transparent transparent !important;
+  border-color: #833cdf transparent transparent transparent !important;
 }
 
 /* line 32, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .Ring_4 div {
-  border-color: #FE80B2 transparent transparent transparent !important;
+  border-color: #fe80b2 transparent transparent transparent !important;
 }
 
 /* line 35, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .Ring_5 div {
-  border-color: #FFCB24 transparent transparent transparent !important;
+  border-color: #ffcb24 transparent transparent transparent !important;
 }
 
 /* line 39, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .Ring_6 div {
-  border-color: #2FF0F7 transparent transparent transparent !important;
+  border-color: #2ff0f7 transparent transparent transparent !important;
 }
 
 /* line 44, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .colord_bg_1 div {
-  background-color: #2D1967  !important;
+  background-color: #2d1967 !important;
 }
 
 /* line 47, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .colord_bg_2 div {
-  background-color: #2F90F7 !important;
+  background-color: #2f90f7 !important;
 }
 
 /* line 50, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .colord_bg_3 div {
-  background-color: #833CDF !important;
+  background-color: #833cdf !important;
 }
 
 /* line 53, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .colord_bg_4 div {
-  background-color: #FE80B2 !important;
+  background-color: #fe80b2 !important;
 }
 
 /* line 56, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .colord_bg_5 div {
-  background-color: #FFCB24 !important;
+  background-color: #ffcb24 !important;
 }
 
 /* line 59, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
 .colord_bg_6 div {
-  background-color: #2FF0F7 !important;
+  background-color: #2ff0f7 !important;
 }
 
 /* line 68, G:/admin_project/6 admin/sales/scss/_loadsers.scss */
@@ -12535,114 +12610,114 @@ a.pswp__share--download:hover {
 
 /* line 28, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .color_text_1 {
-  color: #BDA5F8 !important;
+  color: #bda5f8 !important;
 }
 
 /* line 31, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .color_text_2 {
-  color: #FFB98A !important;
+  color: #ffb98a !important;
 }
 
 /* line 34, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .color_text_3 {
-  color: #64C5B1 !important;
+  color: #64c5b1 !important;
 }
 
 /* line 37, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .color_text_4 {
-  color: #97C0FF !important;
+  color: #97c0ff !important;
 }
 
 /* line 42, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .badge_btn_1 {
   font-size: 11px;
   font-weight: 700;
-  background: #FFF0EB;
+  background: #fff0eb;
   display: inline-block;
   border-radius: 2px;
   padding: 5px 17px;
-  color: #FF7F57;
+  color: #ff7f57;
 }
 
 /* line 50, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .badge_btn_1:hover {
-  color: #FF7F57;
+  color: #ff7f57;
 }
 
 /* line 54, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .badge_btn_2 {
   font-size: 11px;
   font-weight: 700;
-  background: #FDEBFF;
+  background: #fdebff;
   display: inline-block;
   border-radius: 2px;
   padding: 5px 17px;
-  color: #C85ED4;
+  color: #c85ed4;
 }
 
 /* line 62, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .badge_btn_2:hover {
-  color: #C85ED4;
+  color: #c85ed4;
 }
 
 /* line 66, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .badge_btn_3 {
   font-size: 11px;
   font-weight: 700;
-  background: #E6F8FF;
+  background: #e6f8ff;
   display: inline-block;
   border-radius: 2px;
   padding: 5px 17px;
-  color: #0893C8;
+  color: #0893c8;
 }
 
 /* line 74, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .badge_btn_3:hover {
-  color: #0893C8;
+  color: #0893c8;
 }
 
 /* line 78, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .badge_btn_4 {
   font-size: 11px;
   font-weight: 700;
-  background: #E8FFEB;
+  background: #e8ffeb;
   display: inline-block;
   border-radius: 2px;
   padding: 5px 17px;
-  color: #50D863;
+  color: #50d863;
 }
 
 /* line 86, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .badge_btn_4:hover {
-  color: #50D863;
+  color: #50d863;
 }
 
 /* line 90, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .badge_btn_5 {
   font-size: 14px;
   font-weight: 700;
-  background: #E8FFEB;
+  background: #e8ffeb;
   display: inline-block;
   border-radius: 4px;
   padding: 2px 10px;
-  background: #D1EEE7;
-  color: #7BCA9E;
+  background: #d1eee7;
+  color: #7bca9e;
 }
 
 /* line 99, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .badge_btn_5:hover {
-  color: #7BCA9E;
+  color: #7bca9e;
 }
 
 /* line 103, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .badge_btn_6 {
   font-size: 10px;
   font-weight: 700;
-  background: #E8FFEB;
+  background: #e8ffeb;
   display: inline-block;
   border-radius: 2px;
   padding: 6px 17px;
-  background: #F16060;
+  background: #f16060;
   color: #fff;
   transition: .3s;
 }
@@ -12657,11 +12732,11 @@ a.pswp__share--download:hover {
 .badge_btn_7 {
   font-size: 10px;
   font-weight: 700;
-  background: #E8FFEB;
+  background: #e8ffeb;
   display: inline-block;
   border-radius: 2px;
   padding: 6px 17px;
-  background: #567AED;
+  background: #567aed;
   color: #fff;
   transition: .3s;
 }
@@ -12676,7 +12751,7 @@ a.pswp__share--download:hover {
 .badge_btn_semi {
   font-size: 11px;
   font-weight: 700;
-  background: #567AED;
+  background: #567aed;
   display: inline-block;
   border-radius: 2px;
   padding: 11px 70px;
@@ -12695,41 +12770,41 @@ a.pswp__share--download:hover {
 .text_color_1 {
   font-size: 11px;
   font-weight: 700;
-  color: #FF6D6D !important;
+  color: #ff6d6d !important;
 }
 
 /* line 155, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .text_color_2 {
   font-size: 11px;
   font-weight: 700;
-  color: #62D45E !important;
+  color: #62d45e !important;
 }
 
 /* line 160, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .text_color_3 {
   font-size: 11px;
   font-weight: 700;
-  color: #6FA5EC !important;
+  color: #6fa5ec !important;
 }
 
 /* line 165, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .text_color_4 {
-  color: #E64B55 !important;
+  color: #e64b55 !important;
 }
 
 /* line 168, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .text_color_5 {
-  color: #4BE69D !important;
+  color: #4be69d !important;
 }
 
 /* line 171, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .text_color_6 {
-  color: #706F9A !important;
+  color: #706f9a !important;
 }
 
 /* line 174, G:/admin_project/6 admin/sales/scss/_predefine.scss */
 .text_color_7 {
-  color: #59748A !important;
+  color: #59748a !important;
 }
 
 /* line 1, G:/admin_project/6 admin/sales/scss/_board.scss */
@@ -12831,7 +12906,10 @@ a.pswp__share--download:hover {
 }
 
 /* line 27, G:/admin_project/6 admin/sales/scss/_product.scss */
-.total-payment .table tbody td, .total-payment table tbody td, .shopping-cart .table tbody td, .shopping-cart table tbody td {
+.total-payment .table tbody td,
+.total-payment table tbody td,
+.shopping-cart .table tbody td,
+.shopping-cart table tbody td {
   padding: 20px 10px;
   border-top: 0 !important;
   border-bottom: 1px solid #f1f5fa;
@@ -12866,7 +12944,8 @@ a.pswp__share--download:hover {
 }
 
 /* line 52, G:/admin_project/6 admin/sales/scss/_product.scss */
-.ribbon1 span.rib1-primary::before, .ribbon1 span.rib1-primary {
+.ribbon1 span.rib1-primary::before,
+.ribbon1 span.rib1-primary {
   background: #1761fd;
 }
 
@@ -12888,7 +12967,8 @@ a.pswp__share--download:hover {
 }
 
 /* line 68, G:/admin_project/6 admin/sales/scss/_product.scss */
-.ribbon1 span.rib1-primary::before, .ribbon1 span.rib1-primary {
+.ribbon1 span.rib1-primary::before,
+.ribbon1 span.rib1-primary {
   background: #1761fd;
 }
 
@@ -12901,7 +12981,8 @@ a.pswp__share--download:hover {
 }
 
 /* line 77, G:/admin_project/6 admin/sales/scss/_product.scss */
-.ribbon1 span::before, .ribbon1 span::after {
+.ribbon1 span::before,
+.ribbon1 span::after {
   position: absolute;
   content: "";
 }
@@ -12921,7 +13002,8 @@ a.pswp__share--download:hover {
 }
 
 /* line 91, G:/admin_project/6 admin/sales/scss/_product.scss */
-.ribbon1 span::before, .ribbon1 span::after {
+.ribbon1 span::before,
+.ribbon1 span::after {
   position: absolute;
   content: "";
 }
@@ -12989,4 +13071,3 @@ a.pswp__share--download:hover {
 }
 
 /*# sourceMappingURL=style.css.map */
-

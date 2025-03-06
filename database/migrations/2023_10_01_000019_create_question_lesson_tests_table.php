@@ -12,7 +12,7 @@ class CreateQuestionLessonTestsTable extends Migration
             $table->id();
             $table->foreignId('lessonTestId')->constrained('lesson_tests');
             $table->string('question');
-            $table->integer('order_number')->comment('Số thứ tự của câu hỏi');
+            $table->integer('orderNumber');
             $table->softDeletes();
             $table->timestamps();
         });

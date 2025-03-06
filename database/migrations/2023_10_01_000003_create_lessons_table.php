@@ -12,6 +12,7 @@ class CreateLessonsTable extends Migration
             $table->id();
             $table->foreignId('courseId')->constrained('courses');
             $table->string('name');
+            $table->string('slug')->unique()->comment('Slug bài học');
             $table->string('videoUrl')->nullable();
             $table->text('description')->nullable();
             $table->integer('duration')->nullable()->comment('Độ dài bài học (giây)');

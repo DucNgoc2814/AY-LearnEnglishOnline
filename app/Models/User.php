@@ -2,22 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -27,37 +21,23 @@ class User extends Authenticatable
         'authGoogleId',
         'role',
         'roleToken',
-        'refreshToken',
+        'refreshToken'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
-        'remember_token',
+        'roleToken',
+        'refreshToken'
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
+        'birthDate' => 'datetime',
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
 
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class);
-    }
-
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
     }
 
     public function ratings()
@@ -70,29 +50,13 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-    public function progress()
-    {
-        return $this->hasMany(Progress::class);
-    }
-
-    public function examResults()
+    public function examResults() 
     {
         return $this->hasMany(ExamResult::class);
     }
 
-    public function certificates()
+    public function lessonResults()
     {
-        return $this->hasMany(Certificate::class);
+        return $this->hasMany(LessonResult::class);
     }
-
-    public function lessonTestResults()
-    {
-        return $this->hasMany(LessonTestResult::class);
-    }
-
-    public function resetPasswords()
-    {
-        return $this->hasMany(ResetPassword::class);
-    }
-
-}
+} 
