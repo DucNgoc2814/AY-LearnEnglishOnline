@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Config\CrudBasic;
 use App\Models\Category;
-use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use App\Http\Requests\Admin\Category\StoreRequest;
+use App\Http\Requests\Admin\Category\UpdateRequest;
 
 class CategoryController extends Controller
 {
@@ -16,19 +19,40 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $items = $this->getList($this->model::query()->withCount('courses'));
-        return view(self::PATH_VIEW . 'index', compact('items'));
+        $query = $this->model::query()->withCount('courses');
+        
+        if (request()->has('search')) {
+            $search = request('search');
+            $query->where('name', 'LIKE', "%{$search}%");
+        }
+
+        $items = $query->orderBy('id', 'DESC')->paginate(10);
+            
+        $deletedCategories = $this->model::onlyTrashed()
+            ->withCount('courses')
+            ->orderBy('id', 'DESC')
+            ->paginate(10);
+
+        return view(self::PATH_VIEW . 'index', compact('items', 'deletedCategories'));
     }
 
-    public function create()
+    public function store(StoreRequest $request)
     {
-        return view(self::PATH_VIEW . 'create');
-    }
+        try {
+            $model = new $this->model;
+            $data = $request->validated();
+            $data['slug'] = Str::slug($data['name']);
 
-    public function store(Request $request)
-    {
-        $result = $this->createItem($this->model::query(), $request->all());
-        return redirect()->back()->with($result['status'] ? 'success' : 'error', $result['message']);
+            $result = $this->storeItem($model, $data);
+            
+            $flashType = $result['status'] ? 'success' : 'error';
+            $flashMessage = $result['message'];
+         
+            
+            return redirect()->back()->with($flashType, $flashMessage);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function edit($id)
@@ -40,24 +64,44 @@ class CategoryController extends Controller
         return view(self::PATH_VIEW . 'edit', ['item' => $result['data']]);
     }
 
-    public function update(Request $request, $id)
+    public function update($id, UpdateRequest $request)
     {
-        $result = $this->updateItem($this->model::query()->find($id), $request->all());
+        $data = $request->validated();
+        $data['slug'] = Str::slug($data['name']);
+
+        $result = $this->updateItem($this->model::query()->find($id), $data);
+
+        if ($request->wantsJson()) {
+            return response()->json($result);
+        }
+
         return redirect()->back()->with($result['status'] ? 'success' : 'error', $result['message']);
     }
 
     public function destroy($id)
     {
-        $result = $this->deleteItem($this->model::query()->find($id), $id);
+        $model = $this->model::query()->find($id);
+        if (!$model) {
+            return redirect()->back()->with('error', 'Không tìm thấy dữ liệu');
+        }
+
+        $result = $this->deleteItem($model, $id);
+
+        if (request()->wantsJson()) {
+            return response()->json($result);
+        }
+
         return redirect()->back()->with($result['status'] ? 'success' : 'error', $result['message']);
     }
 
-    public function show($id)
+    public function restore($id)
     {
-        $result = $this->getDetail($this->model::query(), $id);
-        if (!$result['status']) {
-            return redirect()->back()->with('error', $result['message']);
+        $result = $this->restoreItem($this->model::withTrashed()->find($id));
+
+        if (request()->wantsJson()) {
+            return response()->json($result);
         }
-        return view(self::PATH_VIEW . 'show', ['item' => $result['data']]);
+
+        return redirect()->back()->with($result['status'] ? 'success' : 'error', $result['message']);
     }
 }
