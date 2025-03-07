@@ -29,7 +29,7 @@ class CrudRules
         'title' => ['required', 'string', 'max:255'],
         'description' => ['nullable', 'string', 'max:1000'],
         'content' => ['nullable', 'string'],
-        'slug' => ['nullable', 'string', 'max:255'],
+        'slug' => ['required', 'string', 'max:255'],
         'sortDescription' => ['nullable', 'string', 'max:255'],
         'type' => ['nullable', 'string', 'max:255'],
         'url' => ['nullable', 'string', 'max:255'],
