@@ -30,8 +30,9 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => CrudRules::TEXT_RULES['name']
-        ];
+            'name' => CrudRules::TEXT_RULES['name'],
+            'description' => CrudRules::TEXT_RULES['description'],
+        ];  
     }
 
     /**
@@ -44,6 +45,7 @@ class StoreRequest extends FormRequest
         return array_merge(
             CrudRules::MESSAGES,
             [
+                'name.required' => 'Tên danh mục là bắt buộc',
                 'name.unique' => 'Tên danh mục đã tồn tại'
             ]
         );

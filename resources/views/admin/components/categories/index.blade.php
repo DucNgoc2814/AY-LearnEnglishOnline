@@ -27,9 +27,10 @@
                             <div class="box_right d-flex lms_block">
                                 <div class="serach_field_2">
                                     <div class="search_inner">
-                                        <form active="#">
+                                        <form action="{{ route('admin.categories.index') }}" method="GET">
                                             <div class="search_field">
-                                                <input type="text" placeholder="Tìm kiếm...">
+                                                <input type="text" name="search" placeholder="Tìm kiếm..."
+                                                    value="{{ request('search') }}">
                                             </div>
                                             <button type="submit"> <i class="ti-search"></i> </button>
                                         </form>
@@ -41,52 +42,66 @@
                                         Thêm mới
                                     </button>
                                 </div>
+                                <div class="add_button ms-2">
+                                    <button type="button" class="btn_1" data-bs-toggle="modal"
+                                        data-bs-target="#trashCategoryModal">
+                                        Xem danh mục đã xóa
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
                         <div class="QA_table mb_30">
-                            <div class="dataTables_wrapper no-footer">
-                                <table class="table lms_table_active">
-                                    <thead>
+                            <table class="table lms_table_active">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Tên danh mục</th>
+                                        <th>Số khóa học</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($items as $key => $item)
                                         <tr>
-                                            <th scope="col">STT</th>
-                                            <th scope="col">Tên danh mục</th>
-                                            <th scope="col">Số khóa học</th>
-                                            <th scope="col">Ngày tạo</th>
-                                            <th scope="col">Thao tác</th>
+                                            <td>{{ ($items->currentPage() - 1) * $items->perPage() + $key + 1 }}</td>
+                                            <td>{{ $item->name }}</td>
+                                            <td>{{ $item->courses_count }}</td>
+                                            <td>{{ $item->created_at->format('d/m/Y') }}</td>
+                                            <td>
+                                                <div class="action_btns d-flex">
+                                                    <button type="button"
+                                                        class="action_btn mr_10 btn btn-outline-primary btn-sm"
+                                                        data-bs-toggle="modal" data-bs-target="#editCategoryModal"
+                                                        onclick="populateEditModal({{ json_encode($item) }})"
+                                                        title="Chỉnh sửa">
+                                                        <i class="far fa-edit"></i>
+                                                    </button>
+                                                    <form action="{{ route('admin.categories.destroy', $item->id) }}"
+                                                        method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="action_btn btn btn-outline-danger btn-sm" title="Xóa"
+                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($items as $key => $item)
-                                            <tr>
-                                                <td>{{ $key + 1 }}</td>
-                                                <td>{{ $item->name }}</td>
-                                                <td>{{ $item->courses_count }}</td>
-                                                <td>{{ $item->created_at->format('d/m/Y') }}</td>
-                                                <td>
-                                                    <div class="action_btns d-flex">
-                                                        <a href="{{ route('admin.categories.edit', $item->id) }}"
-                                                            class="action_btn mr_10">
-                                                            <i class="far fa-edit"></i>
-                                                        </a>
-                                                        <form action="{{ route('admin.categories.destroy', $item->id) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="action_btn" title="Xóa"
-                                                                onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')"
-                                                                style="border: none; background: none; padding: 0;">
-                                                                <i class="fas fa-trash text-danger"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <div class="dataTables_paginate paging_simple_numbers mt-3"
-                                    id="DataTables_Table_0_paginate">
+                                    @endforeach
+                                </tbody>
+                            </table>
+
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div class="">
+                                    Hiển thị từ {{ ($items->currentPage() - 1) * $items->perPage() + 1 }}
+                                    đến {{ min($items->currentPage() * $items->perPage(), $items->total()) }}
+                                    của {{ $items->total() }} bản ghi
+                                </div>
+                                <div class="">
                                     {{ $items->links() }}
                                 </div>
                             </div>
@@ -99,97 +114,20 @@
 
     <!-- Include Create Modal -->
     @include('admin.components.categories.modals.create')
+
+    <!-- Include Edit Modal -->
+    @include('admin.components.categories.modals.edit')
+
+    <!-- Include Trash Modal -->
+    @include('admin.components.categories.modals.trash')
 @endsection
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
-<<<<<<< HEAD:resources/views/admin/categories/index.blade.php
-            // DataTable config
-=======
-            console.log('Document ready');
-
-            // Test modal manually
-            $('.btn_1').on('click', function(e) {
-                console.log('Button clicked');
-                e.preventDefault();
-                var myModal = new bootstrap.Modal(document.getElementById('createCategoryModal'));
-                myModal.show();
-            });
-
-            // Check if modal exists
-            console.log('Modal element:', $('#createCategoryModal').length);
-
->>>>>>> c57ef3065dba5b10f868c42140eceb5cbd0eecaf:resources/views/admin/components/categories/index.blade.php
-            $('.table').DataTable({
-                bLengthChange: false,
-                "bDestroy": true,
-                language: {
-                    search: "<i class='ti-search'></i>",
-                    searchPlaceholder: 'Tìm kiếm',
-                    paginate: {
-                        next: "<i class='ti-arrow-right'></i>",
-                        previous: "<i class='ti-arrow-left'></i>"
-                    }
-                },
-                columnDefs: [{
-                    visible: false
-                }],
-                responsive: true,
-                searching: false,
-            });
-
-            // Xử lý hiển thị lỗi validation trong modal nếu có
-            @if(session('errors') && session('errors')->any())
-                $('#createCategoryModal').modal('show');
-            @endif
-        });
+        function populateEditModal(item) {
+            $('#editCategoryModal #categoryName').val(item.name);
+            $('#editCategoryModal #description').val(item.description);
+            $('#editCategoryModal form').attr('action', '{{ url('admin/categories') }}/' + item.id);
+        }
     </script>
 @endpush
-
-<<<<<<< HEAD:resources/views/admin/categories/index.blade.php
-=======
-@push('styles')
-    <style>
-        .modal-header {
-            background: #f3f6f9;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-        }
-
-        .modal-content {
-            border: none;
-            border-radius: 5px;
-        }
-
-        .modal-footer {
-            border-top: 1px solid #e4e6ef;
-            background: #f3f6f9;
-            border-bottom-left-radius: 5px;
-            border-bottom-right-radius: 5px;
-        }
-
-        .primary_checkbox {
-            cursor: pointer;
-        }
-
-        /* Thêm style mới */
-        .modal-backdrop {
-            opacity: 0.5;
-        }
-
-        .modal-backdrop.fade {
-            opacity: 0;
-        }
-
-        .modal-backdrop.show {
-            opacity: 0.5;
-        }
-
-        body.modal-open {
-            overflow: auto !important;
-            padding-right: 0 !important;
-        }
-    </style>
-@endpush
->>>>>>> c57ef3065dba5b10f868c42140eceb5cbd0eecaf:resources/views/admin/components/categories/index.blade.php

@@ -9,10 +9,10 @@ class CategorySeeder extends Seeder
 {
     public function run()
     {
-        Category::create(['name' => 'Programming']);
-        Category::create(['name' => 'Design']);
-        Category::create(['name' => 'Marketing']);
-        Category::create(['name' => 'Business']);
-        Category::create(['name' => 'Music']);
+        Category::create(['name' => 'Programming', 'slug' => 'programming']);
+        Category::create(['name' => 'Design', 'slug' => 'design']);
+        Category::create(['name' => 'Marketing', 'slug' => 'marketing']);
+        Category::create(['name' => 'Business', 'slug' => 'business']);
+        Category::create(['name' => 'Music', 'slug' => 'music']);
     }
 }
