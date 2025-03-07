@@ -75,6 +75,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{category}/edit', 'edit')->name('edit');
             Route::put('/{category}', 'update')->name('update');
             Route::delete('/{category}', 'destroy')->name('destroy');
+            Route::post('/{category}/restore', 'restore')->name('restore');
         });
 
     // Lessons Management

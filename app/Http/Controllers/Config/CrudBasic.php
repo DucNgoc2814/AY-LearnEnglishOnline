@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 trait CrudBasic
 {
+
     /**
      * Lấy danh sách có phân trang
      */
@@ -17,7 +18,7 @@ trait CrudBasic
                 ->paginate(CrudConfig::PAGINATION['per_page']);
             return $items;
         } catch (\Exception $e) {
-            return null;
+            return $this->errorResponse();
         }
     }
 
@@ -31,18 +32,18 @@ trait CrudBasic
             if ($item) {
                 return [
                     'status' => true,
-                    'message' => CrudConfig::MESSAGES['create']['success'],
+                    'message' => 'Thêm mới dữ liệu thành công',
                     'data' => $item
                 ];
             }
             return [
                 'status' => false,
-                'message' => CrudConfig::MESSAGES['create']['error']
+                'message' => 'Không thể tạo dữ liệu mới'
             ];
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => CrudConfig::MESSAGES['create']['error']
+                'message' => 'Có lỗi xảy ra khi tạo dữ liệu mới'
             ];
         }
     }
@@ -57,18 +58,18 @@ trait CrudBasic
             if ($updated) {
                 return [
                     'status' => true,
-                    'message' => CrudConfig::MESSAGES['update']['success'],
+                    'message' => 'Cập nhật dữ liệu thành công',
                     'data' => $model->fresh()
                 ];
             }
             return [
                 'status' => false,
-                'message' => CrudConfig::MESSAGES['update']['error']
+                'message' => 'Không thể cập nhật dữ liệu'
             ];
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => CrudConfig::MESSAGES['update']['error']
+                'message' => 'Có lỗi xảy ra khi cập nhật dữ liệu'
             ];
         }
     }
@@ -79,21 +80,21 @@ trait CrudBasic
     protected function deleteItem(Model $model, $id)
     {
         try {
-            $deleted = $model->find($id)->delete();
+            $deleted = $model->delete();
             if ($deleted) {
                 return [
                     'status' => true,
-                    'message' => CrudConfig::MESSAGES['delete']['success']
+                    'message' => 'Xóa dữ liệu thành công'
                 ];
             }
             return [
                 'status' => false,
-                'message' => CrudConfig::MESSAGES['delete']['error']
+                'message' => 'Không thể xóa dữ liệu'
             ];
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => CrudConfig::MESSAGES['delete']['error']
+                'message' => 'Có lỗi xảy ra khi xóa dữ liệu'
             ];
         }
     }
@@ -108,17 +109,18 @@ trait CrudBasic
             if (!$item) {
                 return [
                     'status' => false,
-                    'message' => CrudConfig::MESSAGES['not_found']
+                    'message' => 'Không tìm thấy dữ liệu'
                 ];
             }
             return [
                 'status' => true,
+                'message' => 'Lấy thông tin chi tiết thành công',
                 'data' => $item
             ];
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => CrudConfig::MESSAGES['not_found']
+                'message' => 'Có lỗi xảy ra khi lấy thông tin chi tiết'
             ];
         }
     }
@@ -132,9 +134,12 @@ trait CrudBasic
             $items = $query->withTrashed()
                 ->orderBy('id', 'DESC')
                 ->paginate(CrudConfig::PAGINATION['per_page']);
-            return $items;
+                return $items;
         } catch (\Exception $e) {
-            return null;
+            return [
+                'status' => false,
+                'message' => 'Có lỗi xảy ra khi lấy danh sách'
+            ];
         }
     }
 
@@ -148,17 +153,18 @@ trait CrudBasic
             if (!$item) {
                 return [
                     'status' => false,
-                    'message' => CrudConfig::MESSAGES['not_found']
+                    'message' => 'Không tìm thấy dữ liệu'
                 ];
             }
             return [
                 'status' => true,
+                'message' => 'Lấy thông tin chi tiết thành công',
                 'data' => $item
             ];
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => CrudConfig::MESSAGES['not_found']
+                'message' => 'Có lỗi xảy ra khi lấy thông tin chi tiết'
             ];
         }
     }
@@ -173,18 +179,18 @@ trait CrudBasic
             if ($restored) {
                 return [
                     'status' => true,
-                    'message' => 'Khôi phục dữ liệu thành công!',
+                    'message' => 'Khôi phục dữ liệu thành công',
                     'data' => $model
                 ];
             }
             return [
                 'status' => false,
-                'message' => 'Không thể khôi phục dữ liệu!'
+                'message' => 'Không thể khôi phục dữ liệu'
             ];
         } catch (\Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Có lỗi xảy ra khi khôi phục dữ liệu!'
+                'message' => 'Có lỗi xảy ra khi khôi phục dữ liệu'
             ];
         }
     }
