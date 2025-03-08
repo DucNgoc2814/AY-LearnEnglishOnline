@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Config\CrudBasic;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 
-class BlogController extends Controller
+class BlogController extends BaseController
 {
     use CrudBasic;
     const MODEL = new Blog();

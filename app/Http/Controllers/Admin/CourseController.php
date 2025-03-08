@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Config\CrudBasic;
+use App\Http\Controllers\BaseController;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class CourseController extends Controller
+class CourseController extends BaseController
 {
-    use CrudBasic;
-
-    const PATH_VIEW = 'admin.components.courses.';
+    protected const PATH_VIEW = 'admin.components.courses.';
     protected $model = Course::class;
 
     public function index()
