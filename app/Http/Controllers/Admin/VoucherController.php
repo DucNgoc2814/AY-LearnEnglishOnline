@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Config\CrudBasic;
 use App\Models\Voucher;
 use App\Http\Requests\Admin\Voucher\StoreRequest;
@@ -13,7 +13,7 @@ use App\Http\Requests\Admin\Voucher\UpdateRequest;
  * @author Your Name
  * @description Controller quản lý mã giảm giá
  */
-class VoucherController extends Controller
+class VoucherController extends BaseController
 {
     use CrudBasic;
 

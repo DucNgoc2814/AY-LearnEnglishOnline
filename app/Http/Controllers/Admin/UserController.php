@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Config\CrudBasic;
+use App\Http\Controllers\BaseController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
-    use CrudBasic;
 
-    const MODEL = new User();
+    protected const MODEL = User::class;
 
     public function index()
     {
