@@ -5,111 +5,166 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Config\CrudBasic;
 use App\Models\Voucher;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\Voucher\StoreRequest;
+use App\Http\Requests\Admin\Voucher\UpdateRequest;
 
+/**
+ * @package App\Http\Controllers\Admin
+ * @author Your Name
+ * @description Controller quản lý mã giảm giá
+ */
 class VoucherController extends Controller
 {
     use CrudBasic;
 
-    const MODEL = new Voucher();
+    const PATH_VIEW = 'admin.components.vouchers.';
+    protected $model = Voucher::class;
 
+    /**
+     * Hiển thị danh sách mã giảm giá
+     * 
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
-        $items = $this->getList(self::MODEL::query());
-        return view('admin.vouchers.index', compact('items'));
-    }
-
-    public function store(Request $request)
-    {
-        $rules = [
-            'code' => 'required|string|unique:vouchers',
-            'sale' => 'required|numeric|min:0',
-            'startDate' => 'required|date',
-            'endDate' => 'required|date|after:startDate',
-            'usageCount' => 'required|integer|min:0',
-            'maxUsage' => 'required|integer|min:1',
-            'minOrderValue' => 'required|numeric|min:0',
-            'maxDiscount' => 'required|numeric|min:0'
-        ];
-
-        $messages = [
-            'code.required' => 'Mã giảm giá không được để trống',
-            'code.unique' => 'Mã giảm giá đã tồn tại',
-            'sale.required' => 'Giá trị giảm không được để trống',
-            'sale.min' => 'Giá trị giảm phải lớn hơn 0',
-            'startDate.required' => 'Ngày bắt đầu không được để trống',
-            'endDate.required' => 'Ngày kết thúc không được để trống',
-            'endDate.after' => 'Ngày kết thúc phải sau ngày bắt đầu',
-            'usageCount.required' => 'Số lần sử dụng không được để trống',
-            'maxUsage.required' => 'Số lần sử dụng tối đa không được để trống',
-            'maxUsage.min' => 'Số lần sử dụng tối đa phải lớn hơn 0',
-            'minOrderValue.required' => 'Giá trị đơn hàng tối thiểu không được để trống',
-            'maxDiscount.required' => 'Giá trị giảm tối đa không được để trống'
-        ];
-
-        $data = $request->validate($rules, $messages);
-        $result = $this->storeItem(self::MODEL, $data);
-
-        if ($result['status']) {
-            return redirect()->route('admin.vouchers.index')->with('success', $result['message']);
-        }
-        return redirect()->back()->with('error', $result['message'])->withInput();
-    }
-
-    public function update(Request $request, $id)
-    {
-        $item = self::MODEL::find($id);
-        if (!$item) {
-            return redirect()->back()->with('error', 'Không tìm thấy mã giảm giá');
+        $query = $this->model::query();
+        
+        if (request()->has('search')) {
+            $search = request('search');
+            $query->where('code', 'LIKE', "%{$search}%");
         }
 
-        $rules = [
-            'code' => 'required|string|unique:vouchers,code,'.$id,
-            'sale' => 'required|numeric|min:0',
-            'startDate' => 'required|date',
-            'endDate' => 'required|date|after:startDate',
-            'usageCount' => 'required|integer|min:0',
-            'maxUsage' => 'required|integer|min:1',
-            'minOrderValue' => 'required|numeric|min:0',
-            'maxDiscount' => 'required|numeric|min:0'
-        ];
+        $items = $this->getList($query);
+            
+        $deletedVouchers = $this->getListWithTrashed($this->model::onlyTrashed());
 
-        $messages = [
-            'code.required' => 'Mã giảm giá không được để trống',
-            'code.unique' => 'Mã giảm giá đã tồn tại',
-            'sale.required' => 'Giá trị giảm không được để trống',
-            'sale.min' => 'Giá trị giảm phải lớn hơn 0',
-            'startDate.required' => 'Ngày bắt đầu không được để trống',
-            'endDate.required' => 'Ngày kết thúc không được để trống',
-            'endDate.after' => 'Ngày kết thúc phải sau ngày bắt đầu',
-            'usageCount.required' => 'Số lần sử dụng không được để trống',
-            'maxUsage.required' => 'Số lần sử dụng tối đa không được để trống',
-            'maxUsage.min' => 'Số lần sử dụng tối đa phải lớn hơn 0',
-            'minOrderValue.required' => 'Giá trị đơn hàng tối thiểu không được để trống',
-            'maxDiscount.required' => 'Giá trị giảm tối đa không được để trống'
-        ];
+        return view(self::PATH_VIEW . 'index', compact('items', 'deletedVouchers'));
+    }
 
-        $data = $request->validate($rules, $messages);
-        $result = $this->updateItem($item, $data);
+    /**
+     * Lưu mã giảm giá mới
+     * 
+     * @param StoreRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(StoreRequest $request)
+    {
+        try {
+            $model = new $this->model();
+            $data = $request->validated();
 
-        if ($result['status']) {
-            return redirect()->route('admin.vouchers.index')->with('success', $result['message']);
+            $result = $this->storeItem($model, $data);
+            
+            $flashType = $result['status'] ? 'success' : 'error';
+            $flashMessage = $result['message'];
+            
+            return redirect()->back()->with($flashType, $flashMessage);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi tạo mã giảm giá');
         }
-        return redirect()->back()->with('error', $result['message'])->withInput();
     }
 
-    public function destroy($id)
+    /**
+     * Hiển thị form chỉnh sửa mã giảm giá
+     * 
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function edit($id)
     {
-        $result = $this->deleteItem(self::MODEL, $id);
-        return redirect()->back()->with($result['status'] ? 'success' : 'error', $result['message']);
-    }
-
-    public function show($id)
-    {
-        $result = $this->getDetail(self::MODEL::query(), $id);
+        $result = $this->getDetail($this->model::query(), $id);
         if (!$result['status']) {
             return redirect()->back()->with('error', $result['message']);
         }
-        return view('admin.vouchers.show', ['item' => $result['data']]);
+        
+        return view(self::PATH_VIEW . 'edit', ['item' => $result['data']]);
+    }
+
+    /**
+     * Cập nhật mã giảm giá
+     * 
+     * @param int $id
+     * @param UpdateRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    public function update($id, UpdateRequest $request)
+    {
+        try {
+            $data = $request->validated();
+            
+            $result = $this->updateItem($this->model::query()->find($id), $data);
+            
+            if ($request->wantsJson()) {
+                return response()->json($result);
+            }
+            
+            $flashType = $result['status'] ? 'success' : 'error';
+            $flashMessage = $result['message'];
+            
+            return redirect()->back()->with($flashType, $flashMessage);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật mã giảm giá');
+        }
+    }
+
+    /**
+     * Xóa mã giảm giá
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    public function destroy($id)
+    {
+        $model = $this->model::query()->find($id);
+        if (!$model) {
+            return redirect()->back()->with('error', 'Không tìm thấy dữ liệu');
+        }
+        
+        $result = $this->deleteItem($model, $id);
+        
+        if (request()->wantsJson()) {
+            return response()->json($result);
+        }
+        
+        $flashType = $result['status'] ? 'success' : 'error';
+        $flashMessage = $result['message'];
+        
+        return redirect()->back()->with($flashType, $flashMessage);
+    }
+
+    /**
+     * Khôi phục mã giảm giá đã xóa
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    public function restore($id)
+    {
+        $result = $this->restoreItem($this->model::withTrashed()->find($id));
+        
+        if (request()->wantsJson()) {
+            return response()->json($result);
+        }
+        
+        $flashType = $result['status'] ? 'success' : 'error';
+        $flashMessage = $result['message'];
+        
+        return redirect()->back()->with($flashType, $flashMessage);
+    }
+
+    /**
+     * Hiển thị chi tiết mã giảm giá
+     * 
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function show($id)
+    {
+        $result = $this->getDetail($this->model::query(), $id);
+        if (!$result['status']) {
+            return redirect()->back()->with('error', $result['message']);
+        }
+        
+        return view(self::PATH_VIEW . 'show', ['item' => $result['data']]);
     }
 } 

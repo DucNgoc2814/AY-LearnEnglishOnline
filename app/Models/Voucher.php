@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Voucher extends Model
 {
@@ -37,9 +38,18 @@ class Voucher extends Model
 
     public function isValid()
     {
-        $now = now();
-        return $this->startDate <= $now 
-            && $this->endDate >= $now
-            && ($this->maxUsage === null || $this->usageCount < $this->maxUsage);
+        // Convert dates to timestamps for simple comparison
+        $now = time();
+        $startTimestamp = strtotime($this->startDate);
+        $endTimestamp = strtotime($this->endDate);
+        
+        // Check if current time is within the valid date range
+        // OR if the start date is in the future (not yet started)
+        $isDateValid = ($now >= $startTimestamp && $now <= $endTimestamp) || ($startTimestamp > $now);
+        
+        // Check if usage count is within limits
+        $isUsageValid = ($this->maxUsage === null || $this->usageCount < $this->maxUsage);
+        
+        return $isDateValid && $isUsageValid;
     }
 } 
