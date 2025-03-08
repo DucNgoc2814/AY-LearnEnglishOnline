@@ -8,7 +8,7 @@
 <!-- waypoints js -->
 <script src="{{ asset('themes/admin/vendors/count_up/jquery.waypoints.min.js') }}"></script>
 <!-- waypoints js -->
-{{-- <script src="{{ asset('themes/admin/vendors/chartlist/Chart.min.js') }}"></script> --}}
+<script src="{{ asset('themes/admin/vendors/chartlist/Chart.min.js') }}"></script>
 <!-- counterup js -->
 <script src="{{ asset('themes/admin/vendors/count_up/jquery.counterup.min.js') }}"></script>
 
@@ -45,8 +45,8 @@
 <script src="{{ asset('themes/admin/vendors/am_chart/amcharts.js') }}"></script>
 
 <!-- scrollabe  -->
-{{-- <script src="{{ asset('themes/admin/vendors/scroll/perfect-scrollbar.min.js') }}"></script> --}}
-{{-- <script src="{{ asset('themes/admin/vendors/scroll/scrollable-custom.js') }}"></script> --}}
+<script src="{{ asset('themes/admin/vendors/scroll/perfect-scrollbar.min.js') }}"></script>
+<script src="{{ asset('themes/admin/vendors/scroll/scrollable-custom.js') }}"></script>
 
 <!-- vector map  -->
 <script src="{{ asset('themes/admin/vendors/vectormap-home/vectormap-2.0.2.min.js') }}"></script>
@@ -56,13 +56,13 @@
 {{-- <script src="{{ asset('themes/admin/vendors/apex_chart/apex-chart2.js') }}"></script> --}}
 {{-- <script src="{{ asset('themes/admin/vendors/apex_chart/apex_dashboard.js') }}"></script> --}}
 
-{{-- <script src="{{ asset('themes/admin/vendors/echart/echarts.min.js') }}"></script> --}}
+<script src="{{ asset('themes/admin/vendors/echart/echarts.min.js') }}"></script> 
 
 
-{{-- <script src="{{ asset('themes/admin/vendors/chart_am/core.js') }}"></script> --}}
-{{-- <script src="{{ asset('themes/admin/vendors/chart_am/charts.js') }}"></script>
+<script src="{{ asset('themes/admin/vendors/chart_am/core.js') }}"></script>
+<script src="{{ asset('themes/admin/vendors/chart_am/charts.js') }}"></script>
 <script src="{{ asset('themes/admin/vendors/chart_am/animated.js') }}"></script>
 <script src="{{ asset('themes/admin/vendors/chart_am/kelly.js') }}"></script>
-<script src="{{ asset('themes/admin/vendors/chart_am/chart-custom.js') }}"></script> --}}
+<script src="{{ asset('themes/admin/vendors/chart_am/chart-custom.js') }}"></script>
 <!-- custom js -->
 <script src="{{ asset('themes/admin/js/dashboard_init.js') }}"></script>

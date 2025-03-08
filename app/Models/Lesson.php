@@ -43,11 +43,6 @@ class Lesson extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function zoomSessions()
-    {
-        return $this->hasMany(ZoomSession::class);
-    }
-
     public function progress()
     {
         return $this->hasMany(Progress::class);

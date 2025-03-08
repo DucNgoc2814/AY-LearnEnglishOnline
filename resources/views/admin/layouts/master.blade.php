@@ -17,15 +17,13 @@
     @include('admin.layouts.partials.sidebar')
     <!--/ sidebar  -->
 
-    <section class="main_content dashboard_part large_header_bg">
+    <section class="main_content ">
         <!-- header  -->
         @include('admin.layouts.partials.header')
         
         <!-- content -->
         @yield('content')
 
-        <!-- footer -->
-        @include('admin.layouts.partials.footer')
     </section>
 
     <!-- Scripts -->

@@ -1,25 +1,9 @@
 @extends('admin.layouts.master')
 @section('title', 'Quản lý danh mục')
 @section('content')
-    <div class="main_content_iner ">
+    <div class="main_content_iner">
         <div class="container-fluid p-0">
             <div class="row justify-content-center">
-                <div class="col-12">
-                    <div class="dashboard_header mb_50">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="dashboard_header_title">
-                                    <h3>Danh sách danh mục</h3>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="dashboard_breadcam text-end">
-                                    <p><a href="javascript:;">Dashboard</a> <i class="fas fa-caret-right"></i> Danh mục</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="col-12">
                     <div class="QA_section">
                         <div class="white_box_tittle list_header">

@@ -63,6 +63,8 @@ class Course extends Model
 
     public function totalLessons()
     {
-        return $this->lessons()->count() + $this->zoomSessions()->count();
+        return $this->lessons()->count() ;
     }
+
+
 }

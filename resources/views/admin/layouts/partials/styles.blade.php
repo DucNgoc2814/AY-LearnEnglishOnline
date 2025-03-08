@@ -1,6 +1,5 @@
-    <link rel="icon" href="{{ asset('themes/admin/img/logo.png') }}" type="image/png">
+   <link rel="icon" href="{{ asset('themes/admin/img/logo.png') }}" type="image/png">
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- themefy CSS -->
     <link rel="stylesheet" href="{{ asset('themes/admin/vendors/themefy_icon/themify-icons.css') }}" />
     <!-- select2 CSS -->
@@ -35,5 +34,9 @@
     <link rel="stylesheet" href="{{ asset('themes/admin/css/metisMenu.css') }}" />
     <!-- style CSS -->
     <link rel="stylesheet" href="{{ asset('themes/admin/css/colors/default.css') }}" id="colorSkinCSS">
-    <link rel="stylesheet" href="{{ asset('themes/admin/css/style1.css') }}" />
-    <link rel="stylesheet" href="{{ asset('themes/admin/css/main.css') }}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    {{-- <link rel="stylesheet" href="{{ asset('themes/admin/css/style1.css') }}" /> --}}
+    <link rel="stylesheet" href="{{ asset('css/style1.css') }}" />
+    {{-- <link rel="stylesheet" href="{{ asset('themes/admin/css/main.css') }}" /> --}}
+
+

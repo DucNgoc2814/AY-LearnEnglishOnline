@@ -13,7 +13,6 @@ class CreateLessonsTable extends Migration
             $table->foreignId('courseId')->constrained('courses');
             $table->string('name');
             $table->string('slug')->unique()->comment('Slug bài học');
-            $table->enum('type', ['video', 'zoom'])->comment('Loại bài học');
             $table->text('description')->nullable();
             $table->integer('orderNumber')->default(0)->comment('Thứ tự bài học trong khóa học');
             $table->boolean('isPreview')->default(false)->comment('Bài học xem thử');
