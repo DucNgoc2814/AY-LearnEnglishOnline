@@ -1,0 +1,86 @@
+body {
+  font-family: "Lato", sans-serif !important;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  background: #ffffff;
+}
+
+.QA_section .QA_table {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.QA_section .QA_table thead th {
+  padding: 15px 20px;
+  border-bottom: 2px solid #f0f2f8;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2e4765;
+  background-color: #f8faff;
+  white-space: nowrap;
+}
+
+.QA_section .QA_table tbody td {
+  padding: 15px 20px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f0f2f8;
+  font-size: 14px;
+  color: #444;
+}
+
+.QA_section .QA_table tbody tr:hover {
+  background-color: #f8faff;
+  transition: all 0.3s ease;
+}
+
+/* Style cho badge trạng thái */
+.QA_section .QA_table .badge {
+  padding: 8px 12px;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.QA_section .QA_table .badge.bg-success {
+  background-color: #2eb67d !important;
+  color: #fff;
+}
+
+.QA_section .QA_table .badge.bg-danger {
+  background-color: #e63757 !important;
+  color: #fff;
+}
+
+/* Style cho các nút thao tác */
+.QA_section .QA_table .action_btns {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.QA_section .QA_table .action_btns button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.QA_section .QA_table .action_btns button:hover {
+  transform: translateY(-2px);
+}
+
+.QA_section .QA_table .action_btns i {
+  font-size: 14px;
+}
+
+.QA_section .QA_table .table thead th {
+  color: #09274b;
+  font-weight: 700;
+  font-size: 13px;
+}

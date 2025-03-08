@@ -18,8 +18,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if(isset($deletedVouchers) && count($deletedVouchers) > 0)
-                            @foreach ($deletedVouchers as $voucher)
+                        @if(isset($trashList) && count($trashList) > 0)
+                            @foreach ($trashList as $voucher)
                                 <tr>
                                     <td>{{ $voucher->code }}</td>
                                     <td>{{ $voucher->sale }}</td>
@@ -27,10 +27,15 @@
                                     <td>{{ $voucher->endDate->format('d/m/Y') }}</td>
                                     <td>{{ $voucher->deleted_at->format('H:i:s - d/m/Y') }}</td>
                                     <td>
-                                        <form action="{{ route('admin.vouchers.restore', ['voucher' => $voucher->id]) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            <button type="submit" class="btn btn-success">Khôi phục</button>
-                                        </form>
+                                        <div class="action_btns d-flex">
+                                            <form action="{{ route('admin.vouchers.restore', $voucher->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <button type="submit" class="action_btn btn btn-outline-success btn-sm" title="Khôi phục"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn khôi phục mã giảm giá này?')">
+                                                    <i class="fas fa-trash-restore"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -42,11 +47,16 @@
                     </tbody>
                 </table>
                 
-                @if(isset($deletedVouchers) && $deletedVouchers->hasPages())
-                <div class="d-flex justify-content-center mt-3">
-                    {{ $deletedVouchers->links() }}
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="">
+                        Hiển thị từ {{ ($trashPagination['current_page'] - 1) * $trashPagination['per_page'] + 1 }}
+                        đến {{ min($trashPagination['current_page'] * $trashPagination['per_page'], $trashPagination['total']) }}
+                        của {{ $trashPagination['total'] }} bản ghi
+                    </div>
+                    <div class="">
+                        {{ $trashPagination['links'] }}
+                    </div>
                 </div>
-                @endif
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
