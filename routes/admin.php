@@ -137,10 +137,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{voucher}/edit', 'edit')->name('edit');
             Route::put('/{voucher}', 'update')->name('update');
             Route::delete('/{voucher}', 'destroy')->name('destroy');
-
-            // Additional voucher routes
-            Route::post('{voucher}/activate', 'activate')->name('activate');
-            Route::post('{voucher}/deactivate', 'deactivate')->name('deactivate');
+            Route::delete('/{voucher}', 'destroy')->name('destroy');
+            Route::post('/{voucher}/restore', 'restore')->name('restore');
         });
 
     // Employees Management

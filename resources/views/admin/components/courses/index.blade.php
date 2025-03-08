@@ -45,60 +45,58 @@
                         </div>
 
                         <div class="QA_table mb_30">
-                            <div class="dataTables_wrapper no-footer">
-                                <table class="table lms_table_active">
-                                    <thead>
+                            <table class="table lms_table_active">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">STT</th>
+                                        <th scope="col">Tên danh mục</th>
+                                        <th scope="col">Tên khóa học</th>
+                                        <th scope="col">Ảnh khóa học</th>
+                                        <th scope="col">Giá khóa học</th>
+                                        <th scope="col">Giá giảm khóa học</th>
+                                        <th scope="col">Số bài học</th>
+                                        <th scope="col">Lượt đánh giá trung bình</th>
+                                        <th scope="col">Thời gian phát hành</th>
+                                        <th scope="col">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($items as $key => $item)
                                         <tr>
-                                            <th scope="col">STT</th>
-                                            <th scope="col">Tên danh mục</th>
-                                            <th scope="col">Tên khóa học</th>
-                                            <th scope="col">Ảnh khóa học</th>
-                                            <th scope="col">Giá khóa học</th>
-                                            <th scope="col">Giá giảm khóa học</th>
-                                            <th scope="col">Số bài học</th>
-                                            <th scope="col">Lượt đánh giá trung bình</th>
-                                            <th scope="col">Thời gian phát hành</th>
-                                            <th scope="col">Thao tác</th>
+                                            <td>{{ $key + 1 }}</td>
+                                            <td>{{ $item->category->name ?? 'N/A' }}</td>
+                                            <td>{{ $item->name }}</td>
+                                            <td><img src="{{ asset($item->thumbnail) }}" alt="{{ $item->name }}"
+                                                    width="50"></td>
+                                            <td>{{ $item->price }}</td>
+                                            <td>{{ $item->salePrice }}</td>
+                                            <td>{{ $item->totalLessons() }}</td>
+                                            <td>{{ $item->ratings->avg('rating') ?? 'N/A' }}</td>
+                                            <td>{{ $item->releaseTime->format('d/m/Y') }}</td>
+                                            <td>
+                                                <div class="action_btns d-flex">
+                                                    <a href="{{ route('admin.courses.edit', $item->id) }}"
+                                                        class="action_btn mr_10">
+                                                        <i class="far fa-edit"></i>
+                                                    </a>
+                                                    <form action="{{ route('admin.courses.destroy', $item->id) }}"
+                                                        method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="action_btn" title="Xóa"
+                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa khóa học này?')"
+                                                            style="border: none; background: none; padding: 0;">
+                                                            <i class="fas fa-trash text-danger"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($items as $key => $item)
-                                            <tr>
-                                                <td>{{ $key + 1 }}</td>
-                                                <td>{{ $item->category->name ?? 'N/A' }}</td>
-                                                <td>{{ $item->name }}</td>
-                                                <td><img src="{{ asset($item->thumbnail) }}" alt="{{ $item->name }}" width="50"></td>
-                                                <td>{{ $item->price }}</td>
-                                                <td>{{ $item->salePrice }}</td>
-                                                <td>{{ $item->totalLessons() }}</td>
-                                                <td>{{ $item->ratings->avg('rating') ?? 'N/A' }}</td>
-                                                <td>{{ $item->releaseTime->format('d/m/Y') }}</td>
-                                                <td>
-                                                    <div class="action_btns d-flex">
-                                                        <a href="{{ route('admin.courses.edit', $item->id) }}"
-                                                            class="action_btn mr_10">
-                                                            <i class="far fa-edit"></i>
-                                                        </a>
-                                                        <form action="{{ route('admin.courses.destroy', $item->id) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="action_btn" title="Xóa"
-                                                                onclick="return confirm('Bạn có chắc chắn muốn xóa khóa học này?')"
-                                                                style="border: none; background: none; padding: 0;">
-                                                                <i class="fas fa-trash text-danger"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                <div class="dataTables_paginate paging_simple_numbers mt-3"
-                                    id="DataTables_Table_0_paginate">
-                                    {{ $items->links() }}
-                                </div>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <div class="dataTables_paginate paging_simple_numbers mt-3" id="DataTables_Table_0_paginate">
+                                {{ $items->links() }}
                             </div>
                         </div>
                     </div>
@@ -146,11 +144,11 @@
             });
 
             // Xử lý khi modal đóng
-            $('#createCategoryModal').on('hidden.bs.modal', function () {
+            $('#createCategoryModal').on('hidden.bs.modal', function() {
                 $(this).find('form').trigger('reset');
                 $('.is-invalid').removeClass('is-invalid');
                 $('.invalid-feedback').remove();
-                // Xóa backdrop
+                // Xóa backdrop+
                 $('.modal-backdrop').remove();
                 $('body').removeClass('modal-open');
                 $('body').css('overflow', '');
@@ -167,7 +165,7 @@
             });
 
             // Xử lý hiển thị lỗi validation trong modal nếu có
-            @if(session('errors') && session('errors')->any())
+            @if (session('errors') && session('errors')->any())
                 $('#createCategoryModal').modal('show');
             @endif
         });
