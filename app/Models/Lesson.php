@@ -13,9 +13,8 @@ class Lesson extends Model
         'courseId',
         'name',
         'slug',
-        'videoUrl',
+        'type',
         'description',
-        'duration',
         'orderNumber',
         'isPreview',
         'totalView',
@@ -23,7 +22,6 @@ class Lesson extends Model
     ];
 
     protected $casts = [
-        'duration' => 'integer',
         'orderNumber' => 'integer',
         'isPreview' => 'boolean',
         'totalView' => 'integer',
@@ -45,13 +43,12 @@ class Lesson extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function zoomSessions()
-    {
-        return $this->hasMany(ZoomSession::class);
-    }
-
     public function progress()
     {
         return $this->hasMany(Progress::class);
     }
-} 
+    public function videoLesson()
+    {
+        return $this->hasMany(VideoLesson::class);
+    }
+}

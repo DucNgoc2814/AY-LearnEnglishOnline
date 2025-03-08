@@ -28,6 +28,7 @@ use Database\Seeders\QuestionFinalExamSeeder;
 use Database\Seeders\AnswerFinalExamSeeder;
 use Database\Seeders\BannerSeeder;
 use Database\Seeders\OrderStatusSeeder;
+use Database\Seeders\VideoLessonSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -60,6 +61,7 @@ class DatabaseSeeder extends Seeder
             QuestionFinalExamSeeder::class,
             AnswerFinalExamSeeder::class,
             BannerSeeder::class,
+            VideoLessonSeeder::class,
         ]);
     }
 }

@@ -20,9 +20,9 @@ class ZoomSession extends Model
         'releaseTime' => 'datetime'
     ];
 
-    public function lesson()
+    public function course()
     {
-        return $this->belongsTo(Lesson::class, 'lessonId');
+        return $this->belongsTo(Course::class, 'courseId');
     }
 
     public function videoRecords()

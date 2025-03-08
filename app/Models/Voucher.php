@@ -38,18 +38,11 @@ class Voucher extends Model
 
     public function isValid()
     {
-        // Convert dates to timestamps for simple comparison
         $now = time();
         $startTimestamp = strtotime($this->startDate);
         $endTimestamp = strtotime($this->endDate);
-        
-        // Check if current time is within the valid date range
-        // OR if the start date is in the future (not yet started)
         $isDateValid = ($now >= $startTimestamp && $now <= $endTimestamp) || ($startTimestamp > $now);
-        
-        // Check if usage count is within limits
         $isUsageValid = ($this->maxUsage === null || $this->usageCount < $this->maxUsage);
-        
         return $isDateValid && $isUsageValid;
     }
 } 
