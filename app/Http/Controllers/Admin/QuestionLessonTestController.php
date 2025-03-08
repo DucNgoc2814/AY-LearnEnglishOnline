@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Config\CrudBasic;
 use App\Models\QuestionLessonTest;
 use Illuminate\Http\Request;
 
-class QuestionLessonTestController extends Controller
+class QuestionLessonTestController extends BaseController
 {
     use CrudBasic;
 
