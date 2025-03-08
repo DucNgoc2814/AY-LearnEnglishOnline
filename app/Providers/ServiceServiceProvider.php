@@ -7,6 +7,10 @@ use App\Services\Interfaces\CategoryServiceInterface;
 use App\Services\CategoryService;
 use App\Repositories\Interfaces\CategoryRepositoryInterface;
 use App\Repositories\CategoryRepository;
+use App\Repositories\Interfaces\VoucherRepositoryInterface;
+use App\Repositories\VoucherRepository;
+use App\Services\Interfaces\VoucherServiceInterface;
+use App\Services\VoucherService;
 
 class ServiceServiceProvider extends ServiceProvider
 {
@@ -14,5 +18,7 @@ class ServiceServiceProvider extends ServiceProvider
     {
         $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
         $this->app->bind(CategoryServiceInterface::class, CategoryService::class);
+        $this->app->bind(VoucherRepositoryInterface::class, VoucherRepository::class);
+        $this->app->bind(VoucherServiceInterface::class, VoucherService::class);
     }
 } 
