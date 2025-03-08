@@ -31,8 +31,8 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => CrudRules::TEXT_RULES['name'],
-            'description' => CrudRules::TEXT_RULES['description'],
+            'name' => 'required|string|max:255|unique:categories,name',
+            'description' => 'nullable|string|max:255',
         ];
     }
 
@@ -44,7 +44,6 @@ class UpdateRequest extends FormRequest
     public function messages(): array
     {
         return array_merge(
-            CrudRules::MESSAGES,
             [
                 'name.required' => 'Tên danh mục là bắt buộc',
                 'name.unique' => 'Tên danh mục đã tồn tại'
