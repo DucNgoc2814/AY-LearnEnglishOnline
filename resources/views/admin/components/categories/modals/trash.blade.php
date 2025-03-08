@@ -16,14 +16,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if(isset($deletedCategories) && count($deletedCategories) > 0)
-                            @foreach ($deletedCategories as $category)
+                        @if(isset($trashList) && count($trashList) > 0)
+                            @foreach ($trashList as $category)
                                 <tr>
                                     <td>{{ $category->name }}</td>
                                     <td>{{ $category->courses_count }}</td>
-                                    <td>{{ $category->deleted_at->format('H:i:s - d/m/Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($category->deleted_at)->format('d/m/Y') }}</td>
                                     <td>
-                                        <form action="{{ route('admin.categories.restore', ['category' => $category->id]) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('admin.categories.restore', $category->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-success">Khôi phục</button>
                                         </form>
@@ -39,12 +39,12 @@
                 </table>
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <div class="">
-                        Hiển thị từ {{ ($deletedCategories->currentPage() - 1) * $deletedCategories->perPage() + 1 }}
-                        đến {{ min($deletedCategories->currentPage() * $deletedCategories->perPage(), $deletedCategories->total()) }}
-                        của {{ $deletedCategories->total() }} bản ghi
+                        Hiển thị từ {{ ($trashPagination['current_page'] - 1) * $trashPagination['per_page'] + 1 }}
+                        đến {{ min($trashPagination['current_page'] * $trashPagination['per_page'], $trashPagination['total']) }}
+                        của {{ $trashPagination['total'] }} bản ghi
                     </div>
                     <div class="">
-                        {{ $deletedCategories->links() }}
+                        {{ $trashPagination['links'] }}
                     </div>
                 </div>
             </div>

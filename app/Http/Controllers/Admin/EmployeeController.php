@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Config\CrudBasic;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 
-class EmployeeController extends Controller
+class EmployeeController extends BaseController
 {
     use CrudBasic;
 

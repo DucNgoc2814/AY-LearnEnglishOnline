@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Models\Course;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Lesson;
 use App\Models\Employee;
-use Illuminate\Http\Request;
 
-class DashboardController extends Controller
+class DashboardController extends BaseController
 {
     public function index()
     {
