@@ -1,9 +1,8 @@
-<!-- Create Category Modal -->
-<div class="modal fade" id="createCategoryModal" tabindex="-1" role="dialog" aria-labelledby="createCategoryModalLabel" aria-hidden="true">
+<div class="modal fade" id="createCourseModal" tabindex="-1" role="dialog" aria-labelledby="createCourseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createCategoryModalLabel">Thêm khóa học mới</h5>
+                <h5 class="modal-title" id="createCourseModalLabel">Thêm khóa học mới</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('admin.courses.store') }}" method="POST" enctype="multipart/form-data">
