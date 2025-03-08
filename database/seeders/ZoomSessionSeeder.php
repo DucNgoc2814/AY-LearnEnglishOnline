@@ -10,31 +10,31 @@ class ZoomSessionSeeder extends Seeder
     public function run()
     {
         ZoomSession::create([
-            'lessonId' => 1,
+            'courseId' => 1,
             'releaseTime' => now(),
             'recordingLink' => null,
             'status' => 'scheduled'
         ]);
         ZoomSession::create([
-            'lessonId' => 2,
+            'courseId' => 2,
             'releaseTime' => now(),
             'recordingLink' => null,
             'status' => 'scheduled'
         ]);
         ZoomSession::create([
-            'lessonId' => 3,
+            'courseId' => 3,
             'releaseTime' => now(),
             'recordingLink' => null,
             'status' => 'scheduled'
         ]);
         ZoomSession::create([
-            'lessonId' => 4,
+            'courseId' => 4,
             'releaseTime' => now(),
             'recordingLink' => null,
             'status' => 'scheduled'
         ]);
         ZoomSession::create([
-            'lessonId' => 5,
+            'courseId' => 5,
             'releaseTime' => now(),
             'recordingLink' => null,
             'status' => 'scheduled'
