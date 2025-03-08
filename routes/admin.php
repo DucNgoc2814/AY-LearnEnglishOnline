@@ -30,7 +30,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Users Management 
+    // Users Management
     Route::controller(UserController::class)
         ->prefix('users')
         ->name('users.')
@@ -56,6 +56,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/{course}/edit', 'edit')->name('edit');
             Route::put('/{course}', 'update')->name('update');
             Route::delete('/{course}', 'destroy')->name('destroy');
+            Route::post('/{course}/restore', 'restore')->name('restore');
 
             // Additional course routes
             Route::post('{course}/lessons/reorder', 'reorderLessons')->name('lessons.reorder');
@@ -106,7 +107,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{blog}', 'destroy')->name('destroy');
         });
 
-    // Orders Management 
+    // Orders Management
     Route::controller(OrderController::class)
         ->prefix('orders')
         ->name('orders.')
