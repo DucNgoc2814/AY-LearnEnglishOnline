@@ -50,18 +50,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         ->name('courses.')
         ->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
             Route::post('/', 'store')->name('store');
-            Route::get('/{course}', 'show')->name('show');
-            Route::get('/{course}/edit', 'edit')->name('edit');
-            Route::put('/{course}', 'update')->name('update');
-            Route::delete('/{course}', 'destroy')->name('destroy');
-            Route::post('/{course}/restore', 'restore')->name('restore');
-
-            // Additional course routes
-            Route::post('{course}/lessons/reorder', 'reorderLessons')->name('lessons.reorder');
-            Route::post('{course}/publish', 'publish')->name('publish');
-            Route::post('{course}/unpublish', 'unpublish')->name('unpublish');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
         });
 
     // Categories Management

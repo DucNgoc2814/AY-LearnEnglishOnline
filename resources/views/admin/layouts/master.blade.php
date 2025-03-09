@@ -27,7 +27,6 @@
     </section>
 
     <!-- Scripts -->
-    <script src="js/jquery1-3.4.1.min.js"></script>
     @include('admin.layouts.partials.scripts')
     @stack('scripts')
 </body>
