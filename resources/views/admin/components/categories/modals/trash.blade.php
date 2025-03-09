@@ -23,10 +23,15 @@
                                     <td>{{ $category->courses_count }}</td>
                                     <td>{{ \Carbon\Carbon::parse($category->deleted_at)->format('d/m/Y') }}</td>
                                     <td>
-                                        <form action="{{ route('admin.categories.restore', $category->id) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            <button type="submit" class="btn btn-success">Khôi phục</button>
-                                        </form>
+                                        <div class="action_btns d-flex">
+                                            <form action="{{ route('admin.categories.restore', $category->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <button type="submit" class="action_btn btn btn-outline-success btn-sm" title="Khôi phục"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn khôi phục khóa học này?')">
+                                                    <i class="fas fa-trash-restore"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

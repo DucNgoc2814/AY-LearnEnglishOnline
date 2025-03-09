@@ -97,6 +97,7 @@ abstract class BaseService implements BaseServiceInterface
     public function update($data, $id)
     {
         try {
+  
             $item = $this->repository->findById($id);
             if (!$item) {
                 return [

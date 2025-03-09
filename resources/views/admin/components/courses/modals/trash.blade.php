@@ -28,10 +28,15 @@
                                     <td>{{ number_format($course->price) }}đ</td>
                                     <td>{{ \Carbon\Carbon::parse($course->deleted_at)->format('d/m/Y') }}</td>
                                     <td>
-                                        <form action="{{ route('admin.courses.restore', $course->id) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            <button type="submit" class="btn btn-success">Khôi phục</button>
-                                        </form>
+                                        <div class="action_btns d-flex">
+                                            <form action="{{ route('admin.courses.restore', $course->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <button type="submit" class="action_btn btn btn-outline-success btn-sm" title="Khôi phục"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn khôi phục khóa học này?')">
+                                                    <i class="fas fa-trash-restore"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

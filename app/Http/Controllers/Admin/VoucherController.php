@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Config\CrudBasic;
-use App\Models\Voucher;
+use App\Services\Interfaces\VoucherServiceInterface;
 use App\Http\Requests\Admin\Voucher\StoreRequest;
 use App\Http\Requests\Admin\Voucher\UpdateRequest;
 
@@ -15,156 +14,93 @@ use App\Http\Requests\Admin\Voucher\UpdateRequest;
  */
 class VoucherController extends BaseController
 {
-    use CrudBasic;
+    protected $voucherService;
+    const VIEW_PATH = 'admin.components.vouchers.';
 
-    const PATH_VIEW = 'admin.components.vouchers.';
-    protected $model = Voucher::class;
+    public function __construct(VoucherServiceInterface $voucherService)
+    {
+        $this->voucherService = $voucherService;
+    }
 
     /**
-     * Hiển thị danh sách mã giảm giá
+     * Hiển thị danh sách voucher
      * 
      * @return \Illuminate\View\View
      */
     public function index()
     {
-        $query = $this->model::query();
-        
-        if (request()->has('search')) {
-            $search = request('search');
-            $query->where('code', 'LIKE', "%{$search}%");
+        try {
+            $list = $this->voucherService->getList();
+            $trashList = $this->voucherService->getTrashList();
+            return view(self::VIEW_PATH . 'index', [
+                'vouchers' => $list['data'],
+                'pagination' => $list['pagination'],
+                'trashList' => $trashList['data'],
+                'trashPagination' => $trashList['pagination'],
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra');
         }
-
-        $items = $this->getList($query);
-            
-        $deletedVouchers = $this->getListWithTrashed($this->model::onlyTrashed());
-
-        return view(self::PATH_VIEW . 'index', compact('items', 'deletedVouchers'));
     }
 
     /**
-     * Lưu mã giảm giá mới
+     * Lưu voucher mới
      * 
      * @param StoreRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreRequest $request)
     {
-        try {
-            $model = new $this->model();
-            $data = $request->validated();
-
-            $result = $this->storeItem($model, $data);
-            
-            $flashType = $result['status'] ? 'success' : 'error';
-            $flashMessage = $result['message'];
-            
-            return redirect()->back()->with($flashType, $flashMessage);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi tạo mã giảm giá');
-        }
+        $result = $this->voucherService->create($request->validated());
+        return $this->redirectResponse($result);
     }
 
     /**
-     * Hiển thị form chỉnh sửa mã giảm giá
+     * Hiển thị form chỉnh sửa voucher
      * 
      * @param int $id
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function edit($id)
     {
-        $result = $this->getDetail($this->model::query(), $id);
-        if (!$result['status']) {
-            return redirect()->back()->with('error', $result['message']);
-        }
-        
-        return view(self::PATH_VIEW . 'edit', ['item' => $result['data']]);
+        $result = $this->voucherService->findById($id);
+        return $this->viewResponse(self::VIEW_PATH . 'edit', $result);
     }
 
     /**
-     * Cập nhật mã giảm giá
+     * Cập nhật voucher
      * 
      * @param int $id
      * @param UpdateRequest $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update($id, UpdateRequest $request)
+    public function update(UpdateRequest $request, $id)
     {
-        try {
-            $data = $request->validated();
-            
-            $result = $this->updateItem($this->model::query()->find($id), $data);
-            
-            if ($request->wantsJson()) {
-                return response()->json($result);
-            }
-            
-            $flashType = $result['status'] ? 'success' : 'error';
-            $flashMessage = $result['message'];
-            
-            return redirect()->back()->with($flashType, $flashMessage);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi cập nhật mã giảm giá');
-        }
+        $result = $this->voucherService->update($id, $request->validated());
+        return $this->redirectResponse($result);
     }
 
     /**
-     * Xóa mã giảm giá
+     * Xóa voucher
      * 
      * @param int $id
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
-        $model = $this->model::query()->find($id);
-        if (!$model) {
-            return redirect()->back()->with('error', 'Không tìm thấy dữ liệu');
-        }
-        
-        $result = $this->deleteItem($model, $id);
-        
-        if (request()->wantsJson()) {
-            return response()->json($result);
-        }
-        
-        $flashType = $result['status'] ? 'success' : 'error';
-        $flashMessage = $result['message'];
-        
-        return redirect()->back()->with($flashType, $flashMessage);
+        $result = $this->voucherService->delete($id);
+        return $this->redirectResponse($result);
     }
 
     /**
-     * Khôi phục mã giảm giá đã xóa
+     * Khôi phục voucher đã xóa
      * 
      * @param int $id
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function restore($id)
     {
-        $result = $this->restoreItem($this->model::withTrashed()->find($id));
-        
-        if (request()->wantsJson()) {
-            return response()->json($result);
-        }
-        
-        $flashType = $result['status'] ? 'success' : 'error';
-        $flashMessage = $result['message'];
-        
-        return redirect()->back()->with($flashType, $flashMessage);
-    }
-
-    /**
-     * Hiển thị chi tiết mã giảm giá
-     * 
-     * @param int $id
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
-     */
-    public function show($id)
-    {
-        $result = $this->getDetail($this->model::query(), $id);
-        if (!$result['status']) {
-            return redirect()->back()->with('error', $result['message']);
-        }
-        
-        return view(self::PATH_VIEW . 'show', ['item' => $result['data']]);
+        $result = $this->voucherService->restore($id);
+        return $this->redirectResponse($result);
     }
 } 

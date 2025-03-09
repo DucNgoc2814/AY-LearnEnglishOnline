@@ -2,7 +2,7 @@
 /* Normal desktop :992px. */
 /* Tablet desktop :768px. */
 /* small mobile :320px. */
-@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&amp;family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200&amp;display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
 /* line 1, G:/admin_project/6 admin/sales/scss/_extends.scss */
 .CRM_dropdown.dropdown .dropdown-toggle:hover,
 .CRM_dropdown.dropdown .dropdown-toggle:focus {

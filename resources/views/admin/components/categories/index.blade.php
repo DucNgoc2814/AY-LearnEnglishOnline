@@ -43,13 +43,14 @@
                                         <th>Tên danh mục</th>
                                         <th>Số khóa học</th>
                                         <th>Ngày tạo</th>
-                                        <th>Thao tác</th>
+                                        <th class="text-center">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($categories as $key => $item)
                                         <tr>
-                                            <td>{{ ($pagination['current_page'] - 1) * $pagination['per_page'] + $key + 1 }}</td>
+                                            <td>{{ ($pagination['current_page'] - 1) * $pagination['per_page'] + $key + 1 }}
+                                            </td>
                                             <td>{{ $item->name }}</td>
                                             <td>{{ $item->courses_count ?? 0 }}</td>
                                             <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
@@ -88,7 +89,8 @@
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <div>
                                     Hiển thị từ {{ ($pagination['current_page'] - 1) * $pagination['per_page'] + 1 }}
-                                    đến {{ min($pagination['current_page'] * $pagination['per_page'], $pagination['total']) }}
+                                    đến
+                                    {{ min($pagination['current_page'] * $pagination['per_page'], $pagination['total']) }}
                                     của {{ $pagination['total'] }} bản ghi
                                 </div>
                                 <div>
@@ -115,9 +117,9 @@
 @push('scripts')
     <script>
         function populateEditModal(item) {
-            $('#editCategoryModal #categoryName').val(item.name);
-            $('#editCategoryModal #description').val(item.description);
-            $('#editCategoryModal form').attr('action', '{{ url('admin/categories') }}/' + item.id);
+            document.querySelector('#editCategoryModal #categoryName').value = item.name;
+            document.querySelector('#editCategoryModal #description').value = item.description;
+            document.querySelector('#editCategoryModal form').setAttribute('action', '{{ url('admin/categories') }}/' + item.id);
         }
     </script>
 @endpush
