@@ -14,4 +14,7 @@ interface BaseRepositoryInterface
     public function findWithTrashed($id);
     public function restore($id);
     public function forceDelete($id);
-} 
+    public function handleImage($image, string $path, ?string $oldImage = null);
+    public function deleteImage(string $path);
+    public function handleMultipleImages(array $images, string $path);
+}

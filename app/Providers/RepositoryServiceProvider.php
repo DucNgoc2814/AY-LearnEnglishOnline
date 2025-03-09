@@ -12,7 +12,10 @@ class RepositoryServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
+        $this->app->bind(
+            \App\Repositories\Interfaces\CourseRepositoryInterface::class,
+            \App\Repositories\CourseRepository::class
+        );
     }
-} 
+}
