@@ -117,9 +117,9 @@
 @push('scripts')
     <script>
         function populateEditModal(item) {
-            $('#editCategoryModal #categoryName').val(item.name);
-            $('#editCategoryModal #description').val(item.description);
-            $('#editCategoryModal form').attr('action', '{{ url('admin/categories') }}/' + item.id);
+            document.querySelector('#editCategoryModal #categoryName').value = item.name;
+            document.querySelector('#editCategoryModal #description').value = item.description;
+            document.querySelector('#editCategoryModal form').setAttribute('action', '{{ url('admin/categories') }}/' + item.id);
         }
     </script>
 @endpush
