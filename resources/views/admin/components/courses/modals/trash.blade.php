@@ -1,5 +1,6 @@
 <div class="modal fade" id="trashCourseModal" tabindex="-1" role="dialog" aria-labelledby="trashCourseModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-xl
+    " role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="trashCourseModalLabel">Danh sách khóa học đã xóa</h5>
