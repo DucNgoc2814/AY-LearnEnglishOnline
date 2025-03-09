@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Admin\Category;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Controllers\Config\CrudRules;
-use Illuminate\Validation\Rule;
 
 /**
  * @package App\Http\Requests\Admin\Category
@@ -30,8 +28,9 @@ class UpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = $this->route('id');
         return [
-            'name' => 'required|string|max:255|unique:categories,name',
+            'name' => 'required|string|max:255|unique:categories,name,'.$id,
             'description' => 'nullable|string|max:255',
         ];
     }

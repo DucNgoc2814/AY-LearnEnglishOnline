@@ -39,6 +39,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
     public function update($id, array $data)
     {
+  
         $record = $this->findById($id);
         if ($record) {
             $record->update($data);

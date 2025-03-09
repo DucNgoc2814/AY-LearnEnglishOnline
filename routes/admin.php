@@ -123,14 +123,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         ->name('vouchers.')
         ->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
             Route::post('/', 'store')->name('store');
-            Route::get('/{voucher}', 'show')->name('show');
-            Route::get('/{voucher}/edit', 'edit')->name('edit');
-            Route::put('/{voucher}', 'update')->name('update');
-            Route::delete('/{voucher}', 'destroy')->name('destroy');
-            Route::delete('/{voucher}', 'destroy')->name('destroy');
-            Route::post('/{voucher}/restore', 'restore')->name('restore');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
         });
 
     // Employees Management

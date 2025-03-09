@@ -86,6 +86,7 @@ class CategoryController extends BaseController
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
+    
     public function destroy($id)
     {
         $result = $this->categoryService->delete($id);

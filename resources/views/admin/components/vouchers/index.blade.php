@@ -42,22 +42,20 @@
                                         <th>STT</th>
                                         <th>Mã giảm giá</th>
                                         <th>Giá trị giảm</th>
-                                        <th>Ngày bắt đầu</th>
-                                        <th>Ngày kết thúc</th>
+                                        <th>Ngày áp dụng</th>
                                         <th>Đã sử dụng</th>
-                                        <th>Tối đa</th>
+                                        <th>Số lượng</th>
                                         <th>Trạng thái</th>
-                                        <th>Thao tác</th>
+                                        <th class="text-center">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($items as $key => $item)
+                                    @foreach ($vouchers as $key => $item)
                                         <tr>
-                                            <td>{{ ($items->currentPage() - 1) * $items->perPage() + $key + 1 }}</td>
+                                            <td>{{ ($pagination['current_page'] - 1) * $pagination['per_page'] + $key + 1 }}</td>
                                             <td>{{ $item->code }}</td>
                                             <td>{{ $item->sale }}</td>
-                                            <td>{{ $item->startDate->format('d/m/Y') }}</td>
-                                            <td>{{ $item->endDate->format('d/m/Y') }}</td>
+                                            <td>{{ $item->startDate->format('d/m/Y') }} - {{ $item->endDate->format('d/m/Y') }}</td>
                                             <td>{{ $item->usageCount }}</td>
                                             <td>{{ $item->maxUsage ?? 'Không giới hạn' }}</td>
                                             <td>
@@ -115,12 +113,12 @@
 
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <div class="">
-                                    Hiển thị từ {{ ($items->currentPage() - 1) * $items->perPage() + 1 }}
-                                    đến {{ min($items->currentPage() * $items->perPage(), $items->total()) }}
-                                    của {{ $items->total() }} bản ghi
+                                    Hiển thị từ {{ ($pagination['current_page'] - 1) * $pagination['per_page'] + 1 }}
+                                    đến {{ min($pagination['current_page'] * $pagination['per_page'], $pagination['total']) }}
+                                    của {{ $pagination['total'] }} bản ghi
                                 </div>
                                 <div class="">
-                                    {{ $items->appends(request()->all())->links() }}
+                                    {{ $pagination['links'] }}
                                 </div>
                             </div>
                         </div>
@@ -141,9 +139,10 @@
 
     <script>
         function populateEditModal(voucher) {
-            document.getElementById('editVoucherForm').action = `/admin/vouchers/${voucher.id}`;
-            document.getElementById('editVoucherForm').querySelector('#code').value = voucher.code;
-            document.getElementById('editVoucherForm').querySelector('#sale').value = voucher.sale;
+            const form = document.querySelector('#editVoucherForm');
+            
+            document.querySelector('#editVoucherForm #code').value = voucher.code;
+            document.querySelector('#editVoucherForm #sale').value = voucher.sale;
             
             // Format dates for datetime-local input
             const startDate = new Date(voucher.startDate);
@@ -153,12 +152,13 @@
                 return date.toISOString().slice(0, 16);
             };
             
-            document.getElementById('editVoucherForm').querySelector('#startDate').value = formatDate(startDate);
-            document.getElementById('editVoucherForm').querySelector('#endDate').value = formatDate(endDate);
+            document.querySelector('#editVoucherForm #startDate').value = formatDate(startDate);
+            document.querySelector('#editVoucherForm #endDate').value = formatDate(endDate);
             
-            document.getElementById('editVoucherForm').querySelector('#maxUsage').value = voucher.maxUsage;
-            document.getElementById('editVoucherForm').querySelector('#minOrderValue').value = voucher.minOrderValue;
-            document.getElementById('editVoucherForm').querySelector('#maxDiscount').value = voucher.maxDiscount;
+            document.querySelector('#editVoucherForm #maxUsage').value = voucher.maxUsage;
+            document.querySelector('#editVoucherForm #minOrderValue').value = voucher.minOrderValue;
+            document.querySelector('#editVoucherForm #maxDiscount').value = voucher.maxDiscount;
+            form.setAttribute('action', '{{ url('admin/vouchers') }}/' + voucher.id);
         }
     </script>
 @endsection 
