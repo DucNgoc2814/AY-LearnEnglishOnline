@@ -29,12 +29,9 @@ class VoucherService extends BaseService implements VoucherServiceInterface
             if (!$voucher) {
                 return $this->errorResponse('Mã giảm giá không tồn tại');
             }
-            
-            // Kiểm tra hạn sử dụng
             if ($voucher->isExpired()) {
                 return $this->errorResponse('Mã giảm giá đã hết hạn');
             }
-
             return $this->successResponse($voucher, 'Mã giảm giá hợp lệ');
         } catch (\Exception $e) {
             return $this->errorResponse('Có lỗi xảy ra khi kiểm tra mã');
