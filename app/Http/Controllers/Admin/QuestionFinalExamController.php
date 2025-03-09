@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Config\CrudBasic;
 use App\Models\QuestionFinalExam;
 use Illuminate\Http\Request;
 
 class QuestionFinalExamController extends BaseController
 {
-    use CrudBasic;
 
     const MODEL = new QuestionFinalExam();
 

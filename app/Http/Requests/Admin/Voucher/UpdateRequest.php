@@ -3,7 +3,8 @@
 namespace App\Http\Requests\Admin\Voucher;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Controllers\Config\CrudRules;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 /**
  * @package App\Http\Requests\Admin\Voucher
@@ -29,8 +30,7 @@ class UpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route('voucher');
-        
+        $id = $this->route('id'); 
         return [
             'code' => ['required', 'string', 'unique:vouchers,code,'.$id],
             'sale' => ['required', 'numeric', 'min:0'],
@@ -50,7 +50,6 @@ class UpdateRequest extends FormRequest
     public function messages(): array
     {
         return array_merge(
-            CrudRules::MESSAGES,
             [
                 'code.required' => 'Mã giảm giá không được để trống',
                 'code.unique' => 'Mã giảm giá đã tồn tại',
@@ -84,4 +83,5 @@ class UpdateRequest extends FormRequest
             'maxDiscount' => 'Giá trị giảm tối đa'
         ];
     }
+
 } 

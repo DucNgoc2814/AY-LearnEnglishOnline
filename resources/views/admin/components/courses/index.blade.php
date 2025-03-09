@@ -128,47 +128,35 @@
 @push('scripts')
     <script>
         function populateEditModal(item) {
-            $('#editCourseModal #courseName').val(item.name);
-            $('#editCourseModal #categoryId').val(item.category_id);
-            $('#editCourseModal #price').val(item.price);
-            $('#editCourseModal #salePrice').val(item.salePrice);
-            $('#editCourseModal #sortDescription').val(item.sortDescription);
-            $('#editCourseModal #description').val(item.description);
-            $('#editCourseModal form').attr('action', '{{ url('admin/courses') }}/' + item.id);
+            document.querySelector('#editCourseModal #courseName').value = item.name;
+            document.querySelector('#editCourseModal #categoryId').value = item.categoryId;
+            document.querySelector('#editCourseModal #price').value = item.price;
+            document.querySelector('#editCourseModal #salePrice').value = item.salePrice;
+            document.querySelector('#editCourseModal #sortDescription').value = item.sortDescription;
+            document.querySelector('#editCourseModal #description').value = item.description;
+            document.querySelector('#editCourseModal form').setAttribute('action', '{{ url('admin/courses') }}/' + item.id);
 
             if (item.thumbnail) {
-                $('#currentThumbnail').html(`<img src="${item.thumbnail}" alt="Current thumbnail" width="100">`);
+                document.querySelector('#currentThumbnail').innerHTML = `<img src="${item.thumbnail}" alt="Current thumbnail" width="100">`;
             }
         }
 
         function showCourseDetails(id) {
-            $.get(`/admin/courses/${id}`, function(response) {
-                if (response.status && response.data) {
-                    const course = response.data;
-                    $('#show-name').text(course.name);
-                    $('#show-category').text(course.category ? course.category.name : 'N/A');
-                    $('#show-price').text(course.price ? new Intl.NumberFormat('vi-VN', {
-                        style: 'currency',
-                        currency: 'VND'
-                    }).format(course.price) : 'N/A');
-                    // ... populate other fields ...
-                    $('#showCourseModal').modal('show');
-                }
-            });
+            fetch(`/admin/courses/${id}`)
+                .then(response => response.json())
+                .then(response => {
+                    if (response.status && response.data) {
+                        const course = response.data;
+                        document.querySelector('#show-name').textContent = course.name;
+                        document.querySelector('#show-category').textContent = course.category ? course.category.name : 'N/A';
+                        document.querySelector('#show-price').textContent = course.price ? new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                        }).format(course.price) : 'N/A';
+                        const modal = new bootstrap.Modal(document.querySelector('#showCourseModal'));
+                        modal.show();
+                    }
+                });
         }
     </script>
-@endpush
-
-@push('styles')
-    <style>
-        .action_btns {
-            gap: 5px;
-        }
-        .action_btn {
-            padding: 5px 10px;
-        }
-        .mr_10 {
-            margin-right: 5px;
-        }
-    </style>
 @endpush

@@ -48,7 +48,6 @@ class StoreRequest extends FormRequest
     public function messages(): array
     {
         return array_merge(
-            CrudRules::MESSAGES,
             [
                 'code.required' => 'Mã giảm giá không được để trống',
                 'code.unique' => 'Mã giảm giá đã tồn tại',
