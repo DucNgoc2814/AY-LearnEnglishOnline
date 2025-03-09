@@ -139,8 +139,10 @@
 
     <script>
         function populateEditModal(voucher) {
-            $('#editVoucherForm #code').val(voucher.code);
-            $('#editVoucherForm #sale').val(voucher.sale);
+            const form = document.querySelector('#editVoucherForm');
+            
+            document.querySelector('#editVoucherForm #code').value = voucher.code;
+            document.querySelector('#editVoucherForm #sale').value = voucher.sale;
             
             // Format dates for datetime-local input
             const startDate = new Date(voucher.startDate);
@@ -150,13 +152,13 @@
                 return date.toISOString().slice(0, 16);
             };
             
-            $('#editVoucherForm #startDate').val(formatDate(startDate));
-            $('#editVoucherForm #endDate').val(formatDate(endDate));
+            document.querySelector('#editVoucherForm #startDate').value = formatDate(startDate);
+            document.querySelector('#editVoucherForm #endDate').value = formatDate(endDate);
             
-            $('#editVoucherForm #maxUsage').val(voucher.maxUsage);
-            $('#editVoucherForm #minOrderValue').val(voucher.minOrderValue);
-            $('#editVoucherForm #maxDiscount').val(voucher.maxDiscount);
-            $('#editVoucherForm').attr('action', '{{ url('admin/vouchers') }}/' + voucher.id);
+            document.querySelector('#editVoucherForm #maxUsage').value = voucher.maxUsage;
+            document.querySelector('#editVoucherForm #minOrderValue').value = voucher.minOrderValue;
+            document.querySelector('#editVoucherForm #maxDiscount').value = voucher.maxDiscount;
+            form.setAttribute('action', '{{ url('admin/vouchers') }}/' + voucher.id);
         }
     </script>
 @endsection 
