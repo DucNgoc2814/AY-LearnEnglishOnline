@@ -20,7 +20,7 @@
     <section class="main_content ">
         <!-- header  -->
         @include('admin.layouts.partials.header')
-        
+
         <!-- content -->
         @yield('content')
 

@@ -54,7 +54,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function getAllWithTrashed()
     {
-        return $this->model->withTrashed();
+        return $this->model->onlyTrashed();
     }
 
     public function findWithTrashed($id)
@@ -79,5 +79,59 @@ abstract class BaseRepository implements BaseRepositoryInterface
             return $record->forceDelete();
         }
         return false;
+    }
+    public function handleImage($image, string $path, ?string $oldImage = null)
+    {
+        try {
+            // Delete old image if exists
+            if ($oldImage) {
+                $this->deleteImage($oldImage);
+            }
+
+            // Generate unique filename with timestamp
+            $filename = time() . '_' . $image->getClientOriginalName();
+
+            // Make sure the path exists
+            $fullPath = public_path("uploads/{$path}");
+            if (!file_exists($fullPath)) {
+                mkdir($fullPath, 0755, true);
+            }
+
+            // Move the uploaded file to the destination
+            $image->move($fullPath, $filename);
+
+            // Return relative path for database storage
+            return "uploads/{$path}/{$filename}";
+
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+    public function deleteImage(string $path)
+    {
+        try {
+            if (\Storage::exists("public/{$path}")) {
+                \Storage::delete("public/{$path}");
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+    public function handleMultipleImages(array $images, string $path)
+    {
+        try {
+            $imagePaths = [];
+            foreach ($images as $image) {
+                $imagePath = $this->handleImage($image, $path);
+                if ($imagePath) {
+                    $imagePaths[] = $imagePath;
+                }
+            }
+            return $imagePaths;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

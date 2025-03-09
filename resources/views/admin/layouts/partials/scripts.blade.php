@@ -1,4 +1,4 @@
-<script src="{{ asset('themes/admin/js/jquery1-3.4.1.min.js') }}"></script>
+
 <!-- popper js -->
 <script src="{{ asset('themes/admin/js/popper1.min.js') }}"></script>
 <!-- bootstarp js -->
@@ -49,17 +49,17 @@
 <script src="{{ asset('themes/admin/vendors/scroll/scrollable-custom.js') }}"></script>
 
 <!-- vector map  -->
-<script src="{{ asset('themes/admin/vendors/vectormap-home/vectormap-2.0.2.min.js') }}"></script>
+{{-- <script src="{{ asset('themes/admin/vendors/vectormap-home/vectormap-2.0.2.min.js') }}"></script> --}}
 <script src="{{ asset('themes/admin/vendors/vectormap-home/vectormap-world-mill-en.js') }}"></script>
 
 <!-- apex chrat  -->
 {{-- <script src="{{ asset('themes/admin/vendors/apex_chart/apex-chart2.js') }}"></script> --}}
 {{-- <script src="{{ asset('themes/admin/vendors/apex_chart/apex_dashboard.js') }}"></script> --}}
 
-<script src="{{ asset('themes/admin/vendors/echart/echarts.min.js') }}"></script> 
+{{-- <script src="{{ asset('themes/admin/vendors/echart/echarts.min.js') }}"></script> --}}
 
 
-<script src="{{ asset('themes/admin/vendors/chart_am/core.js') }}"></script>
+{{-- <script src="{{ asset('themes/admin/vendors/chart_am/core.js') }}"></script> --}}
 <script src="{{ asset('themes/admin/vendors/chart_am/charts.js') }}"></script>
 <script src="{{ asset('themes/admin/vendors/chart_am/animated.js') }}"></script>
 <script src="{{ asset('themes/admin/vendors/chart_am/kelly.js') }}"></script>

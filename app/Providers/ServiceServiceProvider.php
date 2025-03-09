@@ -14,5 +14,9 @@ class ServiceServiceProvider extends ServiceProvider
     {
         $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
         $this->app->bind(CategoryServiceInterface::class, CategoryService::class);
+        $this->app->bind(
+            \App\Services\Interfaces\CourseServiceInterface::class,
+            \App\Services\CourseService::class
+        );
     }
-} 
+}
