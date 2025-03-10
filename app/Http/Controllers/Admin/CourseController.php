@@ -77,17 +77,8 @@ class CourseController extends BaseController
      */
     public function update(UpdateRequest $request, $id)
     {
-        $data = $request->validated();
-        $result = $this->courseService->update($id, $data);
-
-        if ($result['status']) {
-            return redirect()->route('admin.courses.index')
-                           ->with('success', $result['message']);
-        }
-
-        return redirect()->back()
-                        ->with('error', $result['message'])
-                        ->withInput();
+        $result = $this->courseService->update($id, $request->validated());
+        return $this->redirectResponse($result);
     }
 
     /**

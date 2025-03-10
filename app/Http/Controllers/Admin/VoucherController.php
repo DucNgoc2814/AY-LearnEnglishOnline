@@ -24,7 +24,7 @@ class VoucherController extends BaseController
 
     /**
      * Hiển thị danh sách voucher
-     * 
+     *
      * @return \Illuminate\View\View
      */
     public function index()
@@ -45,7 +45,7 @@ class VoucherController extends BaseController
 
     /**
      * Lưu voucher mới
-     * 
+     *
      * @param StoreRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -57,7 +57,7 @@ class VoucherController extends BaseController
 
     /**
      * Hiển thị form chỉnh sửa voucher
-     * 
+     *
      * @param int $id
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
@@ -69,7 +69,7 @@ class VoucherController extends BaseController
 
     /**
      * Cập nhật voucher
-     * 
+     *
      * @param int $id
      * @param UpdateRequest $request
      * @return \Illuminate\Http\RedirectResponse
@@ -82,7 +82,7 @@ class VoucherController extends BaseController
 
     /**
      * Xóa voucher
-     * 
+     *
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -94,7 +94,7 @@ class VoucherController extends BaseController
 
     /**
      * Khôi phục voucher đã xóa
-     * 
+     *
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -103,4 +103,4 @@ class VoucherController extends BaseController
         $result = $this->voucherService->restore($id);
         return $this->redirectResponse($result);
     }
-} 
+}
