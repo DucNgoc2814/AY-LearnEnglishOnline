@@ -1,0 +1,1 @@
+{"redirectTo":"https:\/\/demo.creativeitem.com\/academy\/login"}
