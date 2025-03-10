@@ -1,0 +1,1 @@
+{"error":"This lecture is available exclusively as of premium part. to gain access, please purchase the course"}

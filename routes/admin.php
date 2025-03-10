@@ -52,6 +52,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
             Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::get('/{courseId}', [LessonController::class, 'index'])->name('by.course');
             Route::put('/{id}', 'update')->name('update');
             Route::delete('/{id}', 'destroy')->name('destroy');
             Route::post('/{id}/restore', 'restore')->name('restore');
@@ -76,7 +77,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         ->name('lessons.')
         ->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::get('/course/{courseId}', 'index')->name('by.course');
             Route::post('/', 'store')->name('store');
             Route::get('/{id}/edit', 'edit')->name('edit');
             Route::put('/{id}', 'update')->name('update');
