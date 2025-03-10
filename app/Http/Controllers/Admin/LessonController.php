@@ -99,17 +99,11 @@ class LessonController extends BaseController
     public function destroy($id)
     {
         $result = $this->lessonService->delete($id);
-
-        if ($result['status']) {
-            return redirect()->route('admin.lessons.index')
-                           ->with('success', $result['message']);
-        }
-
-        return redirect()->back()->with('error', $result['message']);
+        return $this->redirectResponse($result);
     }
 
     /**
-     * Khôi phục bài học đã xóa
+     * Khôi phục danh mục đã xóa
      *
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
@@ -117,12 +111,6 @@ class LessonController extends BaseController
     public function restore($id)
     {
         $result = $this->lessonService->restore($id);
-
-        if ($result['status']) {
-            return redirect()->route('admin.lessons.index')
-                           ->with('success', $result['message']);
-        }
-
-        return redirect()->back()->with('error', $result['message']);
+        return $this->redirectResponse($result);
     }
 }
