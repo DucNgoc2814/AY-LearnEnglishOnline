@@ -67,26 +67,24 @@
                                             <tr>
                                                 <th width="200">Tên khóa học:</th>
                                                 <td>{{ $course->name }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Giá gốc:</th>
-                                                <td>{{ number_format($course->price) }}đ</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Giá khuyến mãi:</th>
-                                                <td>{{ number_format($course->sale_price) }}đ</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tổng số bài học:</th>
-                                                <td>{{ $course->totalLessons() }} bài</td>
-                                            </tr>
-                                            <tr>
                                                 <th>Tổng số đăng ký:</th>
                                                 <td>{{ $course->totalEnrollments() }}</td>
                                             </tr>
                                             <tr>
+                                                <th width="200">Giá gốc:</th>
+                                                <td>{{ number_format($course->price) }}đ</td>
+                                                <th>Tổng số bài học:</th>
+                                                <td>{{ $course->totalLessons() }} bài</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Giá khuyến mãi:</th>
+                                                <td>{{ number_format($course->sale_price) }}đ</td>
                                                 <th>Tổng doanh thu:</th>
                                                 <td>{{ number_format($course->totalRevenue()) }}đ</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tổng thời lượng:</th>
+                                                <td>{{ $course->totalDuration() }}</td>
                                             </tr>
                                         </table>
                                     </div>
