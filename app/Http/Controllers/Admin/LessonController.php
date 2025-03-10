@@ -3,117 +3,135 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Config\CrudBasic;
-use App\Models\Lesson;
+use App\Services\Interfaces\LessonServiceInterface;
+use App\Http\Requests\Admin\Lesson\StoreRequest;
+use App\Http\Requests\Admin\Lesson\UpdateRequest;
+use App\Services\Interfaces\CourseServiceInterface;
 use Illuminate\Http\Request;
 
+/**
+ * @package App\Http\Controllers\Admin
+ * @author Your Name
+ * @description Controller quản lý bài học
+ */
 class LessonController extends BaseController
 {
-    use CrudBasic;
+    protected $lessonService;
+    protected const VIEW_PATH = 'admin.components.lessons.';
 
-    const MODEL = new Lesson();
-
-    public function index()
+    public function __construct(LessonServiceInterface $lessonService)
     {
-        $items = $this->getList(self::MODEL::query());
-        return view('admin.lessons.index', compact('items'));
+        $this->lessonService = $lessonService;
     }
 
-    public function store(Request $request)
+    /**
+     * Hiển thị danh sách bài học
+     *
+     * @return \Illuminate\View\View
+     */
+    public function index(Request $request)
     {
-        $rules = [
-            'courseId' => 'required|exists:courses,id',
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:lessons',
-            'videoUrl' => 'required|string',
-            'description' => 'required|string',
-            'duration' => 'required|integer|min:0',
-            'orderNumber' => 'required|integer|min:0',
-            'isPreview' => 'required|boolean',
-            'totalView' => 'required|integer|min:0',
-            'totalComment' => 'required|integer|min:0'
-        ];
+        try {
+            $params = [];
+            $courseId = $request->route('courseId') ?? $request->query('courseId');
 
-        $messages = [
-            'courseId.required' => 'Khóa học không được để trống',
-            'courseId.exists' => 'Khóa học không tồn tại',
-            'name.required' => 'Tên bài học không được để trống',
-            'slug.required' => 'Slug không được để trống',
-            'slug.unique' => 'Slug đã tồn tại',
-            'videoUrl.required' => 'URL video không được để trống',
-            'description.required' => 'Mô tả không được để trống',
-            'duration.required' => 'Thời lượng không được để trống',
-            'duration.min' => 'Thời lượng phải lớn hơn 0',
-            'orderNumber.required' => 'Thứ tự không được để trống',
-            'orderNumber.min' => 'Thứ tự phải lớn hơn 0',
-            'isPreview.required' => 'Trạng thái xem trước không được để trống'
-        ];
+            if ($courseId) {
+                $params['courseId'] = $courseId;
+            }
 
-        $data = $request->validate($rules, $messages);
-        $result = $this->storeItem(self::MODEL, $data);
+            $list = $this->lessonService->getList($params);
+            $trashList = $this->lessonService->getTrashList();
 
-        if ($result['status']) {
-            return redirect()->route('admin.lessons.index')->with('success', $result['message']);
+            // Lấy thông tin khóa học nếu có courseId
+            $course = null;
+            if ($courseId) {
+                $courseService = app(CourseServiceInterface::class);
+                $courseResult = $courseService->findById($courseId);
+                $course = $courseResult['status'] ? $courseResult['data'] : null;
+            }
+
+            return view(self::VIEW_PATH . 'index', [
+                'lessons' => $list['data'],
+                'pagination' => $list['pagination'],
+                'trashList' => $trashList['data'],
+                'trashPagination' => $trashList['pagination'],
+                'course' => $course
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra');
         }
-        return redirect()->back()->with('error', $result['message'])->withInput();
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Lưu bài học mới
+     *
+     * @param StoreRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(StoreRequest $request)
     {
-        $item = self::MODEL::find($id);
-        if (!$item) {
-            return redirect()->back()->with('error', 'Không tìm thấy bài học');
-        }
-
-        $rules = [
-            'courseId' => 'required|exists:courses,id',
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:lessons,slug,'.$id,
-            'videoUrl' => 'required|string',
-            'description' => 'required|string',
-            'duration' => 'required|integer|min:0',
-            'orderNumber' => 'required|integer|min:0',
-            'isPreview' => 'required|boolean',
-            'totalView' => 'required|integer|min:0',
-            'totalComment' => 'required|integer|min:0'
-        ];
-
-        $messages = [
-            'courseId.required' => 'Khóa học không được để trống',
-            'courseId.exists' => 'Khóa học không tồn tại',
-            'name.required' => 'Tên bài học không được để trống',
-            'slug.required' => 'Slug không được để trống',
-            'slug.unique' => 'Slug đã tồn tại',
-            'videoUrl.required' => 'URL video không được để trống',
-            'description.required' => 'Mô tả không được để trống',
-            'duration.required' => 'Thời lượng không được để trống',
-            'duration.min' => 'Thời lượng phải lớn hơn 0',
-            'orderNumber.required' => 'Thứ tự không được để trống',
-            'orderNumber.min' => 'Thứ tự phải lớn hơn 0',
-            'isPreview.required' => 'Trạng thái xem trước không được để trống'
-        ];
-
-        $data = $request->validate($rules, $messages);
-        $result = $this->updateItem($item, $data);
-
-        if ($result['status']) {
-            return redirect()->route('admin.lessons.index')->with('success', $result['message']);
-        }
-        return redirect()->back()->with('error', $result['message'])->withInput();
+        $result = $this->lessonService->create($request->validated());
+        return $this->redirectResponse($result);
     }
 
-    public function destroy($id)
-    {
-        $result = $this->deleteItem(self::MODEL, $id);
-        return redirect()->back()->with($result['status'] ? 'success' : 'error', $result['message']);
-    }
-
+    /**
+     * Hiển thị chi tiết bài học
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show($id)
     {
-        $result = $this->getDetail(self::MODEL::query(), $id);
-        if (!$result['status']) {
-            return redirect()->back()->with('error', $result['message']);
-        }
-        return view('admin.lessons.show', ['item' => $result['data']]);
+        $result = $this->lessonService->findById($id);
+        return response()->json($result);
     }
-} 
+
+    /**
+     * Cập nhật bài học
+     *
+     * @param UpdateRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(UpdateRequest $request, $id)
+    {
+        $result = $this->lessonService->update($id, $request->validated());
+        return $this->redirectResponse($result);
+    }
+
+    /**
+     * Xóa bài học
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy($id)
+    {
+        $result = $this->lessonService->delete($id);
+
+        if ($result['status']) {
+            return redirect()->route('admin.lessons.index')
+                           ->with('success', $result['message']);
+        }
+
+        return redirect()->back()->with('error', $result['message']);
+    }
+
+    /**
+     * Khôi phục bài học đã xóa
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function restore($id)
+    {
+        $result = $this->lessonService->restore($id);
+
+        if ($result['status']) {
+            return redirect()->route('admin.lessons.index')
+                           ->with('success', $result['message']);
+        }
+
+        return redirect()->back()->with('error', $result['message']);
+    }
+}
