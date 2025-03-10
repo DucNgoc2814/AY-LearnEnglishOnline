@@ -27,7 +27,7 @@ abstract class BaseService implements BaseServiceInterface
                     'per_page' => $items->perPage(),
                     'current_page' => $items->currentPage(),
                     'last_page' => $items->lastPage(),
-                    'links' => $items->links()  
+                    'links' => $items->links()
                 ]
             ];
         } catch (\Exception $e) {
@@ -63,7 +63,7 @@ abstract class BaseService implements BaseServiceInterface
     public function findById($id)
     {
         try {
-            $result = $this->repository->find($id);
+            $result = $this->repository->findOrFail($id);
             return [
                 'status' => true,
                 'message' => 'Lấy thông tin thành công',
@@ -94,10 +94,10 @@ abstract class BaseService implements BaseServiceInterface
         }
     }
 
-    public function update($data, $id)
+    public function update($id, $data)
     {
         try {
-  
+
             $item = $this->repository->findById($id);
             if (!$item) {
                 return [
@@ -106,7 +106,7 @@ abstract class BaseService implements BaseServiceInterface
                 ];
             }
 
-            $this->repository->update($data, $id);
+            $this->repository->update($id, $data);
             return [
                 'status' => true,
                 'message' => 'Cập nhật thành công',
@@ -208,4 +208,4 @@ abstract class BaseService implements BaseServiceInterface
             'message' => $message
         ];
     }
-} 
+}

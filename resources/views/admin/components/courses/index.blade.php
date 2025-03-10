@@ -132,13 +132,29 @@
             document.querySelector('#editCourseModal #categoryId').value = item.categoryId;
             document.querySelector('#editCourseModal #price').value = item.price;
             document.querySelector('#editCourseModal #salePrice').value = item.salePrice;
-            document.querySelector('#editCourseModal #sortDescription').value = item.sortDescription;
-            document.querySelector('#editCourseModal #description').value = item.description;
-            document.querySelector('#editCourseModal form').setAttribute('action', '{{ url('admin/courses') }}/' + item.id);
 
+            // Populate description
+            document.querySelector('#editCourseModal #description').value = item.description || '';
+
+            // Populate thumbnail image
+            const currentThumbnailDiv = document.querySelector('#currentThumbnail');
             if (item.thumbnail) {
-                document.querySelector('#currentThumbnail').innerHTML = `<img src="${item.thumbnail}" alt="Current thumbnail" width="100">`;
+                currentThumbnailDiv.innerHTML = `
+                    <div class="mt-2">
+                        <p>Ảnh hiện tại:</p>
+                        <img src="{{ asset('') }}${item.thumbnail}"
+                             alt="Current thumbnail"
+                             class="img-thumbnail"
+                             style="max-width: 200px">
+                    </div>
+                `;
+            } else {
+                currentThumbnailDiv.innerHTML = '<p class="text-muted">Chưa có ảnh</p>';
             }
+
+            // Update form action
+            const form = document.querySelector('#editCourseModal form');
+            form.action = "{{ route('admin.courses.update', '') }}/" + item.id;
         }
 
         function showCourseDetails(id) {
