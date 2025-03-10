@@ -48,7 +48,7 @@ class Course extends Model
 
     public function enrollments()
     {
-        return $this->hasMany(Enrollment::class);
+        return $this->hasMany(Enrollment::class,'courseId');
     }
 
     public function ratings()
@@ -66,5 +66,21 @@ class Course extends Model
         return $this->lessons()->count() ;
     }
 
-
+    public function totalEnrollments()
+    {
+        return $this->enrollments()->count();
+    }
+    /**
+     * Tính tổng doanh thu của khóa học
+     * 
+     * @return float
+     */
+    public function totalRevenue()
+    {
+        return $this->enrollments()
+            ->whereHas('order', function($query) {
+                $query->where('status', 'completed');
+            })
+            ->sum('price');
+    }
 }

@@ -8,6 +8,8 @@ use App\Http\Requests\Admin\Lesson\StoreRequest;
 use App\Http\Requests\Admin\Lesson\UpdateRequest;
 use App\Services\Interfaces\CourseServiceInterface;
 use Illuminate\Http\Request;
+use App\Repositories\LessonRepository;
+use App\Repositories\CourseRepository;
 
 /**
  * @package App\Http\Controllers\Admin
@@ -18,10 +20,14 @@ class LessonController extends BaseController
 {
     protected $lessonService;
     protected const VIEW_PATH = 'admin.components.lessons.';
+    protected $lessonRepository;
+    protected $courseRepository;
 
-    public function __construct(LessonServiceInterface $lessonService)
+    public function __construct(LessonServiceInterface $lessonService, LessonRepository $lessonRepository, CourseRepository $courseRepository)
     {
         $this->lessonService = $lessonService;
+        $this->lessonRepository = $lessonRepository;
+        $this->courseRepository = $courseRepository;
     }
 
     /**
@@ -32,30 +38,15 @@ class LessonController extends BaseController
     public function index(Request $request)
     {
         try {
-            $params = [];
-            $courseId = $request->route('courseId') ?? $request->query('courseId');
-
-            if ($courseId) {
-                $params['courseId'] = $courseId;
-            }
-
-            $list = $this->lessonService->getList($params);
+            $list = $this->lessonService->getList();
             $trashList = $this->lessonService->getTrashList();
-
-            // Lấy thông tin khóa học nếu có courseId
-            $course = null;
-            if ($courseId) {
-                $courseService = app(CourseServiceInterface::class);
-                $courseResult = $courseService->findById($courseId);
-                $course = $courseResult['status'] ? $courseResult['data'] : null;
-            }
-
+            $course = $this->courseRepository->findById($request->route('courseId'));
             return view(self::VIEW_PATH . 'index', [
                 'lessons' => $list['data'],
                 'pagination' => $list['pagination'],
                 'trashList' => $trashList['data'],
                 'trashPagination' => $trashList['pagination'],
-                'course' => $course
+                'course' => $course,
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra');
