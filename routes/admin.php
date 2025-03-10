@@ -76,12 +76,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         ->name('lessons.')
         ->group(function () {
             Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
+            Route::get('/course/{courseId}', 'index')->name('by.course');
             Route::post('/', 'store')->name('store');
-            Route::get('/{lesson}', 'show')->name('show');
-            Route::get('/{lesson}/edit', 'edit')->name('edit');
-            Route::put('/{lesson}', 'update')->name('update');
-            Route::delete('/{lesson}', 'destroy')->name('destroy');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
         });
 
     // Blogs Management
