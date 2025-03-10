@@ -33,12 +33,6 @@
                                 </div>
                                 <div class="add_button ms-2">
                                     <button type="button" class="btn_1" data-bs-toggle="modal"
-                                        data-bs-target="#createLessonModal">
-                                        Thêm mới
-                                    </button>
-                                </div>
-                                <div class="add_button ms-2">
-                                    <button type="button" class="btn_1" data-bs-toggle="modal"
                                         data-bs-target="#trashLessonModal">
                                         Xem bài học đã xóa
                                     </button>
@@ -47,58 +41,63 @@
                         </div>
 
                         @if (!empty($course))
-                        <div class="white_box mb_30">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="course-info-item">
-                                        <h5>Thông tin khóa học</h5>
-                                        <div class="course-image mt-3">
-                                            @if($course->thumbnail)
-                                                <img src="{{ asset($course->thumbnail) }}" alt="{{ $course->name }}" class="img-fluid rounded" style="max-width: 200px">
-                                            @else
-                                                <div class="no-image">Chưa có ảnh</div>
-                                            @endif
+                            <div class="white_box mb_30">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="course-info-item">
+                                            <h5>Thông tin khóa học</h5>
+                                            <div class="course-image mt-3">
+                                                @if ($course->thumbnail)
+                                                    <img src="{{ asset($course->thumbnail) }}" alt="{{ $course->name }}"
+                                                        class="img-fluid rounded" style="max-width: 200px">
+                                                @else
+                                                    <div class="no-image">Chưa có ảnh</div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="course-details">
+                                            <table class="table">
+                                                <tr>
+                                                    <th width="200">Tên khóa học:</th>
+                                                    <td>{{ $course->name }}</td>
+                                                    <th>Tổng số đăng ký:</th>
+                                                    <td>{{ $course->totalEnrollments() }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th width="200">Giá gốc:</th>
+                                                    <td>{{ number_format($course->price) }}đ</td>
+                                                    <th>Tổng số bài học:</th>
+                                                    <td>{{ $course->totalLessons() }} bài</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Giá khuyến mãi:</th>
+                                                    <td>{{ number_format($course->sale_price) }}đ</td>
+                                                    <th>Tổng doanh thu:</th>
+                                                    <td>{{ number_format($course->totalRevenue()) }}đ</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Tổng thời lượng:</th>
+                                                    <td>{{ $course->totalDuration() }}</td>
+                                                </tr>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-8">
-                                    <div class="course-details">
-                                        <table class="table">
-                                            <tr>
-                                                <th width="200">Tên khóa học:</th>
-                                                <td>{{ $course->name }}</td>
-                                                <th>Tổng số đăng ký:</th>
-                                                <td>{{ $course->totalEnrollments() }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th width="200">Giá gốc:</th>
-                                                <td>{{ number_format($course->price) }}đ</td>
-                                                <th>Tổng số bài học:</th>
-                                                <td>{{ $course->totalLessons() }} bài</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Giá khuyến mãi:</th>
-                                                <td>{{ number_format($course->sale_price) }}đ</td>
-                                                <th>Tổng doanh thu:</th>
-                                                <td>{{ number_format($course->totalRevenue()) }}đ</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tổng thời lượng:</th>
-                                                <td>{{ $course->totalDuration() }}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
                         @endif
-
                         <div class="QA_table mb_30">
+                            <div class="add_button mb-3 text-end">
+                                <button type="button" class="btn_1" data-bs-toggle="modal"
+                                    data-bs-target="#createLessonModal">
+                                    <i class="fas fa-plus"></i> Thêm mới bài học
+                                </button>
+                            </div>
                             <table class="table lms_table_active">
                                 <thead>
                                     <tr>
                                         <th class="text-center align-middle">STT</th>
-                                        <th class="text-center align-middle">Tên khóa học</th>
                                         <th class="text-center align-middle">Tên bài học</th>
                                         <th class="text-center align-middle">Miêu tả</th>
                                         <th class="text-center align-middle">Xem Free</th>
@@ -113,7 +112,6 @@
                                             <td class="text-center align-middle">
                                                 {{ ($pagination['current_page'] - 1) * $pagination['per_page'] + $key + 1 }}
                                             </td>
-                                            <td class="text-center align-middle">{{ $item->course->name ?? 'N/A' }}</td>
                                             <td class="text-center align-middle">{{ $item->name }}</td>
                                             <td class="text-center align-middle">{{ Str::limit($item->description, 50) }}
                                             </td>
@@ -195,29 +193,13 @@
 @push('scripts')
     <script>
         function populateEditModal(item) {
+            // Populate basic fields
             document.querySelector('#editLessonModal #lessonName').value = item.name;
-            document.querySelector('#editLessonModal #categoryId').value = item.categoryId;
-            document.querySelector('#editLessonModal #price').value = item.price;
-            document.querySelector('#editLessonModal #salePrice').value = item.salePrice;
-
-            // Populate description
+            document.querySelector('#editLessonModal #orderNumber').value = item.orderNumber;
             document.querySelector('#editLessonModal #description').value = item.description || '';
 
-            // Populate thumbnail image
-            const currentThumbnailDiv = document.querySelector('#currentThumbnail');
-            if (item.thumbnail) {
-                currentThumbnailDiv.innerHTML = `
-                    <div class="mt-2">
-                        <p>Ảnh hiện tại:</p>
-                        <img src="{{ asset('') }}${item.thumbnail}"
-                             alt="Current thumbnail"
-                             class="img-thumbnail"
-                             style="max-width: 200px">
-                    </div>
-                `;
-            } else {
-                currentThumbnailDiv.innerHTML = '<p class="text-muted">Chưa có ảnh</p>';
-            }
+            // Set checkbox state for preview
+            document.querySelector('#editLessonModal #isPreview').checked = item.isPreview;
 
             // Update form action
             const form = document.querySelector('#editLessonModal form');
