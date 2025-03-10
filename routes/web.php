@@ -13,3 +13,6 @@ use App\Http\Controllers\Admin\VoucherController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/', function () {
+    return view('client.index');
+});
