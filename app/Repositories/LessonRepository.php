@@ -54,4 +54,58 @@ class LessonRepository extends BaseRepository implements LessonRepositoryInterfa
     {
         return $this->model::onlyTrashed()->with('course');
     }
+
+    public function delete($id)
+    {
+        try {
+            $lesson = $this->findById($id);
+            if ($lesson) {
+                $courseId = $lesson->courseId; // Lưu courseId trước khi xóa
+                $lesson->delete();
+                return [
+                    'status' => true,
+                    'message' => 'Xóa bài học thành công',
+                    'data' => [
+                        'courseId' => $courseId
+                    ]
+                ];
+            }
+            return [
+                'status' => false,
+                'message' => 'Không tìm thấy bài học'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => false,
+                'message' => 'Có lỗi xảy ra khi xóa bài học'
+            ];
+        }
+    }
+
+    public function restore($id)
+    {
+        try {
+            $lesson = $this->findWithTrashed($id);
+            if ($lesson) {
+                $courseId = $lesson->courseId; // Lưu courseId trước khi khôi phục
+                $lesson->restore();
+                return [
+                    'status' => true,
+                    'message' => 'Khôi phục bài học thành công',
+                    'data' => [
+                        'courseId' => $courseId
+                    ]
+                ];
+            }
+            return [
+                'status' => false,
+                'message' => 'Không tìm thấy bài học'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => false,
+                'message' => 'Có lỗi xảy ra khi khôi phục bài học'
+            ];
+        }
+    }
 }
