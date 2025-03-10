@@ -55,6 +55,11 @@ class Course extends Model
     {
         return $this->hasMany(Rating::class, 'courseId');
     }
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'courseId');
+    }
+
 
     public function finalExams()
     {
@@ -70,17 +75,23 @@ class Course extends Model
     {
         return $this->enrollments()->count();
     }
-    /**
-     * Tính tổng doanh thu của khóa học
-     * 
-     * @return float
-     */
+
     public function totalRevenue()
     {
-        return $this->enrollments()
-            ->whereHas('order', function($query) {
-                $query->where('status', 'completed');
-            })
-            ->sum('price');
+        return $this->orders()
+            ->where('orderStatusId', 3) 
+            ->sum('paymentAmount');
+    }
+    public function totalDuration()
+    {
+        $totalSeconds = $this->lessons()
+            ->join('video_lessons', 'lessons.id', '=', 'video_lessons.lessonId')
+            ->sum('video_lessons.duration');
+
+        $hours = floor($totalSeconds / 3600);
+        $minutes = floor(($totalSeconds % 3600) / 60);
+        $seconds = $totalSeconds % 60;
+
+        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
     }
 }
