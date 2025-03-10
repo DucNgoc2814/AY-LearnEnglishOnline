@@ -77,4 +77,9 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
     {
         return $this->model::onlyTrashed()->with('category');
     }
+
+    public function findOrFail($id)
+    {
+        return $this->model->findOrFail($id);
+    }
 }

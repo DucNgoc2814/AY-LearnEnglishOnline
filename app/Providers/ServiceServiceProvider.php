@@ -13,6 +13,8 @@ use App\Services\Interfaces\VoucherServiceInterface;
 use App\Services\VoucherService;
 use App\Services\Interfaces\CourseServiceInterface;
 use App\Services\CourseService;
+use App\Services\Interfaces\LessonServiceInterface;
+use App\Services\LessonService;
 class ServiceServiceProvider extends ServiceProvider
 {
     public function register()
@@ -21,7 +23,7 @@ class ServiceServiceProvider extends ServiceProvider
         $this->app->bind(CategoryServiceInterface::class, CategoryService::class);
         $this->app->bind(VoucherRepositoryInterface::class, VoucherRepository::class);
         $this->app->bind(VoucherServiceInterface::class, VoucherService::class);
-        $this->app->bind(CourseServiceInterface::class,CourseService::class
-        );
+        $this->app->bind(CourseServiceInterface::class,CourseService::class);
+        $this->app->bind(LessonServiceInterface::class, LessonService::class);
     }
 }
