@@ -24,7 +24,7 @@ class CategoryController extends BaseController
 
     /**
      * Hiển thị danh sách danh mục
-     * 
+     *
      * @return \Illuminate\View\View
      */
     public function index()
@@ -45,7 +45,7 @@ class CategoryController extends BaseController
 
     /**
      * Lưu danh mục mới
-     * 
+     *
      * @param StoreRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -57,7 +57,7 @@ class CategoryController extends BaseController
 
     /**
      * Hiển thị form chỉnh sửa danh mục
-     * 
+     *
      * @param int $id
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
@@ -69,7 +69,7 @@ class CategoryController extends BaseController
 
     /**
      * Cập nhật danh mục
-     * 
+     *
      * @param int $id
      * @param UpdateRequest $request
      * @return \Illuminate\Http\RedirectResponse
@@ -82,11 +82,11 @@ class CategoryController extends BaseController
 
     /**
      * Xóa danh mục
-     * 
+     *
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    
+
     public function destroy($id)
     {
         $result = $this->categoryService->delete($id);
@@ -95,7 +95,7 @@ class CategoryController extends BaseController
 
     /**
      * Khôi phục danh mục đã xóa
-     * 
+     *
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */

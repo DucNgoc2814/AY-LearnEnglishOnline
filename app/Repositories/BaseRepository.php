@@ -39,7 +39,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
     public function update($id, array $data)
     {
-  
+
         $record = $this->findById($id);
         if ($record) {
             $record->update($data);
@@ -111,8 +111,9 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function deleteImage(string $path)
     {
         try {
-            if (\Storage::exists("public/{$path}")) {
-                \Storage::delete("public/{$path}");
+            $fullPath = public_path($path);
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
                 return true;
             }
             return false;
@@ -131,6 +132,27 @@ abstract class BaseRepository implements BaseRepositoryInterface
                 }
             }
             return $imagePaths;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+    public function updateImage($newImage, string $path, ?string $oldImagePath = null)
+    {
+        // dd([
+        //     'new_image' => $newImage,
+        //     'path' => $path,
+        //     'old_image_path' => $oldImagePath
+        // ]);
+
+        try {
+            // Handle the new image upload (this will also delete the old image)
+            $newImagePath = $this->handleImage($newImage, $path, $oldImagePath);
+
+            if (!$newImagePath) {
+                throw new \Exception('Failed to upload new image');
+            }
+
+            return $newImagePath;
         } catch (\Exception $e) {
             return false;
         }

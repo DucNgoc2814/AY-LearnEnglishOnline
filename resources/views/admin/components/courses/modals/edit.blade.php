@@ -5,7 +5,7 @@
                 <h5 class="modal-title" id="editCourseModalLabel">Chỉnh sửa khóa học</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="editCourseForm" method="POST" enctype="multipart/form-data">
+            <form id="editCourseForm" action="" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-body">

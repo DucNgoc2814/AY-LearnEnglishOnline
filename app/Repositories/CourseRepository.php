@@ -40,17 +40,27 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
     public function update($id, array $data)
     {
+
         $course = $this->findById($id);
 
-        if (isset($data['thumbnail'])) {
-            $data['thumbnail'] = $this->handleImage(
+        if (!$course) {
+            throw new \Exception('Course not found');
+        }
+
+        if (isset($data['thumbnail']) && $data['thumbnail'] && $data['thumbnail']->isValid()) {
+            $newThumbnail = $this->updateImage(
                 $data['thumbnail'],
                 'courses',
                 $course->thumbnail
             );
-            if (!$data['thumbnail']) {
+
+            if (!$newThumbnail) {
                 throw new \Exception('Failed to upload image');
             }
+
+            $data['thumbnail'] = $newThumbnail;
+        } else {
+            unset($data['thumbnail']);
         }
 
         return parent::update($id, $data);
