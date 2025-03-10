@@ -27,4 +27,25 @@ class LessonService extends BaseService implements LessonServiceInterface
             return $this->errorResponse('Có lỗi xảy ra khi tìm kiếm');
         }
     }
+
+    public function getList()
+    {
+        try {
+            $items = $this->repository->getQuery()->paginate(10);
+            return [
+                'status' => true,
+                'message' => 'Lấy danh sách thành công',
+                'data' => $items->items(),
+                'pagination' => [
+                    'total' => $items->total(),
+                    'per_page' => $items->perPage(),
+                    'current_page' => $items->currentPage(),
+                    'last_page' => $items->lastPage(),
+                    'links' => $items->links()
+                ]
+            ];
+        } catch (\Exception $e) {
+            return $this->errorResponse('Có lỗi xảy ra khi lấy danh sách');
+        }
+    }
 }

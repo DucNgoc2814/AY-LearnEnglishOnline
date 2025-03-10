@@ -24,8 +24,8 @@ class LessonRepository extends BaseRepository implements LessonRepositoryInterfa
             ->whereNull('deleted_at')
             ->latest('id');
 
-        if (request()->has('courseId')) {
-            $query->where('course_id', request('courseId'));
+        if (request()->route('courseId')) {
+            $query->where('courseId', request()->route('courseId'));
         }
 
         return $query;

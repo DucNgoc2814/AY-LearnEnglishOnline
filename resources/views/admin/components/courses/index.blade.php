@@ -63,7 +63,7 @@
                                             <td class="text-center align-middle">{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
                                             <td class="text-center align-middle">
                                                 <div class="action_btns d-flex">
-                                                    <a href="{{ route('admin.lessons.by.course', ['courseId' => $item->id]) }}"
+                                                    <a href="{{ route('admin.courses.by.course', ['courseId' => $item->id]) }}"
                                                         class="action_btn mr_10 btn btn-outline-info btn-sm"
                                                         title="Xem chi tiết">
                                                         <i class="fas fa-eye"></i>

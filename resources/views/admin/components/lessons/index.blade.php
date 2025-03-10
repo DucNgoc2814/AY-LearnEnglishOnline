@@ -8,20 +8,18 @@
                     <div class="QA_section">
                         <div class="white_box_tittle list_header">
                             <h4>
-                                @if(isset($course))
-                                    Danh sách bài học - Khóa học: {{ $course->name }}
+                                @if (!empty($course))
+                                    Khóa học: {{ $course->name }}
                                 @else
                                     Bài học
                                 @endif
                             </h4>
                             <div class="box_right d-flex lms_block">
-                                @if(isset($course))
-                                    <div class="add_button me-2">
-                                        <a href="{{ route('admin.courses.index') }}" class="btn_1">
-                                            <i class="fas fa-arrow-left"></i> Quay lại
-                                        </a>
-                                    </div>
-                                @endif
+                                <div class="add_button me-2">
+                                    <a href="{{ route('admin.courses.index') }}" class="btn_1">
+                                        <i class="fas fa-arrow-left"></i> Quay lại
+                                    </a>
+                                </div>
                                 <div class="serach_field_2">
                                     <div class="search_inner">
                                         <form action="{{ route('admin.lessons.index') }}" method="GET">
@@ -48,6 +46,55 @@
                             </div>
                         </div>
 
+                        @if (!empty($course))
+                        <div class="white_box mb_30">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="course-info-item">
+                                        <h5>Thông tin khóa học</h5>
+                                        <div class="course-image mt-3">
+                                            @if($course->thumbnail)
+                                                <img src="{{ asset($course->thumbnail) }}" alt="{{ $course->name }}" class="img-fluid rounded" style="max-width: 200px">
+                                            @else
+                                                <div class="no-image">Chưa có ảnh</div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="course-details">
+                                        <table class="table">
+                                            <tr>
+                                                <th width="200">Tên khóa học:</th>
+                                                <td>{{ $course->name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Giá gốc:</th>
+                                                <td>{{ number_format($course->price) }}đ</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Giá khuyến mãi:</th>
+                                                <td>{{ number_format($course->sale_price) }}đ</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tổng số bài học:</th>
+                                                <td>{{ $course->totalLessons() }} bài</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tổng số đăng ký:</th>
+                                                <td>{{ $course->totalEnrollments() }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tổng doanh thu:</th>
+                                                <td>{{ number_format($course->totalRevenue()) }}đ</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="QA_table mb_30">
                             <table class="table lms_table_active">
                                 <thead>
@@ -65,17 +112,21 @@
                                 <tbody>
                                     @foreach ($lessons as $key => $item)
                                         <tr>
-                                            <td class="text-center align-middle">{{ ($pagination['current_page'] - 1) * $pagination['per_page'] + $key + 1 }}</td>
+                                            <td class="text-center align-middle">
+                                                {{ ($pagination['current_page'] - 1) * $pagination['per_page'] + $key + 1 }}
+                                            </td>
                                             <td class="text-center align-middle">{{ $item->course->name ?? 'N/A' }}</td>
                                             <td class="text-center align-middle">{{ $item->name }}</td>
-                                            <td class="text-center align-middle">{{ Str::limit($item->description, 50) }}</td>
+                                            <td class="text-center align-middle">{{ Str::limit($item->description, 50) }}
+                                            </td>
                                             <td class="text-center align-middle">
                                                 <span class="badge {{ $item->isPreview ? 'bg-success' : 'bg-secondary' }}">
                                                     {{ $item->isPreview ? 'Có' : 'Không' }}
                                                 </span>
                                             </td>
                                             <td class="text-center align-middle">{{ number_format($item->totalView) }}</td>
-                                            <td class="text-center align-middle">{{ number_format($item->totalComment) }}</td>
+                                            <td class="text-center align-middle">{{ number_format($item->totalComment) }}
+                                            </td>
                                             <td class="text-center align-middle">
                                                 <div class="action_btns d-flex justify-content-center">
                                                     <button type="button"
@@ -86,8 +137,7 @@
                                                     </button>
                                                     <button type="button"
                                                         class="action_btn mr_10 btn btn-outline-primary btn-sm"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#editLessonModal"
+                                                        data-bs-toggle="modal" data-bs-target="#editLessonModal"
                                                         onclick="populateEditModal({{ json_encode($item) }})"
                                                         title="Chỉnh sửa">
                                                         <i class="far fa-edit"></i>
@@ -119,7 +169,8 @@
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <div>
                                     Hiển thị từ {{ ($pagination['current_page'] - 1) * $pagination['per_page'] + 1 }}
-                                    đến {{ min($pagination['current_page'] * $pagination['per_page'], $pagination['total']) }}
+                                    đến
+                                    {{ min($pagination['current_page'] * $pagination['per_page'], $pagination['total']) }}
                                     của {{ $pagination['total'] }} bản ghi
                                 </div>
                                 <div>
@@ -182,11 +233,13 @@
                     if (response.status && response.data) {
                         const lesson = response.data;
                         document.querySelector('#show-name').textContent = lesson.name;
-                        document.querySelector('#show-category').textContent = lesson.category ? lesson.category.name : 'N/A';
-                        document.querySelector('#show-price').textContent = lesson.price ? new Intl.NumberFormat('vi-VN', {
-                            style: 'currency',
-                            currency: 'VND'
-                        }).format(lesson.price) : 'N/A';
+                        document.querySelector('#show-category').textContent = lesson.category ? lesson.category.name :
+                            'N/A';
+                        document.querySelector('#show-price').textContent = lesson.price ? new Intl.NumberFormat(
+                            'vi-VN', {
+                                style: 'currency',
+                                currency: 'VND'
+                            }).format(lesson.price) : 'N/A';
                         const modal = new bootstrap.Modal(document.querySelector('#showLessonModal'));
                         modal.show();
                     }
