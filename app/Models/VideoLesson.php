@@ -11,23 +11,32 @@ class VideoLesson extends Model
 
     protected $fillable = [
         'lessonId',
+        'name',
+        'slug',
         'videoUrl',
         'duration',
         'videoType',
-        'thumbnailUrl',
-        'isProcessed',
-        'videoQuality'
+        'thumbnailUrl'
     ];
 
     protected $casts = [
         'duration' => 'integer',
-        'isProcessed' => 'boolean',
-        'videoQuality' => 'json',
         'videoType' => 'string'
     ];
 
     public function lesson()
     {
         return $this->belongsTo(Lesson::class, 'lessonId');
+    }
+
+    public function getFormattedDurationAttribute()
+    {
+        if (!$this->duration) {
+            return 'N/A';
+        }
+
+        $minutes = floor($this->duration / 60);
+        $seconds = $this->duration % 60;
+        return "{$minutes} phút {$seconds} giây";
     }
 }

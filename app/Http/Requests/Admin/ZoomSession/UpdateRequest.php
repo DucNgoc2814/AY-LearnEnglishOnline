@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Admin\Lesson;
+namespace App\Http\Requests\Admin\ZoomSession;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Controllers\Config\CrudRules;

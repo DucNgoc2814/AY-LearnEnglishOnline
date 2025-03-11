@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\LessonTestController;
 use App\Http\Controllers\Admin\FinalExamController;
 use App\Http\Controllers\Admin\QuestionLessonTestController;
 use App\Http\Controllers\Admin\QuestionFinalExamController;
+use App\Http\Controllers\Admin\VideoLessonController;
+use App\Http\Controllers\Admin\ZoomSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +55,30 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/', 'store')->name('store');
             Route::get('/{id}/edit', 'edit')->name('edit');
             Route::get('/{courseId}', [LessonController::class, 'index'])->name('by.course');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
+        });
+    Route::controller(VideoLessonController::class)
+        ->prefix('video-lessons')
+        ->name('video-lessons.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            // Route::get('/{courseId}', [LessonController::class, 'index'])->name('by.course');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
+        });
+    Route::controller(ZoomSessionController::class)
+        ->prefix('zoom-sessions')
+        ->name('zoom-sessions.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            // Route::get('/{courseId}', [LessonController::class, 'index'])->name('by.course');
             Route::put('/{id}', 'update')->name('update');
             Route::delete('/{id}', 'destroy')->name('destroy');
             Route::post('/{id}/restore', 'restore')->name('restore');
