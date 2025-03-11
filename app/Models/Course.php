@@ -48,7 +48,7 @@ class Course extends Model
 
     public function enrollments()
     {
-        return $this->hasMany(Enrollment::class,'courseId');
+        return $this->hasMany(Enrollment::class, 'courseId');
     }
 
     public function ratings()
@@ -63,12 +63,12 @@ class Course extends Model
 
     public function finalExams()
     {
-        return $this->hasMany(FinalExam::class);
+        return $this->hasMany(FinalExam::class, 'courseId');
     }
 
     public function totalLessons()
     {
-        return $this->lessons()->count() ;
+        return $this->lessons()->count();
     }
 
     public function totalEnrollments()
@@ -79,7 +79,7 @@ class Course extends Model
     public function totalRevenue()
     {
         return $this->orders()
-            ->where('orderStatusId', 3) 
+            ->where('orderStatusId', 3)
             ->sum('paymentAmount');
     }
     public function totalDuration()
@@ -93,5 +93,17 @@ class Course extends Model
         $seconds = $totalSeconds % 60;
 
         return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+    }
+
+    public function totalTests()
+    {
+        $lessons = $this->lessons()->get();
+        $lessonTests = $lessons->sum(function($lesson) {
+            return $lesson->totalTests();
+        });
+        $finalTests = $this->finalExams()
+            ->whereNull('deleted_at')
+            ->count();
+        return $lessonTests + $finalTests;
     }
 }

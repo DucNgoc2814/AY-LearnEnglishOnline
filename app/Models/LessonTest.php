@@ -52,4 +52,5 @@ class LessonTest extends Model
     {
         return $this->hasOne(LessonResult::class, 'lessonTestId')->latest();
     }
+ 
 } 

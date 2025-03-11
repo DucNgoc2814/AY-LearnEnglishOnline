@@ -1,1394 +1,12 @@
 @extends('client.layouts.master')
-@section('title', 'Home page | AY-LearnEnglish')
+@section('title', 'Trang chủ | AY-LearnEnglish')
 @section('content')
-    <!-- Start Upcoming Courses -->
-    <section class="py-5 eUpcomingCourse ">
-        <div class="container">
-            <div class="row mb-24 wow  animate__animated animate__fadeInUp opacityOnUp" data-wow-duration="500"
-                data-wow-delay="300">
-                <div class="col-lg-6">
-                    <div class="title-one">
-                        <h4 class="title">Explore our upcoming courses</h4>
-                    </div>
-
-                </div>
-                <div class="col-lg-6">
-                    <div class="Etop_right">
-                        <p class="fz_15_m_24">Discover a world of learning opportunities through our upcoming courses,
-                            where industry experts and thought leaders will guide you in acquiring new expertise,
-                            expanding your horizons, and reaching your full potential.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <!-- Items -->
-                    <div class="row g-3">
-                        <div class="col-lg-4 col-md-6 col-sm-6    " data-wow-duration="500" data-wow-delay="300">
-                            <a href="home/course/color-theory-for-designers/42.html" id="top_course_42"
-                                class="course-item-one">
-                                <div class="ePosition">
-                                    <div class="eImage d-flex">
-                                        <span class="px-3">Responsive Design</span>
-                                        <div class="img">
-                                            <img loading="lazy"
-                                                src="{{ asset('themes/client/uploads/user_image/optimized/95f8ffe52fcc64ac943a9bfa83c00d39.jpg') }}"
-                                                alt="" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="img-rating">
-                                    <div class="img">
-                                        <img loading="lazy"
-                                            src="{{ asset('themes/client/uploads/thumbnails/upcoming_thumbnails/169f4fe1355584114adecf2a1111a821.jpg') }}"
-                                            alt="" />
-
-                                    </div>
-                                    <div class="content">
-                                        <h4 class="title pb-0">Color Theory for Designers</h4>
-                                        <p class="info ellipsis-line-2 fw-400"> Release on : 3 July 2024</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6    " data-wow-duration="500" data-wow-delay="300">
-                            <a href="home/course/creating-3d-environments-in-blender/41.html" id="top_course_41"
-                                class="course-item-one">
-                                <div class="ePosition">
-                                    <div class="eImage d-flex">
-                                        <span class="px-3">Digital Art</span>
-                                        <div class="img">
-                                            <img loading="lazy"
-                                                src="{{ asset('themes/client/uploads/user_image/optimized/41146b28f9a50262e27b04d954dfe96e.jpg') }}"
-                                                alt="" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="img-rating">
-                                    <div class="img">
-                                        <img loading="lazy"
-                                            src="{{ asset('themes/client/uploads/thumbnails/upcoming_thumbnails/e2cc422780cf111f7aabbf56777155d3.jpg') }}"
-                                            alt="" />
-
-                                    </div>
-                                    <div class="content">
-                                        <h4 class="title pb-0">Creating 3D environments in Blender</h4>
-                                        <p class="info ellipsis-line-2 fw-400"> Release on : 20 July 2024</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6    " data-wow-duration="500" data-wow-delay="300">
-                            <a href="home/course/music-theory-fundamentals-for-composition-in-any-genre/40.html"
-                                id="top_course_40" class="course-item-one">
-                                <div class="ePosition">
-                                    <div class="eImage d-flex">
-                                        <span class="px-3">Responsive Design</span>
-                                        <div class="img">
-                                            <img loading="lazy"
-                                                src="{{ asset('themes/client/uploads/user_image/optimized/95f8ffe52fcc64ac943a9bfa83c00d39.jpg') }}"
-                                                alt="" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="img-rating">
-                                    <div class="img">
-                                        <img loading="lazy"
-                                            src="{{ asset('themes/client/uploads/thumbnails/upcoming_thumbnails/f055dbed10dad420702422b6bd1e8400.jpg') }}"
-                                            alt="" />
-
-                                    </div>
-                                    <div class="content">
-                                        <h4 class="title pb-0">Music Theory - Fundamentals for Composition in Any Genre
-                                        </h4>
-                                        <p class="info ellipsis-line-2 fw-400"> Release on : 9 September 2024</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6    " data-wow-duration="500" data-wow-delay="300">
-                            <a href="home/course/anime-character-creator-make-3d-anime-characters-in-blender/39.html"
-                                id="top_course_39" class="course-item-one">
-                                <div class="ePosition">
-                                    <div class="eImage d-flex">
-                                        <span class="px-3">Responsive Design</span>
-                                        <div class="img">
-                                            <img loading="lazy"
-                                                src="{{ asset('themes/client/uploads/user_image/optimized/95f8ffe52fcc64ac943a9bfa83c00d39.jpg') }}"
-                                                alt="" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="img-rating">
-                                    <div class="img">
-                                        <img loading="lazy"
-                                            src="{{ asset('themes/client/uploads/thumbnails/upcoming_thumbnails/a2172339634e35aa81fc9d8b82d138ea.jpg') }}"
-                                            alt="" />
-
-                                    </div>
-                                    <div class="content">
-                                        <h4 class="title pb-0">Anime Character Creator: Make 3D Anime Characters in
-                                            Blender</h4>
-                                        <p class="info ellipsis-line-2 fw-400"> Release on : 23 August 2024</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6    " data-wow-duration="500" data-wow-delay="300">
-                            <a href="home/course/mastering-yoga-sun-salutations-with-mindfulness/38.html"
-                                id="top_course_38" class="course-item-one">
-                                <div class="ePosition">
-                                    <div class="eImage d-flex">
-                                        <span class="px-3">Responsive Design</span>
-                                        <div class="img">
-                                            <img loading="lazy"
-                                                src="{{ asset('themes/client/uploads/user_image/optimized/95f8ffe52fcc64ac943a9bfa83c00d39.jpg') }}"
-                                                alt="" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="img-rating">
-                                    <div class="img">
-                                        <img loading="lazy"
-                                            src="{{ asset('themes/client/uploads/thumbnails/upcoming_thumbnails/0a9d019ce318535e4c1ce8f5207a33d3.jpg') }}"
-                                            alt="" />
-
-                                    </div>
-                                    <div class="content">
-                                        <h4 class="title pb-0">Mastering Yoga Sun Salutations with mindfulness</h4>
-                                        <p class="info ellipsis-line-2 fw-400"> Release on : 13 July 2024</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-6    " data-wow-duration="500" data-wow-delay="300">
-                            <a href="home/course/mastering-cinematic-compositions-in-video-film/37.html"
-                                id="top_course_37" class="course-item-one">
-                                <div class="ePosition">
-                                    <div class="eImage d-flex">
-                                        <span class="px-3">Responsive Design</span>
-                                        <div class="img">
-                                            <img loading="lazy"
-                                                src="{{ asset('themes/client/uploads/user_image/optimized/95f8ffe52fcc64ac943a9bfa83c00d39.jpg') }}"
-                                                alt="" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="img-rating">
-                                    <div class="img">
-                                        <img loading="lazy"
-                                            src="{{ asset('themes/client/uploads/thumbnails/upcoming_thumbnails/728418ca86e6c490721b66e55392d29b.jpg') }}"
-                                            alt="" />
-
-                                    </div>
-                                    <div class="content">
-                                        <h4 class="title pb-0">Mastering Cinematic Compositions In Video & Film</h4>
-                                        <p class="info ellipsis-line-2 fw-400"> Release on : 5 July 2024</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- End Upcoming Courses -->
-
-
-    <!---------- Top courses Section start --------------->
-    <section class="courses Ecourse grid-view-body py-5 wow  animate__animated animate__fadeInUp opacityOnUp"
-        data-wow-duration="500" data-wow-delay="300">
-        <div class="container">
-            <h1 class="pt-0 f-36"><span>Top courses</span></h1>
-            <p class="ms-0">These are the most popular courses among listen courses learners worldwide</p>
-            <div class="courses-card">
-                <div class="course-group-slider" data-wow-duration="1000" data-wow-delay="500">
-                    <div class="single-popup-course ">
-                        <a href="home/course/wordpress-theme-development-with-bootstrap/12.html" id="top_course_12"
-                            class="checkPropagation courses-card-body">
-                            <div class="courses-card-image">
-                                <img loading="lazy"
-                                    src="{{ asset('themes/client/assets/frontend/default-new/img/course_thumbnail_placeholder.jpg') }}">
-                                <div class="courses-icon " id="coursesWishlistIconTopCourse12">
-                                    <i class="fa-solid fa-heart checkPropagation"
-                                        onclick="actionTo('home/toggleWishlistItems/12/TopCourse.html')"></i>
-                                </div>
-                                <div class="courses-card-image-text">
-                                    <h3>Intermediate</h3>
-                                </div>
-                            </div>
-                            <div class="courses-text">
-                                <h5 class="mb-2">WordPress Theme Development with Bootstrap</h5>
-                                <div class="review-icon">
-                                    <div class="review-icon-star align-items-center">
-                                        <p>4</p>
-                                        <p><i class="fa-solid fa-star filled"></i></p>
-                                        <p>(2 Reviews)</p>
-                                    </div>
-                                    <div class="review-btn d-flex align-items-center">
-                                        <span class="compare-img checkPropagation"
-                                            onclick="redirectTo('home/compare5b09.html?course-1=wordpress-theme-development-with-bootstrap&amp;course-id-1=12');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
-                                            Compare </span>
-                                    </div>
-                                </div>
-                                <p class="ellipsis-line-2">Learn how to confidently develop custom &amp; profitable
-                                    Responsive WordPress Themes and Websites with no prior experience.</p>
-                                <div class="courses-price-border">
-                                    <div class="courses-price">
-                                        <div class="courses-price-left">
-                                            <h5>$10</h5>
-                                            <p class="mt-1"><del>$11.99</del></p>
-                                        </div>
-                                        <div class="courses-price-right ">
-                                            <p class="m-0"> <i class="fa-regular fa-clock p-0 text-15px"></i> 24:11:44
-                                                Hours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-
-                        <div id="top_course_feature_12" class="course-popover-content">
-                            <p class="last-update">Last updated Sun, 09-Mar-2025</p>
-                            <div class="course-title">
-                                <a href="home/course/wordpress-theme-development-with-bootstrap/12.html">WordPress Theme
-                                    Development with Bootstrap</a>
-                            </div>
-                            <div class="course-meta">
-                                <span class=""><i class="fas fa-play-circle"></i>
-                                    25 Lessons </span>
-                                <span class=""><i class="far fa-clock"></i>
-                                    24:11:44 Hours </span>
-                                <span class=""><i class="fas fa-closed-captioning"></i>English</span>
-                            </div>
-                            <div class="course-subtitle">
-                                Learn how to confidently develop custom &amp; profitable Responsive WordPress Themes and
-                                Websites with no prior experience. </div>
-                            <h6 class="text-black text-14px mb-1">Outcomes:</h6>
-                            <ul class="will-learn">
-                                <li>Have the skills to start making money on the side, as a casual freelancer, or full
-                                    time as a work-from-home freelancer</li>
-                                <li>Easily create a beautiful HTML & CSS website with Bootstrap (that doesn't look like
-                                    generic Bootstrap websites!)</li>
-                                <li>Convert any static HTML & CSS website into a Custom WordPress Theme</li>
-                                <li>Have a thorough understanding of utilizing PHP to create WordPress websites & themes
-                                </li>
-                                <li>Feel comfortable with the process of turning static websites into dynamic WordPress
-                                    websites</li>
-                                <li>Fully understand how to use Custom Post Types and Advanced Custom Fields in
-                                    WordPress</li>
-                            </ul>
-                            <div class="popover-btns">
-
-                                <!-- Cart button -->
-                                <a id="added_to_cart_btn_top_course12"
-                                    class="purchase-btn align-items-center me-auto d-hidden" href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/12/top_course.html');">
-                                    <i class="fas fa-minus me-2"></i> Remove from cart </a>
-                                <a id="add_to_cart_btn_top_course12" class="purchase-btn align-items-center me-auto "
-                                    href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/12/top_course.html'); ">
-                                    <i class="fas fa-plus me-2"></i> Add to cart </a>
-                                <!-- Cart button ended-->
-                            </div>
-                            <script>
-                                $(document).ready(function() {
-                                    $('#top_course_12').webuiPopover({
-                                        url: '#top_course_feature_12',
-                                        trigger: 'hover',
-                                        animation: 'pop',
-                                        cache: false,
-                                        multi: true,
-                                        direction: 'rtl',
-                                        placement: 'horizontal',
-                                    });
-                                });
-                            </script>
-                        </div>
-                    </div>
-                    <div class="single-popup-course ">
-                        <a href="home/course/adobe-illustrator-cc-essentials-training-course/13.html" id="top_course_13"
-                            class="checkPropagation courses-card-body">
-                            <div class="courses-card-image">
-                                <img loading="lazy"
-                                    src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_131701063901.jpg') }}">
-                                <div class="courses-icon " id="coursesWishlistIconTopCourse13">
-                                    <i class="fa-solid fa-heart checkPropagation"
-                                        onclick="actionTo('home/toggleWishlistItems/13/TopCourse.html')"></i>
-                                </div>
-                                <div class="courses-card-image-text">
-                                    <h3>Advanced</h3>
-                                </div>
-                            </div>
-                            <div class="courses-text">
-                                <h5 class="mb-2">Adobe Illustrator CC - Essentials Training Course</h5>
-                                <div class="review-icon">
-                                    <div class="review-icon-star align-items-center">
-                                        <p>5</p>
-                                        <p><i class="fa-solid fa-star filled"></i></p>
-                                        <p>(1 Reviews)</p>
-                                    </div>
-                                    <div class="review-btn d-flex align-items-center">
-                                        <span class="compare-img checkPropagation"
-                                            onclick="redirectTo('home/compare7edb.html?course-1=adobe-illustrator-cc-essentials-training-course&amp;course-id-1=13');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
-                                            Compare </span>
-                                    </div>
-                                </div>
-                                <p class="ellipsis-line-2">Learn Adobe Illustrator CC graphic design, logo design, and
-                                    more with this in-depth, practical, easy-to-follow course!</p>
-                                <div class="courses-price-border">
-                                    <div class="courses-price">
-                                        <div class="courses-price-left">
-                                            <h5>$12</h5>
-                                            <p class="mt-1"><del>$18.99</del></p>
-                                        </div>
-                                        <div class="courses-price-right ">
-                                            <p class="m-0"> <i class="fa-regular fa-clock p-0 text-15px"></i> 01:31:12
-                                                Hours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-
-                        <div id="top_course_feature_13" class="course-popover-content">
-                            <p class="last-update">Last updated Mon, 27-Nov-2023</p>
-                            <div class="course-title">
-                                <a href="home/course/adobe-illustrator-cc-essentials-training-course/13.html">Adobe
-                                    Illustrator CC - Essentials Training Course</a>
-                            </div>
-                            <div class="course-meta">
-                                <span class=""><i class="fas fa-play-circle"></i>
-                                    12 Lessons </span>
-                                <span class=""><i class="far fa-clock"></i>
-                                    01:31:12 Hours </span>
-                                <span class=""><i class="fas fa-closed-captioning"></i>English</span>
-                            </div>
-                            <div class="course-subtitle">
-                                Learn Adobe Illustrator CC graphic design, logo design, and more with this in-depth,
-                                practical, easy-to-follow course! </div>
-                            <h6 class="text-black text-14px mb-1">Outcomes:</h6>
-                            <ul class="will-learn">
-                                <li>You will be able to add Illustrator to your CV</li>
-                                <li>You will have over 30 of your own projects to add to your portfolio.</li>
-                                <li>You will be able to start earning money from your Illustrator Skills.</li>
-                                <li>Feel comfortable using Adobe Illustrator to design your own graphics from scratch.
-                                </li>
-                                <li>Master advanced Illustrator tools and techniques.</li>
-                                <li>Draw beginner to advanced shapes and icons.</li>
-                                <li>Learn all of the key skills of Illustrator: shapes, text, masking, effects, and
-                                    exporting.</li>
-                            </ul>
-                            <div class="popover-btns">
-
-                                <!-- Cart button -->
-                                <a id="added_to_cart_btn_top_course13"
-                                    class="purchase-btn align-items-center me-auto d-hidden" href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/13/top_course.html');">
-                                    <i class="fas fa-minus me-2"></i> Remove from cart </a>
-                                <a id="add_to_cart_btn_top_course13" class="purchase-btn align-items-center me-auto "
-                                    href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/13/top_course.html'); ">
-                                    <i class="fas fa-plus me-2"></i> Add to cart </a>
-                                <!-- Cart button ended-->
-                            </div>
-                            <script>
-                                $(document).ready(function() {
-                                    $('#top_course_13').webuiPopover({
-                                        url: '#top_course_feature_13',
-                                        trigger: 'hover',
-                                        animation: 'pop',
-                                        cache: false,
-                                        multi: true,
-                                        direction: 'rtl',
-                                        placement: 'horizontal',
-                                    });
-                                });
-                            </script>
-                        </div>
-                    </div>
-                    <div class="single-popup-course ">
-                        <a href="home/course/complete-guitar-lessons-system/16.html" id="top_course_16"
-                            class="checkPropagation courses-card-body">
-                            <div class="courses-card-image">
-                                <img loading="lazy"
-                                    src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_161701063677.jpg') }}">
-                                <div class="courses-icon " id="coursesWishlistIconTopCourse16">
-                                    <i class="fa-solid fa-heart checkPropagation"
-                                        onclick="actionTo('home/toggleWishlistItems/16/TopCourse.html')"></i>
-                                </div>
-                                <div class="courses-card-image-text">
-                                    <h3>Beginner</h3>
-                                </div>
-                            </div>
-                            <div class="courses-text">
-                                <h5 class="mb-2">Complete Guitar Lessons System </h5>
-                                <div class="review-icon">
-                                    <div class="review-icon-star align-items-center">
-                                        <p>0</p>
-                                        <p><i class="fa-solid fa-star "></i></p>
-                                        <p>(0 Reviews)</p>
-                                    </div>
-                                    <div class="review-btn d-flex align-items-center">
-                                        <span class="compare-img checkPropagation"
-                                            onclick="redirectTo('home/compared62f.html?course-1=complete-guitar-lessons-system&amp;course-id-1=16');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
-                                            Compare </span>
-                                    </div>
-                                </div>
-                                <p class="ellipsis-line-2">Interior Design Color Schemes Made Easy</p>
-                                <div class="courses-price-border">
-                                    <div class="courses-price">
-                                        <div class="courses-price-left">
-                                            <h5>$12</h5>
-                                            <p class="mt-1"><del>$149.99</del></p>
-                                        </div>
-                                        <div class="courses-price-right ">
-                                            <p class="m-0"> <i class="fa-regular fa-clock p-0 text-15px"></i> 01:15:34
-                                                Hours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-
-                        <div id="top_course_feature_16" class="course-popover-content">
-                            <p class="last-update">Last updated Mon, 27-Nov-2023</p>
-                            <div class="course-title">
-                                <a href="home/course/complete-guitar-lessons-system/16.html">Complete Guitar Lessons
-                                    System </a>
-                            </div>
-                            <div class="course-meta">
-                                <span class=""><i class="fas fa-play-circle"></i>
-                                    7 Lessons </span>
-                                <span class=""><i class="far fa-clock"></i>
-                                    01:15:34 Hours </span>
-                                <span class=""><i class="fas fa-closed-captioning"></i>English</span>
-                            </div>
-                            <div class="course-subtitle">
-                                Interior Design Color Schemes Made Easy </div>
-                            <h6 class="text-black text-14px mb-1">Outcomes:</h6>
-                            <ul class="will-learn">
-                                <li>Create the ideal color scheme for any room in your home using a tool that has been
-                                    designed to guide you through this process easily!</li>
-                                <li>Use the psychology of color to create the perfect mood in your home.</li>
-                                <li>Mix patterns successfully in a room.</li>
-                                <li>Use the color wheel like a pro.</li>
-                                <li>Use texture to change the way a color appears.</li>
-                            </ul>
-                            <div class="popover-btns">
-
-                                <!-- Cart button -->
-                                <a id="added_to_cart_btn_top_course16"
-                                    class="purchase-btn align-items-center me-auto d-hidden" href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/16/top_course.html');">
-                                    <i class="fas fa-minus me-2"></i> Remove from cart </a>
-                                <a id="add_to_cart_btn_top_course16" class="purchase-btn align-items-center me-auto "
-                                    href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/16/top_course.html'); ">
-                                    <i class="fas fa-plus me-2"></i> Add to cart </a>
-                                <!-- Cart button ended-->
-                            </div>
-                            <script>
-                                $(document).ready(function() {
-                                    $('#top_course_16').webuiPopover({
-                                        url: '#top_course_feature_16',
-                                        trigger: 'hover',
-                                        animation: 'pop',
-                                        cache: false,
-                                        multi: true,
-                                        direction: 'rtl',
-                                        placement: 'horizontal',
-                                    });
-                                });
-                            </script>
-                        </div>
-                    </div>
-                    <div class="single-popup-course ">
-                        <a href="home/course/complete-blender-creator-learn-3d-modelling/17.html" id="top_course_17"
-                            class="checkPropagation courses-card-body">
-                            <div class="courses-card-image">
-                                <img loading="lazy"
-                                    src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_171701068402.jpg') }}">
-                                <div class="courses-icon " id="coursesWishlistIconTopCourse17">
-                                    <i class="fa-solid fa-heart checkPropagation"
-                                        onclick="actionTo('home/toggleWishlistItems/17/TopCourse.html')"></i>
-                                </div>
-                                <div class="courses-card-image-text">
-                                    <h3>Intermediate</h3>
-                                </div>
-                            </div>
-                            <div class="courses-text">
-                                <h5 class="mb-2">Complete Blender Creator: Learn 3D Modelling </h5>
-                                <div class="review-icon">
-                                    <div class="review-icon-star align-items-center">
-                                        <p>4</p>
-                                        <p><i class="fa-solid fa-star filled"></i></p>
-                                        <p>(1 Reviews)</p>
-                                    </div>
-                                    <div class="review-btn d-flex align-items-center">
-                                        <span class="compare-img checkPropagation"
-                                            onclick="redirectTo('home/compare8420.html?course-1=complete-blender-creator-learn-3d-modelling&amp;course-id-1=17');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
-                                            Compare </span>
-                                    </div>
-                                </div>
-                                <p class="ellipsis-line-2">Use Blender to create beautiful 3D models for video games, 3D
-                                    printing, house design etc. No prior knowledge required.</p>
-                                <div class="courses-price-border">
-                                    <div class="courses-price">
-                                        <div class="courses-price-left">
-                                            <h5>Free</h5>
-                                        </div>
-                                        <div class="courses-price-right ">
-                                            <p class="m-0"> <i class="fa-regular fa-clock p-0 text-15px"></i> 01:29:57
-                                                Hours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-
-                        <div id="top_course_feature_17" class="course-popover-content">
-                            <p class="last-update">Last updated Mon, 27-Nov-2023</p>
-                            <div class="course-title">
-                                <a href="home/course/complete-blender-creator-learn-3d-modelling/17.html">Complete
-                                    Blender Creator: Learn 3D Modelling </a>
-                            </div>
-                            <div class="course-meta">
-                                <span class=""><i class="fas fa-play-circle"></i>
-                                    6 Lessons </span>
-                                <span class=""><i class="far fa-clock"></i>
-                                    01:29:57 Hours </span>
-                                <span class=""><i class="fas fa-closed-captioning"></i>English</span>
-                            </div>
-                            <div class="course-subtitle">
-                                Use Blender to create beautiful 3D models for video games, 3D printing, house design
-                                etc. No prior knowledge required. </div>
-                            <h6 class="text-black text-14px mb-1">Outcomes:</h6>
-                            <ul class="will-learn">
-                                <li>Use Blender and understand it's interface</li>
-                                <li>Understand the principles of modelling</li>
-                                <li>Create 3D models with simple colors</li>
-                                <li>Learn the basics of animation</li>
-                                <li>Explore and have fun with particle effects</li>
-                                <li>Create your own materials</li>
-                                <li>UV map and unwrap your models</li>
-                            </ul>
-                            <div class="popover-btns">
-                                <a class="purchase-btn green_purchase ms-auto"
-                                    href="home/get_enrolled_to_free_course/17.html">Enroll now</a>
-                            </div>
-                            <script>
-                                $(document).ready(function() {
-                                    $('#top_course_17').webuiPopover({
-                                        url: '#top_course_feature_17',
-                                        trigger: 'hover',
-                                        animation: 'pop',
-                                        cache: false,
-                                        multi: true,
-                                        direction: 'rtl',
-                                        placement: 'horizontal',
-                                    });
-                                });
-                            </script>
-                        </div>
-                    </div>
-                    <div class="single-popup-course ">
-                        <a href="home/course/basic-to-advanced-sewing-course-for-beginners/18.html" id="top_course_18"
-                            class="checkPropagation courses-card-body">
-                            <div class="courses-card-image">
-                                <img loading="lazy"
-                                    src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_181701068461.jpg') }}">
-                                <div class="courses-icon " id="coursesWishlistIconTopCourse18">
-                                    <i class="fa-solid fa-heart checkPropagation"
-                                        onclick="actionTo('home/toggleWishlistItems/18/TopCourse.html')"></i>
-                                </div>
-                                <div class="courses-card-image-text">
-                                    <h3>Beginner</h3>
-                                </div>
-                            </div>
-                            <div class="courses-text">
-                                <h5 class="mb-2">Basic to advanced sewing course for beginners</h5>
-                                <div class="review-icon">
-                                    <div class="review-icon-star align-items-center">
-                                        <p>0</p>
-                                        <p><i class="fa-solid fa-star "></i></p>
-                                        <p>(0 Reviews)</p>
-                                    </div>
-                                    <div class="review-btn d-flex align-items-center">
-                                        <span class="compare-img checkPropagation"
-                                            onclick="redirectTo('home/comparece39.html?course-1=basic-to-advanced-sewing-course-for-beginners&amp;course-id-1=18');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
-                                            Compare </span>
-                                    </div>
-                                </div>
-                                <p class="ellipsis-line-2">Building A Strong Sewing Foundation. It is a long-established
-                                    fact that a reader will be distracted by the readable content of a page when looking
-                                    at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
-                                    distribution of letters, as opposed to using &#039;Content here, content here&#039;,
-                                    making it look like readable English.</p>
-                                <div class="courses-price-border">
-                                    <div class="courses-price">
-                                        <div class="courses-price-left">
-                                            <h5>$13</h5>
-                                            <p class="mt-1"><del>$29.99</del></p>
-                                        </div>
-                                        <div class="courses-price-right ">
-                                            <p class="m-0"> <i class="fa-regular fa-clock p-0 text-15px"></i> 01:22:29
-                                                Hours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-
-                        <div id="top_course_feature_18" class="course-popover-content">
-                            <p class="last-update">Last updated Mon, 27-Nov-2023</p>
-                            <div class="course-title">
-                                <a href="home/course/basic-to-advanced-sewing-course-for-beginners/18.html">Basic to
-                                    advanced sewing course for beginners</a>
-                            </div>
-                            <div class="course-meta">
-                                <span class=""><i class="fas fa-play-circle"></i>
-                                    9 Lessons </span>
-                                <span class=""><i class="far fa-clock"></i>
-                                    01:22:29 Hours </span>
-                                <span class=""><i class="fas fa-closed-captioning"></i>English</span>
-                            </div>
-                            <div class="course-subtitle">
-                                Building A Strong Sewing Foundation. It is a long-established fact that a reader will be
-                                distracted by the readable content of a page when looking at its layout. The point of
-                                using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as
-                                opposed to using &#039;Content here, content here&#039;, making it look like readable
-                                English. </div>
-                            <h6 class="text-black text-14px mb-1">Outcomes:</h6>
-                            <ul class="will-learn">
-                                <li>Learn sewing machine basics</li>
-                                <li>Learn a multitude of stitches and seam finishes</li>
-                                <li>How to make a pattern for any size envelope pillow</li>
-                                <li>Correctly sew the 4 basic seams</li>
-                            </ul>
-                            <div class="popover-btns">
-
-                                <!-- Cart button -->
-                                <a id="added_to_cart_btn_top_course18"
-                                    class="purchase-btn align-items-center me-auto d-hidden" href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/18/top_course.html');">
-                                    <i class="fas fa-minus me-2"></i> Remove from cart </a>
-                                <a id="add_to_cart_btn_top_course18" class="purchase-btn align-items-center me-auto "
-                                    href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/18/top_course.html'); ">
-                                    <i class="fas fa-plus me-2"></i> Add to cart </a>
-                                <!-- Cart button ended-->
-                            </div>
-                            <script>
-                                $(document).ready(function() {
-                                    $('#top_course_18').webuiPopover({
-                                        url: '#top_course_feature_18',
-                                        trigger: 'hover',
-                                        animation: 'pop',
-                                        cache: false,
-                                        multi: true,
-                                        direction: 'rtl',
-                                        placement: 'horizontal',
-                                    });
-                                });
-                            </script>
-                        </div>
-                    </div>
-                    <div class="single-popup-course ">
-                        <a href="home/course/after-effects-cc-2024-complete-course/20.html" id="top_course_20"
-                            class="checkPropagation courses-card-body">
-                            <div class="courses-card-image">
-                                <img loading="lazy"
-                                    src="{{ asset('themes/client/assets/frontend/default-new/img/course_thumbnail_placeholder.jpg') }}">
-                                <div class="courses-icon " id="coursesWishlistIconTopCourse20">
-                                    <i class="fa-solid fa-heart checkPropagation"
-                                        onclick="actionTo('home/toggleWishlistItems/20/TopCourse.html')"></i>
-                                </div>
-                                <div class="courses-card-image-text">
-                                    <h3>Advanced</h3>
-                                </div>
-                            </div>
-                            <div class="courses-text">
-                                <h5 class="mb-2">After Effects CC 2024: Complete Course</h5>
-                                <div class="review-icon">
-                                    <div class="review-icon-star align-items-center">
-                                        <p>0</p>
-                                        <p><i class="fa-solid fa-star "></i></p>
-                                        <p>(0 Reviews)</p>
-                                    </div>
-                                    <div class="review-btn d-flex align-items-center">
-                                        <span class="compare-img checkPropagation"
-                                            onclick="redirectTo('home/compare5cdb.html?course-1=after-effects-cc-2024-complete-course&amp;course-id-1=20');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
-                                            Compare </span>
-                                    </div>
-                                </div>
-                                <p class="ellipsis-line-2">Create stunning Motion Graphics, VFX Visual Effects &amp; VFX
-                                    Compositing with hands-on tutorials &amp; 50+ practice projects.</p>
-                                <div class="courses-price-border">
-                                    <div class="courses-price">
-                                        <div class="courses-price-left">
-                                            <h5>$58</h5>
-                                            <p class="mt-1"><del>$158</del></p>
-                                        </div>
-                                        <div class="courses-price-right ">
-                                            <p class="m-0"> <i class="fa-regular fa-clock p-0 text-15px"></i> 00:14:25
-                                                Hours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-
-                        <div id="top_course_feature_20" class="course-popover-content">
-                            <p class="last-update">Last updated Mon, 27-Nov-2023</p>
-                            <div class="course-title">
-                                <a href="home/course/after-effects-cc-2024-complete-course/20.html">After Effects CC
-                                    2024: Complete Course</a>
-                            </div>
-                            <div class="course-meta">
-                                <span class=""><i class="fas fa-play-circle"></i>
-                                    8 Lessons </span>
-                                <span class=""><i class="far fa-clock"></i>
-                                    00:14:25 Hours </span>
-                                <span class=""><i class="fas fa-closed-captioning"></i>English</span>
-                            </div>
-                            <div class="course-subtitle">
-                                Create stunning Motion Graphics, VFX Visual Effects &amp; VFX Compositing with hands-on
-                                tutorials &amp; 50+ practice projects. </div>
-                            <h6 class="text-black text-14px mb-1">Outcomes:</h6>
-                            <ul class="will-learn">
-                                <li>How to use all of After Effects CC - in a dynamic, hands on approach.</li>
-                                <li>Work with the latest 2019 Responsive Design Techniques</li>
-                                <li>Create Motion Graphics to enhance your videos using a step by step, easy-to-use
-                                    method.</li>
-                                <li>Boost your creativity by completing 50+ Practice Activities and projects from simple
-                                    to complex.</li>
-                                <li>Practice compositing techniques to achieve stunning video effects.</li>
-                            </ul>
-                            <div class="popover-btns">
-
-                                <!-- Cart button -->
-                                <a id="added_to_cart_btn_top_course20"
-                                    class="purchase-btn align-items-center me-auto d-hidden" href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/20/top_course.html');">
-                                    <i class="fas fa-minus me-2"></i> Remove from cart </a>
-                                <a id="add_to_cart_btn_top_course20" class="purchase-btn align-items-center me-auto "
-                                    href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/20/top_course.html'); ">
-                                    <i class="fas fa-plus me-2"></i> Add to cart </a>
-                                <!-- Cart button ended-->
-                            </div>
-                            <script>
-                                $(document).ready(function() {
-                                    $('#top_course_20').webuiPopover({
-                                        url: '#top_course_feature_20',
-                                        trigger: 'hover',
-                                        animation: 'pop',
-                                        cache: false,
-                                        multi: true,
-                                        direction: 'rtl',
-                                        placement: 'horizontal',
-                                    });
-                                });
-                            </script>
-                        </div>
-                    </div>
-                    <div class="single-popup-course ">
-                        <a href="home/course/how-to-use-lighting-design-to-transform-your-home/21.html" id="top_course_21"
-                            class="checkPropagation courses-card-body">
-                            <div class="courses-card-image">
-                                <img loading="lazy"
-                                    src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_211689234810.jpg') }}">
-                                <div class="courses-icon " id="coursesWishlistIconTopCourse21">
-                                    <i class="fa-solid fa-heart checkPropagation"
-                                        onclick="actionTo('home/toggleWishlistItems/21/TopCourse.html')"></i>
-                                </div>
-                                <div class="courses-card-image-text">
-                                    <h3>Beginner</h3>
-                                </div>
-                            </div>
-                            <div class="courses-text">
-                                <h5 class="mb-2">How to Use Lighting Design to Transform your Home</h5>
-                                <div class="review-icon">
-                                    <div class="review-icon-star align-items-center">
-                                        <p>0</p>
-                                        <p><i class="fa-solid fa-star "></i></p>
-                                        <p>(0 Reviews)</p>
-                                    </div>
-                                    <div class="review-btn d-flex align-items-center">
-                                        <span class="compare-img checkPropagation"
-                                            onclick="redirectTo('home/compare0c6d.html?course-1=how-to-use-lighting-design-to-transform-your-home&amp;course-id-1=21');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
-                                            Compare </span>
-                                    </div>
-                                </div>
-                                <p class="ellipsis-line-2">Learn How to Use Lighting in your Interior Design Like a Pro
-                                </p>
-                                <div class="courses-price-border">
-                                    <div class="courses-price">
-                                        <div class="courses-price-left">
-                                            <h5>$56</h5>
-                                            <p class="mt-1"><del>$89.99</del></p>
-                                        </div>
-                                        <div class="courses-price-right ">
-                                            <p class="m-0"> <i class="fa-regular fa-clock p-0 text-15px"></i> 01:03:48
-                                                Hours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-
-                        <div id="top_course_feature_21" class="course-popover-content">
-                            <p class="last-update">Last updated Thu, 13-Jul-2023</p>
-                            <div class="course-title">
-                                <a href="home/course/how-to-use-lighting-design-to-transform-your-home/21.html">How to
-                                    Use Lighting Design to Transform your Home</a>
-                            </div>
-                            <div class="course-meta">
-                                <span class=""><i class="fas fa-play-circle"></i>
-                                    10 Lessons </span>
-                                <span class=""><i class="far fa-clock"></i>
-                                    01:03:48 Hours </span>
-                                <span class=""><i class="fas fa-closed-captioning"></i>English</span>
-                            </div>
-                            <div class="course-subtitle">
-                                Learn How to Use Lighting in your Interior Design Like a Pro </div>
-                            <h6 class="text-black text-14px mb-1">Outcomes:</h6>
-                            <ul class="will-learn">
-                                <li>Use 3 layers of light to create a cohesive and dramatic lighting scheme in any room
-                                    of their home.</li>
-                                <li>Calculate exactly how much artificial light each of their rooms need.</li>
-                                <li>Effectively utilize and control both natural and artificial light in their home.
-                                </li>
-                                <li>Select light fixtures appropriate to the type of room.</li>
-                                <li>Place lighting fixtures appropriately throughout their room.</li>
-                                <li>Hide unsightly electrical cords from table and floor lamps.</li>
-                            </ul>
-                            <div class="popover-btns">
-
-                                <!-- Cart button -->
-                                <a id="added_to_cart_btn_top_course21"
-                                    class="purchase-btn align-items-center me-auto d-hidden" href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/21/top_course.html');">
-                                    <i class="fas fa-minus me-2"></i> Remove from cart </a>
-                                <a id="add_to_cart_btn_top_course21" class="purchase-btn align-items-center me-auto "
-                                    href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/21/top_course.html'); ">
-                                    <i class="fas fa-plus me-2"></i> Add to cart </a>
-                                <!-- Cart button ended-->
-                            </div>
-                            <script>
-                                $(document).ready(function() {
-                                    $('#top_course_21').webuiPopover({
-                                        url: '#top_course_feature_21',
-                                        trigger: 'hover',
-                                        animation: 'pop',
-                                        cache: false,
-                                        multi: true,
-                                        direction: 'rtl',
-                                        placement: 'horizontal',
-                                    });
-                                });
-                            </script>
-                        </div>
-                    </div>
-                    <div class="single-popup-course ">
-                        <a href="home/course/the-complete-graphic-design-theory/26.html" id="top_course_26"
-                            class="checkPropagation courses-card-body">
-                            <div class="courses-card-image">
-                                <img loading="lazy"
-                                    src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_261689234890.jpg') }}">
-                                <div class="courses-icon " id="coursesWishlistIconTopCourse26">
-                                    <i class="fa-solid fa-heart checkPropagation"
-                                        onclick="actionTo('home/toggleWishlistItems/26/TopCourse.html')"></i>
-                                </div>
-                                <div class="courses-card-image-text">
-                                    <h3>Advanced</h3>
-                                </div>
-                            </div>
-                            <div class="courses-text">
-                                <h5 class="mb-2">The Complete Graphic Design Theory</h5>
-                                <div class="review-icon">
-                                    <div class="review-icon-star align-items-center">
-                                        <p>5</p>
-                                        <p><i class="fa-solid fa-star filled"></i></p>
-                                        <p>(1 Reviews)</p>
-                                    </div>
-                                    <div class="review-btn d-flex align-items-center">
-                                        <span class="compare-img checkPropagation"
-                                            onclick="redirectTo('home/compare1dd1.html?course-1=the-complete-graphic-design-theory&amp;course-id-1=26');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
-                                            Compare </span>
-                                    </div>
-                                </div>
-                                <p class="ellipsis-line-2">Today I am starting part 1 of an ongoing series I am going to
-                                    call &#039;Step Up Your Filmammaking&#039;. Today&#039;s topic is the importance of
-                                    B-Roll. </p>
-                                <div class="courses-price-border">
-                                    <div class="courses-price">
-                                        <div class="courses-price-left">
-                                            <h5>$1800</h5>
-                                            <p class="mt-1"><del>$1896</del></p>
-                                        </div>
-                                        <div class="courses-price-right ">
-                                            <p class="m-0"> <i class="fa-regular fa-clock p-0 text-15px"></i> 01:09:38
-                                                Hours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-
-                        <div id="top_course_feature_26" class="course-popover-content">
-                            <p class="last-update">Last updated Thu, 13-Jul-2023</p>
-                            <div class="course-title">
-                                <a href="home/course/the-complete-graphic-design-theory/26.html">The Complete Graphic
-                                    Design Theory</a>
-                            </div>
-                            <div class="course-meta">
-                                <span class=""><i class="fas fa-play-circle"></i>
-                                    7 Lessons </span>
-                                <span class=""><i class="far fa-clock"></i>
-                                    01:09:38 Hours </span>
-                                <span class=""><i class="fas fa-closed-captioning"></i>English</span>
-                            </div>
-                            <div class="course-subtitle">
-                                Today I am starting part 1 of an ongoing series I am going to call &#039;Step Up Your
-                                Filmammaking&#039;. Today&#039;s topic is the importance of B-Roll. </div>
-                            <h6 class="text-black text-14px mb-1">Outcomes:</h6>
-                            <ul class="will-learn">
-                                <li>Master in B-Roll</li>
-                                <li>Become pro like Peter Mckinnon</li>
-                            </ul>
-                            <div class="popover-btns">
-
-                                <!-- Cart button -->
-                                <a id="added_to_cart_btn_top_course26"
-                                    class="purchase-btn align-items-center me-auto d-hidden" href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/26/top_course.html');">
-                                    <i class="fas fa-minus me-2"></i> Remove from cart </a>
-                                <a id="add_to_cart_btn_top_course26" class="purchase-btn align-items-center me-auto "
-                                    href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/26/top_course.html'); ">
-                                    <i class="fas fa-plus me-2"></i> Add to cart </a>
-                                <!-- Cart button ended-->
-                            </div>
-                            <script>
-                                $(document).ready(function() {
-                                    $('#top_course_26').webuiPopover({
-                                        url: '#top_course_feature_26',
-                                        trigger: 'hover',
-                                        animation: 'pop',
-                                        cache: false,
-                                        multi: true,
-                                        direction: 'rtl',
-                                        placement: 'horizontal',
-                                    });
-                                });
-                            </script>
-                        </div>
-                    </div>
-                    <div class="single-popup-course ">
-                        <a href="home/course/javascript-understanding-the-weird-parts-the-first-3-5-hours/29.html"
-                            id="top_course_29" class="checkPropagation courses-card-body">
-                            <div class="courses-card-image">
-                                <img loading="lazy"
-                                    src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_291689237147.jpg') }}">
-                                <div class="courses-icon " id="coursesWishlistIconTopCourse29">
-                                    <i class="fa-solid fa-heart checkPropagation"
-                                        onclick="actionTo('home/toggleWishlistItems/29/TopCourse.html')"></i>
-                                </div>
-                                <div class="courses-card-image-text">
-                                    <h3>Beginner</h3>
-                                </div>
-                            </div>
-                            <div class="courses-text">
-                                <h5 class="mb-2">Javascript Understanding the Weird Parts - The First 3.5 Hours</h5>
-                                <div class="review-icon">
-                                    <div class="review-icon-star align-items-center">
-                                        <p>0</p>
-                                        <p><i class="fa-solid fa-star "></i></p>
-                                        <p>(0 Reviews)</p>
-                                    </div>
-                                    <div class="review-btn d-flex align-items-center">
-                                        <span class="compare-img checkPropagation"
-                                            onclick="redirectTo('home/compare3348.html?course-1=javascript-understanding-the-weird-parts-the-first-3-5-hours&amp;course-id-1=29');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
-                                            Compare </span>
-                                    </div>
-                                </div>
-                                <p class="ellipsis-line-2">This is an advanced Javascript course for everyone, giving a
-                                    deep understanding of the language by understanding how it works under the hood.</p>
-                                <div class="courses-price-border">
-                                    <div class="courses-price">
-                                        <div class="courses-price-left">
-                                            <h5>Free</h5>
-                                        </div>
-                                        <div class="courses-price-right ">
-                                            <p class="m-0"> <i class="fa-regular fa-clock p-0 text-15px"></i> 00:04:33
-                                                Hours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-
-                        <div id="top_course_feature_29" class="course-popover-content">
-                            <p class="last-update">Last updated Thu, 13-Jul-2023</p>
-                            <div class="course-title">
-                                <a href="home/course/javascript-understanding-the-weird-parts-the-first-3-5-hours/29.html">Javascript
-                                    Understanding the Weird Parts - The First 3.5 Hours</a>
-                            </div>
-                            <div class="course-meta">
-                                <span class=""><i class="fas fa-play-circle"></i>
-                                    1 Lessons </span>
-                                <span class=""><i class="far fa-clock"></i>
-                                    00:04:33 Hours </span>
-                                <span class=""><i class="fas fa-closed-captioning"></i>English</span>
-                            </div>
-                            <div class="course-subtitle">
-                                This is an advanced Javascript course for everyone, giving a deep understanding of the
-                                language by understanding how it works under the hood. </div>
-                            <h6 class="text-black text-14px mb-1">Outcomes:</h6>
-                            <ul class="will-learn">
-                            </ul>
-                            <div class="popover-btns">
-                                <a class="purchase-btn green_purchase ms-auto"
-                                    href="home/get_enrolled_to_free_course/29.html">Enroll now</a>
-                            </div>
-                            <script>
-                                $(document).ready(function() {
-                                    $('#top_course_29').webuiPopover({
-                                        url: '#top_course_feature_29',
-                                        trigger: 'hover',
-                                        animation: 'pop',
-                                        cache: false,
-                                        multi: true,
-                                        direction: 'rtl',
-                                        placement: 'horizontal',
-                                    });
-                                });
-                            </script>
-                        </div>
-                    </div>
-                    <div class="single-popup-course ">
-                        <a href="home/course/how-to-shoot-cinematic-tech-videos-like-apple/30.html" id="top_course_30"
-                            class="checkPropagation courses-card-body">
-                            <div class="courses-card-image">
-                                <img loading="lazy"
-                                    src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_301701069478.jpg') }}">
-                                <div class="courses-icon " id="coursesWishlistIconTopCourse30">
-                                    <i class="fa-solid fa-heart checkPropagation"
-                                        onclick="actionTo('home/toggleWishlistItems/30/TopCourse.html')"></i>
-                                </div>
-                                <div class="courses-card-image-text">
-                                    <h3>Beginner</h3>
-                                </div>
-                            </div>
-                            <div class="courses-text">
-                                <h5 class="mb-2">How to shoot cinematic tech videos like Apple</h5>
-                                <div class="review-icon">
-                                    <div class="review-icon-star align-items-center">
-                                        <p>0</p>
-                                        <p><i class="fa-solid fa-star "></i></p>
-                                        <p>(0 Reviews)</p>
-                                    </div>
-                                    <div class="review-btn d-flex align-items-center">
-                                        <span class="compare-img checkPropagation"
-                                            onclick="redirectTo('home/compared38f.html?course-1=how-to-shoot-cinematic-tech-videos-like-apple&amp;course-id-1=30');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
-                                            Compare </span>
-                                    </div>
-                                </div>
-                                <p class="ellipsis-line-2">In this video tutorial learn how to shoot cinematic product
-                                    videos shots like you see in all the big budget commercials.</p>
-                                <div class="courses-price-border">
-                                    <div class="courses-price">
-                                        <div class="courses-price-left">
-                                            <h5>$524</h5>
-                                        </div>
-                                        <div class="courses-price-right ">
-                                            <p class="m-0"> <i class="fa-regular fa-clock p-0 text-15px"></i> 00:28:13
-                                                Hours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-
-                        <div id="top_course_feature_30" class="course-popover-content">
-                            <p class="last-update">Last updated Mon, 27-Nov-2023</p>
-                            <div class="course-title">
-                                <a href="home/course/how-to-shoot-cinematic-tech-videos-like-apple/30.html">How to shoot
-                                    cinematic tech videos like Apple</a>
-                            </div>
-                            <div class="course-meta">
-                                <span class=""><i class="fas fa-play-circle"></i>
-                                    3 Lessons </span>
-                                <span class=""><i class="far fa-clock"></i>
-                                    00:28:13 Hours </span>
-                                <span class=""><i class="fas fa-closed-captioning"></i>English</span>
-                            </div>
-                            <div class="course-subtitle">
-                                In this video tutorial learn how to shoot cinematic product videos shots like you see in
-                                all the big budget commercials. </div>
-                            <h6 class="text-black text-14px mb-1">Outcomes:</h6>
-                            <ul class="will-learn">
-                                <li>You will become a professional TechTuber</li>
-                            </ul>
-                            <div class="popover-btns">
-
-                                <!-- Cart button -->
-                                <a id="added_to_cart_btn_top_course30"
-                                    class="purchase-btn align-items-center me-auto d-hidden" href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/30/top_course.html');">
-                                    <i class="fas fa-minus me-2"></i> Remove from cart </a>
-                                <a id="add_to_cart_btn_top_course30" class="purchase-btn align-items-center me-auto "
-                                    href="javascript:void(0)"
-                                    onclick="actionTo('home/handle_cart_items/30/top_course.html'); ">
-                                    <i class="fas fa-plus me-2"></i> Add to cart </a>
-                                <!-- Cart button ended-->
-                            </div>
-                            <script>
-                                $(document).ready(function() {
-                                    $('#top_course_30').webuiPopover({
-                                        url: '#top_course_feature_30',
-                                        trigger: 'hover',
-                                        animation: 'pop',
-                                        cache: false,
-                                        multi: true,
-                                        direction: 'rtl',
-                                        placement: 'horizontal',
-                                    });
-                                });
-                            </script>
-                        </div>
-                    </div>
-                    <div class="single-popup-course ">
-                        <a href="home/course/the-complete-python-bootcamp-from-zero-to-hero/31.html" id="top_course_31"
-                            class="checkPropagation courses-card-body">
-                            <div class="courses-card-image">
-                                <img loading="lazy"
-                                    src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_311689235212.jpg') }}">
-                                <div class="courses-icon " id="coursesWishlistIconTopCourse31">
-                                    <i class="fa-solid fa-heart checkPropagation"
-                                        onclick="actionTo('home/toggleWishlistItems/31/TopCourse.html')"></i>
-                                </div>
-                                <div class="courses-card-image-text">
-                                    <h3>Beginner</h3>
-                                </div>
-                            </div>
-                            <div class="courses-text">
-                                <h5 class="mb-2">The Complete Python Bootcamp From Zero to Hero</h5>
-                                <div class="review-icon">
-                                    <div class="review-icon-star align-items-center">
-                                        <p>4</p>
-                                        <p><i class="fa-solid fa-star filled"></i></p>
-                                        <p>(1 Reviews)</p>
-                                    </div>
-                                    <div class="review-btn d-flex align-items-center">
-                                        <span class="compare-img checkPropagation"
-                                            onclick="redirectTo('home/compare4b5f.html?course-1=the-complete-python-bootcamp-from-zero-to-hero&amp;course-id-1=31');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
-                                            Compare </span>
-                                    </div>
-                                </div>
-                                <p class="ellipsis-line-2">Supreme Photoshop Training - Become an expert in Photoshop
-                                    with no experience or prior knowledge - Anyone can do it</p>
-                                <div class="courses-price-border">
-                                    <div class="courses-price">
-                                        <div class="courses-price-left">
-                                            <h5>Free</h5>
-                                        </div>
-                                        <div class="courses-price-right ">
-                                            <p class="m-0"> <i class="fa-regular fa-clock p-0 text-15px"></i> 01:50:56
-                                                Hours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-
-                        <div id="top_course_feature_31" class="course-popover-content">
-                            <p class="last-update">Last updated Thu, 13-Jul-2023</p>
-                            <div class="course-title">
-                                <a href="home/course/the-complete-python-bootcamp-from-zero-to-hero/31.html">The
-                                    Complete Python Bootcamp From Zero to Hero</a>
-                            </div>
-                            <div class="course-meta">
-                                <span class=""><i class="fas fa-play-circle"></i>
-                                    12 Lessons </span>
-                                <span class=""><i class="far fa-clock"></i>
-                                    01:50:56 Hours </span>
-                                <span class=""><i class="fas fa-closed-captioning"></i>English</span>
-                            </div>
-                            <div class="course-subtitle">
-                                Supreme Photoshop Training - Become an expert in Photoshop with no experience or prior
-                                knowledge - Anyone can do it </div>
-                            <h6 class="text-black text-14px mb-1">Outcomes:</h6>
-                            <ul class="will-learn">
-                                <li>You will be a Photoshop Expert </li>
-                                <li>You will understand all photoshop basics </li>
-                                <li>You will know how to photoshop your own projects </li>
-                                <li>You will know learn over 60+ Photoshop effects & techniques.</li>
-                                <li>You will be beyond intermediate photoshop level. </li>
-                                <li>You will know how to work with layers, masks, smart objects & more.</li>
-                                <li>ou will know how to work with color corrections, grades, filters & effects.</li>
-                            </ul>
-                            <div class="popover-btns">
-                                <a class="purchase-btn green_purchase ms-auto"
-                                    href="home/get_enrolled_to_free_course/31.html">Enroll now</a>
-                            </div>
-                            <script>
-                                $(document).ready(function() {
-                                    $('#top_course_31').webuiPopover({
-                                        url: '#top_course_feature_31',
-                                        trigger: 'hover',
-                                        animation: 'pop',
-                                        cache: false,
-                                        multi: true,
-                                        direction: 'rtl',
-                                        placement: 'horizontal',
-                                    });
-                                });
-                            </script>
-                        </div>
-                    </div>
-                    <div class="single-popup-course ">
-                        <a href="home/course/in-voluptatem-qui-mi/43.html" id="top_course_43"
-                            class="checkPropagation courses-card-body">
-                            <div class="courses-card-image">
-                                <img loading="lazy"
-                                    src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_43.jpg') }}">
-                                <div class="courses-icon " id="coursesWishlistIconTopCourse43">
-                                    <i class="fa-solid fa-heart checkPropagation"
-                                        onclick="actionTo('home/toggleWishlistItems/43/TopCourse.html')"></i>
-                                </div>
-                                <div class="courses-card-image-text">
-                                    <h3>Advanced</h3>
-                                </div>
-                            </div>
-                            <div class="courses-text">
-                                <h5 class="mb-2">In voluptatem qui mi</h5>
-                                <div class="review-icon">
-                                    <div class="review-icon-star align-items-center">
-                                        <p>0</p>
-                                        <p><i class="fa-solid fa-star "></i></p>
-                                        <p>(0 Reviews)</p>
-                                    </div>
-                                    <div class="review-btn d-flex align-items-center">
-                                        <span class="compare-img checkPropagation"
-                                            onclick="redirectTo('home/compare073c.html?course-1=in-voluptatem-qui-mi&amp;course-id-1=43');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
-                                            Compare </span>
-                                    </div>
-                                </div>
-                                <p class="ellipsis-line-2">Quibusdam veritatis </p>
-                                <div class="courses-price-border">
-                                    <div class="courses-price">
-                                        <div class="courses-price-left">
-                                            <h5>Free</h5>
-                                        </div>
-                                        <div class="courses-price-right ">
-                                            <p class="m-0"> <i class="fa-regular fa-clock p-0 text-15px"></i> Hours</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-
-
-
-
-                        <div id="top_course_feature_43" class="course-popover-content">
-                            <p class="last-update">Last updated Sun, 09-Mar-2025</p>
-                            <div class="course-title">
-                                <a href="home/course/in-voluptatem-qui-mi/43.html">In voluptatem qui mi</a>
-                            </div>
-                            <div class="course-meta">
-                                <span class=""><i class="fas fa-play-circle"></i>
-                                    0 Lessons </span>
-                                <span class=""><i class="far fa-clock"></i>
-                                    Hours </span>
-                                <span class=""><i class="fas fa-closed-captioning"></i>Armenia</span>
-                            </div>
-                            <div class="course-subtitle">
-                                Quibusdam veritatis </div>
-                            <h6 class="text-black text-14px mb-1">Outcomes:</h6>
-                            <ul class="will-learn">
-                                <li>Dolor ipsum do qui v</li>
-                            </ul>
-                            <div class="popover-btns">
-                                <a class="purchase-btn green_purchase ms-auto"
-                                    href="home/get_enrolled_to_free_course/43.html">Enroll now</a>
-                            </div>
-                            <script>
-                                $(document).ready(function() {
-                                    $('#top_course_43').webuiPopover({
-                                        url: '#top_course_feature_43',
-                                        trigger: 'hover',
-                                        animation: 'pop',
-                                        cache: false,
-                                        multi: true,
-                                        direction: 'rtl',
-                                        placement: 'horizontal',
-                                    });
-                                });
-                            </script>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!---------- Top courses Section End --------------->
-
+    @include('client.layouts.partials.banner')
+    @include('client.topCourse')
     <!---------- Top Categories Start ------------->
     <section class="top-categories py-5 ">
         <div class="container">
-            <div class="row wow  animate__animated animate__fadeInUp opacityOnUp" data-wow-duration="500"
-                data-wow-delay="400">
+            <div class="row wow  animate__animated animate__fadeInUp opacityOnUp" data-wow-duration="500" data-wow-delay="400">
                 <div class="col-lg-3"></div>
                 <div class="col-lg-6">
                     <h1 class="text-center f-36">Top categories</h1>
@@ -1397,8 +15,8 @@
                 </div>
                 <div class="col-lg-3"></div>
             </div>
-            <div class="category-product mt-2 wow  animate__animated animate__fadeInUp opacityOnUp"
-                data-wow-duration="1000" data-wow-delay="500">
+            <div class="category-product mt-2 wow  animate__animated animate__fadeInUp opacityOnUp" data-wow-duration="1000"
+                data-wow-delay="500">
                 <div class="row justify-content-center">
                     <div class="col-lg-4 col-md-4 col-sm-6 col-12 wow  animate__animated animate__fadeIn"
                         data-wow-duration="1000" data-wow-delay="600">
@@ -1630,7 +248,8 @@
                                     <div class="review-btn d-flex align-items-center">
                                         <span class="compare-img checkPropagation"
                                             onclick="redirectTo('home/comparebff0.html?course-1=4thtesrtrw&amp;course-id-1=45');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
+                                            <img loading="lazy"
+                                                src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
                                             Compare </span>
                                     </div>
                                 </div>
@@ -1709,7 +328,8 @@
                                     <div class="review-btn d-flex align-items-center">
                                         <span class="compare-img checkPropagation"
                                             onclick="redirectTo('home/compare0d05.html?course-1=435r2t5&amp;course-id-1=44');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
+                                            <img loading="lazy"
+                                                src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
                                             Compare </span>
                                     </div>
                                 </div>
@@ -1789,7 +409,8 @@
                                     <div class="review-btn d-flex align-items-center">
                                         <span class="compare-img checkPropagation"
                                             onclick="redirectTo('home/compare073c.html?course-1=in-voluptatem-qui-mi&amp;course-id-1=43');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
+                                            <img loading="lazy"
+                                                src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
                                             Compare </span>
                                     </div>
                                 </div>
@@ -1849,8 +470,8 @@
                         </div>
                     </div>
                     <div class="single-popup-course">
-                        <a href="home/course/the-data-science-course-complete-data-science/36.html"
-                            id="latest_course_36" class="checkPropagation courses-card-body">
+                        <a href="home/course/the-data-science-course-complete-data-science/36.html" id="latest_course_36"
+                            class="checkPropagation courses-card-body">
                             <div class="courses-card-image">
                                 <img loading="lazy"
                                     src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_361689237588.jpg') }}">
@@ -1873,7 +494,8 @@
                                     <div class="review-btn d-flex align-items-center">
                                         <span class="compare-img checkPropagation"
                                             onclick="redirectTo('home/compare9bdc.html?course-1=the-data-science-course-complete-data-science&amp;course-id-1=36');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
+                                            <img loading="lazy"
+                                                src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
                                             Compare </span>
                                     </div>
                                 </div>
@@ -1966,12 +588,13 @@
                                     <div class="review-btn d-flex align-items-center">
                                         <span class="compare-img checkPropagation"
                                             onclick="redirectTo('home/compare4184.html?course-1=design-rules-principles-practices-for-great-ui-design&amp;course-id-1=32');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
+                                            <img loading="lazy"
+                                                src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
                                             Compare </span>
                                     </div>
                                 </div>
                                 <p class="ellipsis-line-2">Getting Started is the perfect course for you. In this
-                                    course, you’ll learn how to build apps with Flutter, the new mobile platform backed
+                                    course, you'll learn how to build apps with Flutter, the new mobile platform backed
                                     by Google.</p>
                                 <div class="courses-price-border">
                                     <div class="courses-price">
@@ -2002,7 +625,7 @@
                                 <span class=""><i class="fas fa-closed-captioning"></i>English</span>
                             </div>
                             <div class="course-subtitle">
-                                Getting Started is the perfect course for you. In this course, you’ll learn how to build
+                                Getting Started is the perfect course for you. In this course, you'll learn how to build
                                 apps with Flutter, the new mobile platform backed by Google. </div>
                             <h6 class="text-black text-14px mb-1">Outcomes:</h6>
                             <ul class="will-learn">
@@ -2037,8 +660,8 @@
                         </div>
                     </div>
                     <div class="single-popup-course">
-                        <a href="home/course/the-complete-python-bootcamp-from-zero-to-hero/31.html"
-                            id="latest_course_31" class="checkPropagation courses-card-body">
+                        <a href="home/course/the-complete-python-bootcamp-from-zero-to-hero/31.html" id="latest_course_31"
+                            class="checkPropagation courses-card-body">
                             <div class="courses-card-image">
                                 <img loading="lazy"
                                     src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_311689235212.jpg') }}">
@@ -2061,7 +684,8 @@
                                     <div class="review-btn d-flex align-items-center">
                                         <span class="compare-img checkPropagation"
                                             onclick="redirectTo('home/compare4b5f.html?course-1=the-complete-python-bootcamp-from-zero-to-hero&amp;course-id-1=31');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
+                                            <img loading="lazy"
+                                                src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
                                             Compare </span>
                                     </div>
                                 </div>
@@ -2130,8 +754,8 @@
                         </div>
                     </div>
                     <div class="single-popup-course">
-                        <a href="home/course/how-to-shoot-cinematic-tech-videos-like-apple/30.html"
-                            id="latest_course_30" class="checkPropagation courses-card-body">
+                        <a href="home/course/how-to-shoot-cinematic-tech-videos-like-apple/30.html" id="latest_course_30"
+                            class="checkPropagation courses-card-body">
                             <div class="courses-card-image">
                                 <img loading="lazy"
                                     src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_301701069478.jpg') }}">
@@ -2154,7 +778,8 @@
                                     <div class="review-btn d-flex align-items-center">
                                         <span class="compare-img checkPropagation"
                                             onclick="redirectTo('home/compared38f.html?course-1=how-to-shoot-cinematic-tech-videos-like-apple&amp;course-id-1=30');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
+                                            <img loading="lazy"
+                                                src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
                                             Compare </span>
                                     </div>
                                 </div>
@@ -2250,7 +875,8 @@
                                     <div class="review-btn d-flex align-items-center">
                                         <span class="compare-img checkPropagation"
                                             onclick="redirectTo('home/compare3348.html?course-1=javascript-understanding-the-weird-parts-the-first-3-5-hours&amp;course-id-1=29');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
+                                            <img loading="lazy"
+                                                src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
                                             Compare </span>
                                     </div>
                                 </div>
@@ -2276,8 +902,7 @@
                         <div id="latest_course_feature_29" class="course-popover-content">
                             <p class="last-update">Last updated Thu, 13-Jul-2023</p>
                             <div class="course-title">
-                                <a
-                                    href="home/course/javascript-understanding-the-weird-parts-the-first-3-5-hours/29.html">Javascript
+                                <a href="home/course/javascript-understanding-the-weird-parts-the-first-3-5-hours/29.html">Javascript
                                     Understanding the Weird Parts - The First 3.5 Hours</a>
                             </div>
                             <div class="course-meta">
@@ -2337,7 +962,8 @@
                                     <div class="review-btn d-flex align-items-center">
                                         <span class="compare-img checkPropagation"
                                             onclick="redirectTo('home/compare2457.html?course-1=introduction-and-learn-bootstrap&amp;course-id-1=28');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
+                                            <img loading="lazy"
+                                                src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
                                             Compare </span>
                                     </div>
                                 </div>
@@ -2433,7 +1059,8 @@
                                     <div class="review-btn d-flex align-items-center">
                                         <span class="compare-img checkPropagation"
                                             onclick="redirectTo('home/compare1dd1.html?course-1=the-complete-graphic-design-theory&amp;course-id-1=26');">
-                                            <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
+                                            <img loading="lazy"
+                                                src="{{ asset('themes/client/assets/frontend/default-new/image/compare.png') }}">
                                             Compare </span>
                                     </div>
                                 </div>
@@ -2522,8 +1149,8 @@
             <div class="row">
                 <div class="col-lg-3"></div>
                 <div class="col-lg-6">
-                    <h1 class="text-center f-36 mt-0 pt-0">Our expert instructor </h1>
-                    <p class="text-center mt-4 mb-24">They efficiently serve large number of students on our platform
+                    <h1 class="text-center f-36 mt-0 pt-0">Giảng viên chuyên gia của chúng tôi.</h1>
+                    <p class="text-center mt-4 mb-24">Họ phục vụ hiệu quả hàng nghìn học viên trên nền tảng của chúng tôi.
                     </p>
                 </div>
                 <div class="col-lg-3 "></div>
@@ -2613,7 +1240,7 @@
 
 
     <!---------- Questions Section Start  -------------->
-    <section class="faq eFaq top-categories py-5 wow  animate__animated animate__fadeInUp opacityOnUp"
+    {{-- <section class="faq eFaq top-categories py-5 wow  animate__animated animate__fadeInUp opacityOnUp"
         data-wow-duration="1000" data-wow-delay="500">
         <div class="container">
             <div class="row">
@@ -2713,7 +1340,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
     <!---------- Questions Section End  -------------->
 
 
@@ -2755,7 +1382,8 @@
                             </div>
                             <div class="col-lg-3 col-md-5 col-10 order-1 order-md-1">
                                 <div class="speech-item-img">
-                                    <img loading="lazy" src="{{ asset('themes/client/uploads/system/motivations/97pz6yQ1iqmjrtGPf83X.png') }}"
+                                    <img loading="lazy"
+                                        src="{{ asset('themes/client/uploads/system/motivations/97pz6yQ1iqmjrtGPf83X.png') }}"
                                         alt="" />
                                 </div>
                             </div>
@@ -2787,7 +1415,8 @@
                             </div>
                             <div class="col-lg-3 col-md-5 col-10 order-1 order-md-1">
                                 <div class="speech-item-img">
-                                    <img loading="lazy" src="{{ asset('themes/client/uploads/system/motivations/0IOAkZot1D28MpcGdYBQ.png') }}"
+                                    <img loading="lazy"
+                                        src="{{ asset('themes/client/uploads/system/motivations/0IOAkZot1D28MpcGdYBQ.png') }}"
                                         alt="" />
                                 </div>
                             </div>
@@ -2818,7 +1447,8 @@
                             </div>
                             <div class="col-lg-3 col-md-5 col-10 order-1 order-md-1">
                                 <div class="speech-item-img">
-                                    <img loading="lazy" src="{{ asset('themes/client/uploads/system/motivations/vdnBeoplXfA75RS3Ks2H.png') }}"
+                                    <img loading="lazy"
+                                        src="{{ asset('themes/client/uploads/system/motivations/vdnBeoplXfA75RS3Ks2H.png') }}"
                                         alt="" />
                                 </div>
                             </div>
@@ -2891,7 +1521,7 @@
                             <div class="courses-text">
                                 <h5>Balance your priorities in life and enjoy a beautiful life</h5>
                                 <p class="ellipsis-line-2">Living a productive and meaningful life is a balancing act.
-                                    With the pressures of today’s demanding ...</p>
+                                    With the pressures of today's demanding ...</p>
                                 <div class="courses-price-border">
                                     <div class="courses-price">
                                         <div class="courses-price-left">
@@ -2949,22 +1579,22 @@
     <section class="student py-5 ">
         <div class="container">
             <!-- <div class="row align-items-center">
-        <div class="col-lg-7  wow  animate__animated animate__fadeInUp opacityOnUp" data-wow-duration="1000" data-wow-delay="500" data-wow-duration="1000" data-wow-delay="600">
-            <div class="ePromotion">
-               <h4><span>Learn</span> New skills when and where you like.</h4>
-                <p>Discover a world of learning opportunities through our upcoming courses, where industry experts.</p>
-                <div class="eBtn">
-                    <a href="https://demo.creativeitem.com/academy/sign_up" class="btn">Join course for free</a>
-                                                              <a  class="btn" href="https://demo.creativeitem.com/academy/sign_up?instructor=yes">Became a instructor</a>
-                                                      </div>
+            <div class="col-lg-7  wow  animate__animated animate__fadeInUp opacityOnUp" data-wow-duration="1000" data-wow-delay="500" data-wow-duration="1000" data-wow-delay="600">
+                <div class="ePromotion">
+                   <h4><span>Learn</span> New skills when and where you like.</h4>
+                    <p>Discover a world of learning opportunities through our upcoming courses, where industry experts.</p>
+                    <div class="eBtn">
+                        <a href="https://demo.creativeitem.com/AmazingYou/sign_up" class="btn">Join course for free</a>
+                                                                  <a  class="btn" href="https://demo.creativeitem.com/AmazingYou/sign_up?instructor=yes">Became a instructor</a>
+                                                          </div>
+                </div>
             </div>
-        </div>
-        <div class="col-lg-5 wow  animate__animated animate__fadeInUp opacityOnUp" data-wow-duration="1000" data-wow-delay="600">
-            <div class="ePormotion_right">
-                <img src="{{ asset('themes/client/assets/frontend/default-new/image/instractorN.png') }}">
+            <div class="col-lg-5 wow  animate__animated animate__fadeInUp opacityOnUp" data-wow-duration="1000" data-wow-delay="600">
+                <div class="ePormotion_right">
+                    <img src="{{ asset('themes/client/assets/frontend/default-new/image/instractorN.png') }}">
+                </div>
             </div>
-        </div>
-       </div> -->
+           </div> -->
 
             <div class="row eStudent">
                 <div class="col-lg-6   wow  animate__animated animate__fadeInUp opacityOnUp" data-wow-duration="1000"
@@ -2973,14 +1603,16 @@
                         <div class="row">
                             <div class="col-lg-8 col-md-8 col-sm-12">
                                 <div class="student-body-text">
-                                    <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/2.png') }}">
+                                    <img loading="lazy"
+                                        src="{{ asset('themes/client/assets/frontend/default-new/image/2.png') }}">
                                     <h1>Join now to start learning</h1>
                                     <p>Learn from our quality instructors! </p>
                                     <a href="sign_up.html">Get started</a>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-12 ">
-                                <img loading="lazy" class="man" src="{{ asset('themes/client/assets/frontend/default-new/image/instractorN.png') }}">
+                                <img loading="lazy" class="man"
+                                    src="{{ asset('themes/client/assets/frontend/default-new/image/instractorN.png') }}">
                             </div>
                         </div>
                     </div>
@@ -2991,14 +1623,16 @@
                         <div class="row">
                             <div class="col-lg-8  col-md-8 col-sm-12">
                                 <div class="student-body-text">
-                                    <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/2.png') }}">
+                                    <img loading="lazy"
+                                        src="{{ asset('themes/client/assets/frontend/default-new/image/2.png') }}">
                                     <h1>Become a new instructor</h1>
                                     <p>Teach thousands of students and earn money! </p>
                                     <a href="sign_up5ef0.html?instructor=yes">Join now</a>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-12">
-                                <img loading="lazy" class="man" src="{{ asset('themes/client/assets/frontend/default-new/image/student-2.png') }}">
+                                <img loading="lazy" class="man"
+                                    src="{{ asset('themes/client/assets/frontend/default-new/image/student-2.png') }}">
                             </div>
                         </div>
                     </div>
@@ -3013,42 +1647,42 @@
 
 
     <script type="text/javascript">
-        function showAjaxModal(url, title, modalType) {
-            $('#modal_ajax .modal-dialog').removeClass('modal-sm');
-            $('#modal_ajax .modal-dialog').removeClass('modal-md');
-            $('#modal_ajax .modal-dialog').removeClass('modal-lg');
-            $('#modal_ajax .modal-dialog').removeClass('modal-xl');
-            $('#modal_ajax .modal-dialog').removeClass('modal-fullscreen');
+        // function showAjaxModal(url, title, modalType) {
+        //     $('#modal_ajax .modal-dialog').removeClass('modal-sm');
+        //     $('#modal_ajax .modal-dialog').removeClass('modal-md');
+        //     $('#modal_ajax .modal-dialog').removeClass('modal-lg');
+        //     $('#modal_ajax .modal-dialog').removeClass('modal-xl');
+        //     $('#modal_ajax .modal-dialog').removeClass('modal-fullscreen');
 
-            if (modalType) {
-                $('#modal_ajax .modal-dialog').addClass('modal-' + modalType);
-            }
-            // SHOWING AJAX PRELOADER IMAGE
-            jQuery('#modal_ajax .modal-body').html(
-                '<div class="w-100 text-center pt-5"><img loading="lazy" class="mt-5 mb-5" width="80px" src="{{ asset('themes/client/assets/global/gif/page-loader-2.gif') }}"></div>'
-                );
+        //     if (modalType) {
+        //         $('#modal_ajax .modal-dialog').addClass('modal-' + modalType);
+        //     }
+        //     // SHOWING AJAX PRELOADER IMAGE
+        //     jQuery('#modal_ajax .modal-body').html(
+        //         '<div class="w-100 text-center pt-5"><img loading="lazy" class="mt-5 mb-5" width="80px" src="{{ asset('themes/client/assets/global/gif/page-loader-2.gif') }}"></div>'
+        //         );
 
-            // LOADING THE AJAX MODAL
-            jQuery('#modal_ajax').modal('show', {
-                backdrop: 'true'
-            });
+        //     // LOADING THE AJAX MODAL
+        //     jQuery('#modal_ajax').modal('show', {
+        //         backdrop: 'true'
+        //     });
 
-            // SHOW AJAX RESPONSE ON REQUEST SUCCESS
-            $.ajax({
-                url: url,
-                success: function(response) {
-                    jQuery('#modal_ajax .title').html(title);
-                    jQuery('#modal_ajax .modal-body').html(response);
-                }
-            });
-        }
+        //     // SHOW AJAX RESPONSE ON REQUEST SUCCESS
+        //     $.ajax({
+        //         url: url,
+        //         success: function(response) {
+        //             jQuery('#modal_ajax .title').html(title);
+        //             jQuery('#modal_ajax .modal-body').html(response);
+        //         }
+        //     });
+        // }
 
         function lesson_preview(url, title) {
             // SHOWING AJAX PRELOADER IMAGE
             jQuery('#lesson_preview .title').html(title);
             jQuery('#lesson_preview .modal-body').html(
                 '<div class="w-100 text-center pt-5"><img loading="lazy" class="mt-5 mb-5" width="80px" src="{{ asset('themes/client/assets/global/gif/page-loader-2.gif') }}"></div>'
-                );
+            );
 
             // LOADING THE AJAX MODAL
             jQuery('#lesson_preview').modal('show', {

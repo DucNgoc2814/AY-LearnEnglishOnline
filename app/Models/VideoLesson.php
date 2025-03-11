@@ -30,4 +30,12 @@ class VideoLesson extends Model
     {
         return $this->belongsTo(Lesson::class, 'lessonId');
     }
+    public function totalDuration()
+    {
+        $hours = floor($this->duration / 3600);
+        $minutes = floor(($this->duration % 3600) / 60);
+        $seconds = $this->duration % 60;
+
+        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+    }
 }

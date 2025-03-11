@@ -15,7 +15,7 @@
   --color-1 :  #1E293B;
   --color-2 :  #000;
   --color-3 :  #505763;
-  --color-4 :  #754FFE;
+  --color-4 :  #204494;
   --color-5 :  #000;
   --color-6 :  #676C7D;
   --color-7 :  #261954;
@@ -29,6 +29,7 @@
   --color-15: #754ffe58;
   --color-16:  #6e798aab;
   --color-17 :  #0080FF;
+  --color-18: #c4422b;
   --hover-color :  #f2f3f5;
   --hover-color-2 :  #f2f3f5;
   --border-color : #1e293b2a;
@@ -51,7 +52,7 @@
   --color-1 :  #1E293B;
   --color-2 :  #000;
   --color-3 :  #505763;
-  --color-4 :  #754FFE;
+  --color-4 :  #204494;
   --color-5 :  #000;
   --color-6 :  #676C7D;
   --color-7 :  #261954;
@@ -87,7 +88,7 @@
   --color-1 :  #1E293B;
   --color-2 :  #000;
   --color-3 :  #505763;
-  --color-4 :  #754FFE;
+  --color-4 :  #204494;
   --color-5 :  #000;
   --color-6 :  #676C7D;
   --color-7 :  #261954;
@@ -123,7 +124,7 @@
   --color-1 :  #1E293B;
   --color-2 :  #000;
   --color-3 :  #505763;
-  --color-4 :  #754FFE;
+  --color-4 :  #204494;
   --color-5 :  #000;
   --color-6 :  #676C7D;
   --color-7 :  #261954;
@@ -159,7 +160,7 @@
   --color-1 :  #1E293B;
   --color-2 :  #000;
   --color-3 :  #505763;
-  --color-4 :  #754FFE;
+  --color-4 :  #204494;
   --color-5 :  #000;
   --color-6 :  #676C7D;
   --color-7 :  #261954;
@@ -573,16 +574,16 @@ p{
   height: 18px;
 }
 .menu_pro_tgl_bg ul li:hover a{
-  color: #754FFE;
+  color: var(--color-4);
   margin-left: 10px;
   
 }
 .menu_pro_tgl_bg ul li:hover i{
-  color: #754FFE;
+  color: var(--color-4);
 }
 .menu_pro_tgl_bg ul li:hover{
   background-color: RGBA(100,121,150,0.1 );
-  color: #754FFE;
+  color: var(--color-4);
   
 }
 .menu_pro_tgl_bg ul li:hover:after{
@@ -590,7 +591,7 @@ p{
   position: absolute;
   height: 100%;
   width: 3px;
-  background-color: #754FFE;
+  background-color: var(--color-4);
   top: 0;
   left: 0;
  
@@ -929,10 +930,10 @@ p{
 .navbar-nav .navbarHover a:hover{
   color: var(--color-10);
   background-color: var(--hover-color);
-  color: #754FFE;
+  color: var(--color-4);
 }
 .navbar-nav .navbarHover a:hover .has-sub-category{
-  color: #754FFE;
+  color: var(--color-4);
 }
 .navbar-nav .navbarHover li i:hover{
   color: var(--color-10);
@@ -1617,16 +1618,7 @@ p{
     position: relative;
 }
 
-.courses h1 span::before{
-    content: "";
-    background-image: url("../image/h-1-bn-shape-2.png");
-    width: 116px;
-    height: 21px;
-    position: absolute;
-    background-size: 119px;
-    top: 31px;
-    left: 89px;
-}
+
 .courses p{
     margin-bottom: 50px;
 }
@@ -1649,9 +1641,7 @@ p{
     transition: .5s;
     color: var(--color-1);
 }
-.courses-card-body:hover .courses-text h5{
-  color: #754FFE;
-}
+x
 .courses-card .courses-card-body .courses-text{
     padding: 12px;
 }
@@ -1693,10 +1683,13 @@ p{
   overflow: hidden;
   transition: .5s;
 }
-.courses-card-body:hover .courses-card-image img{
-  transform: scale(1.1);
+.courses-card-body:hover {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  transform: translateY(-10px);
   transition: .5s;
+  background-color: var(--bg-white);
 }
+
 
 .courses-card .courses-card-body .courses-text .courses-price-border{
     border-top: 1.5px solid #676c7d3a;
@@ -2372,8 +2365,7 @@ p{
   coursess Section Start
   =====================================*/
   .bread-crumb{
-    background-image: url("../image/course-breadcramb.png");
-    background-size: cover;
+background: #145897;
   }
   .bread-crumb .brd-home{
     height: 16px;
@@ -2916,7 +2908,7 @@ margin-right: 8px;
   font-size: 13px;
 }
 .ac-lecture li a span i {
-	color: #754FFE;
+	color: var(--color-18);
 	font-size: 15px;
   margin-right: 14px;
 }
@@ -6140,7 +6132,7 @@ Course play page
   background-color: var(--bs-nav-tabs-link-active-bg);
   border-color: #fff;
   border-bottom: 1.5px solid#754FFE;
-  color: #754FFE;
+  color: var(--color-4;
  
 }
 .course-play-tab .nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {

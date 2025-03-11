@@ -1,5 +1,5 @@
 <!-- Canonical URL -->
-<link rel="canonical" href="https://demo.creativeitem.com/academy">
+<link rel="canonical" href="https://demo.creativeitem.com/AmazingYou">
 
 <!-- Open Graph Meta Tags -->
 <meta property="og:title" content="Og title">

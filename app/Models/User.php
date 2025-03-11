@@ -59,4 +59,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(LessonResult::class);
     }
+    /**
+     * Lấy tổng số khóa học đã đăng ký
+     * 
+     * @return int
+     */
+    public function getTotalCoursesAttribute()
+    {
+        return $this->enrollments()->count();
+    }
+
+    /**
+     * Lấy tổng số khóa học đã hoàn thành
+     * 
+     * @return int
+     */
+    public function getCompletedCoursesAttribute() 
+    {
+        return $this->enrollments()
+            ->where('status', 'completed')
+            ->count();
+    }
 } 

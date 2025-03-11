@@ -1,6 +1,6 @@
 <section class="h-1-banner bannar-area pb-5">
     <div class="container">
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-12 order-2 order-lg-1">
                 <div class="h-1-banner-text EbannerLeft position-relative">
                     <h1 class="wow animate__animated  animate__fadeIn" data-wow-duration="1000"
@@ -12,7 +12,7 @@
                         data-wow-duration="1000" data-wow-delay="200">
                         <p>Study any topic, anytime. explore thousands of courses for the lowest price ever!</p>
                         <div class="search-option mb-0">
-                            <form action="https://demo.creativeitem.com/academy/home/search" method="get">
+                            <form action="https://demo.creativeitem.com/AmazingYou/home/search" method="get">
                                 <input class="form-control" type="text" placeholder="What do you want to learn"
                                     name="query">
                                 <button class="submit-cls" type="submit">
@@ -55,7 +55,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="bannar-card  Ebaner-card wow  animate__animated animate__fadeInUp opacityOnUp"
             data-wow-duration="500" data-wow-delay="400">
             <div class="row">
@@ -66,8 +66,8 @@
                                 <img src="{{ asset('themes/client/assets/frontend/default-new/image/h1.svg') }}">
                             </div>
                             <div class="col-lg-10">
-                                <h6>Expert instruction</h6>
-                                <p>Find the right course for you</p>
+                                <h6>Hướng dẫn chuyên môn</h6>
+                                <p>Tìm khóa học phù hợp cho bạn</p>
                             </div>
                         </div>
                     </div>
@@ -80,8 +80,8 @@
                             </div>
 
                             <div class="col-lg-10">
-                                <h6>19 Online courses</h6>
-                                <p>Explore a variety of fresh topics</p>
+                                <h6>19 khóa học trực tuyến</h6>
+                                <p>Khám phá nhiều chủ đề mới</p>
                             </div>
                         </div>
                     </div>
@@ -93,8 +93,8 @@
                                 <img loading="lazy" src="{{ asset('themes/client/assets/frontend/default-new/image/h3.svg') }}">
                             </div>
                             <div class="col-lg-10">
-                                <h6>Lifetime access</h6>
-                                <p>Learn on your schedule</p>
+                                <h6>Truy cập trọn đời</h6>
+                                <p>Học bất cứ lúc nào</p>
                             </div>
                         </div>
                     </div>

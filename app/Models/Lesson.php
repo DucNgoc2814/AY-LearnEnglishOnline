@@ -35,7 +35,7 @@ class Lesson extends Model
 
     public function lessonTests()
     {
-        return $this->hasMany(LessonTest::class);
+        return $this->hasMany(LessonTest::class, 'lessonId');
     }
 
     public function comments()
@@ -49,6 +49,33 @@ class Lesson extends Model
     }
     public function videoLesson()
     {
-        return $this->hasMany(VideoLesson::class);
+        return $this->hasMany(VideoLesson::class, 'lessonId');
+    }
+
+    public function totalTests()
+    {
+        return $this->lessonTests()
+            ->whereNull('deleted_at')
+            ->count();
+    }
+
+    public function totalVideo()
+    {
+        return $this->videoLesson()
+            ->whereNull('deleted_at')
+            ->count();
+    }
+
+    public function totalVideoDuration()
+    {
+        $totalSeconds = $this->videoLesson()
+            ->whereNull('deleted_at')
+            ->sum('duration');
+
+        $hours = floor($totalSeconds / 3600);
+        $minutes = floor(($totalSeconds % 3600) / 60);
+        $seconds = $totalSeconds % 60;
+
+        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
     }
 }

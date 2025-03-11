@@ -9,7 +9,7 @@
 
 
     <!-- Meta Tags -->
-    <meta name="description" content="Home page for academy Seo">
+    <meta name="description" content="Home page for AmazingYou Seo">
     <meta name="keywords" content="">
     <meta name="robots" content="Meta robot">
     <meta name="author" content="Creativeitem">
@@ -43,9 +43,7 @@
             white-space: normal
         }
     </style>
-    <!---------- Banner Section Start ---------------->
-    @include('client.layouts.partials.banner')
-    <!---------- Banner Section End ---------------->
+
 
 
     @yield('content')

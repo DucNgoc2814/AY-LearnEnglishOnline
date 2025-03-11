@@ -43,7 +43,7 @@ data-wow-duration="1000" data-wow-delay="600">
             <div class="col-lg-4 col-md-6 col-sm-12 col-12">
                 <h1>Subscribe to our newsletter</h1>
                 <form class="ajaxForm resetable"
-                    action="https://demo.creativeitem.com/academy/home/subscribe_to_our_newsletter"
+                    action="https://demo.creativeitem.com/AmazingYou/home/subscribe_to_our_newsletter"
                     method="post" id="newsletter-form">
                     <input type="email" class="form-control" id="subscribe_email"
                         placeholder="Enter your email address" name="email">
