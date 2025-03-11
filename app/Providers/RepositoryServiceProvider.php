@@ -13,6 +13,8 @@ use App\Repositories\Interfaces\VideoLessonRepositoryInterface;
 use App\Repositories\CourseRepository;
 use App\Repositories\LessonRepository;
 use App\Repositories\VideoLessonRepository;
+use App\Repositories\Interfaces\LessonTestRepositoryInterface;
+use App\Repositories\LessonTestRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -23,5 +25,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(CourseRepositoryInterface::class, CourseRepository::class);
         $this->app->bind(LessonRepositoryInterface::class, LessonRepository::class);
         $this->app->bind(VideoLessonRepositoryInterface::class, VideoLessonRepository::class);
+        $this->app->bind(LessonTestRepositoryInterface::class, LessonTestRepository::class);
     }
 }

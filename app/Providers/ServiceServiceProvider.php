@@ -17,6 +17,9 @@ use App\Services\Interfaces\LessonServiceInterface;
 use App\Services\LessonService;
 use App\Services\Interfaces\VideoLessonServiceInterface;
 use App\Services\VideoLessonService;
+use App\Services\Interfaces\LessonTestServiceInterface;
+use App\Services\LessonTestService;
+
 class ServiceServiceProvider extends ServiceProvider
 {
     public function register()
@@ -28,5 +31,6 @@ class ServiceServiceProvider extends ServiceProvider
         $this->app->bind(CourseServiceInterface::class,CourseService::class);
         $this->app->bind(LessonServiceInterface::class, LessonService::class);
         $this->app->bind(VideoLessonServiceInterface::class, VideoLessonService::class);
+        $this->app->bind(LessonTestServiceInterface::class, LessonTestService::class);
     }
 }
