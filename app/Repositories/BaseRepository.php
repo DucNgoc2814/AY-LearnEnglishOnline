@@ -157,4 +157,78 @@ abstract class BaseRepository implements BaseRepositoryInterface
             return false;
         }
     }
+
+    public function handleVideo($video, string $path, ?string $oldVideo = null)
+    {
+        try {
+            // Delete old video if exists
+            if ($oldVideo) {
+                $this->deleteVideo($oldVideo);
+            }
+
+            // Generate unique filename with timestamp
+            $filename = time() . '_' . $video->getClientOriginalName();
+
+            // Make sure the path exists
+            $fullPath = public_path("uploads/{$path}");
+            if (!file_exists($fullPath)) {
+                mkdir($fullPath, 0755, true);
+            }
+
+            // Move the uploaded file to the destination
+            $video->move($fullPath, $filename);
+
+            // Return relative path for database storage
+            return "uploads/{$path}/{$filename}";
+
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function deleteVideo(string $path)
+    {
+        try {
+            $fullPath = public_path($path);
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function handleMultipleVideos(array $videos, string $path)
+    {
+        try {
+            $videoPaths = [];
+            foreach ($videos as $video) {
+                $videoPath = $this->handleVideo($video, $path);
+                if ($videoPath) {
+                    $videoPaths[] = $videoPath;
+                }
+            }
+            return $videoPaths;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function updateVideo($newVideo, string $path, ?string $oldVideoPath = null)
+    {
+        try {
+            // Handle the new video upload (this will also delete the old video)
+            $newVideoPath = $this->handleVideo($newVideo, $path, $oldVideoPath);
+
+            if (!$newVideoPath) {
+                throw new \Exception('Failed to upload new video');
+            }
+
+            return $newVideoPath;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 }

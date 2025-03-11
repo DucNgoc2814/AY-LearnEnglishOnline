@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Http\Requests\Admin\Lesson;
+namespace App\Http\Requests\Admin\ZoomSession;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Controllers\Config\CrudRules;
-use Illuminate\Validation\Rule;
 
 /**
  * @package App\Http\Requests\Admin\Lesson
  * @author Your Name
- * @description Request validation cho cập nhật bài học
+ * @description Request validation cho tạo mới bài học
  */
-class UpdateRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request

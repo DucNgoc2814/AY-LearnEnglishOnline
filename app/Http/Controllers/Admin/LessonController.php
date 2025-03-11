@@ -10,6 +10,7 @@ use App\Services\Interfaces\CourseServiceInterface;
 use Illuminate\Http\Request;
 use App\Repositories\LessonRepository;
 use App\Repositories\CourseRepository;
+use App\Models\Lesson;
 
 /**
  * @package App\Http\Controllers\Admin

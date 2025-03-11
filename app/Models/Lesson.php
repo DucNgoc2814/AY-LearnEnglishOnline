@@ -47,8 +47,8 @@ class Lesson extends Model
     {
         return $this->hasMany(Progress::class);
     }
-    public function videoLesson()
+    public function videoLessons()
     {
-        return $this->hasMany(VideoLesson::class);
+        return $this->hasMany(VideoLesson::class, 'lessonId');
     }
 }

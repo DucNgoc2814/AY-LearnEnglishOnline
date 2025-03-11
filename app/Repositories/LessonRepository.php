@@ -22,7 +22,8 @@ class LessonRepository extends BaseRepository implements LessonRepositoryInterfa
         $query = $this->model
             ->with('course')
             ->whereNull('deleted_at')
-            ->latest('id');
+            ->orderBy('orderNumber', 'asc')
+            ->orderBy('created_at', 'desc');
 
         if (request()->route('courseId')) {
             $query->where('courseId', request()->route('courseId'));

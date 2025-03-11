@@ -3,38 +3,37 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Services\Interfaces\CourseServiceInterface;
-use App\Http\Requests\Admin\Course\StoreRequest;
-use App\Http\Requests\Admin\Course\UpdateRequest;
+use App\Services\Interfaces\ZoomSessionServiceInterface;
+use App\Http\Requests\Admin\ZoomSession\StoreRequest;
+use App\Http\Requests\Admin\ZoomSession\UpdateRequest;
 
 /**
  * @package App\Http\Controllers\Admin
  * @author Your Name
- * @description Controller quản lý khóa học
+ * @description Controller quản lý phiên học Zoom
  */
-class CourseController extends BaseController
+class ZoomSessionController extends BaseController
 {
-    protected $courseService;
-    protected const VIEW_PATH = 'admin.components.courses.';
+    protected $zoomSessionService;
+    const VIEW_PATH = 'admin.components.zoom-sessions.';
 
-    public function __construct(CourseServiceInterface $courseService)
+    public function __construct(ZoomSessionServiceInterface $zoomSessionService)
     {
-        $this->courseService = $courseService;
+        $this->zoomSessionService = $zoomSessionService;
     }
 
     /**
-     * Hiển thị danh sách khóa học
+     * Hiển thị danh sách phiên học Zoom
      *
      * @return \Illuminate\View\View
      */
     public function index()
     {
         try {
-            $list = $this->courseService->getList();
-            $trashList = $this->courseService->getTrashList();
-
+            $list = $this->zoomSessionService->getList();
+            $trashList = $this->zoomSessionService->getTrashList();
             return view(self::VIEW_PATH . 'index', [
-                'courses' => $list['data'],
+                'zoomSessions' => $list['data'],
                 'pagination' => $list['pagination'],
                 'trashList' => $trashList['data'],
                 'trashPagination' => $trashList['pagination'],
@@ -45,63 +44,63 @@ class CourseController extends BaseController
     }
 
     /**
-     * Lưu khóa học mới
+     * Lưu phiên học Zoom mới
      *
      * @param StoreRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreRequest $request)
     {
-        $result = $this->courseService->create($request->validated());
+        $result = $this->zoomSessionService->create($request->validated());
         return $this->redirectResponse($result);
     }
 
     /**
-     * Hiển thị chi tiết khóa học
+     * Hiển thị form chỉnh sửa phiên học Zoom
      *
      * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function show($id)
+    public function edit($id)
     {
-        $result = $this->courseService->findById($id);
-        return response()->json($result);
+        $result = $this->zoomSessionService->findById($id);
+        return $this->viewResponse(self::VIEW_PATH . 'edit', $result);
     }
 
     /**
-     * Cập nhật khóa học
+     * Cập nhật phiên học Zoom
      *
-     * @param UpdateRequest $request
      * @param int $id
+     * @param UpdateRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdateRequest $request, $id)
     {
-        $result = $this->courseService->update($id, $request->validated());
+        $result = $this->zoomSessionService->update($id, $request->validated());
         return $this->redirectResponse($result);
     }
 
     /**
-     * Xóa khóa học
+     * Xóa phiên học Zoom
      *
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
-        $result = $this->courseService->delete($id);
+        $result = $this->zoomSessionService->delete($id);
         return $this->redirectResponse($result);
     }
 
     /**
-     * Khôi phục danh mục đã xóa
+     * Khôi phục phiên học Zoom đã xóa
      *
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function restore($id)
     {
-        $result = $this->courseService->restore($id);
+        $result = $this->zoomSessionService->restore($id);
         return $this->redirectResponse($result);
     }
 }
