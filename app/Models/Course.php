@@ -85,8 +85,8 @@ class Course extends Model
     public function totalDuration()
     {
         $totalSeconds = $this->lessons()
-            ->join('video_lessons', 'lessons.id', '=', 'video_lessons.lessonId')
-            ->sum('video_lessons.duration');
+            ->join('lesson_videos', 'lessons.id', '=', 'lesson_videos.lessonId')
+            ->sum('lesson_videos.duration');
 
         $hours = floor($totalSeconds / 3600);
         $minutes = floor(($totalSeconds % 3600) / 60);
@@ -114,4 +114,5 @@ class Course extends Model
             ->whereNull('deleted_at')
             ->exists();
     }
+    
 }

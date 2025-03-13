@@ -135,7 +135,7 @@
                                     data-bs-parent="#curriculumSection{{ $lesson->id }}">
                                     <div class="accordion-body p-0">
                                         <ul class="ac-lecture">
-                                            @foreach ($lesson->videoLesson as $video)
+                                            @foreach ($lesson->videoLessons as $video)
                                                 <li>
                                                     <a href="#" onclick="actionTo('../../play_lesson/42.html')"
                                                         class="checkPropagation">

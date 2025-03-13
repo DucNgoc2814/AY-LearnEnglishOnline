@@ -9,8 +9,10 @@ use App\Repositories\Interfaces\VoucherRepositoryInterface;
 use App\Repositories\VoucherRepository;
 use App\Repositories\Interfaces\CourseRepositoryInterface;
 use App\Repositories\Interfaces\LessonRepositoryInterface;
+use App\Repositories\Interfaces\VideoLessonRepositoryInterface;
 use App\Repositories\CourseRepository;
 use App\Repositories\LessonRepository;
+use App\Repositories\VideoLessonRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -20,5 +22,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(VoucherRepositoryInterface::class, VoucherRepository::class);
         $this->app->bind(CourseRepositoryInterface::class, CourseRepository::class);
         $this->app->bind(LessonRepositoryInterface::class, LessonRepository::class);
+        $this->app->bind(VideoLessonRepositoryInterface::class, VideoLessonRepository::class);
     }
 }

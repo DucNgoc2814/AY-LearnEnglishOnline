@@ -90,17 +90,11 @@ class CourseController extends BaseController
     public function destroy($id)
     {
         $result = $this->courseService->delete($id);
-
-        if ($result['status']) {
-            return redirect()->route('admin.courses.index')
-                           ->with('success', $result['message']);
-        }
-
-        return redirect()->back()->with('error', $result['message']);
+        return $this->redirectResponse($result);
     }
 
     /**
-     * Khôi phục khóa học đã xóa
+     * Khôi phục danh mục đã xóa
      *
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
@@ -108,12 +102,6 @@ class CourseController extends BaseController
     public function restore($id)
     {
         $result = $this->courseService->restore($id);
-
-        if ($result['status']) {
-            return redirect()->route('admin.courses.index')
-                           ->with('success', $result['message']);
-        }
-
-        return redirect()->back()->with('error', $result['message']);
+        return $this->redirectResponse($result);
     }
 }

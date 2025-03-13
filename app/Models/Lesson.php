@@ -47,9 +47,9 @@ class Lesson extends Model
     {
         return $this->hasMany(Progress::class);
     }
-    public function videoLesson()
+    public function videoLessons()
     {
-        return $this->hasMany(VideoLesson::class, 'lessonId');
+        return $this->hasMany(LessonVideo::class, 'lessonId');
     }
 
     public function totalTests()
@@ -61,14 +61,14 @@ class Lesson extends Model
 
     public function totalVideo()
     {
-        return $this->videoLesson()
+        return $this->videoLessons()
             ->whereNull('deleted_at')
             ->count();
     }
 
     public function totalVideoDuration()
     {
-        $totalSeconds = $this->videoLesson()
+        $totalSeconds = $this->videoLessons()
             ->whereNull('deleted_at')
             ->sum('duration');
 

@@ -17,7 +17,7 @@
             <div class="lesson-list">
                 @foreach ($course->lessons as $lesson)
                     <div class="lesson-item">
-                        <div class="lesson-header d-flex justify-content-between align-items-center" data-bs-toggle="dropdown"
+                        <div class="lesson-header d-flex justify-content-between align-items-center {{ isset($currentLesson) && $currentLesson->id === $lesson->id ? 'active' : '' }}" data-bs-toggle="dropdown"
                             data-bs-target="#lesson{{ $lesson->id }}" data-lesson-id="{{ $lesson->id }}"
                             data-lesson-slug="{{ $lesson->slug }}" data-course-slug="{{ $course->slug }}"
                             aria-expanded="{{ isset($currentLesson) && $currentLesson->id === $lesson->id ? 'true' : 'false' }}">
@@ -35,25 +35,31 @@
                         <div id="lesson{{ $lesson->id }}"
                             class="lesson-content-dropdown {{ isset($currentLesson) && $currentLesson->id === $lesson->id ? 'show' : '' }}">
                             <div class="lesson-content">
-                                @if ($lesson->videoLesson && $lesson->videoLesson->count() > 0)
-                                    @foreach ($lesson->videoLesson as $index => $video)
-                                        <a href="{{ route('course.learning', ['courseSlug' => $course->slug, 'bai-hoc' => $lesson->slug, 'video' => $video->id]) }}"
-                                            class="content-item {{ isset($currentVideo) && $currentVideo->id === $video->id ? 'active' : '' }}">
+                                @if ($lesson->videoLessons && $lesson->videoLessons->count() > 0)
+                                    @foreach ($lesson->videoLessons as $videoLesson)
+                                        <a href="{{ route('course.learning.video', [
+                                            'courseSlug' => $course->slug,
+                                            'lessonSlug' => $lesson->slug,
+                                            'videoSlug' => $videoLesson->slug,
+                                        ]) }}"
+                                            class="content-item {{ isset($currentVideo) && $currentVideo->id === $videoLesson->id ? 'active' : '' }}"
+                                            onclick="activateItem(this)">
                                             <div class="d-flex align-items-center video-info">
                                                 <i
                                                     class="fa-regular fa-circle-play me-2 {{ isset($completedVideos) && in_array($video->id, $completedVideos) ? 'text-success' : '' }}"></i>
                                                 <div class="video-title-wrapper">
-                                                    {{ $video->name ?? 'Không tìm thấy tên video' }}</div>
+                                                    {{ $videoLesson->name ?? 'Không tìm thấy tên video' }}</div>
                                             </div>
-                                            <span class="video-duration">{{ $video->totalDuration() }}</span>
+                                            <span class="video-duration">{{ $videoLesson->totalDuration() }}</span>
                                         </a>
                                     @endforeach
                                 @endif
 
                                 @if ($lesson->lessonTests && $lesson->lessonTests->count() > 0)
                                     @foreach ($lesson->lessonTests as $test)
-                                        <a href="{{ route('course.learning', ['courseSlug' => $course->slug, 'bai-hoc' => $lesson->slug, 'bai-kiem-tra' => $test->id]) }}"
-                                            class="content-item {{ isset($currentTest) && $currentTest->id === $test->id ? 'active' : '' }}">
+                                        <a href="{{ route('course.learning.test', ['courseSlug' => $course->slug, 'lessonSlug' => $lesson->slug, 'testSlug' => $test->slug]) }}"
+                                            class="content-item {{ isset($currentTest) && $currentTest->id === $test->id ? 'active' : '' }}"
+                                            onclick="activateItem(this)">
                                             <div class="d-flex align-items-center">
                                                 <i class="fa-solid fa-file-pen text-success me-2"></i>
                                                 <span class="test-title">{{ $test->name }}</span>
@@ -80,128 +86,20 @@
             </div>
         </div>
 
-        <!-- Mobile/Tablet Sidebar Toggle Button -->
-        <div class="d-lg-none position-fixed top-0 start-0 p-2 z-3">
-            <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="offcanvas"
-                data-bs-target="#mobileSidebar">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-
-        <!-- Mobile/Tablet Sidebar -->
-        <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title">{{ $course->name }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-            </div>
-            <div class="offcanvas-body p-0">
-                <!-- Copy nội dung từ sidebar chính -->
-                <div class="course-sidebar w-100 h-100">
-                    <div class="sidebar-header">
-                        <h4 class="course-title">{{ $course->name ?? 'Không tìm thấy tên khóa học' }}</h4>
-                        <p class="course-stats">
-                            <i class="fas fa-book-open me-1"></i>
-                            <span>{{ $course->totalLessons() }} bài học</span>
-                        </p>
-                    </div>
-                    <div class="lesson-list">
-                        <!-- Copy nội dung lesson list -->
-                        @foreach ($course->lessons as $lesson)
-                            <div class="lesson-item">
-                                <div class="lesson-header d-flex justify-content-between align-items-center"
-                                    data-bs-toggle="dropdown" data-bs-target="#lesson{{ $lesson->id }}"
-                                    data-lesson-id="{{ $lesson->id }}" data-lesson-slug="{{ $lesson->slug }}"
-                                    data-course-slug="{{ $course->slug }}"
-                                    aria-expanded="{{ isset($currentLesson) && $currentLesson->id === $lesson->id ? 'true' : 'false' }}">
-                                    <div class="d-flex align-items-center flex-grow-1">
-                                        <i class="fas fa-chevron-right lesson-icon me-2"></i>
-                                        <span class="lesson-name">{{ $lesson->name }}</span>
-                                    </div>
-                                    <div class="lesson-meta d-flex align-items-center">
-                                        <span class="lesson-duration">
-                                            <i
-                                                class="fa-regular fa-clock me-1"></i><span>{{ $lesson->totalVideoDuration() }}</span>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div id="lesson{{ $lesson->id }}"
-                                    class="lesson-content-dropdown {{ isset($currentLesson) && $currentLesson->id === $lesson->id ? 'show' : '' }}">
-                                    <div class="lesson-content">
-                                        @if ($lesson->videoLesson && $lesson->videoLesson->count() > 0)
-                                            @foreach ($lesson->videoLesson as $index => $video)
-                                                <a href="{{ route('course.learning', ['courseSlug' => $course->slug, 'bai-hoc' => $lesson->slug, 'video' => $video->id]) }}"
-                                                    class="content-item {{ isset($currentVideo) && $currentVideo->id === $video->id ? 'active' : '' }}">
-                                                    <div class="d-flex align-items-center video-info">
-                                                        <i
-                                                            class="fa-regular fa-circle-play me-2 {{ isset($completedVideos) && in_array($video->id, $completedVideos) ? 'text-success' : '' }}"></i>
-                                                        <div class="video-title-wrapper">
-                                                            {{ $video->name ?? 'Không tìm thấy tên video' }}</div>
-                                                    </div>
-                                                    <span class="video-duration">{{ $video->totalDuration() }}</span>
-                                                </a>
-                                            @endforeach
-                                        @endif
-
-                                        @if ($lesson->lessonTests && $lesson->lessonTests->count() > 0)
-                                            @foreach ($lesson->lessonTests as $test)
-                                                <a href="{{ route('course.learning', ['courseSlug' => $course->slug, 'bai-hoc' => $lesson->slug, 'bai-kiem-tra' => $test->id]) }}"
-                                                    class="content-item {{ isset($currentTest) && $currentTest->id === $test->id ? 'active' : '' }}">
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="fa-solid fa-file-pen text-success me-2"></i>
-                                                        <span class="test-title">{{ $test->name }}</span>
-                                                    </div>
-                                                    <span class="badge bg-success">Bài kiểm tra</span>
-                                                </a>
-                                            @endforeach
-                                        @endif
-
-                                        @if (
-                                            (!$lesson->videoLesson || $lesson->videoLesson->count() === 0) &&
-                                                (!$lesson->lessonTests || $lesson->lessonTests->count() === 0))
-                                            <div class="content-item text-muted">
-                                                <div class="d-flex align-items-center">
-                                                    <i class="fas fa-info-circle me-2"></i>
-                                                    <span>Chưa có nội dung cho bài học này</span>
-                                                </div>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Main Content -->
         <div class="main-content flex-grow-1">
             <div class="content-header">
                 <h4 class="video-title">{{ $currentLesson->name ?? 'Không tìm thấy tên bài học' }}</h4>
             </div>
 
-            <div class="video-container">
-                @if ($video)
-                    @if ($video->videoType === 'youtube')
-                        <div class="video-wrapper">
-                            <iframe src="{{ $video->videoUrl }}" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen>
-                            </iframe>
-                        </div>
-                    @else
-                        <div class="video-wrapper">
-                            <video controls src="{{ $video->videoUrl }}" poster="{{ $video->thumbnailUrl }}">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                    @endif
+            <!-- Nội dung chính -->
+            <div class="content-wrapper h-100">
+                @if (request()->route()->getName() === 'course.learning.test')
+                    @include('client.course.partials.testContent')
+                @elseif(request()->route()->getName() === 'course.learning.video')
+                    @include('client.course.partials.videoContent')
                 @else
-                    <div class="no-video">
-                        <i class="fas fa-video"></i>
-                        <p>Không có video cho bài học này</p>
-                    </div>
+                    @include('client.course.partials.videoContent')
                 @endif
             </div>
         </div>
@@ -267,6 +165,15 @@
             cursor: pointer;
             transition: all 0.2s ease;
             user-select: none;
+        }
+
+        .lesson-header.active {
+            background: #e3f2fd;
+            color: #0d6efd;
+        }
+
+        .lesson-header.active .lesson-name {
+            color: #0d6efd;
         }
 
         .lesson-name {
@@ -423,6 +330,10 @@
             transition: all 0.3s ease-in-out;
         }
 
+        .lesson-content a:active {
+            background: #f1f1f1;
+        }
+
         /* Animation improvements */
         .lesson-icon {
             transition: transform 0.3s ease-in-out !important;
@@ -444,7 +355,7 @@
 
         /* Active state improvements */
         .content-item.active {
-            background: #ffffff;
+            background: #e3f2fd;
             color: #0d6efd;
             border-left: 3px solid #0d6efd;
             font-weight: 500;

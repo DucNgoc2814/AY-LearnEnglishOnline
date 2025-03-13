@@ -46,15 +46,24 @@ Route::middleware('web')->group(function () {
         Route::get('/thanh-toan/{slug}', [PaymentController::class, 'showQrPayment'])->name('payment.qr');
         Route::get('/thanh-toan/expired', [PaymentController::class, 'expired'])->name('payment.expired');
         Route::get('/thanh-toan/check-expiry', [PaymentController::class, 'checkPaymentExpiry'])->name('payment.check-expiry');
-        
-        // Route học khóa học - đơn giản hóa
-        Route::middleware(['check.course.access'])->group(function () {
-            Route::get('/learning/{courseSlug}', [CourseController::class, 'learning'])->name('course.learning');
-        });
-        
+
         Route::group(['prefix' => 'tai-khoan', 'as' => 'profile.'], function () {
             Route::get('/', [AuthController::class, 'profile'])->name('index');
             Route::post('/update', [AuthController::class, 'updateProfile'])->name('update');
+        });
+
+        Route::prefix('hoc-khoa-hoc')->group(function () {
+            // Route mặc định
+            Route::get('/{courseSlug}', [CourseController::class, 'learning'])
+                ->name('course.learning');
+
+            // Route cho video
+            Route::get('/{courseSlug}/bai-hoc/{lessonSlug}/video/{videoSlug}', [CourseController::class, 'learning'])
+                ->name('course.learning.video');
+
+            // Route cho test
+            Route::get('/{courseSlug}/bai-hoc/{lessonSlug}/bai-kiem-tra/{testSlug}', [CourseController::class, 'learning'])
+                ->name('course.learning.test');
         });
     });
 });

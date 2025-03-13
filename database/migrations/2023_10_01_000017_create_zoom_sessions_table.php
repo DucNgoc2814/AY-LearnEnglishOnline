@@ -10,6 +10,9 @@ class CreateZoomSessionsTable extends Migration
     {
         Schema::create('zoom_sessions', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->unique();
+            $table->string('slug')->unique();
+            $table->string('zoomUrl');
             $table->foreignId('courseID')->constrained('courses');
             $table->dateTime('releaseTime');
             $table->string('recordingLink')->nullable();

@@ -26,7 +26,7 @@
 
 <body class="">
     <header>
-        @if (!Route::is('course.learning'))
+        @if (!str_starts_with(Route::currentRouteName(), 'course.learning'))
             @include('client.layouts.partials.header')
             @include('client.layouts.partials.menu-response')
         @endif
@@ -46,7 +46,7 @@
         }
     </style>
     @yield('content')
-    @if (!Route::is('course.learning'))
+    @if (!str_starts_with(Route::currentRouteName(), 'course.learning'))
         <div class="py-4 w-100"></div>
         @include('client.layouts.partials.footer')
         @include('client.layouts.partials.script')

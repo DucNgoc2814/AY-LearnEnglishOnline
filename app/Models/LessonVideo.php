@@ -5,24 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class VideoLesson extends Model
+class LessonVideo extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
         'lessonId',
+        'name',
+        'slug',
         'videoUrl',
         'duration',
         'videoType',
-        'thumbnailUrl',
-        'isProcessed',
-        'videoQuality'
+        'thumbnailUrl'
     ];
 
     protected $casts = [
         'duration' => 'integer',
-        'isProcessed' => 'boolean',
-        'videoQuality' => 'json',
         'videoType' => 'string'
     ];
 

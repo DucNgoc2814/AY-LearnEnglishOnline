@@ -10,7 +10,10 @@ class ZoomSession extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'lessonId',
+        'name',
+        'slug',
+        'zoomUrl',
+        'courseId',
         'releaseTime',
         'recordingLink',
         'status'
@@ -29,4 +32,4 @@ class ZoomSession extends Model
     {
         return $this->hasMany(VideoRecord::class, 'zoomSessionId');
     }
-} 
+}
