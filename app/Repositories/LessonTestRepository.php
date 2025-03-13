@@ -34,7 +34,24 @@ class LessonTestRepository extends BaseRepository implements LessonTestRepositor
     public function searchByName($search)
     {
         return $this->getQuery()
+            ->with(['lesson', 'questions.answers'])
             ->where('name', 'like', "%{$search}%")
             ->paginate(config('crud.pagination.per_page'));
+    }
+
+    public function findOrFail($id)
+    {
+        return $this->model->with(['lesson', 'questions.answers'])->findOrFail($id);
+    }
+
+    public function getAll()
+    {
+        return $this->model->with(['lesson', 'questions.answers'])->get();
+    }
+
+    public function paginate($perPage = null)
+    {
+        return $this->model->with(['lesson', 'questions.answers'])
+            ->paginate($perPage ?? config('crud.pagination.per_page'));
     }
 }

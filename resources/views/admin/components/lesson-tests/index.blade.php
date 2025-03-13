@@ -74,100 +74,24 @@
                                                         title="Thêm câu hỏi">
                                                         <i class="fas fa-plus"></i>
                                                     </button>
-                                                    <button type="button" class="action_btn btn btn-outline-info btn-sm"
-                                                        onclick="toggleQuestionList({{ $item->id }})"
-                                                        title="Xem danh sách câu hỏi">
-                                                        <i class="fas fa-chevron-down"
-                                                            id="chevron-{{ $item->id }}"></i>
+                                                    <button type="button"
+                                                        class="action_btn btn btn-outline-info btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#showLessonTestModal"
+                                                        onclick="showLessonTest({{ json_encode($item) }})"
+                                                        title="Xem chi tiết">
+                                                        <i class="fas fa-eye"></i>
                                                     </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Questions List Row -->
-                                        <tr id="question-list-{{ $item->id }}" class="question-list-row d-none">
-                                            <td colspan="9" class="p-0">
-                                                <div class="question-list-container">
-                                                    <div class="ms-4 me-4 mb-3">
-                                                        <table class="table table-bordered table-hover">
-                                                            <thead>
-                                                                <tr class="bg-light">
-                                                                    <th class="text-center" width="5%">STT</th>
-                                                                    <th class="text-center" width="40%">Câu hỏi</th>
-                                                                    <th class="text-center" width="10%">Thứ tự</th>
-                                                                    <th class="text-center" width="35%">Câu trả lời</th>
-                                                                    <th class="text-center" width="10%">Thao tác</th>
-                                                                </tr>
-                                                            </thead>
-                                                            {{-- <tbody>
-                                                                @forelse($item->questions as $index => $question)
-                                                                    <tr>
-                                                                        <td class="text-center align-middle">{{ $index + 1 }}</td>
-                                                                        <td class="align-middle">{{ $question->question }}</td>
-                                                                        <td class="text-center align-middle">{{ $question->order_number }}</td>
-                                                                        <td>
-                                                                            <table class="table table-sm mb-0">
-                                                                                @foreach ($question->answers as $answer)
-                                                                                    <tr>
-                                                                                        <td width="70%">{{ $answer->answer }}</td>
-                                                                                        <td class="text-center" width="15%">
-                                                                                            @if ($answer->isCorrect)
-                                                                                                <span class="badge bg-success">Đúng</span>
-                                                                                            @endif
-                                                                                        </td>
-                                                                                        <td class="text-center" width="15%">
-                                                                                            @if ($question->type === 'fill_in_blank')
-                                                                                                @if ($answer->case_sensitive)
-                                                                                                    <span class="badge bg-info">Phân biệt chữ</span>
-                                                                                                @endif
-                                                                                            @endif
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                @endforeach
-                                                                            </table>
-                                                                        </td>
-                                                                        <td class="text-center align-middle">
-                                                                            <div class="action_btns d-flex justify-content-center">
-                                                                                <button type="button"
-                                                                                    class="action_btn mr_10 btn btn-outline-primary btn-sm"
-                                                                                    data-bs-toggle="modal"
-                                                                                    data-bs-target="#editQuestionModal"
-                                                                                    onclick="editQuestion({{ json_encode($question) }})"
-                                                                                    title="Sửa câu hỏi">
-                                                                                    <i class="far fa-edit"></i>
-                                                                                </button>
-                                                                                <form action="{{ route('admin.question-lesson-tests.destroy', $question->id) }}"
-                                                                                    method="POST" class="d-inline">
-                                                                                    @csrf
-                                                                                    @method('DELETE')
-                                                                                    <button type="submit"
-                                                                                        class="action_btn btn btn-outline-danger btn-sm"
-                                                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa câu hỏi này?')"
-                                                                                        title="Xóa câu hỏi">
-                                                                                        <i class="fas fa-trash"></i>
-                                                                                    </button>
-                                                                                </form>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                @empty
-                                                                    <tr>
-                                                                        <td colspan="5" class="text-center">Chưa có câu hỏi nào</td>
-                                                                    </tr>
-                                                                @endforelse
-                                                            </tbody> --}}
-                                                        </table>
-                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>
                                     @endforeach
 
-                                    {{-- @if (count($lessonTests) == 0)
+                                    @if (count($lessonTests) == 0)
                                         <tr>
                                             <td colspan="9" class="text-center">Không có dữ liệu</td>
                                         </tr>
-                                    @endif --}}
+                                    @endif
                                 </tbody>
                             </table>
 
@@ -198,32 +122,14 @@
     <!-- Include Trash Modal -->
     @include('admin.components.lesson-tests.modals.trash')
 
+    <!-- Include Show Question Lesson Test Modal -->
+    @include('admin.components.lesson-tests.modals.show')
+
     <!-- Include Create Question Lesson Test Modal -->
     @include('admin.components.question-lesson-tests.modals.create')
 
     <!-- Include Edit Question Modal -->
     @include('admin.components.question-lesson-tests.modals.edit')
-
-    <style>
-        .question-list-container {
-            overflow: hidden;
-            transition: max-height 0.3s ease-in-out;
-            max-height: 0;
-        }
-
-        .question-list-container.show {
-            max-height: 2000px;
-        }
-
-        .rotate-icon {
-            transform: rotate(180deg);
-            transition: transform 0.3s ease;
-        }
-
-        .table-hover tbody tr:hover {
-            background-color: rgba(0, 0, 0, .02);
-        }
-    </style>
 
     <script>
         function populateEditModal(item) {
@@ -266,6 +172,153 @@
         function setLessonTestId(id) {
             // Set giá trị cho input hidden lessonTestId
             document.querySelector('#lessonTestId').value = id;
+        }
+    </script>
+    <script>
+        function showLessonTest(lessonTest) {
+            // Gọi API để lấy chi tiết bài kiểm tra
+            fetch(`/admin/lesson-tests/${lessonTest.id}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.status) {
+                        const lessonTestWithQuestions = result.data;
+                        console.log('Lesson Test Data:', lessonTestWithQuestions);
+
+                        const modal = document.querySelector('#showLessonTestModal');
+
+                        modal.querySelector('#showLesson').textContent = lessonTestWithQuestions.lesson.name;
+                        modal.querySelector('#showName').textContent = lessonTestWithQuestions.name;
+                        modal.querySelector('#showDescription').textContent = lessonTestWithQuestions.description || 'Không có mô tả';
+                        modal.querySelector('#showDuration').textContent = `${lessonTestWithQuestions.duration} phút`;
+                        modal.querySelector('#showMaxAttempt').textContent = lessonTestWithQuestions.maxAttempt || 'Không giới hạn';
+                        modal.querySelector('#showMinScore').textContent = lessonTestWithQuestions.minScore;
+                        modal.querySelector('#showMaxScore').textContent = lessonTestWithQuestions.maxScore;
+                        modal.querySelector('#showIsRequired').textContent = lessonTestWithQuestions.isRequired ? 'Bắt buộc' : 'Không bắt buộc';
+
+                        // Hiển thị danh sách câu hỏi
+                        const questionList = modal.querySelector('#questionList');
+                        questionList.innerHTML = '';
+
+                        console.log('Questions:', lessonTestWithQuestions.questions);
+
+                        if (lessonTestWithQuestions.questions && lessonTestWithQuestions.questions.length > 0) {
+                            lessonTestWithQuestions.questions.forEach((question, index) => {
+                                console.log('Question:', question);
+                                const row = createQuestionRow(question, index + 1);
+                                questionList.appendChild(row);
+                            });
+                        } else {
+                            questionList.innerHTML = `
+                                <tr>
+                                    <td colspan="6" class="text-center">Chưa có câu hỏi nào</td>
+                                </tr>
+                            `;
+                        }
+
+                        // Lưu lessonTestId để sử dụng khi thêm câu hỏi mới
+                        window.lessonTestId = lessonTestWithQuestions.id;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Có thể thêm thông báo lỗi ở đây
+                });
+        }
+
+        function createQuestionRow(question, index) {
+            console.log('Creating row for question:', question);
+
+            const typeLabels = {
+                'multiple_choice': ['Trắc nghiệm', 'bg-primary'],
+                'fill_in_blank': ['Điền từ', 'bg-success'],
+                'true_false': ['Đúng/Sai', 'bg-warning'],
+                'matching': ['Nối từ', 'bg-info'],
+                'essay': ['Tự luận', 'bg-secondary']
+            };
+
+            const questionText = question.question || question.content || '';
+            const questionType = question.type || 'unknown';
+            const mediaUrl = question.mediaUrl || question.media_url || '';
+            const answers = question.answers || [];
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="text-center align-middle">${index}</td>
+                <td class="text-center align-middle">
+                    <span class="badge ${typeLabels[questionType]?.[1] || 'bg-secondary'}">
+                        ${typeLabels[questionType]?.[0] || questionType}
+                    </span>
+                </td>
+                <td class="align-middle">${questionText}</td>
+                <td class="text-center align-middle">
+                    ${createMediaPreview(mediaUrl)}
+                </td>
+                <td class="align-middle">
+                    ${createAnswersTable(answers)}
+                </td>
+                <td class="text-center align-middle">
+                    <div class="action_btns d-flex justify-content-center">
+                        <button type="button"
+                            class="action_btn mr_10 btn btn-outline-primary btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editQuestionModal"
+                            onclick="editQuestion(${JSON.stringify(question)})"
+                            title="Sửa câu hỏi">
+                            <i class="far fa-edit"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            return tr;
+        }
+
+        function createMediaPreview(mediaUrl) {
+            if (!mediaUrl) return '<span class="text-muted">Không có</span>';
+
+            const extension = mediaUrl.split('.').pop().toLowerCase();
+            const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension);
+            const isAudio = ['mp3', 'wav', 'ogg'].includes(extension);
+            const isVideo = ['mp4', 'webm'].includes(extension);
+
+            if (isImage) {
+                return `<img src="${mediaUrl}" alt="Question media" class="img-thumbnail media-preview" onclick="window.open(this.src)">`;
+            } else if (isAudio) {
+                return `<audio controls><source src="${mediaUrl}" type="audio/${extension}"></audio>`;
+            } else if (isVideo) {
+                return `<video controls><source src="${mediaUrl}" type="video/${extension}"></video>`;
+            } else {
+                return `<a href="${mediaUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-file"></i> Xem file
+                        </a>`;
+            }
+        }
+
+        function createAnswersTable(answers) {
+            console.log('Creating answers table:', answers);
+
+            if (!answers || answers.length === 0) return '<span class="text-muted">Không có câu trả lời</span>';
+
+            return `
+                <table class="table table-sm mb-0">
+                    ${answers.map(answer => {
+                        const answerText = answer.answer || answer.content || '';
+                        const isCorrect = answer.isCorrect || answer.is_correct || false;
+                        const caseSensitive = answer.case_sensitive || answer.caseSensitive || false;
+
+                        return `
+                            <tr>
+                                <td width="70%">${answerText}</td>
+                                <td class="text-center" width="15%">
+                                    ${isCorrect ? '<span class="badge bg-success">Đúng</span>' : ''}
+                                </td>
+                                <td class="text-center" width="15%">
+                                    ${caseSensitive ? '<span class="badge bg-info">Phân biệt chữ</span>' : ''}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </table>
+            `;
         }
     </script>
 @endsection
