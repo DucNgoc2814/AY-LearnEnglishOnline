@@ -275,22 +275,37 @@
         function createMediaPreview(mediaUrl) {
             if (!mediaUrl) return '<span class="text-muted">Không có</span>';
 
+            mediaUrl = String(mediaUrl);
             const extension = mediaUrl.split('.').pop().toLowerCase();
+            const fullUrl = `{{ asset('uploads') }}/${mediaUrl}`;
+
             const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension);
+            const isVideo = ['mp4', 'webm', 'mov', 'wmv', 'avi', 'flv'].includes(extension);
             const isAudio = ['mp3', 'wav', 'ogg'].includes(extension);
-            const isVideo = ['mp4', 'webm'].includes(extension);
 
             if (isImage) {
-                return `<img src="${mediaUrl}" alt="Question media" class="img-thumbnail media-preview" onclick="window.open(this.src)">`;
-            } else if (isAudio) {
-                return `<audio controls><source src="${mediaUrl}" type="audio/${extension}"></audio>`;
+                return `<img src="${fullUrl}" alt="Question media" width="50" onerror="this.onerror=null; this.src='{{ asset('images/no-image.png') }}';">`;
             } else if (isVideo) {
-                return `<video controls><source src="${mediaUrl}" type="video/${extension}"></video>`;
-            } else {
-                return `<a href="${mediaUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
-                            <i class="fas fa-file"></i> Xem file
-                        </a>`;
+                return `
+                    <div class="d-flex justify-content-center align-items-center ">
+                        <button type="button"
+                            class="btn btn-sm btn-primary ms-2"
+                            onclick="showVideoModal('${fullUrl}', '${extension}')"
+                        >
+                            <i class="fas fa-play"></i> Xem video
+                        </button>
+                    </div>`;
+            } else if (isAudio) {
+                return `
+                    <audio controls controlsList="nodownload">
+                        <source src="${fullUrl}" type="audio/${extension}">
+                        Your browser does not support the audio tag.
+                    </audio>`;
             }
+
+            return `<a href="${fullUrl}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-file"></i> Xem file
+                    </a>`;
         }
 
         function createAnswersTable(answers) {
@@ -319,6 +334,45 @@
                     }).join('')}
                 </table>
             `;
+        }
+
+        // Thêm hàm để hiển thị modal video
+        function showVideoModal(videoUrl, extension) {
+            const modalHtml = `
+                <div class="modal fade" id="videoPreviewModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Xem video</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <video width="100%" controls autoplay>
+                                    <source src="${videoUrl}" type="video/${extension}">
+                                </video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Xóa modal cũ nếu tồn tại
+            const existingModal = document.getElementById('videoPreviewModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Thêm modal mới vào body
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            // Hiển thị modal
+            const modal = new bootstrap.Modal(document.getElementById('videoPreviewModal'));
+            modal.show();
+
+            // Tự động xóa modal khi đóng
+            document.getElementById('videoPreviewModal').addEventListener('hidden.bs.modal', function () {
+                this.remove();
+            });
         }
     </script>
 @endsection

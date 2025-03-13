@@ -101,5 +101,15 @@
     .media-preview video {
         max-width: 150px;
     }
+
+    .table td img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .table td video,
+    .table td audio {
+        max-width: 200px;
+    }
 </style>
 
