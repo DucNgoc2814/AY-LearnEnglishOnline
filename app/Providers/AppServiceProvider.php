@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Paginator::useBootstrap();
-        View::composer('client.layouts.partials.menu-response', HeaderComposer::class);
+        Paginator::useBootstrapFive();
+        View::composer(['client.layouts.partials.menu-response', 'client.layouts.partials.footer'], HeaderComposer::class);
     }
 }

@@ -1,4 +1,4 @@
-<section class="menubar">
+<section class="menubar ">
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
             <a class="navbar-brand logo pt-0" href="{{ route('home') }}">
@@ -48,7 +48,7 @@
                         <ul class="navbarHover">
                             @foreach ($categories as $category)
                                 <li class="dropdown-submenu">
-                                    <a href="#">
+                                    <a href="{{ route('category.index', $category->slug) }}">
                                         <span class="icons"><i class="fas fa-desktop"></i></span>
                                         <span class="text-cat">{{ $category->name }}</span>
                                         <span class="has-sub-category ms-auto"><i

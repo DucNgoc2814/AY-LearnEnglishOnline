@@ -25,8 +25,8 @@ class Course extends Model
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
-        'salePrice' => 'decimal:2',
+        'price' => 'integer',
+        'salePrice' => 'integer',
         'releaseTime' => 'datetime',
         'type' => 'integer'
     ];
@@ -105,5 +105,13 @@ class Course extends Model
             ->whereNull('deleted_at')
             ->count();
         return $lessonTests + $finalTests;
+    }
+
+    public function isEnrolledByUser($userId)
+    {
+        return $this->enrollments()
+            ->where('userId', $userId)
+            ->whereNull('deleted_at')
+            ->exists();
     }
 }

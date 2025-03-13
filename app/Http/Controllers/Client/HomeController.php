@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\BaseController;
+use App\Models\Category;
 use App\Models\Course;
 use Illuminate\Http\Request;
 

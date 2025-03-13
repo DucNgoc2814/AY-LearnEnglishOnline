@@ -19,24 +19,22 @@
                                 </div>
                                 <div class="courses-text">
                                     <h5 class="mb-2">{{ $course->name }}</h5>
-                                    <div class="review-icon">
-                                        <div class="review-icon-star align-items-center">
-                                            <p>{{ $course->rating }}</p>
-                                            <p><i class="fa-solid fa-star filled"></i></p>
-                                            <p>({{ $course->totalRating }} lượt)</p>
+                                    <div class="review-icon d-flex align-items-center mb-1">
+                                        <div class="review-icon-star d-flex align-items-center">
+                                            @for ($i = 0; $i < $course->rating; $i++)
+                                                <i class="fa-solid fa-star filled mx-0"></i>
+                                            @endfor
+                                            <p class="m-0 ms-1">({{ $course->totalRating }} lượt)</p>
                                         </div>
-                                        <div class="review-btn d-flex align-items-center">
-                                            <span class="compare-img checkPropagation  bg-primary"
-                                                onclick="redirectTo('{{ route('detailCourse', $course->slug) }}');">
-                                                <i class="fa-solid fa-eye"></i>
-                                                Xem chi tiết</span>
+                                        <div class="review-btn d-flex align-items-center ms-auto">
+                                            <p class="m-0 text-primary fw-bold">
+                                                <i class="fa-solid fa-users p-0 text-15px text-primary"></i>
+                                                {{ $course->totalStudent }}
+                                            </p>
                                         </div>
                                     </div>
-                                    <p class="m-0 text-primary fw-bold"> <i
-                                            class="fa-solid fa-users p-0 text-15px text-primary"></i>
-                                        {{ $course->totalStudent }}
-                                    </p>
-                                    <p class="ellipsis-line-2">{{ $course->sortDescription }}</p>
+
+                                    <p class="ellipsis-line-2">{{ $course->shortDescription }}</p>
                                     <div class="courses-price-border">
                                         <div class="courses-price">
                                             <div class="courses-price-left">

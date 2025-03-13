@@ -6,15 +6,12 @@
             <div class="row">
                 @if ($relatedCourses->count() > 0)
                     @foreach ($relatedCourses as $relatedCourse)
-                        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                            <a href="{{ route('detailCourse', $relatedCourse->slug) }}"
-                                class="checkPropagation courses-card-body">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-12" style="z-index: ;">
+                            <a href="{{ route('detailCourse', $relatedCourse->slug) }}" class="courses-card-body">
                                 <div class="courses-card-image">
-                                    <img loading="lazy"
-                                        src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_141701064819.jpg') }}">
+                                    <img
+                                        src="{{ url('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_141701064819.jpg') }}">
                                     <div class="courses-icon " id="coursesWishlistIcon14">
-                                        <i class="fa-solid fa-heart checkPropagation"
-                                            onclick="actionTo('../../toggleWishlistItems/14.html')"></i>
                                     </div>
                                     <div class="courses-card-image-text">
                                         <h3>{{ $relatedCourse->name }}</h3>

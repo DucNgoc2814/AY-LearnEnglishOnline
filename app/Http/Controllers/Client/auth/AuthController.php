@@ -45,10 +45,16 @@ class AuthController extends Controller
             ]);
 
             return redirect()->route('login')
-                ->with('success', 'Registration successful! Please login.');
+                ->with('notification', [
+                    'message' => 'Đăng ký thành công! Vui lòng đăng nhập.',
+                    'type' => 'success'
+                ]);
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'Registration failed. Please try again.');
+                ->with('notification', [
+                    'message' => 'Đăng ký thất bại. Vui lòng thử lại.',
+                    'type' => 'error'
+                ]);
         }
     }
 
@@ -72,11 +78,17 @@ class AuthController extends Controller
     {
         if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             return back()->withInput()
-                ->withErrors(['email' => 'Invalid credentials']);
+                ->with('notification', [
+                    'message' => 'Email hoặc mật khẩu không chính xác',
+                    'type' => 'error'
+                ]);
         }
 
         return redirect()->intended(route('home'))
-            ->with('success', 'Welcome back!');
+            ->with('notification', [
+                'message' => 'Đăng nhập thành công!',
+                'type' => 'success'
+            ]);
     }
 
     /**
@@ -89,7 +101,10 @@ class AuthController extends Controller
         Auth::logout();
         
         return redirect()->route('home')
-            ->with('success', 'Đăng xuất thành công.');
+            ->with('notification', [
+                'message' => 'Đăng xuất thành công.',
+                'type' => 'success'
+            ]);
     }
 
     public function profile(): View

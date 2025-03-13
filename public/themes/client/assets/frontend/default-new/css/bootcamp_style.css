@@ -19,7 +19,7 @@
 }
 
 .module-title p:hover {
-    color: #754FFE;
+    color: var(--color-4);
 }
 
 .module-title {
@@ -80,7 +80,7 @@
 .module-item:hover .module_expand_icon i,
 .class:hover {
     cursor: pointer;
-    color: #754FFE;
+    color: var(--color-4);
 }
 
 .accordion-item {
@@ -197,9 +197,9 @@
 .watch-video,
 .e_btn {
     padding: 4px 12px;
-    color: #754FFE;
+    color: var(--color-4);
     font-size: 13px;
-    border: 1px solid #754FFE !important;
+    border: 1px solid var(--color-4) !important;
     font-weight: 500;
     background-color: #fff;
     border-radius: 4px;
@@ -217,8 +217,8 @@
 .watch-video:hover,
 .e_btn:hover {
     color: white;
-    background: #754FFE;
-    box-shadow: 0px 1px 10px #754FFE80;
+    background: var(--color-4);
+    box-shadow: 0px 1px 10px var(--color-4)80;
 }
 
 .join-now:hover {
@@ -299,7 +299,7 @@
 }
 
 .bootcamp-card:hover .bootcamp-title {
-    color: #754FFE !important;
+    color: var(--color-4) !important;
 }
 
 .bootcamp-details .bootcamp-title {
@@ -340,7 +340,7 @@
     font-weight: 500;
     line-height: normal;
     border: none;
-    background: #754FFE;
+    background: var(--color-4);
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -359,14 +359,14 @@
 }
 
 .card-btn a:nth-of-type(2):hover {
-    background: #754FFE;
+    background: var(--color-4);
     color: #fff;
 }
 
 .card-btn a:nth-of-type(2) {
     background: #fff;
-    border: 1.5px solid #754FFE;
-    color: #754FFE;
+    border: 1.5px solid var(--color-4);
+    color: var(--color-4);
 }
 
 .live-classes span,
@@ -429,8 +429,8 @@
 }
 
 .class-dropdown li:hover {
-    background: #754FFE10;
-    color: #754FFE;
+    background: var(--color-4)10;
+    color: var(--color-4);
 }
 
 .class-dropdown li {
@@ -474,7 +474,7 @@
 
 
 .class-resource .list-item:hover {
-    color: #754FFE !important;
+    color: var(--color-4) !important;
 }
 
 .course-decription li .nav-link {

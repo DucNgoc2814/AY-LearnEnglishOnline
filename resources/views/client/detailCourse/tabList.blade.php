@@ -115,7 +115,8 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header mx-2">
                                     <button class="accordion-button collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#curriculumSectionCol{{ $lesson->id }}"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#curriculumSectionCol{{ $lesson->id }}"
                                         aria-expanded="false" aria-controls="curriculumSectionCol{{ $lesson->id }}">
                                         <div class="row w-100">
                                             <div class="col-auto accordion-item-title d-flex flex-column">
@@ -139,11 +140,20 @@
                                                     <a href="#" onclick="actionTo('../../play_lesson/42.html')"
                                                         class="checkPropagation">
                                                         <span class="d-flex align-items-center ellipsis-line-2">
-                                                        <i class="fa-regular fa-circle-play"></i>
-                                                        {{ $video->name }} </span>
-
-
-                                                        <div class="lecture-info" style="width: 60px">{{ $video->totalDuration() }}</div>
+                                                            <i class="fa-regular fa-circle-play"></i>
+                                                            {{ $video->name }} </span>
+                                                        <div class="lecture-info" style="width: 60px">
+                                                            {{ $video->totalDuration() }}</div>
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                            @foreach ($lesson->lessonTests as $test)
+                                                <li>
+                                                    <a href="#" onclick="actionTo('../../play_lesson/42.html')"
+                                                        class="checkPropagation">
+                                                        <span class="d-flex align-items-center ellipsis-line-2">
+                                                            <i class="fa-solid fa-file-pen text-success"></i>
+                                                            {{ $test->name }} </span>
                                                     </a>
                                                 </li>
                                             @endforeach

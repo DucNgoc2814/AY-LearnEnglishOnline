@@ -14,9 +14,9 @@ class CreateCoursesTable extends Migration
             $table->string('slug')->unique()->comment('Slug khóa học');
             $table->string('name');
             $table->text('description');
-            $table->string('sortDescription')->nullable();
-            $table->decimal('price', 8, 2)->nullable();
-            $table->decimal('salePrice', 8, 2)->nullable();
+            $table->string('shortDescription')->nullable();
+            $table->integer('price')->nullable();
+            $table->integer('salePrice')->nullable();
             $table->string('thumbnail')->nullable()->comment('Ảnh đại diện khóa học');
             $table->integer('totalStudent')->default(0)->comment('Tổng số học viên đã đăng ký');
             $table->integer('rating')->default(0)->comment('Đánh giá trung bình');

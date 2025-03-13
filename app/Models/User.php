@@ -80,4 +80,12 @@ class User extends Authenticatable
             ->where('status', 'completed')
             ->count();
     }
+
+    public function hasEnrolledCourse($courseId)
+    {
+        return $this->enrollments()
+            ->where('course_id', $courseId)
+            ->where('status', 'active')
+            ->exists();
+    }
 } 
