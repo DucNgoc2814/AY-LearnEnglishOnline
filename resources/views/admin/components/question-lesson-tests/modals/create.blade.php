@@ -117,9 +117,10 @@
                                                 <div class="d-flex gap-3 mt-2">
                                                     <div class="form-check">
                                                         <input class="form-check-input answer-correct"
-                                                            type="radio"
-                                                            name="answers_correct"
-                                                            value="0">
+                                                            type="${answerType === 'single_choice' ? 'radio' : 'checkbox'}"
+                                                            name="${answerType === 'single_choice' ? 'answers_correct' : `answers[${answerCount}][isCorrect]`}"
+                                                            value="${answerCount}">
+                                                        <input type="hidden" name="answers[${answerCount}][isCorrect]" value="0">
                                                         <label class="form-check-label">Đáp án đúng</label>
                                                     </div>
                                                     <div class="form-check case-sensitive-check d-none">
@@ -337,142 +338,155 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="form-check">
                                 <input class="form-check-input answer-correct"
                                     type="${answerType === 'single_choice' ? 'radio' : 'checkbox'}"
-                                    name="${answerType === 'single_choice' ? 'correct_answer' : `answers[${answerCount}][isCorrect]`}"
+                                    name="${answerType === 'single_choice' ? 'answers_correct' : `answers[${answerCount}][isCorrect]`}"
                                     value="${answerCount}">
-                                <input type="hidden"
-                                    name="answers[${answerCount}][isCorrect]"
-                                    value="0"
-                                    class="is-correct-input">
+                                <input type="hidden" name="answers[${answerCount}][isCorrect]" value="0">
                                 <label class="form-check-label">Đáp án đúng</label>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-1 d-flex align-items-end">
-                        <button type="button" class="btn btn-outline-danger btn-sm remove-answer">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
+                                                <div class="form-check case-sensitive-check d-none">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="answers[0][caseSensitive]" value="1">
+                                                    <label class="form-check-label">Phân biệt hoa/thường</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 d-flex align-items-end">
+                                            <button type="button" class="btn btn-outline-danger btn-sm remove-answer">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
 
-    addAnswerBtn?.addEventListener('click', function() {
-        const answerType = document.getElementById('answerType').value;
-        // Không cho phép thêm nếu là loại điền vào chỗ trống
-        if (answerType === 'fill_in_blank') {
-            return;
-        }
+                        addAnswerBtn?.addEventListener('click', function() {
+                            const answerType = document.getElementById('answerType').value;
+                            // Không cho phép thêm nếu là loại điền vào chỗ trống
+                            if (answerType === 'fill_in_blank') {
+                                return;
+                            }
 
-        answersContainer.insertAdjacentHTML('beforeend', createAnswerItem());
-        const newRemoveBtn = answersContainer.lastElementChild.querySelector('.remove-answer');
-        newRemoveBtn.addEventListener('click', handleRemoveAnswer);
-        updateAnswerIndexes();
-    });
+                            answersContainer.insertAdjacentHTML('beforeend', createAnswerItem());
+                            const newRemoveBtn = answersContainer.lastElementChild.querySelector('.remove-answer');
+                            newRemoveBtn.addEventListener('click', handleRemoveAnswer);
+                            updateAnswerIndexes();
+                        });
 
-    // Xử lý xóa câu trả lời
-    function handleRemoveAnswer() {
-        const answerType = document.getElementById('answerType').value;
-        // Không cho phép xóa nếu là loại điền vào chỗ trống
-        if (answerType === 'fill_in_blank') {
-            return;
-        }
+                        // Xử lý xóa câu trả lời
+                        function handleRemoveAnswer() {
+                            const answerType = document.getElementById('answerType').value;
+                            // Không cho phép xóa nếu là loại điền vào chỗ trống
+                            if (answerType === 'fill_in_blank') {
+                                return;
+                            }
 
-        if (document.querySelectorAll('.answer-item').length > 1) {
-            this.closest('.answer-item').remove();
+                            if (document.querySelectorAll('.answer-item').length > 1) {
+                                this.closest('.answer-item').remove();
 
-            // Cập nhật lại chỉ số của các phần tử sau khi xóa
-            updateAnswerIndexes();
-        } else {
-            alert('Phải có ít nhất một câu trả lời!');
-        }
-    }
+                                // Cập nhật lại chỉ số của các phần tử sau khi xóa
+                                updateAnswerIndexes();
+                            } else {
+                                alert('Phải có ít nhất một câu trả lời!');
+                            }
+                        }
 
-    // Cập nhật lại các chỉ số của các câu trả lời
-    function updateAnswerIndexes() {
-        const answerItems = document.querySelectorAll('.answer-item');
-        const answerType = document.getElementById('answerType').value;
+                        // Cập nhật lại các chỉ số của các câu trả lời
+                        function updateAnswerIndexes() {
+                            const answerItems = document.querySelectorAll('.answer-item');
+                            const answerType = document.getElementById('answerType').value;
 
-        answerItems.forEach((item, index) => {
-            // Cập nhật name cho input answer
-            const answerInput = item.querySelector('input[name^="answers"][name$="[answer]"]');
-            if (answerInput) {
-                answerInput.name = `answers[${index}][answer]`;
-            }
+                            answerItems.forEach((item, index) => {
+                                // Cập nhật name cho input answer
+                                const answerInput = item.querySelector('input[name^="answers"][name$="[answer]"]');
+                                if (answerInput) {
+                                    answerInput.name = `answers[${index}][answer]`;
+                                }
 
-            // Cập nhật name cho input orderNumber
-            const orderInput = item.querySelector('input[name^="answers"][name$="[orderNumber]"]');
-            if (orderInput) {
-                orderInput.name = `answers[${index}][orderNumber]`;
-            }
+                                // Cập nhật name cho input orderNumber
+                                const orderInput = item.querySelector('input[name^="answers"][name$="[orderNumber]"]');
+                                if (orderInput) {
+                                    orderInput.name = `answers[${index}][orderNumber]`;
+                                }
 
-            // Cập nhật name cho radio/checkbox isCorrect
-            const correctInput = item.querySelector('.answer-correct');
-            if (correctInput) {
-                if (answerType === 'single_choice') {
-                    correctInput.name = 'answers_correct';
-                    correctInput.value = index.toString();
-                } else {
-                    correctInput.name = `answers[${index}][isCorrect]`;
-                }
-            }
+                                // Cập nhật name cho radio/checkbox isCorrect
+                                const correctInput = item.querySelector('.answer-correct');
+                                if (correctInput) {
+                                    if (answerType === 'single_choice') {
+                                        correctInput.name = 'answers_correct';
+                                        correctInput.value = index.toString();
+                                    } else {
+                                        correctInput.name = `answers[${index}][isCorrect]`;
+                                    }
+                                }
 
-            // Cập nhật name cho checkbox caseSensitive
-            const caseSensitiveInput = item.querySelector('input[name^="answers"][name$="[caseSensitive]"]');
-            if (caseSensitiveInput) {
-                caseSensitiveInput.name = `answers[${index}][caseSensitive]`;
-            }
+                                // Cập nhật name cho checkbox caseSensitive
+                                const caseSensitiveInput = item.querySelector('input[name^="answers"][name$="[caseSensitive]"]');
+                                if (caseSensitiveInput) {
+                                    caseSensitiveInput.name = `answers[${index}][caseSensitive]`;
+                                }
 
-            // Cập nhật input hidden isCorrect cho fill_in_blank
-            const hiddenCorrectInput = item.querySelector('input[type="hidden"][name^="answers"][name$="[isCorrect]"]');
-            if (hiddenCorrectInput) {
-                hiddenCorrectInput.name = `answers[${index}][isCorrect]`;
-            }
-        });
-    }
+                                // Cập nhật input hidden isCorrect cho fill_in_blank
+                                const hiddenCorrectInput = item.querySelector('input[type="hidden"][name^="answers"][name$="[isCorrect]"]');
+                                if (hiddenCorrectInput) {
+                                    hiddenCorrectInput.name = `answers[${index}][isCorrect]`;
+                                }
+                            });
+                        }
 
-    // Add handler cho nút xóa ban đầu
-    document.querySelector('.remove-answer')?.addEventListener('click', handleRemoveAnswer);
+                        // Add handler cho nút xóa ban đầu
+                        document.querySelector('.remove-answer')?.addEventListener('click', handleRemoveAnswer);
 
-    // Thêm event listener để xử lý khi radio/checkbox thay đổi
-    document.addEventListener('change', function(e) {
-        if (e.target.classList.contains('answer-correct')) {
-            const answerType = document.getElementById('answerType').value;
+                        // Thêm event listener để xử lý khi radio/checkbox thay đổi
+                        document.addEventListener('change', function(e) {
+                            if (e.target.classList.contains('answer-correct')) {
+                                const answerType = document.getElementById('answerType').value;
+                                const answerItems = document.querySelectorAll('.answer-item');
 
-            if (answerType === 'single_choice') {
-                // Reset tất cả về 0
-                document.querySelectorAll('.is-correct-input').forEach(input => {
-                    input.value = '0';
-                });
+                                if (answerType === 'single_choice') {
+                                    // Reset tất cả về 0
+                                    answerItems.forEach((item) => {
+                                        const hiddenInput = item.querySelector('input[type="hidden"][name^="answers"][name$="[isCorrect]"]');
+                                        if (hiddenInput) {
+                                            hiddenInput.value = '0';
+                                        }
+                                    });
 
-                // Set giá trị 1 cho câu trả lời được chọn
-                const selectedIndex = e.target.value;
-                const selectedItem = document.querySelectorAll('.answer-item')[selectedIndex];
-                if (selectedItem) {
-                    selectedItem.querySelector('.is-correct-input').value = '1';
-                }
-            }
-        }
-    });
+                                    // Set giá trị 1 cho đáp án được chọn
+                                    const selectedItem = e.target.closest('.answer-item');
+                                    const hiddenInput = selectedItem.querySelector('input[type="hidden"][name^="answers"][name$="[isCorrect]"]');
+                                    if (hiddenInput) {
+                                        hiddenInput.value = '1';
+                                    }
+                                } else {
+                                    // Với checkbox, set giá trị theo trạng thái checked
+                                    const answerItem = e.target.closest('.answer-item');
+                                    const hiddenInput = answerItem.querySelector('input[type="hidden"][name^="answers"][name$="[isCorrect]"]');
+                                    if (hiddenInput) {
+                                        hiddenInput.value = e.target.checked ? '1' : '0';
+                                    }
+                                }
+                            }
+                        });
 
-    // Sửa lại phần xử lý submit form
-    document.querySelector('form').addEventListener('submit', function(e) {
-        const answerType = document.getElementById('answerType').value;
+                        // Sửa lại phần xử lý submit form
+                        document.querySelector('form').addEventListener('submit', function(e) {
+                            const answerType = document.getElementById('answerType').value;
 
-        if (!answerType) {
-            e.preventDefault();
-            alert('Vui lòng chọn loại câu trả lời!');
-            return;
-        }
+                            if (!answerType) {
+                                e.preventDefault();
+                                alert('Vui lòng chọn loại câu trả lời!');
+                                return;
+                            }
 
-        if (answerType === 'single_choice') {
-            const selectedCorrect = document.querySelector('input[name="correct_answer"]:checked');
-            if (!selectedCorrect) {
-                e.preventDefault();
-                alert('Vui lòng chọn một câu trả lời đúng!');
-                return;
-            }
-        }
-    });
-});
-</script>
+                            if (answerType === 'single_choice') {
+                                const selectedCorrect = document.querySelector('input[name="answers_correct"]:checked');
+                                if (!selectedCorrect) {
+                                    e.preventDefault();
+                                    alert('Vui lòng chọn một câu trả lời đúng!');
+                                    return;
+                                }
+                            }
+                        });
+                    });
+                </script>

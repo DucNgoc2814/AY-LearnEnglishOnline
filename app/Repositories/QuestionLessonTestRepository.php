@@ -47,24 +47,13 @@ class QuestionLessonTestRepository extends BaseRepository implements QuestionLes
             // Xử lý câu trả lời
             if (isset($data['answers']) && is_array($data['answers'])) {
                 foreach ($data['answers'] as $index => $answerData) {
-                    // Xác định đáp án đúng dựa trên loại câu trả lời
-                    $isCorrect = false;
-
-                    if ($answerType === 'single_choice' && isset($data['answers_correct']) && $data['answers_correct'] == $index) {
-                        $isCorrect = true;
-                    } elseif ($answerType === 'multiple_choice' && isset($answerData['isCorrect'])) {
-                        $isCorrect = true;
-                    } elseif ($answerType === 'fill_in_blank') {
-                        $isCorrect = true;
-                    }
-
                     $processedAnswerData = [
                         'questionLessonTestId' => $question->id,
                         'answer' => $answerData['answer'],
                         'orderNumber' => $answerData['orderNumber'],
-                        'isCorrect' => $isCorrect,
+                        'isCorrect' => isset($answerData['isCorrect']) ? (bool)$answerData['isCorrect'] : false,
                         'answerType' => $answerType,
-                        'caseSensitive' => isset($answerData['caseSensitive']),
+                        'caseSensitive' => isset($answerData['caseSensitive']) ? (bool)$answerData['caseSensitive'] : false,
                         'alternativeAnswers' => $answerData['alternativeAnswers'] ?? null
                     ];
 
@@ -137,24 +126,13 @@ class QuestionLessonTestRepository extends BaseRepository implements QuestionLes
 
                 // Tạo câu trả lời mới
                 foreach ($data['answers'] as $index => $answerData) {
-                    // Xác định đáp án đúng dựa trên loại câu trả lời
-                    $isCorrect = false;
-
-                    if ($answerType === 'single_choice' && isset($data['answers_correct']) && $data['answers_correct'] == $index) {
-                        $isCorrect = true;
-                    } elseif ($answerType === 'multiple_choice' && isset($answerData['isCorrect'])) {
-                        $isCorrect = true;
-                    } elseif ($answerType === 'fill_in_blank') {
-                        $isCorrect = true;
-                    }
-
                     $processedAnswerData = [
                         'questionLessonTestId' => $question->id,
                         'answer' => $answerData['answer'],
                         'orderNumber' => $answerData['orderNumber'],
-                        'isCorrect' => $isCorrect,
+                        'isCorrect' => isset($answerData['isCorrect']) ? (bool)$answerData['isCorrect'] : false,
                         'answerType' => $answerType,
-                        'caseSensitive' => isset($answerData['caseSensitive']),
+                        'caseSensitive' => isset($answerData['caseSensitive']) ? (bool)$answerData['caseSensitive'] : false,
                         'alternativeAnswers' => $answerData['alternativeAnswers'] ?? null
                     ];
 

@@ -64,8 +64,8 @@ class QuestionLessonTestService extends BaseService implements QuestionLessonTes
                         'questionLessonTestId' => $question->id,
                         'answer' => $answerData['answer'],
                         'orderNumber' => $answerData['orderNumber'],
-                        'isCorrect' => isset($answerData['isCorrect']) ? true : false,
-                        'caseSensitive' => isset($answerData['caseSensitive']) ? true : false,
+                        'isCorrect' => isset($answerData['isCorrect']) ? (bool)$answerData['isCorrect'] : false,
+                        'caseSensitive' => isset($answerData['caseSensitive']) ? (bool)$answerData['caseSensitive'] : false,
                         'alternativeAnswers' => $answerData['alternativeAnswers'] ?? null,
                         'answerType' => $data['answerType']
                     ];
