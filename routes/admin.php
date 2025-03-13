@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AnswerLessonTestController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
@@ -91,6 +92,30 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::controller(LessonTestController::class)
         ->prefix('lesson-tests')
         ->name('lesson-tests.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
+        });
+    // Question Lesson Tests Management
+    Route::controller(QuestionLessonTestController::class)
+        ->prefix('question-lesson-tests')
+        ->name('question-lesson-tests.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
+        });
+    // Answer Lesson Tests Management
+    Route::controller(AnswerLessonTestController::class)
+        ->prefix('answer-lesson-tests')
+        ->name('answer-lesson-tests.')
         ->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');

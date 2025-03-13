@@ -13,16 +13,20 @@ class AnswerLessonTest extends Model
         'questionLessonTestId',
         'answer',
         'isCorrect',
-        'order_number'
+        'answerType',
+        'orderNumber',
+        'caseSensitive',
+        'alternativeAnswers'
     ];
 
     protected $casts = [
         'isCorrect' => 'boolean',
-        'order_number' => 'integer'
+        'orderNumber' => 'integer',
+        'caseSensitive' => 'boolean'
     ];
 
     public function questionLessonTest()
     {
         return $this->belongsTo(QuestionLessonTest::class, 'questionLessonTestId');
     }
-} 
+}

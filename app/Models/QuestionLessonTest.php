@@ -11,7 +11,9 @@ class QuestionLessonTest extends Model
 
     protected $fillable = [
         'lessonTestId',
+        'type',
         'question',
+        'mediaUrl',
         'orderNumber'
     ];
 
@@ -28,4 +30,4 @@ class QuestionLessonTest extends Model
     {
         return $this->hasMany(AnswerLessonTest::class, 'questionLessonTestId');
     }
-} 
+}

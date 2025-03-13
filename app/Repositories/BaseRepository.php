@@ -231,4 +231,62 @@ abstract class BaseRepository implements BaseRepositoryInterface
             return false;
         }
     }
+
+    public function handleAudio($audio, string $path, ?string $oldAudio = null)
+    {
+        try {
+            // Delete old audio if exists
+            if ($oldAudio) {
+                $this->deleteAudio($oldAudio);
+            }
+
+            // Generate unique filename with timestamp
+            $filename = time() . '_' . $audio->getClientOriginalName();
+
+            // Make sure the path exists
+            $fullPath = public_path("uploads/{$path}");
+            if (!file_exists($fullPath)) {
+                mkdir($fullPath, 0755, true);
+            }
+
+            // Move the uploaded file to the destination
+            $audio->move($fullPath, $filename);
+
+            // Return relative path for database storage
+            return "uploads/{$path}/{$filename}";
+
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function deleteAudio(string $path)
+    {
+        try {
+            $fullPath = public_path($path);
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function updateAudio($newAudio, string $path, ?string $oldAudioPath = null)
+    {
+        try {
+            // Handle the new audio upload (this will also delete the old audio)
+            $newAudioPath = $this->handleAudio($newAudio, $path, $oldAudioPath);
+
+            if (!$newAudioPath) {
+                throw new \Exception('Failed to upload new audio');
+            }
+
+            return $newAudioPath;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 }

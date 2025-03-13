@@ -11,7 +11,9 @@ class CreateQuestionLessonTestsTable extends Migration
         Schema::create('question_lesson_tests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lessonTestId')->constrained('lesson_tests');
+            $table->enum('type', ['text', 'image', 'video', 'audio']);
             $table->string('question');
+            $table->string('mediaUrl')->nullable();
             $table->integer('orderNumber');
             $table->softDeletes();
             $table->timestamps();

@@ -13,7 +13,14 @@ class CreateAnswerLessonTestsTable extends Migration
             $table->foreignId('questionLessonTestId')->constrained('question_lesson_tests');
             $table->string('answer');
             $table->boolean('isCorrect');
-            $table->integer('order_number')->comment('Số thứ tự của câu trả lời');
+            $table->enum('answerType', [
+                'single_choice',
+                'fill_in_blank',
+                'multiple_choice'
+            ])->comment('Loại câu trả lời:single_choice-chọn đáp án, fill_in_blank-điền đáp án, multiple_choice-chọn nhiều đáp án');
+            $table->integer('orderNumber')->comment('Số thứ tự của câu trả lời');
+            $table->boolean('caseSensitive')->default(false)->comment('Có phân biệt chữ hoa/thường không');
+            $table->string('alternativeAnswers')->nullable()->comment('Các đáp án thay thế, phân cách bằng dấu |');
             $table->softDeletes();
             $table->timestamps();
         });

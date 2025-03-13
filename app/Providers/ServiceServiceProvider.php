@@ -19,6 +19,10 @@ use App\Services\Interfaces\VideoLessonServiceInterface;
 use App\Services\VideoLessonService;
 use App\Services\Interfaces\LessonTestServiceInterface;
 use App\Services\LessonTestService;
+use App\Services\Interfaces\QuestionLessonTestServiceInterface;
+use App\Services\QuestionLessonTestService;
+use App\Services\Interfaces\AnswerLessonTestServiceInterface;
+use App\Services\AnswerLessonTestService;
 
 class ServiceServiceProvider extends ServiceProvider
 {
@@ -32,5 +36,7 @@ class ServiceServiceProvider extends ServiceProvider
         $this->app->bind(LessonServiceInterface::class, LessonService::class);
         $this->app->bind(VideoLessonServiceInterface::class, VideoLessonService::class);
         $this->app->bind(LessonTestServiceInterface::class, LessonTestService::class);
+        $this->app->bind(QuestionLessonTestServiceInterface::class, QuestionLessonTestService::class);
+        $this->app->bind(AnswerLessonTestServiceInterface::class,AnswerLessonTestService::class);
     }
 }
