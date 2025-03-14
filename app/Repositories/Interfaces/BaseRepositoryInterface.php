@@ -21,4 +21,7 @@ interface BaseRepositoryInterface
     public function deleteVideo(string $path);
     public function handleMultipleVideos(array $videos, string $path);
     public function updateVideo($newVideo, string $path, ?string $oldVideoPath = null);
+    public function handleAudio($audio, string $path, ?string $oldAudio = null);
+    public function deleteAudio(string $path);
+    public function updateAudio($newAudio, string $path, ?string $oldAudioPath = null);
 }

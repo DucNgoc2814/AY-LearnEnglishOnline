@@ -9,10 +9,57 @@ class AnswerLessonTestSeeder extends Seeder
 {
     public function run()
     {
-        AnswerLessonTest::create(['questionLessonTestId' => 1, 'answer' => 'Paris', 'isCorrect' => true, 'order_number' => 1]);
-        AnswerLessonTest::create(['questionLessonTestId' => 1, 'answer' => 'London', 'isCorrect' => false, 'order_number' => 2]);
-        AnswerLessonTest::create(['questionLessonTestId' => 1, 'answer' => 'Berlin', 'isCorrect' => false, 'order_number' => 3]);
-        AnswerLessonTest::create(['questionLessonTestId' => 1, 'answer' => 'Madrid', 'isCorrect' => false, 'order_number' => 4]);
-        AnswerLessonTest::create(['questionLessonTestId' => 1, 'answer' => 'Rome', 'isCorrect' => false, 'order_number' => 5]);
+        // Câu hỏi trắc nghiệm một lựa chọn
+        AnswerLessonTest::create([
+            'questionLessonTestId' => 1,
+            'answer' => 'Paris',
+            'isCorrect' => true,
+            'answerType' => 'single_choice',
+            'orderNumber' => 1,
+            'caseSensitive' => false,
+            'alternativeAnswers' => null
+        ]);
+
+        AnswerLessonTest::create([
+            'questionLessonTestId' => 1,
+            'answer' => 'London',
+            'isCorrect' => false,
+            'answerType' => 'single_choice',
+            'orderNumber' => 2,
+            'caseSensitive' => false,
+            'alternativeAnswers' => null
+        ]);
+
+        // Câu hỏi điền vào chỗ trống
+        AnswerLessonTest::create([
+            'questionLessonTestId' => 2,
+            'answer' => 'Laravel',
+            'isCorrect' => true,
+            'answerType' => 'fill_in_blank',
+            'orderNumber' => 1,
+            'caseSensitive' => true,
+            'alternativeAnswers' => 'Laravel Framework|Laravel PHP'
+        ]);
+
+        // Câu hỏi nhiều lựa chọn
+        AnswerLessonTest::create([
+            'questionLessonTestId' => 3,
+            'answer' => 'PHP',
+            'isCorrect' => true,
+            'answerType' => 'multiple_choice',
+            'orderNumber' => 1,
+            'caseSensitive' => false,
+            'alternativeAnswers' => null
+        ]);
+
+        AnswerLessonTest::create([
+            'questionLessonTestId' => 3,
+            'answer' => 'MySQL',
+            'isCorrect' => true,
+            'answerType' => 'multiple_choice',
+            'orderNumber' => 2,
+            'caseSensitive' => false,
+            'alternativeAnswers' => null
+        ]);
     }
 }

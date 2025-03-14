@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AnswerLessonTestController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
@@ -59,6 +60,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{id}', 'destroy')->name('destroy');
             Route::post('/{id}/restore', 'restore')->name('restore');
         });
+
+    // Video Lessons Management
     Route::controller(VideoLessonController::class)
         ->prefix('video-lessons')
         ->name('video-lessons.')
@@ -71,6 +74,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{id}', 'destroy')->name('destroy');
             Route::post('/{id}/restore', 'restore')->name('restore');
         });
+
+    // Zoom Sessions Management
     Route::controller(ZoomSessionController::class)
         ->prefix('zoom-sessions')
         ->name('zoom-sessions.')
@@ -83,7 +88,43 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{id}', 'destroy')->name('destroy');
             Route::post('/{id}/restore', 'restore')->name('restore');
         });
-
+    // Lesson Tests Management
+    Route::controller(LessonTestController::class)
+        ->prefix('lesson-tests')
+        ->name('lesson-tests.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{id}', 'show')->name('show');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
+        });
+    // Question Lesson Tests Management
+    Route::controller(QuestionLessonTestController::class)
+        ->prefix('question-lesson-tests')
+        ->name('question-lesson-tests.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
+        });
+    // Answer Lesson Tests Management
+    Route::controller(AnswerLessonTestController::class)
+        ->prefix('answer-lesson-tests')
+        ->name('answer-lesson-tests.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
+        });
     // Categories Management
     Route::controller(CategoryController::class)
         ->prefix('categories')

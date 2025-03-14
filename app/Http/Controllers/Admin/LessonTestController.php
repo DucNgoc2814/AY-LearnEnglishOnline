@@ -3,131 +3,105 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Config\CrudBasic;
-use App\Models\LessonTest;
-use Illuminate\Http\Request;
+use App\Services\Interfaces\LessonTestServiceInterface;
+use App\Http\Requests\Admin\LessonTest\StoreRequest;
+use App\Http\Requests\Admin\LessonTest\UpdateRequest;
 
+/**
+ * @package App\Http\Controllers\Admin
+ * @author Your Name
+ * @description Controller quản lý bài kiểm tra
+ */
 class LessonTestController extends BaseController
 {
-    use CrudBasic;
+    protected $lessonTestService;
+    protected const VIEW_PATH = 'admin.components.lesson-tests.';
 
-    const MODEL = new LessonTest();
+    public function __construct(LessonTestServiceInterface $lessonTestService)
+    {
+        $this->lessonTestService = $lessonTestService;
+    }
 
+    /**
+     * Hiển thị danh sách bài kiểm tra
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
-        $items = $this->getList(self::MODEL::query());
-        return view('admin.lesson-tests.index', compact('items'));
-    }
+        try {
+            $list = $this->lessonTestService->getList();
+            $trashList = $this->lessonTestService->getTrashList();
 
-    public function store(Request $request)
-    {
-        $rules = [
-            'lessonId' => 'required|exists:lessons,id',
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:lesson_tests',
-            'description' => 'required|string',
-            'duration' => 'required|integer|min:0',
-            'minScore' => 'required|integer|min:0',
-            'maxScore' => 'required|integer|min:0',
-            'orderNumber' => 'required|integer|min:0',
-            'isRequired' => 'required|boolean',
-            'totalAttempt' => 'required|integer|min:0',
-            'maxAttempt' => 'required|integer|min:1'
-        ];
-
-        $messages = [
-            'lessonId.required' => 'Bài học không được để trống',
-            'lessonId.exists' => 'Bài học không tồn tại',
-            'name.required' => 'Tên bài kiểm tra không được để trống',
-            'slug.required' => 'Slug không được để trống',
-            'slug.unique' => 'Slug đã tồn tại',
-            'description.required' => 'Mô tả không được để trống',
-            'duration.required' => 'Thời gian làm bài không được để trống',
-            'duration.min' => 'Thời gian làm bài phải lớn hơn 0',
-            'minScore.required' => 'Điểm tối thiểu không được để trống',
-            'minScore.min' => 'Điểm tối thiểu phải lớn hơn 0',
-            'maxScore.required' => 'Điểm tối đa không được để trống',
-            'maxScore.min' => 'Điểm tối đa phải lớn hơn 0',
-            'orderNumber.required' => 'Thứ tự không được để trống',
-            'orderNumber.min' => 'Thứ tự phải lớn hơn 0',
-            'isRequired.required' => 'Trạng thái bắt buộc không được để trống',
-            'totalAttempt.required' => 'Số lần làm bài không được để trống',
-            'maxAttempt.required' => 'Số lần làm bài tối đa không được để trống',
-            'maxAttempt.min' => 'Số lần làm bài tối đa phải lớn hơn 0'
-        ];
-
-        $data = $request->validate($rules, $messages);
-        $result = $this->storeItem(self::MODEL, $data);
-
-        if ($result['status']) {
-            return redirect()->route('admin.lesson-tests.index')->with('success', $result['message']);
+            return view(self::VIEW_PATH . 'index', [
+                'lessonTests' => $list['data'],
+                'pagination' => $list['pagination'],
+                'trashList' => $trashList['data'],
+                'trashPagination' => $trashList['pagination'],
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra');
         }
-        return redirect()->back()->with('error', $result['message'])->withInput();
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Lưu bài kiểm tra mới
+     *
+     * @param StoreRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(StoreRequest $request)
     {
-        $item = self::MODEL::find($id);
-        if (!$item) {
-            return redirect()->back()->with('error', 'Không tìm thấy bài kiểm tra');
-        }
-
-        $rules = [
-            'lessonId' => 'required|exists:lessons,id',
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:lesson_tests,slug,'.$id,
-            'description' => 'required|string',
-            'duration' => 'required|integer|min:0',
-            'minScore' => 'required|integer|min:0',
-            'maxScore' => 'required|integer|min:0',
-            'orderNumber' => 'required|integer|min:0',
-            'isRequired' => 'required|boolean',
-            'totalAttempt' => 'required|integer|min:0',
-            'maxAttempt' => 'required|integer|min:1'
-        ];
-
-        $messages = [
-            'lessonId.required' => 'Bài học không được để trống',
-            'lessonId.exists' => 'Bài học không tồn tại',
-            'name.required' => 'Tên bài kiểm tra không được để trống',
-            'slug.required' => 'Slug không được để trống',
-            'slug.unique' => 'Slug đã tồn tại',
-            'description.required' => 'Mô tả không được để trống',
-            'duration.required' => 'Thời gian làm bài không được để trống',
-            'duration.min' => 'Thời gian làm bài phải lớn hơn 0',
-            'minScore.required' => 'Điểm tối thiểu không được để trống',
-            'minScore.min' => 'Điểm tối thiểu phải lớn hơn 0',
-            'maxScore.required' => 'Điểm tối đa không được để trống',
-            'maxScore.min' => 'Điểm tối đa phải lớn hơn 0',
-            'orderNumber.required' => 'Thứ tự không được để trống',
-            'orderNumber.min' => 'Thứ tự phải lớn hơn 0',
-            'isRequired.required' => 'Trạng thái bắt buộc không được để trống',
-            'totalAttempt.required' => 'Số lần làm bài không được để trống',
-            'maxAttempt.required' => 'Số lần làm bài tối đa không được để trống',
-            'maxAttempt.min' => 'Số lần làm bài tối đa phải lớn hơn 0'
-        ];
-
-        $data = $request->validate($rules, $messages);
-        $result = $this->updateItem($item, $data);
-
-        if ($result['status']) {
-            return redirect()->route('admin.lesson-tests.index')->with('success', $result['message']);
-        }
-        return redirect()->back()->with('error', $result['message'])->withInput();
+        $result = $this->lessonTestService->create($request->validated());
+        return $this->redirectResponse($result);
     }
 
-    public function destroy($id)
-    {
-        $result = $this->deleteItem(self::MODEL, $id);
-        return redirect()->back()->with($result['status'] ? 'success' : 'error', $result['message']);
-    }
-
+    /**
+     * Hiển thị chi tiết bài kiểm tra
+     *
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
     public function show($id)
     {
-        $result = $this->getDetail(self::MODEL::query(), $id);
-        if (!$result['status']) {
-            return redirect()->back()->with('error', $result['message']);
-        }
-        return view('admin.lesson-tests.show', ['item' => $result['data']]);
+        $result = $this->lessonTestService->findById($id);
+        return response()->json($result);
     }
-} 
+
+    /**
+     * Cập nhật bài kiểm tra
+     *
+     * @param UpdateRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(UpdateRequest $request, $id)
+    {
+        $result = $this->lessonTestService->update($id, $request->validated());
+        return $this->redirectResponse($result);
+    }
+
+    /**
+     * Xóa bài kiểm tra
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy($id)
+    {
+        $result = $this->lessonTestService->delete($id);
+        return $this->redirectResponse($result);
+    }
+
+    /**
+     * Khôi phục bài kiểm tra đã xóa
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function restore($id)
+    {
+        $result = $this->lessonTestService->restore($id);
+        return $this->redirectResponse($result);
+    }
+}
