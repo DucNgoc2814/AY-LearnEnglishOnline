@@ -34,8 +34,8 @@ class StoreRequest extends FormRequest
             'answers' => 'required|array|min:1',
             'answers.*.answer' => 'required|string',
             'answers.*.orderNumber' => 'required|integer|min:1',
-            'answers.*.isCorrect' => 'boolean',
-            'answers.*.caseSensitive' => 'boolean',
+            'answers.*.isCorrect' => 'required|boolean',
+            'answers.*.caseSensitive' => 'nullable|boolean',
             'answers.*.alternativeAnswers' => 'nullable|string',
         ];
     }

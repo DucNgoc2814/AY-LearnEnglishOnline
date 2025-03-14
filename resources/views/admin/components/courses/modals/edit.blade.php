@@ -90,6 +90,16 @@
                         @endif
                         <div id="currentThumbnail" class="mt-2"></div>
                     </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="isTop" name="isTop" value="1">
+                            <label class="form-check-label" for="isTop">Hiển thị trang chủ</label>
+                        </div>
+                        @if (session('errors') && session('errors')->has('isTop'))
+                            <div class="invalid-feedback">{{ session('errors')->first('isTop') }}</div>
+                        @endif
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>

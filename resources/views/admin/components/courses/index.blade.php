@@ -138,6 +138,9 @@
             // Populate description
             document.querySelector('#editCourseModal #description').value = item.description || '';
 
+            // Thêm xử lý cho isTop checkbox
+            document.querySelector('#editCourseModal #isTop').checked = item.isTop ? true : false;
+
             // Populate thumbnail image
             const currentThumbnailDiv = document.querySelector('#currentThumbnail');
             if (item.thumbnail) {

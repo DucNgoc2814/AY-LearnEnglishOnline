@@ -29,7 +29,8 @@ class UpdateRequest extends FormRequest
             'learningPath' => 'nullable|string',
             'lessons' => 'nullable|array',
             'paymentContent' => 'nullable|string',
-            'totalRating' => 'nullable|numeric|min:0|max:5'
+            'totalRating' => 'nullable|numeric|min:0|max:5',
+            'isTop' => 'boolean|nullable'
         ];
     }
 
@@ -49,7 +50,8 @@ class UpdateRequest extends FormRequest
             'thumbnail.max' => 'Kích thước ảnh tối đa là 2MB',
             'name.unique' => 'Tên khóa học đã tồn tại',
             'totalRating.min' => 'Đánh giá tối thiểu là 0',
-            'totalRating.max' => 'Đánh giá tối đa là 5'
+            'totalRating.max' => 'Đánh giá tối đa là 5',
+            'isTop.boolean' => 'Trường hiển thị trang chủ phải là boolean'
         ];
     }
 
@@ -65,7 +67,8 @@ class UpdateRequest extends FormRequest
             'learningPath' => 'Lộ trình học',
             'lessons' => 'Bài học',
             'paymentContent' => 'Nội dung thanh toán',
-            'totalRating' => 'Đánh giá trung bình'
+            'totalRating' => 'Đánh giá trung bình',
+            'isTop' => 'Hiển thị trang chủ'
         ];
     }
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)

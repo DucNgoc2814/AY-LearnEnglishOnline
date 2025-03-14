@@ -22,13 +22,15 @@ class Course extends Model
         'rating',
         'totalRating',
         'releaseTime',
+        'isTop',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'salePrice' => 'decimal:2',
         'releaseTime' => 'datetime',
-        'type' => 'integer'
+        'type' => 'integer',
+        'isTop' => 'boolean'
     ];
 
     public function category()
@@ -79,7 +81,7 @@ class Course extends Model
     public function totalRevenue()
     {
         return $this->orders()
-            ->where('orderStatusId', 3) 
+            ->where('orderStatusId', 3)
             ->sum('paymentAmount');
     }
     public function totalDuration()
