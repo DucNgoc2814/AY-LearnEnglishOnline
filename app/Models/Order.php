@@ -22,8 +22,8 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'amount' => 'decimal:2',
-        'discountAmount' => 'decimal:2',
+        'amount' => 'integer',
+        'discountAmount' => 'integer',
         'paymentDate' => 'datetime'
     ];
 

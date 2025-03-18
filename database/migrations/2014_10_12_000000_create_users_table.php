@@ -15,7 +15,6 @@ class CreateUsersTable extends Migration
             $table->string('phoneNumber')->nullable();
             $table->dateTime('birthDate')->nullable();
             $table->string('authGoogleId')->nullable();
-            $table->string('role');
             $table->string('roleToken')->nullable();
             $table->string('refreshToken')->nullable();
             $table->softDeletes();

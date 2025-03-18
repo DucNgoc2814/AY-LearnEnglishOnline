@@ -4,11 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVideoLessonsTable extends Migration
+class CreateLessonVideosTable extends Migration
 {
     public function up()
     {
-        Schema::create('video_lessons', function (Blueprint $table) {
+        Schema::create('lesson_videos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lessonId')->constrained('lessons');
             $table->string('name')->unique();
@@ -24,6 +24,6 @@ class CreateVideoLessonsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('video_lessons');
+        Schema::dropIfExists('lesson_videos');
     }
 }

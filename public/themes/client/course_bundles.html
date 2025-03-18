@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
-<!-- Mirrored from demo.creativeitem.com/academy/course_bundles by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 10 Mar 2025 11:35:19 GMT -->
+<!-- Mirrored from demo.creativeitem.com/AmazingYou/course_bundles by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 10 Mar 2025 11:35:19 GMT -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 <head>
 	<meta charset="utf-8">
@@ -10,11 +10,11 @@
 
 	    
     <!-- Meta Tags -->
-    <meta name="description" content="Course bundle page for academy Seo">
+    <meta name="description" content="Course bundle page for AmazingYou Seo">
     <meta name="keywords" content="">
     <meta name="robots" content="Meta robot">
     <meta name="author" content="Creativeitem">
-    <title>Course bundle page | Academy</title>
+    <title>Course bundle page | AmazingYou</title>
 
     <!-- Canonical URL -->
     <link rel="canonical" href="course_bundles.html">
@@ -78,7 +78,7 @@
               </li>
               <div class="vartical"></div>
               <li class="nav-item px-2">
-                <a href="mailto:academy@example.com"><i class="fas fa-envelope"></i> academy@example.com</a>
+                <a href="mailto:AmazingYou@example.com"><i class="fas fa-envelope"></i> AmazingYou@example.com</a>
               </li>
             </ul>
           </div>
@@ -92,7 +92,7 @@
 
               <li class="nav-item align-items-center d-flex ms-3">
                 <form action="#" method="POST" class="language-control select-box">
-                  <select onchange="actionTo(`https://demo.creativeitem.com/academy/home/switch_language/${$(this).val()}`)" class="select-control form-select nice-select">
+                  <select onchange="actionTo(`https://demo.creativeitem.com/AmazingYou/home/switch_language/${$(this).val()}`)" class="select-control form-select nice-select">
                                                                   <option value="arabic" >Arabic</option>
                                                                                         <option value="armenia" >Armenia</option>
                                                                                         <option value="bangla" >Bangla</option>
@@ -406,7 +406,7 @@
         </ul>
       
 
-              <form class="search-input-form" action="https://demo.creativeitem.com/academy/home/courses" method="get">
+              <form class="search-input-form" action="https://demo.creativeitem.com/AmazingYou/home/courses" method="get">
           <div class="dropdown">
             <button class="btn search-input-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fas fa-search search-menu-icon"></i>
@@ -545,7 +545,7 @@
     </div>
 
     <!-- Mobile Device Form -->
-    <form action="https://demo.creativeitem.com/academy/home/courses" method="get" class="inline-form">
+    <form action="https://demo.creativeitem.com/AmazingYou/home/courses" method="get" class="inline-form">
       <div class="mobile-search test">
         <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
         <input value="" name="query" class="form-control" type="text" placeholder="Search" />
@@ -844,8 +844,8 @@
 </div>
 <script>
   $(document).ready(function () {
-    if (localStorage.getItem("accept_cookie_academy")) {
-      //localStorage.removeItem("accept_cookie_academy");
+    if (localStorage.getItem("accept_cookie_AmazingYou")) {
+      //localStorage.removeItem("accept_cookie_AmazingYou");
     }else{
       $('#cookieConsentContainer').fadeIn(1000);
     }
@@ -853,7 +853,7 @@
 
   function cookieAccept() {
     if (typeof(Storage) !== "undefined") {
-      localStorage.setItem("accept_cookie_academy", true);
+      localStorage.setItem("accept_cookie_AmazingYou", true);
       localStorage.setItem("accept_cookie_time", "03/10/2025");
       $('#cookieConsentContainer').fadeOut(1200);
     }
@@ -911,7 +911,7 @@
         <p class="searchResult">
                             <span>Showing on this page : 6</span>
                     </p>
-        <form action="https://demo.creativeitem.com/academy/course_bundles/search/query" method="get">
+        <form action="https://demo.creativeitem.com/AmazingYou/course_bundles/search/query" method="get">
             <div class="s_search">
                 <input type="text" class="form-control" name="string" value="" placeholder="Search for bundle"/>
                 <span><img loading="lazy" src="assets/frontend/default-new/image/icon/s_search.svg" alt="" /></span>
@@ -1377,7 +1377,7 @@
 			$('#gif_loader_'+bundle_id).html("<div class='w-100 py-4 my-2 text-center'><img loading='lazy' class='w-20-px' src='assets/global/gif/page-loader-2.gif'></div>");
 			$.ajax({
 				type: 'post',
-				url: 'https://demo.creativeitem.com/academy/addons/course_bundles/load_more_courses_in_bundle/'+bundle_id+'/'+limit,
+				url: 'https://demo.creativeitem.com/AmazingYou/addons/course_bundles/load_more_courses_in_bundle/'+bundle_id+'/'+limit,
 				success: function (response){
 					$('#gif_loader_'+bundle_id).hide();
 					$('#course_of_bundle_'+bundle_id).html(response);
@@ -1400,7 +1400,7 @@
 	function getBundlesBySearchString(search_string) {
 	    $.ajax({
 	        type : 'POST',
-	        url : 'https://demo.creativeitem.com/academy/addons/course_bundles/my_bundles_by_search_string',
+	        url : 'https://demo.creativeitem.com/AmazingYou/addons/course_bundles/my_bundles_by_search_string',
 	        data : {search_string : search_string},
 	        success : function(response){
 	            $('#my_bundles_area').html(response);
@@ -1413,7 +1413,7 @@
 		var comment = $('#user_bundle_comment').val();
 	    $.ajax({
 	        type : 'POST',
-	        url : 'https://demo.creativeitem.com/academy/addons/course_bundles/update_bundle_rating/'+bundle_id,
+	        url : 'https://demo.creativeitem.com/AmazingYou/addons/course_bundles/update_bundle_rating/'+bundle_id,
 	        data : {rating : rating, comment : comment},
 	        success : function(response){
 	            if(response == 'success'){
@@ -1434,7 +1434,7 @@
 		var comment = $('#enter_comment'+bundle_id).val();
 		$.ajax({
 			type: "post",
-			url: "https://demo.creativeitem.com/academy/addons/course_bundles/update_bundle_rating/"+bundle_id,
+			url: "https://demo.creativeitem.com/AmazingYou/addons/course_bundles/update_bundle_rating/"+bundle_id,
 			data: {rating:rating, comment:comment},
 			success: function(respons){
 				window.location.reload();
@@ -1486,7 +1486,7 @@
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-12 col-12">
                     <h1>Subscribe to our newsletter</h1>
-                    <form class="ajaxForm resetable" action="https://demo.creativeitem.com/academy/home/subscribe_to_our_newsletter" method="post" id="newsletter-form">
+                    <form class="ajaxForm resetable" action="https://demo.creativeitem.com/AmazingYou/home/subscribe_to_our_newsletter" method="post" id="newsletter-form">
                         <input type="email" class="form-control" id="subscribe_email" placeholder="Enter your email address" name="email">
                                                 <button class="form-arrow" type="submit"><i class="fa-solid fa-arrow-right-long"></i></button>
                                             </form>
@@ -1882,5 +1882,5 @@ function async_modal() {
 </script>
 	</body>
 
-<!-- Mirrored from demo.creativeitem.com/academy/course_bundles by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 10 Mar 2025 11:35:26 GMT -->
+<!-- Mirrored from demo.creativeitem.com/AmazingYou/course_bundles by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 10 Mar 2025 11:35:26 GMT -->
 </html>
