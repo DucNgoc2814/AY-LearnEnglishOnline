@@ -1,6 +1,6 @@
 <section class="h-1-banner bannar-area pb-5">
     <div class="container">
-        {{-- <div class="row">
+        <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-12 order-2 order-lg-1">
                 <div class="h-1-banner-text EbannerLeft position-relative">
                     <h1 class="wow animate__animated  animate__fadeIn" data-wow-duration="1000"
@@ -55,7 +55,7 @@
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
         <div class="bannar-card  Ebaner-card wow  animate__animated animate__fadeInUp opacityOnUp"
             data-wow-duration="500" data-wow-delay="400">
             <div class="row">

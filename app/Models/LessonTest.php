@@ -17,7 +17,6 @@ class LessonTest extends Model
         'duration',
         'minScore',
         'maxScore',
-        'orderNumber',
         'isRequired',
         'totalAttempt',
         'maxAttempt'
@@ -27,7 +26,6 @@ class LessonTest extends Model
         'duration' => 'integer',
         'minScore' => 'integer',
         'maxScore' => 'integer',
-        'orderNumber' => 'integer',
         'isRequired' => 'boolean',
         'totalAttempt' => 'integer',
         'maxAttempt' => 'integer'
@@ -52,5 +50,4 @@ class LessonTest extends Model
     {
         return $this->hasOne(LessonResult::class, 'lessonTestId')->latest();
     }
- 
-} 
+}

@@ -38,8 +38,8 @@
                                     <div class="courses-price-border">
                                         <div class="courses-price">
                                             <div class="courses-price-left">
-                                                <h5 class="text-danger">{{ $course->salePrice }}</h5>
-                                                <p class="mt-1"><del>{{ $course->price }}</del></p>
+                                                <h5 class="text-danger">{{ number_format($course->salePrice, 0, ',', '.') }}</h5>
+                                                <p class="mt-1"><del>{{ number_format($course->price, 0, ',', '.') }}</del></p>
                                             </div>
                                             <div class="courses-price-right d-flex align-items-center">
                                                 <i class="fa-regular fa-clock text-primary"></i>

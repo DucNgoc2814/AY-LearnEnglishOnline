@@ -22,13 +22,15 @@ class Course extends Model
         'rating',
         'totalRating',
         'releaseTime',
+        'isTop',
     ];
 
     protected $casts = [
         'price' => 'integer',
         'salePrice' => 'integer',
         'releaseTime' => 'datetime',
-        'type' => 'integer'
+        'type' => 'integer',
+        'isTop' => 'boolean'
     ];
 
     public function category()

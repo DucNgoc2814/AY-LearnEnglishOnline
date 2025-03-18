@@ -63,12 +63,10 @@ class CourseController extends BaseController
             } else {
                 $currentLesson = $course->lessons()->where('slug', $lessonSlug)->firstOrFail();
             }
-            
             $data = [
                 'course' => $course,
                 'currentLesson' => $currentLesson,
             ];
-
             $segments = request()->segments();
             $testSlug = in_array('bai-kiem-tra', $segments) ? end($segments) : null;
             if ($testSlug && str_contains(request()->path(), 'bai-kiem-tra')) {
@@ -86,8 +84,7 @@ class CourseController extends BaseController
                     ->first();
                 $data['video1'] = $video;
             } else {
-                $video = $currentLesson->videoLessons()->first();
-                $data['video1'] = $video;
+                $data['video1'] = $currentLesson->videoLessons()->first();
             }
 
             return view('client.course.learning', $data);

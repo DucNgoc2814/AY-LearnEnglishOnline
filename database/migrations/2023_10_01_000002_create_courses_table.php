@@ -22,6 +22,7 @@ class CreateCoursesTable extends Migration
             $table->integer('rating')->default(0)->comment('Đánh giá trung bình');
             $table->integer('totalRating')->default(0)->comment('Tổng số đánh giá');
             $table->dateTime('releaseTime')->nullable()->comment('Thời gian phát hành');
+            $table->boolean('isTop')->default(false)->comment('Hiển thị trang chủ');
             $table->softDeletes();
             $table->timestamps();
         });

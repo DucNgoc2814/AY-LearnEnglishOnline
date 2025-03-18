@@ -6,20 +6,29 @@
     <div class="learning-container">
         <!-- Sidebar -->
         <div class="course-sidebar d-none d-lg-flex flex-column"> <!-- Ẩn trên mobile/tablet, hiện từ lg trở lên -->
-            <div class="sidebar-header">
-                <h4 class="course-title">{{ $course->name ?? 'Không tìm thấy tên khóa học' }}</h4>
-                <p class="course-stats">
-                    <i class="fas fa-book-open me-1"></i>
-                    <span>{{ $course->totalLessons() }} bài học</span>
-                </p>
+            <div class="sidebar-header d-flex justify-content-between">
+                <div class="">
+                    <h4 class="course-title">{{ $course->name ?? 'Không tìm thấy tên khóa học' }}</h4>
+                    <p class="course-stats">
+                        <i class="fas fa-book-open me-1"></i>
+                        <span>{{ $course->totalLessons() }} bài học</span>
+                    </p>
+                </div>
+                <div class="course-title">
+                    <a href="{{ route('home') }}">
+                        <i class="fas fa-home"></i>
+                        Trang chủ
+                    </a>
+                </div>
             </div>
 
             <div class="lesson-list">
                 @foreach ($course->lessons as $lesson)
                     <div class="lesson-item">
-                        <div class="lesson-header d-flex justify-content-between align-items-center {{ isset($currentLesson) && $currentLesson->id === $lesson->id ? 'active' : '' }}" data-bs-toggle="dropdown"
-                            data-bs-target="#lesson{{ $lesson->id }}" data-lesson-id="{{ $lesson->id }}"
-                            data-lesson-slug="{{ $lesson->slug }}" data-course-slug="{{ $course->slug }}"
+                        <div class="lesson-header d-flex justify-content-between align-items-center {{ isset($currentLesson) && $currentLesson->id === $lesson->id ? 'active' : '' }}"
+                            data-bs-toggle="dropdown" data-bs-target="#lesson{{ $lesson->id }}"
+                            data-lesson-id="{{ $lesson->id }}" data-lesson-slug="{{ $lesson->slug }}"
+                            data-course-slug="{{ $course->slug }}"
                             aria-expanded="{{ isset($currentLesson) && $currentLesson->id === $lesson->id ? 'true' : 'false' }}">
                             <div class="d-flex align-items-center flex-grow-1">
                                 <i class="fas fa-chevron-right lesson-icon me-2 text-dark"></i>
@@ -37,18 +46,14 @@
                             <div class="lesson-content">
                                 @if ($lesson->videoLessons && $lesson->videoLessons->count() > 0)
                                     @foreach ($lesson->videoLessons as $videoLesson)
-                                        <a href="{{ route('course.learning.video', [
-                                            'courseSlug' => $course->slug,
-                                            'lessonSlug' => $lesson->slug,
-                                            'videoSlug' => $videoLesson->slug,
-                                        ]) }}"
-                                            class="content-item {{ isset($currentVideo) && $currentVideo->id === $videoLesson->id ? 'active' : '' }}"
+                                        <a href="{{ route('course.learning.video', ['courseSlug' => $course->slug, 'lessonSlug' => $lesson->slug, 'videoSlug' => $videoLesson->slug]) }}"
+                                            class="content-item {{ (isset($currentVideo) && $currentVideo->id === $videoLesson->id) || (request()->route()->getName() === 'course.learning.video' && request()->route('videoSlug') === $videoLesson->slug) ? 'active' : '' }}"
                                             onclick="activateItem(this)">
                                             <div class="d-flex align-items-center video-info">
                                                 <i
-                                                    class="fa-regular fa-circle-play me-2 {{ isset($completedVideos) && in_array($video->id, $completedVideos) ? 'text-success' : '' }}"></i>
-                                                <div class="video-title-wrapper">
-                                                    {{ $videoLesson->name ?? 'Không tìm thấy tên video' }}</div>
+                                                    class="fa-regular fa-circle-play me-2 {{ isset($completedVideos) && in_array($videoLesson->id, $completedVideos) ? 'text-success' : '' }}"></i>
+                                                <span class="video-title">
+                                                    {{ $videoLesson->name ?? 'Không tìm thấy tên video' }}</span>
                                             </div>
                                             <span class="video-duration">{{ $videoLesson->totalDuration() }}</span>
                                         </a>
@@ -88,9 +93,7 @@
 
         <!-- Main Content -->
         <div class="main-content flex-grow-1">
-            <div class="content-header">
-                <h4 class="video-title">{{ $currentLesson->name ?? 'Không tìm thấy tên bài học' }}</h4>
-            </div>
+
 
             <!-- Nội dung chính -->
             <div class="content-wrapper h-100">
@@ -113,6 +116,11 @@
             display: flex;
             height: 100vh;
             background: #fff;
+        }
+
+        .content-header {
+            padding: 20px;
+            background: #1769c7;
         }
 
         /* Sidebar Styles */
@@ -211,23 +219,15 @@
             background: #f1f1f1;
         }
 
-        .video-info {
-            flex: 1;
-            min-width: 0;
-        }
+        /* .video-info {
+                        flex: 1;
+                        min-width: 0;
+                    }
 
-        .video-info:hover {
-            color: var(--color-4);
+                    .video-info:hover {
+                        color: var(--color-4);
 
-        }
-
-        .video-title-wrapper {
-            font-size: 0.75rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-        }
+                    } */
 
         .test-title {
             font-size: 0.75rem;
@@ -251,18 +251,12 @@
             background: #000;
         }
 
-        .content-header {
-            padding-top: 10px;
-            padding: 15px;
-            background: #fff;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
         .video-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 6px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            /* overflow: hidden; */
+            /* text-overflow: ellipsis; */
+            max-width: 180px;
         }
 
         .video-description {
@@ -356,7 +350,6 @@
         /* Active state improvements */
         .content-item.active {
             background: #e3f2fd;
-            color: #0d6efd;
             border-left: 3px solid #0d6efd;
             font-weight: 500;
         }
