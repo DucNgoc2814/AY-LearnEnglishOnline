@@ -1,7 +1,7 @@
 @extends('admin.layouts.master')
 @section('title', 'Dashboard')
 @section('content')
-    <div class="main_content_iner overly_inner ">
+    {{-- <div class="main_content_iner overly_inner ">
         <div class="container-fluid p-0 ">
             <!-- page title  -->
             <div class="row">
@@ -925,5 +925,214 @@
                 </div>
             </div>
         </div>
+    </div> --}}
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid px-2">
+            <div class="d-flex align-items-center">
+                <div class="dropdown">
+                    <a class="navbar-brand px-2" href="#" data-bs-toggle="dropdown">
+                        <img loading="lazy"
+                             src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Crect width='24' height='24' fill='%23002a5c'/%3E%3C/svg%3E"
+                             alt="Logo"
+                             width="24"
+                             height="24">
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-plus"></i> Tạo bảng điều khiển</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="far fa-clock"></i> Lượng hoạt động</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Quản lý bảng điều khiển</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-users"></i>KH mục tiêu</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-user-plus"></i>HV Tiềm năng</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-user-graduate"></i>Học viên</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-shopping-cart"></i>Đơn hàng</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-chalkboard"></i>Lớp học</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-calendar"></i>Lịch hẹn</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-tasks"></i>Công việc</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-phone"></i>Cuộc gọi</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-calendar-alt"></i>Thời khóa biểu</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#"><i class="fas fa-chart-bar"></i>Báo cáo</a>
+                    </li>
+                </ul>
+
+
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="#"><i class="fas fa-bell"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="#"><i class="fas fa-user-circle"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Tiêu đề trang -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="page-title">
+                KH mục tiêu <span class="text-muted">(15)</span>
+            </h1>
+            <div class="d-flex gap-2">
+                <button class="btn btn-create">
+                    <i class="fas fa-plus"></i> Tạo KH mục tiêu
+                </button>
+                <button class="btn btn-outline-primary btn-import">
+                    <i class="fas fa-file-import"></i> Nhập KH mục tiêu (file excel)
+                </button>
+            </div>
+        </div>
     </div>
+
+    <!-- Bộ lọc -->
+    <div class="filter-section">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <div class="dropdown">
+                    <button class="btn btn-icon dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Bộ lọc
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Tạo mới</a></li>
+                    </ul>
+                </div>
+                <div class="position-relative" style="width: 500px;">
+                    <input type="text" class="form-control filter-input w-100"
+                           placeholder="Tìm kiếm với: tên đầy đủ, email, điện thoại di động, số điện thoại phụ huynh, số điện thoại khác, tên không đầy đủ...">
+                    <button class="btn-close-search position-absolute" style="right: 10px; top: 50%; transform: translateY(-50%);">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-icon" title="Làm mới">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="btn btn-icon" title="Tùy chọn hiển thị">
+                    <i class="fas fa-th-large"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bảng danh sách -->
+    <div class="container-fluid">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th></th>
+                        <th>Họ và tên</th>
+                        <th>Điện thoại di động <i class="fas fa-sort"></i></th>
+                        <th>Hoạt động</th>
+                        <th>Email</th>
+                        <th>Ngày sinh <i class="fas fa-sort"></i></th>
+                        <th>Trạng thái <i class="fas fa-sort"></i></th>
+                        <th>Nguồn KH <i class="fas fa-sort"></i></th>
+                        <th>Kênh <i class="fas fa-sort"></i></th>
+                        <th>Mô tả nguồn</th>
+                        <th>Chiến dịch</th>
+                        <th>MKT Agent</th>
+                        <th>Người phụ trách</th>
+                        <th>Chi nhánh</th>
+                        <th>Level</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox"></td>
+                        <td><i class="far fa-heart"></i></td>
+                        <td><a href="#" class="text-primary">Vũ Anh Tuấn</a></td>
+                        <td><i class="fas fa-comment text-primary"></i> <i class="fas fa-phone text-primary"></i> 0981586907</td>
+                        <td></td>
+                        <td>vutuan511@gmail.com</td>
+                        <td>06/08/2024</td>
+                        <td><span class="status-new">Mới</span></td>
+                        <td>Digital Marketing</td>
+                        <td>Direct</td>
+                        <td></td>
+                        <td>Chiến dịch...</td>
+                        <td>GMA VIETNAM</td>
+                        <td>Level 2</td>
+                        <td>1</td>
+                        <td><i class="fas fa-search"></i></td>
+                    </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer fixed-bottom d-flex justify-content-between">
+        <div>
+            <span>https://trialems.dotb.cloud/#Prospects/create</span>
+        </div>
+        <div>
+            <span>Ngôn ngữ: <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12' viewBox='0 0 16 12'%3E%3Crect width='16' height='12' fill='%23da251d'/%3E%3Cpath d='M8 2.5l2.4 7.4-6.3-4.6h7.8l-6.3 4.6z' fill='%23ffff00'/%3E%3C/svg%3E"
+                 alt="Tiếng Việt"
+                 width="16"
+                 height="12"> Tiếng Việt</span>
+            <span class="ms-3"><i class="fas fa-question-circle"></i> Trợ giúp</span>
+            <span class="ms-3"><i class="fas fa-cog"></i> Hỗ trợ</span>
+        </div>
+    </div>
+
+    <script async src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('.search-input');
+        const searchOverlay = document.querySelector('.search-overlay');
+        const closeSearch = document.querySelector('.close-search');
+
+        if (searchInput && searchOverlay && closeSearch) {  // Thêm kiểm tra null
+            // Mở overlay khi click vào ô tìm kiếm
+            searchInput.addEventListener('click', function(e) {
+                e.preventDefault();
+                searchOverlay.classList.add('active');
+                searchOverlay.querySelector('input')?.focus();
+            });
+
+            // Đóng overlay khi click nút close
+            closeSearch.addEventListener('click', function() {
+                searchOverlay.classList.remove('active');
+            });
+
+            // Đóng overlay khi ấn ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && searchOverlay.classList.contains('active')) {
+                    searchOverlay.classList.remove('active');
+                }
+            });
+        }
+    });
+    </script>
 @endsection

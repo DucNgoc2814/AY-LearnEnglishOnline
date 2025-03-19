@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class VideoLesson extends Model
+class LessonVideo extends Model
 {
     use SoftDeletes;
 
@@ -28,15 +28,12 @@ class VideoLesson extends Model
     {
         return $this->belongsTo(Lesson::class, 'lessonId');
     }
-
-    public function getFormattedDurationAttribute()
+    public function totalDuration()
     {
-        if (!$this->duration) {
-            return 'N/A';
-        }
-
-        $minutes = floor($this->duration / 60);
+        $hours = floor($this->duration / 3600);
+        $minutes = floor(($this->duration % 3600) / 60);
         $seconds = $this->duration % 60;
-        return "{$minutes} phút {$seconds} giây";
+
+        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
     }
 }

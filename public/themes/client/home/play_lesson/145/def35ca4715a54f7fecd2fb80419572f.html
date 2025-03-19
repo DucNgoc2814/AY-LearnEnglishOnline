@@ -203,7 +203,7 @@
                 var next_lesson_id = '137';
 
                 if (next_lesson_id) {
-                    const url = 'https://demo.creativeitem.com/academy/home/lesson/' + '/' + 'wordpress-theme-development-with-bootstrap' + '/' + course_id + '/' + next_lesson_id;
+                    const url = 'https://demo.creativeitem.com/AmazingYou/home/lesson/' + '/' + 'wordpress-theme-development-with-bootstrap' + '/' + course_id + '/' + next_lesson_id;
                     window.location.href = url; // Redirect to the next lesson
                 }
             }
@@ -246,7 +246,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: 'https://demo.creativeitem.com/academy/home/update_watch_history_with_duration',
+                    url: 'https://demo.creativeitem.com/AmazingYou/home/update_watch_history_with_duration',
                     data: {
                         lesson_id: lesson_id,
                         course_id: course_id,
@@ -299,7 +299,7 @@
                 if (!watermark || !document.body.contains(watermark)) {
                     if (isImage) {
                         watermark = document.createElement('img');
-                        watermark.src = 'https://demo.creativeitem.com/academy/uploads/system/' + watermarkValue;
+                        watermark.src = 'https://demo.creativeitem.com/AmazingYou/uploads/system/' + watermarkValue;
                     } else {
                         watermark = document.createElement('div');
                         watermark.innerText = watermarkValue;

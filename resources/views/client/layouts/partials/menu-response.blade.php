@@ -1,8 +1,9 @@
-<section class="menubar">
+<section class="menubar ">
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
-            <a class="navbar-brand logo pt-0" href="index.html">
-                <img loading="lazy" src="{{ asset('themes/client/uploads/system/e0d3336caa3bf40ceae5b4efeeedf541.png') }}" alt="Logo" />
+            <a class="navbar-brand logo pt-0" href="{{ route('home') }}">
+                <img loading="lazy" src="{{ asset('themes/client/uploads/system/e0d3336caa3bf40ceae5b4efeeedf541.png') }}"
+                    alt="Logo" />
             </a>
 
             <!-- Mobile Offcanves  Icon Show -->
@@ -22,158 +23,56 @@
 
             <div class="navbar-collapse" id="navbarSupportedContent">
                 <!-- Small Device Hide -->
-                <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link header-dropdown px-3 text-nowrap" href="#" id="navbarDropdown1">
-                            <img loading="lazy" src="assets/frontend/default-new/image/menu.png" alt="Menu" />
-                            <span class="ms-2">Courses</span>
-                        </a>
-                        <ul class="navbarHover">
-                            <li class="dropdown-submenu">
-                                <a href="home/courses6def.html?category=web-design">
-                                    <span class="icons"><i class="fas fa-desktop"></i></span>
-                                    <span class="text-cat">Web Design</span>
-                                    <span class="has-sub-category ms-auto"><i
-                                            class="fa-solid fa-angle-right"></i></span>
-                                </a>
-                                <ul class="sub-category-menu">
-                                    <li><a href="home/courses91d5.html?category=responsive-design">Responsive
-                                            Design</a></li>
-                                    <li><a href="home/courses885f.html?category=wordpress-theme">WordPress
-                                            Theme</a></li>
-                                    <li><a href="home/courses0c91.html?category=bootstrap">Bootstrap</a></li>
-                                    <li><a href="home/coursesb5f1.html?category=html-amp-css">HTML &amp; CSS</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a href="home/coursesc398.html?category=graphic-design">
-                                    <span class="icons"><i class="fas fa-pencil-alt"></i></span>
-                                    <span class="text-cat">Graphic Design</span>
-                                    <span class="has-sub-category ms-auto"><i
-                                            class="fa-solid fa-angle-right"></i></span>
-                                </a>
-                                <ul class="sub-category-menu">
-                                    <li><a href="home/courses4696.html?category=photoshop">Photoshop</a></li>
-                                    <li><a href="home/coursesd1b3.html?category=adobe-illustrator">Adobe
-                                            Illustrator</a></li>
-                                    <li><a href="home/coursesf6aa.html?category=drawing">Drawing</a></li>
-                                    <li><a href="home/courses6e7b.html?category=logo-design">Logo Design</a>
-                                    </li>
-                                    <li><a href="home/courses2e21.html?category=digital-art">Digital Art</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a href="home/courses660b.html?category=user-experience">
-                                    <span class="icons"><i class="fas fa-male"></i></span>
-                                    <span class="text-cat">User Experience</span>
-                                    <span class="has-sub-category ms-auto"><i
-                                            class="fa-solid fa-angle-right"></i></span>
-                                </a>
-                                <ul class="sub-category-menu">
-                                    <li><a href="home/courses5b8a.html?category=user-experience-design">User
-                                            Experience Design</a></li>
-                                    <li><a href="home/courses1c01.html?category=mobile-app-design">Mobile App
-                                            Design</a></li>
-                                    <li><a href="home/courses6896.html?category=user-interface">User
-                                            Interface</a></li>
-                                    <li><a href="home/coursesd12a.html?category=design-thinking">Design
-                                            Thinking</a></li>
-                                    <li><a href="home/courses2c28.html?category=figma">Figma</a></li>
-                                    <li><a href="home/coursesaa5c.html?category=prototyping">Prototyping</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a href="home/coursesef24.html?category=interior-design">
-                                    <span class="icons"><i class="fas fa-magic"></i></span>
-                                    <span class="text-cat">Interior Design</span>
-                                    <span class="has-sub-category ms-auto"><i
-                                            class="fa-solid fa-angle-right"></i></span>
-                                </a>
-                                <ul class="sub-category-menu">
-                                    <li><a href="home/courses6921.html?category=color-theory">Color Theory</a>
-                                    </li>
-                                    <li><a href="home/courses340a.html?category=lighting-design">Lighting
-                                            Design</a></li>
-                                    <li><a href="home/courses8f26.html?category=sketchup">SketchUp</a></li>
-                                    <li><a href="home/courses55aa.html?category=home-improvement">Home
-                                            Improvement</a></li>
-                                    <li><a href="home/coursesb29e.html?category=3d-lighting">3D Lighting</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a href="home/coursesf8af.html?category=3d-and-animation">
-                                    <span class="icons"><i class="fas fa-cube"></i></span>
-                                    <span class="text-cat">3D and Animation</span>
-                                    <span class="has-sub-category ms-auto"><i
-                                            class="fa-solid fa-angle-right"></i></span>
-                                </a>
-                                <ul class="sub-category-menu">
-                                    <li><a href="home/courses43c0.html?category=blender">Blender</a></li>
-                                    <li><a href="home/courses01b3.html?category=motion-graphics">Motion
-                                            Graphics</a></li>
-                                    <li><a href="home/coursesb587.html?category=after-effects">After Effects</a>
-                                    </li>
-                                    <li><a href="home/coursesd853.html?category=maya">Maya</a></li>
-                                    <li><a href="home/coursesaa8a.html?category=zbrush">zBrush</a></li>
-                                    <li><a href="home/coursesf09c.html?category=character-modeling">Character
-                                            Modeling</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a href="home/courses2dc4.html?category=fashion">
-                                    <span class="icons"><i class="fas fa-user-secret"></i></span>
-                                    <span class="text-cat">Fashion</span>
-                                    <span class="has-sub-category ms-auto"><i
-                                            class="fa-solid fa-angle-right"></i></span>
-                                </a>
-                                <ul class="sub-category-menu">
-                                    <li><a href="home/courses80b0.html?category=fashion-design">Fashion
-                                            Design</a></li>
-                                    <li><a href="home/courses21fb.html?category=sewing">Sewing</a></li>
-                                    <li><a href="home/coursesd657.html?category=t-shirt-design">T-shirt
-                                            Design</a></li>
-                                    <li><a href="home/courses2cea.html?category=jewelry-design">Jewelry
-                                            Design</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a href="home/courses92bc.html?category=frontend-development">
-                                    <span class="icons"><i class="fab fa-500px"></i></span>
-                                    <span class="text-cat">Frontend Development</span>
-                                    <span class="has-sub-category ms-auto"><i
-                                            class="fa-solid fa-angle-right"></i></span>
-                                </a>
-                                <ul class="sub-category-menu">
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="home/courses.html">
-                                    <i class="fas fa-list-ul px-2"></i>
-                                    All courses
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-
                 <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 ms-2">
                     <li class="nav-item">
                         <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap"
-                            href="course_bundles.html" id="navbarDropdown3">
-                            <span class="ms-2">Course bundle</span>
+                            href="{{ route('home') }}" id="navbarDropdown3">
+                            <span class="ms-2">Trang chủ</span>
                         </a>
                     </li>
                 </ul>
-
+                <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 align-items-center ms-1">
+                    <li class="nav-item">
+                        <a class="nav-link header-dropdown ps-2 text-nowrap bg-white text-dark" href="#"
+                            id="navbarDropdown1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-grid">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                            <span class="ms-2 fw-600 text-nowrap fs-13" style="color: #000;">Danh mục</span>
+                        </a>
+                        <ul class="navbarHover">
+                            @foreach ($categories as $category)
+                                <li class="dropdown-submenu">
+                                    <a href="{{ route('category.index', $category->slug) }}">
+                                        <span class="icons"><i class="fas fa-desktop"></i></span>
+                                        <span class="text-cat">{{ $category->name }}</span>
+                                        <span class="has-sub-category ms-auto"><i
+                                                class="fa-solid fa-angle-right"></i></span>
+                                    </a>
+                                    @if ($category->courses->count() > 0)
+                                        <ul class="sub-category-menu">
+                                            @foreach ($category->courses as $course)
+                                                <li><a
+                                                        href="{{ route('detailCourse', $course->slug) }}">{{ $course->name }}</a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    </li>
+                </ul>
                 <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 ms-2">
                     <li class="nav-item">
                         <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap"
                             href="addons/bootcamp/bootcamp_list.html" id="navbarDropdown4">
-                            <span class="ms-2">Bootcamps</span>
+                            <span class="ms-2">Tin tức</span>
                         </a>
                     </li>
                 </ul>
@@ -182,278 +81,134 @@
                     <li class="nav-item">
                         <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap"
                             href="addons/team_training/packages.html" id="navbarDropdown4">
-                            <span class="ms-2">Team training</span>
+                            <span class="ms-2">Giới thiệu</span>
                         </a>
                     </li>
                 </ul>
 
                 <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 ms-2">
                     <li class="nav-item">
-                        <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap" href="#"
-                            id="navbarDropdown1">
-                            <span class="ms-2">Ebook</span>
-                            <i class="fas fa-angle-down ms-1"></i>
-                        </a>
-                        <ul class="navbarHover">
-                            <li class="dropdown-submenu">
-                                <a href="ebook209b.html?category=kids&amp;price=all&amp;rating=all">
-                                    <span class="text-cat">Kids</span>
-                                </a>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a
-                                    href="ebook2dbf.html?category=science-fiction-amp-fantasy&amp;price=all&amp;rating=all">
-                                    <span class="text-cat">Science Fiction &amp; Fantasy</span>
-                                </a>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a href="ebooke323.html?category=politics&amp;price=all&amp;rating=all">
-                                    <span class="text-cat">Politics</span>
-                                </a>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a
-                                    href="ebook9776.html?category=cooking-amp-foods&amp;price=all&amp;rating=all">
-                                    <span class="text-cat">Cooking &amp; Foods</span>
-                                </a>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a href="ebook2b87.html?category=motivation&amp;price=all&amp;rating=all">
-                                    <span class="text-cat">Motivation</span>
-                                </a>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a
-                                    href="ebookdf72.html?category=freelancing-amp-outsourcing&amp;price=all&amp;rating=all">
-                                    <span class="text-cat">Freelancing &amp; Outsourcing</span>
-                                </a>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a
-                                    href="ebookb3b4.html?category=programming-language&amp;price=all&amp;rating=all">
-                                    <span class="text-cat">Programming Language</span>
-                                </a>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a href="ebook78f6.html?category=education&amp;price=all&amp;rating=all">
-                                    <span class="text-cat">Education</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 ms-2">
-                    <li class="nav-item">
-                        <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap"
-                            href="tutors.html" id="navbarDropdown2">
-                            Find a tutor
+                        <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap" href="tutors.html"
+                            id="navbarDropdown2">
+                            Liên hệ
                         </a>
                     </li>
                 </ul>
 
-                <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 ms-2">
-                    <li class="nav-item">
-                        <a class="nav-link header-dropdown  bg-white text-dark fw-600 d-flex" href="#"
-                            id="navbarDropdown">
-                            <span class="ms-2">More</span>
-                            <i class="fas fa-angle-down ms-1"></i>
-                        </a>
-                        <ul class="navbarHover">
-                            <li>
-                                <a href="page/home-1.html">
-                                    Preview Home Page-1
-                                </a>
-                            </li>
-                            <li>
-                                <a href="page/home-2.html">
-                                    Preview Home Page-2
-                                </a>
-                            </li>
-                            <li>
-                                <a href="page/home-3.html">
-                                    Preview Home Page-3
-                                </a>
-                            </li>
-                            <li>
-                                <a href="page/home-4.html">
-                                    Preview Home Page-4
-                                </a>
-                            </li>
-                            <li>
-                                <a href="page/home-5.html">
-                                    Preview Home Page-5
-                                </a>
-                            </li>
-                            <li>
-                                <a href="page/home-6.html">
-                                    Preview Home Page-6
-                                </a>
-                            </li>
-                            <li>
-                                <a href="page/home-7.html">
-                                    Preview Home Page-7
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-
-
-                <form class="search-input-form" action="https://demo.creativeitem.com/academy/home/courses"
-                    method="get">
-                    <div class="dropdown">
-                        <button class="btn search-input-button dropdown-toggle" type="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-search search-menu-icon"></i>
-                            <i class="fas fa-times text-18px close-menu-icon"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end p-0 border-0">
-                            <li>
-                                <div class="header-search mt-2 w-100 flex-column"
-                                    style="box-shadow: 0px 2px 8px -1px #bbb;">
-                                    <!-- <p class="text-muted text-14px text-start w-100 mb-2">Discover which courses are the best for you</p> -->
-                                    <div class="search-container w-100">
-                                        <input id="headerSearchBarLg" name="query" type="text"
-                                            class="search-input-floating " placeholder="Search" value="">
-                                        <button type="submit"
-                                            class="header-search-icon border-0 text-dark text-16px d-hidden"><i
-                                                class="fas fa-search"></i></button>
-                                        <label for="headerSearchBarLg"
-                                            class="header-search-icon text-dark text-16px "><i
-                                                class="fas fa-search"></i></label>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </form>
-
-                <div class="right-menubar ms-auto">
-
-
-
-                    <!-- Cart List Area -->
-                    <div class="wisth_tgl_div">
-                        <div class="wisth_tgl_2div">
-                            <a class="menu_pro_cart_tgl mt-1"><i class="fa-solid fa-cart-shopping"></i>
-
-                                <p class="menu_number" id="cartItemsCounter">0</p>
-                            </a>
-                            <div class="menu_pro_wish">
-                                <div class="overflow-control" id="cartItems">
-
-
-                                    <div class="path_pos_wish-2">
-                                        <div class="path_pos_wish">
-                                            <div
-                                                class="menu_pro_wish-f-b text-center text-muted pb-4 pt-5 px-4">
-                                                You have no items in your cart! </div>
+                <div class="right-menubar ms-auto d-flex justify-content-end align-items-center">
+                    <form class="search-input-form" action="https://demo.creativeitem.com/AY/home/courses"
+                        method="get">
+                        <div class="search-container position-relative">
+                            <input type="text" name="query" class="form-control search-input"
+                                placeholder="Tìm kiếm khóa học..."
+                                style="width: 300px; display: block; border: 1px solid #ddd; border-radius: 4px; padding: 8px 35px 8px 12px;">
+                            <button type="submit" class="btn search-btn position-absolute"
+                                style="right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                    <div class="navbar-nav main-nav-wrap mb-2 mb-lg-0 ms-2">
+                        @if (Auth::check())
+                            <div class="menu_pro_tgl_div ms-2">
+                                <div class="menu_pro_tgl_2div">
+                                    <a class="menu_pro_tgl profile-dropdown my-auto" href="#">
+                                        @if (Auth::user()->avatar)
+                                            <img loading="lazy" src="{{ Auth::user()->avatar }}" alt="User Image"
+                                                style="margin: auto;">
+                                        @else
+                                            <i class="fa-solid fa-user-circle fa-3x"></i>
+                                        @endif
+                                    </a>
+                                    <div class="menu_pro_tgl_bg">
+                                        <div class="">
+                                            <div class="text-center p-3">
+                                                @if (Auth::user()->avatar)
+                                                    <img loading="lazy" class="profile-image rounded-circle mb-3"
+                                                        src="{{ asset(Auth::user()->avatar) }}" alt="Profile">
+                                                @else
+                                                    <i class="fa-solid fa-user-circle fa-7x mb-3"></i>
+                                                @endif
+                                                <h4 class="mb-1">{{ Auth::user()->name }}</h4>
+                                                <span class="text-muted">{{ Auth::user()->email }}</span>
+                                            </div>
+                                            <ul class="user-dropdown-menu">
+                                                <li class="user-dropdown-menu-item">
+                                                    <a href="{{ route('profile.index') }}"
+                                                        class="d-flex align-items-center">
+                                                        <i class="fas fa-user me-2"></i>
+                                                        <span class="text-cat">Thông tin cá nhân</span>
+                                                    </a>
+                                                </li>
+                                                <li class="user-dropdown-menu-item">
+                                                    <a href="{{ route('profile.index') }}#my-courses"
+                                                        class="d-flex align-items-center">
+                                                        <i class="fas fa-graduation-cap me-2"></i>
+                                                        <span class="text-cat">Khóa học của tôi</span>
+                                                    </a>
+                                                </li>
+                                                <li class="user-dropdown-menu-item">
+                                                    <form action="{{ route('logout') }}" method="POST"
+                                                        class="d-inline">
+                                                        @csrf
+                                                        <a href="javascript:void(0)"
+                                                            onclick="this.closest('form').submit()"
+                                                            class="d-flex align-items-center">
+                                                            <i class="fas fa-sign-out-alt me-2"></i>
+                                                            <span class="text-cat">Đăng xuất</span>
+                                                        </a>
+                                                    </form>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
-
-                                    <script type="text/javascript">
-                                        $(function () {
-
-                                            if ($('[data-bs-toggle="tooltip"]').length > 0) {
-                                                $('[data-bs-toggle="tooltip"]').tooltip();
-                                            }
-
-                                            if ($('.tagify').length > 0) {
-                                                $('.tagify:not(.initialized)').tagify();
-                                                $('.tagify:not(.initialized)').addClass('initialized');
-                                            }
-
-                                            $('a[href="#"]').on('click', function (event) {
-                                                event.preventDefault();
-                                            });
-
-                                            if ($('.text_editor:not(.initialized)').length) {
-                                                $('.text_editor:not(.initialized)').summernote({
-                                                    height: 180,                 // set editor height
-                                                    minHeight: null,             // set minimum height of editor
-                                                    maxHeight: null,             // set maximum height of editor
-                                                    focus: true                  // set focus to editable area after initializing summernote
-                                                });
-                                                $('.text_editor:not(.initialized)').addClass('initialized');
-                                            }
-
-
-                                            //When need to add a wishlist button inside a anchor tag
-                                            $('.checkPropagation').on('click', function (event) {
-                                                var action = $(this).attr('action');
-                                                var onclickFunction = $(this).attr('onclick');
-                                                var onChange = $(this).attr('onchange');
-                                                var tag = $(this).prop("tagName").toLowerCase();
-                                                console.log(tag);
-                                                if (tag != 'a' && action) {
-                                                    $(location).attr('href', $(this).attr('action'));
-                                                    return false;
-                                                } else if (onclickFunction) {
-                                                    if (onclickFunction) {
-                                                        onclickFunction;
-                                                    }
-                                                    return false;
-                                                } else if (tag == 'a') {
-                                                    return true;
-                                                }
-                                            });
-
-                                            //Ajax for submission start
-                                            var formElement;
-                                            if ($('.ajaxForm:not(.initialized)').length > 0) {
-                                                $('.ajaxForm:not(.initialized)').ajaxForm({
-                                                    beforeSend: function (data, form) {
-                                                        var formElement = $(form);
-                                                    },
-                                                    uploadProgress: function (event, position, total, percentComplete) {
-                                                    },
-                                                    complete: function (xhr) {
-
-                                                        setTimeout(function () {
-                                                            distributeServerResponse(xhr.responseText);
-                                                        }, 400);
-
-                                                        if ($('.ajaxForm.resetable').length > 0) {
-                                                            $('.ajaxForm.resetable')[0].reset();
-                                                        }
-                                                    },
-                                                    error: function (e) {
-                                                        console.log(e);
-                                                    }
-                                                });
-                                                $('.ajaxForm:not(.initialized)').addClass('initialized');
-                                            }
-                                        });
-
-                                    </script>
-                                </div>
-                                <div class="menu_pro_btn">
-                                    <a href="home/shopping_cart.html" type="submit"
-                                        class="btn btn-primary text-white">Checkout</a>
                                 </div>
                             </div>
-                        </div>
+                        @else
+                            <div class="menu_pro_tgl_div">
+                                <div class="menu_pro_tgl_2div">
+                                    <a class="menu_pro_tgl profile-dropdown my-auto" href="#">
+                                        <i class="fas fa-user-circle fa-3x"></i>
+                                    </a>
+                                    <div class="menu_pro_tgl_bg">
+                                        <div class="">
+                                            <ul class="user-dropdown-menu">
+                                                <li class="user-dropdown-menu-item">
+                                                    <a href="{{ route('login') }}" class="d-flex align-items-center">
+                                                        <i class="fas fa-user me-2 my-auto"></i>
+                                                        <span class="text-cat my-auto">Đăng nhập</span>
+                                                    </a>
+                                                </li>
+                                                <li class="user-dropdown-menu-item">
+                                                    <a href="{{ route('register') }}"
+                                                        class="d-flex align-items-center">
+                                                        <i class="fas fa-user-plus me-2 my-auto"></i>
+                                                        <span class="text-cat my-auto">Đăng ký</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
-
-
-
-                    <a href="login.html" class="mx-3"> Login</a>
-
-                    <a href="sign_up.html" class="mx-3 text-capitalize" style="min-width: 70px"> Join now</a>
-
-
                 </div>
             </div>
+        </div>
 
-            <!-- Mobile Device Form -->
-            <form action="https://demo.creativeitem.com/academy/home/courses" method="get" class="inline-form">
-                <div class="mobile-search test">
-                    <button type="submit" class="search-btn"><i
-                            class="fa-solid fa-magnifying-glass"></i></button>
-                    <input value="" name="query" class="form-control" type="text" placeholder="Search" />
-                </div>
-            </form>
+        <!-- Mobile Device Form -->
+        <form action="https://demo.creativeitem.com/AmazingYou/home/courses" method="get" class="inline-form">
+            <div class="mobile-search test">
+                <button type="submit" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <input value="" name="query" class="form-control" type="text" placeholder="Search" />
+            </div>
+        </form>
 
         </div>
     </nav> <!-- Offcanves Menu  -->
@@ -483,8 +238,7 @@
                         <li class="bg-light">
                             <button
                                 class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 collapsed"
-                                data-bs-toggle="collapse" data-bs-target="#category-collapse"
-                                aria-expanded="false">
+                                data-bs-toggle="collapse" data-bs-target="#category-collapse" aria-expanded="false">
                                 <i class="fas fa-book me-2"></i>
                                 Categories </button>
                             <div class="collapse" id="category-collapse">

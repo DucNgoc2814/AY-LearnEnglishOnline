@@ -157,9 +157,9 @@
     font-weight: 400;
 }
  .pagenation .active, .page-item.active .page-link{
-    background-color: #754FFE;
+    background-color: var(--color-4);
     color: #fff;
-    box-shadow: 0px 7px 18px -8px #754ffe;
+    box-shadow: 0px 7px 18px -8px var(--color-4);
 }
 .page-item:last-child:not(.active) .page-link,
 .page-item:first-child:not(.active) .page-link{
@@ -271,7 +271,7 @@
       position: absolute;
       width: 1.5px;
       height: 45px;
-      background-color: #754ffe58;
+      background-color: var(--color-4)58;
       left: -14px;
       top: 8px;
     }
@@ -325,7 +325,7 @@
       position: absolute;
       width: 1.5px;
       height: calc(100% + 28px);
-      background-color: #754ffe58;
+      background-color: var(--color-4)58;
       left: -14px;
       top: 8px;
     }
@@ -442,7 +442,7 @@
     background-color: #fff;
 }
 .blog-search-input.form-control:focus{
-    border-color: #754ffe !important;
+    border-color: var(--color-4) !important;
 }
 /*End Blog page*/
 
@@ -1052,13 +1052,13 @@
 
 
 .btn-fill {
-    border: 1px solid #754FFE !important;
+    border: 1px solid var(--color-4) !important;
     transition: .5s;
     padding: 12px 30px;
 }
 
 .btn-fill:hover{
-    background: #754FFE;
+    background: var(--color-4);
     color: #fff;
 }
 .einsBtn .btn{
@@ -1070,14 +1070,14 @@
     object-fit: cover;
 }
 .follow-btn {
-	border: 1px solid #754FFE !important;
+	border: 1px solid var(--color-4) !important;
 	font-size: 13px;
 	padding: 8px 30px;
 	transition: .5s;
 	font-weight: 500;
 }
 .follow-btn:hover{
-    background-color: #754FFE ;
+    background-color: var(--color-4) ;
     color: #fff;
 }
 

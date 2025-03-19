@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
             QuestionFinalExamSeeder::class,
             AnswerFinalExamSeeder::class,
             BannerSeeder::class,
-            VideoLessonSeeder::class,
+            LessonVideoSeeder::class,
         ]);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\VideoLesson;
+use App\Models\LessonVideo;
 use App\Repositories\Interfaces\VideoLessonRepositoryInterface;
 use Illuminate\Support\Str;
 
@@ -13,7 +13,7 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
 
     public function __construct()
     {
-        $this->model = new VideoLesson();
+        $this->model = new LessonVideo();
         parent::__construct($this->model);
     }
 

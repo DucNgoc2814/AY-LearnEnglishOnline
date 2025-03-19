@@ -19,4 +19,14 @@ class Category extends Model
     {
         return $this->hasMany(Course::class, 'categoryId');
     }
+
+    /**
+     * Get total number of courses in this category
+     * 
+     * @return int
+     */
+    public function totalCourses()
+    {
+        return $this->courses()->count();
+    }
 } 

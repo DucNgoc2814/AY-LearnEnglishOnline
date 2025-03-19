@@ -3,15 +3,15 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\VideoLesson;
+use App\Models\LessonVideo;
 use Illuminate\Support\Str;
 
-class VideoLessonSeeder extends Seeder
+class LessonVideoSeeder extends Seeder
 {
     public function run()
     {
         // Video cho bài giới thiệu
-        VideoLesson::create([
+        LessonVideo::create([
             'lessonId' => 1,
             'name' => 'Bài giới thiệu khóa học',
             'slug' => Str::slug('Bài giới thiệu khóa học'),
@@ -22,7 +22,7 @@ class VideoLessonSeeder extends Seeder
         ]);
 
         // Video cho bài học cơ bản 1
-        VideoLesson::create([
+        LessonVideo::create([
             'lessonId' => 2,
             'name' => 'Bài học cơ bản 1',
             'slug' => Str::slug('Bài học cơ bản 1'),
@@ -33,7 +33,7 @@ class VideoLessonSeeder extends Seeder
         ]);
 
         // Video cho bài học cơ bản 2
-        VideoLesson::create([
+        LessonVideo::create([
             'lessonId' => 3,
             'name' => 'Bài học cơ bản 2',
             'slug' => Str::slug('Bài học cơ bản 2'),
@@ -44,7 +44,7 @@ class VideoLessonSeeder extends Seeder
         ]);
 
         // Video cho bài học nâng cao 1
-        VideoLesson::create([
+        LessonVideo::create([
             'lessonId' => 4,
             'name' => 'Bài học nâng cao 1',
             'slug' => Str::slug('Bài học nâng cao 1'),

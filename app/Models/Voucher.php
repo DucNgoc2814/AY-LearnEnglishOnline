@@ -22,13 +22,13 @@ class Voucher extends Model
     ];
 
     protected $casts = [
-        'sale' => 'decimal:2',
+        'sale' => 'integer',
         'startDate' => 'datetime',
         'endDate' => 'datetime',
         'usageCount' => 'integer',
         'maxUsage' => 'integer',
-        'minOrderValue' => 'decimal:2',
-        'maxDiscount' => 'decimal:2'
+        'minOrderValue' => 'integer',
+        'maxDiscount' => 'integer'
     ];
 
     public function orders()
