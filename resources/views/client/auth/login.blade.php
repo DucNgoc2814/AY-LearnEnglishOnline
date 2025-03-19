@@ -2,10 +2,11 @@
 @section('title', 'Home page | AY-LearnEnglish')
 @section('content')
     <section class="sign-up my-5">
-        <div class="container">
+        <div class="container ">
             <div class="row">
                 <div class="col-lg-7 col-md-6 col-sm-12 col-12 text-center">
-                    <img loading="lazy" width="65%" src="{{ asset('themes/client/assets/frontend/default-new/image/login-security.gif') }}">
+                    <img loading="lazy" width="65%"
+                        src="{{ asset('themes/client/assets/frontend/default-new/image/login-security.gif') }}">
                 </div>
                 <div class="col-lg-5 col-md-6 col-sm-12 col-12 ">
                     <div class="sing-up-right">
@@ -14,8 +15,7 @@
                             trơn tru và giàu cảm hứng.
                         </p>
 
-                        <form action="{{ route('login') }}" method="post"
-                            id="login-form">
+                        <form action="{{ route('login') }}" method="post" id="login-form">
                             @csrf
                             <div class="mb-4">
                                 <h5>Email</h5>
@@ -36,7 +36,8 @@
                                         placeholder="Nhập mật khẩu">
                                 </div>
                                 <small class="w-100">
-                                    <a class="text-end w-100 text-muted" href="login/forgot_password_request.html">Quên mật khẩu?</a>
+                                    <a class="text-end w-100 text-muted" href="login/forgot_password_request.html">Quên mật
+                                        khẩu?</a>
                                 </small>
                             </div>
                             <div class="log-in">

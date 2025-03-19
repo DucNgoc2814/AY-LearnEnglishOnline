@@ -2,8 +2,8 @@
 data-wow-duration="1000" data-wow-delay="600">
 <div class="container">
     <div class="row">
-        <div class="col-lg-5 col-md-12 col-sm-12 col-12 mb-5">
-            <img loading="lazy" src="{{ asset('themes/client/uploads/system/b75d56b5a93590ce01464acd96a853f1.png') }}">
+        <div class="col-lg-5 col-md-12 col-sm-12 col-12">
+            <img loading="lazy" src="{{ asset('uploads/logos/logo 3.png') }}" style="width: 60%; height: auto; object-fit: cover;">
             <p>Nghiên cứu bất kỳ chủ đề, bất cứ lúc nào. Khám phá hàng ngàn khóa học với giá thấp nhất từ ​​trước đến nay!</p>
         </div>
         <div class="col-lg-2 col-md-4 col-sm-4 col-4 mb-5">
@@ -15,7 +15,7 @@ data-wow-duration="1000" data-wow-delay="600">
             </ul>
         </div>
         <div class="col-lg-3 col-md-4 col-sm-4 col-4">
-            <h1>Useful links</h1>
+            <h1>Liên hệ</h1>
             <ul>
                 <li> <a href="home/become_an_instructor.html">Become an instructor</a></li>
                 <li> <a href="blog.html">Blog</a></li>
@@ -24,7 +24,7 @@ data-wow-duration="1000" data-wow-delay="600">
             </ul>
         </div>
         <div class="col-lg-2 col-md-4 col-sm-4 col-4">
-            <h1>Help</h1>
+            <h1>Cộng đồng</h1>
             <ul>
                 <li><a href="home/contact_us.html">Contact us</a></li>
                 <li><a href="home/about_us.html">About us</a></li>

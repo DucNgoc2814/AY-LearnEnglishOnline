@@ -16,6 +16,7 @@
                             required>
                         @if (session('errors') && session('errors')->has('name'))
                             <div class="invalid-feedback">{{ session('errors')->first('name') }}</div>
+                            
                         @endif
                     </div>
 

@@ -31,6 +31,8 @@ class UpdateRequest extends FormRequest
             'paymentContent' => 'nullable|string',
             'totalRating' => 'nullable|numeric|min:0|max:5',
             'isTop' => 'boolean|nullable'
+            
+                
         ];
     }
 
