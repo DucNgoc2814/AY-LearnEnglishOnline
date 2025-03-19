@@ -13,7 +13,7 @@ class CreateOrdersTable extends Migration
             $table->foreignId('userId')->constrained('users');
             $table->foreignId('courseId')->constrained('courses');
             $table->foreignId('orderStatusId')->constrained('order_statuses');
-            
+
             $table->string('transactionId')->nullable()->comment('Mã giao dịch từ cổng thanh toán');
             $table->integer('paymentAmount')->comment('Số tiền thanh toán thực tế');
             $table->integer('price')->comment('Giá gốc khóa học');
