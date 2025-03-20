@@ -18,7 +18,6 @@ class DashboardController extends BaseController
         $totalCourses = Course::count();
         $totalLessons = Lesson::count();
         $totalOrders = Order::count();
-        $totalRevenue = Order::where('status', 'completed')->sum('amount');
         
         $recentOrders = Order::with(['user', 'course'])
             ->orderBy('created_at', 'desc')
@@ -36,7 +35,6 @@ class DashboardController extends BaseController
             'totalCourses',
             'totalLessons',
             'totalOrders',
-            'totalRevenue',
             'recentOrders',
             'topCourses'
         ));
