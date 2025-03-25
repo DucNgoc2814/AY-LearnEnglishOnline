@@ -4,19 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateZoomSessionsTable extends Migration
+class CreateCategoriesTable extends Migration
 {
     public function up()
     {
-        Schema::create('zoom_sessions', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('slug')->unique();
-            $table->string('zoomUrl');
-            $table->foreignId('courseID')->constrained('courses');
-            $table->dateTime('releaseTime');
-            $table->string('recordingLink')->nullable();
-            $table->string('status');
+            $table->string('description')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -24,6 +20,6 @@ class CreateZoomSessionsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('zoom_sessions');
+        Schema::dropIfExists('categories');
     }
 }

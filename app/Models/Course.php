@@ -4,92 +4,170 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Course extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'categoryId',
-        'name',
+        'category_id',
+        'title',
         'slug',
         'description',
-        'sortDescription',
+        'short_description',
+        'course_type',
+        'course_format',
         'price',
-        'salePrice',
+        'sale_price',
+        'estimated_hours',
+        'has_certificate',
+        'requires_enrollment',
         'thumbnail',
-        'totalStudent',
+        'preview_video',
+        'total_students',
         'rating',
-        'totalRating',
-        'releaseTime',
-        'isTop',
+        'total_ratings',
+        'course_outline',
+        'requirements',
+        'learning_outcomes',
+        'release_date',
+        'order',
+        'is_featured',
+        'is_active',
     ];
 
     protected $casts = [
-        'price' => 'integer',
-        'salePrice' => 'integer',
-        'releaseTime' => 'datetime',
-        'type' => 'integer',
-        'isTop' => 'boolean'
+        'price' => 'decimal:2',
+        'sale_price' => 'decimal:2',
+        'release_date' => 'datetime',
+        'estimated_hours' => 'integer',
+        'has_certificate' => 'boolean',
+        'requires_enrollment' => 'boolean',
+        'total_students' => 'integer',
+        'rating' => 'decimal:2',
+        'total_ratings' => 'integer',
+        'course_outline' => 'json',
+        'requirements' => 'json',
+        'learning_outcomes' => 'json',
+        'order' => 'integer',
+        'is_featured' => 'boolean',
+        'is_active' => 'boolean'
     ];
 
-    public function category()
+    /**
+     * Get the category this course belongs to
+     */
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'categoryId');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function lessons()
+    /**
+     * Get all lessons for this course
+     */
+    public function lessons(): HasMany
     {
-        return $this->hasMany(Lesson::class, 'courseId');
+        return $this->hasMany(Lesson::class, 'course_id');
     }
 
-    public function zoomSessions()
+    /**
+     * Get all online rooms for this course
+     */
+    public function onlineRooms(): MorphMany
     {
-        return $this->hasMany(ZoomSession::class, 'lessonId');
+        return $this->morphMany(OnlineRoom::class, 'roomable');
     }
 
-    public function enrollments()
+    /**
+     * Get all enrollments for this course
+     */
+    public function enrollments(): HasMany
     {
-        return $this->hasMany(Enrollment::class, 'courseId');
+        return $this->hasMany(Enrollment::class, 'course_id');
     }
 
-    public function ratings()
+    /**
+     * Get all ratings for this course
+     */
+    public function ratings(): HasMany
     {
-        return $this->hasMany(Rating::class, 'courseId');
-    }
-    public function orders()
-    {
-        return $this->hasMany(Order::class, 'courseId');
-    }
-
-
-    public function finalExams()
-    {
-        return $this->hasMany(FinalExam::class, 'courseId');
+        return $this->hasMany(Rating::class, 'course_id');
     }
 
-    public function totalLessons()
+    /**
+     * Get all orders for this course
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'course_id');
+    }
+
+    /**
+     * Get all final exams for this course
+     */
+    public function finalExams(): HasMany
+    {
+        return $this->hasMany(FinalExam::class, 'course_id');
+    }
+
+    /**
+     * Get all classes for this course
+     */
+    public function classes(): HasMany
+    {
+        return $this->hasMany(ClassRoom::class, 'course_id');
+    }
+
+    /**
+     * Get all resources for this course
+     */
+    public function resources(): MorphMany
+    {
+        return $this->morphMany(Resource::class, 'resourceable');
+    }
+
+    /**
+     * Calculate the total number of lessons
+     */
+    public function totalLessons(): int
     {
         return $this->lessons()->count();
     }
 
-    public function totalEnrollments()
+    /**
+     * Calculate the total number of enrollments
+     */
+    public function totalEnrollments(): int
     {
         return $this->enrollments()->count();
     }
 
-    public function totalRevenue()
+    /**
+     * Calculate the total revenue from orders
+     */
+    public function totalRevenue(): float
     {
         return $this->orders()
             ->where('orderStatusId', 3)
             ->sum('paymentAmount');
     }
-    public function totalDuration()
+
+    /**
+     * Calculate the total duration of all videos in the course
+     */
+    public function totalDuration(): string
     {
         $totalSeconds = $this->lessons()
-            ->join('lesson_videos', 'lessons.id', '=', 'lesson_videos.lessonId')
-            ->sum('lesson_videos.duration');
-
+            ->join('resources', function($join) {
+                $join->on('lessons.id', '=', 'resources.resourceable_id')
+                    ->where('resourceable_type', 'App\\Models\\Lesson')
+                    ->where('file_type', 'video');
+            })
+            ->sum('resources.duration');
+            
         $hours = floor($totalSeconds / 3600);
         $minutes = floor(($totalSeconds % 3600) / 60);
         $seconds = $totalSeconds % 60;
@@ -97,24 +175,59 @@ class Course extends Model
         return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
     }
 
-    public function totalTests()
+    /**
+     * Calculate the total number of tests in the course
+     */
+    public function totalTests(): int
     {
         $lessons = $this->lessons()->get();
         $lessonTests = $lessons->sum(function($lesson) {
             return $lesson->totalTests();
         });
-        $finalTests = $this->finalExams()
-            ->whereNull('deleted_at')
-            ->count();
+        $finalTests = $this->finalExams()->count();
         return $lessonTests + $finalTests;
     }
 
-    public function isEnrolledByUser($userId)
+    /**
+     * Check if a user is enrolled in this course
+     */
+    public function isEnrolledByUser($userId): bool
     {
         return $this->enrollments()
-            ->where('userId', $userId)
+            ->where('user_id', $userId)
             ->whereNull('deleted_at')
             ->exists();
     }
+
+    /**
+     * Check if this course requires enrollment in a class
+     */
+    public function requiresClass(): bool
+    {
+        return $this->course_type === 'instructor_led' || 
+               ($this->course_type === 'hybrid' && $this->requires_enrollment);
+    }
     
+    /**
+     * Check if this course is self-paced (can be studied independently)
+     */
+    public function isSelfPaced(): bool
+    {
+        return $this->course_type === 'self_paced' || $this->course_type === 'hybrid';
+    }
+    
+    /**
+     * Get available classes for this course
+     */
+    public function availableClasses()
+    {
+        return $this->hasMany(ClassRoom::class, 'course_id')
+            ->where('status', 'active')
+            ->where('start_date', '>', now())
+            ->where('is_active', true)
+            ->where(function($query) {
+                $query->where('current_students', '<', 'max_students')
+                      ->orWhereNull('max_students');
+            });
+    }
 }
