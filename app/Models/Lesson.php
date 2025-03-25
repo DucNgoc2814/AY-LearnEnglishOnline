@@ -78,4 +78,9 @@ class Lesson extends Model
 
         return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
     }
+
+    public function resources()
+    {
+        return $this->morphMany(Resource::class, 'resourceable');
+    }
 }
