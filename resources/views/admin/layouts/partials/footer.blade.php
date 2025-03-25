@@ -1,12 +1,6 @@
-<div class="footer_part">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="footer_iner text-center">
-                    <p>2020 © Influence - Designed by <a href="#"> <i class="ti-heart"></i> </a><a
-                            href="#"> Dashboard</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+         <footer class="bg-gray-800 text-white flex justify-end p-4">
+             <div>
+                 <span class="ms-3"><i class="fas fa-question-circle"></i> Trợ giúp</span>
+                 <span class="ms-3"><i class="fas fa-cog"></i> Hỗ trợ</span>
+             </div>
+         </footer>

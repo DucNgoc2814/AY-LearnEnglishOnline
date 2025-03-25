@@ -31,20 +31,7 @@
             @include('client.layouts.partials.menu-response')
         @endif
     </header>
-    <style>
-        .eImage span {
-            width: auto !important;
-        }
 
-        .course-item-one .content .title {
-            display: -webkit-box !important;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: normal
-        }
-    </style>
     @yield('content')
     @if (!str_starts_with(Route::currentRouteName(), 'course.learning'))
         <div class="py-4 w-100"></div>

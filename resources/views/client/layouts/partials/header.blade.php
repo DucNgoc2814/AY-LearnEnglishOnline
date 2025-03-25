@@ -1,4 +1,4 @@
-<div class="sub-header">
+{{-- <div class="sub-header">
     <div class="container">
         <div class="row">
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
@@ -17,4 +17,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}

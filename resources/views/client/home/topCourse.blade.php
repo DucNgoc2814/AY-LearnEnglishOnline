@@ -7,7 +7,7 @@
             <div class="courses-card">
                 <div class="course-group-slider" data-wow-duration="1000" data-wow-delay="500">
                     @foreach ($topCourses as $course)
-                        <div class="single-popup-course ">
+                        <div class="single-popup-course">
                             <a href="{{ route('detailCourse', $course->slug) }}" id="top_course_12"
                                 class="checkPropagation courses-card-body">
                                 <div class="courses-card-image">
@@ -55,3 +55,33 @@
             </div>
         </div>
     </section>
+
+@push('css')
+    <style>
+        /* CSS cho padding trên mobile */
+        @media (max-width: 767px) {
+            .single-popup-course {
+                padding-left: 0.25rem !important; /* Tương đương với px-1 */
+                padding-right: 0.25rem !important; /* Tương đương với px-1 */
+            }
+        }
+
+        /* Đảm bảo hình ảnh hiển thị đúng kích thước */
+        .courses-card-image {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* Tỷ lệ 16:9 */
+            overflow: hidden;
+        }
+
+        .courses-card-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+@endpush

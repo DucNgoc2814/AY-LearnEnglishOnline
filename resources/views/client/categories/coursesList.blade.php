@@ -6,8 +6,12 @@
                     <a href="{{ route('detailCourse', $course->slug) }}" id="top_course_12"
                         class="checkPropagation courses-card-body">
                         <div class="courses-card-image">
-                            <img loading="lazy"
-                                src="{{ asset('themes/client/assets/frontend/default-new/img/course_thumbnail_placeholder.jpg') }}">
+                            @if ($course->thumbnail)
+                                <img loading="lazy" src="{{ asset($course->thumbnail) }}" alt="{{ $course->name }}">
+                            @else
+                                <img loading="lazy"
+                                    src="{{ asset('themes/client/assets/frontend/default-new/img/course_thumbnail_placeholder.jpg') }}">
+                            @endif
                             <div class="courses-card-image-text">
                                 <h3>Intermediate</h3>
                             </div>

@@ -1,7 +1,7 @@
 @extends('client.layouts.master')
 @section('title', 'Trang chủ | AY-LearnEnglish')
 @section('content')
-    <section class="grid-view courses-grid-view">
+    <section class="grid-view courses-grid-view py-5">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-3 col-sm-4 col-12">

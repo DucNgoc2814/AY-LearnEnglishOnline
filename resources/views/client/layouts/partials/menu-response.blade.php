@@ -1,12 +1,9 @@
-<section class="menubar ">
-    <nav class="navbar navbar-expand-lg navbar-light">
+<section class="menubar mb-5">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top py-3 shadow">
         <div class="container">
             <a class="navbar-brand logo pt-0" href="{{ route('home') }}">
-                <img loading="lazy" src="{{ asset('themes/client/uploads/system/e0d3336caa3bf40ceae5b4efeeedf541.png') }}"
-                    alt="Logo" />
+                <img loading="lazy" src="{{ asset('uploads/logos/amazing you.png') }}" alt="Logo" />
             </a>
-
-            <!-- Mobile Offcanves  Icon Show -->
             <ul class="menu-offcanves">
                 <li>
                     <div class="search-item">
@@ -22,10 +19,9 @@
             </ul>
 
             <div class="navbar-collapse" id="navbarSupportedContent">
-                <!-- Small Device Hide -->
                 <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 ms-2">
                     <li class="nav-item">
-                        <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap"
+                        <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap hover-effect active-effect"
                             href="{{ route('home') }}" id="navbarDropdown3">
                             <span class="ms-2">Trang chủ</span>
                         </a>
@@ -33,8 +29,8 @@
                 </ul>
                 <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 align-items-center ms-1">
                     <li class="nav-item">
-                        <a class="nav-link header-dropdown ps-2 text-nowrap bg-white text-dark" href="#"
-                            id="navbarDropdown1">
+                        <a class="nav-link header-dropdown ps-2 text-nowrap bg-white text-dark hover-effect active-effect"
+                            href="#" id="navbarDropdown1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="feather feather-grid">
@@ -49,7 +45,6 @@
                             @foreach ($categories as $category)
                                 <li class="dropdown-submenu">
                                     <a href="{{ route('category.index', $category->slug) }}">
-                                        <span class="icons"><i class="fas fa-desktop"></i></span>
                                         <span class="text-cat">{{ $category->name }}</span>
                                         <span class="has-sub-category ms-auto"><i
                                                 class="fa-solid fa-angle-right"></i></span>
@@ -70,16 +65,16 @@
                 </ul>
                 <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 ms-2">
                     <li class="nav-item">
-                        <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap"
+                        <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap hover-effect active-effect"
                             href="addons/bootcamp/bootcamp_list.html" id="navbarDropdown4">
-                            <span class="ms-2">Tin tức</span>
+                            <span class="ms-2">Thi thử Toeic</span>
                         </a>
                     </li>
                 </ul>
 
                 <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 ms-2">
                     <li class="nav-item">
-                        <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap"
+                        <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap hover-effect active-effect"
                             href="addons/team_training/packages.html" id="navbarDropdown4">
                             <span class="ms-2">Giới thiệu</span>
                         </a>
@@ -88,13 +83,12 @@
 
                 <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 ms-2">
                     <li class="nav-item">
-                        <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap" href="tutors.html"
-                            id="navbarDropdown2">
+                        <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap hover-effect active-effect"
+                            href="tutors.html" id="navbarDropdown2">
                             Liên hệ
                         </a>
                     </li>
                 </ul>
-
                 <div class="right-menubar ms-auto d-flex justify-content-end align-items-center">
                     <form class="search-input-form" action="https://demo.creativeitem.com/AY/home/courses"
                         method="get">
@@ -220,432 +214,240 @@
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
                     <div class="offcanves-btn">
-
-                        <a href="sign_up.html" class="signUp-btn">Sign up</a>
-                        <a href="login.html" class="logIn-btn">Login</a>
+                        @if (Auth::check())
+                            <a href="{{ route('profile.index') }}" class="signUp-btn">Tài khoản</a>
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <a href="javascript:void(0)" onclick="this.closest('form').submit()" class="logIn-btn">Đăng xuất</a>
+                            </form>
+                        @else
+                            <a href="{{ route('register') }}" class="signUp-btn">Đăng ký</a>
+                            <a href="{{ route('login') }}" class="logIn-btn">Đăng nhập</a>
+                        @endif
                     </div>
                 </div>
             </div>
             <div class="offcanvas-body p-0">
                 <div class="flex-shrink-0 mt-3">
                     <ul class="list-unstyled ps-0">
+                        <!-- Trang chủ -->
+                        <li class="bg-light">
+                            <a href="{{ route('home') }}"
+                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 hover-effect active-effect">
+                                <i class="fas fa-home me-2"></i> Trang chủ</a>
+                        </li>
 
-                        <li><a href="home/shopping_cart.html"
-                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 w-100"><i
-                                    class="fa-solid fa-cart-shopping me-2"></i> Cart <span
-                                    class="badge bg-danger ms-auto">0</span></a></li>
-
+                        <!-- Danh mục -->
                         <li class="bg-light">
                             <button
-                                class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 collapsed"
+                                class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 collapsed hover-effect active-effect"
                                 data-bs-toggle="collapse" data-bs-target="#category-collapse" aria-expanded="false">
-                                <i class="fas fa-book me-2"></i>
-                                Categories </button>
+                                <i class="fas fa-th-large me-2"></i>
+                                Danh mục </button>
                             <div class="collapse" id="category-collapse">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small bg-white pt-2">
+                                    @foreach ($categories as $category)
                                     <li>
                                         <button
-                                            class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 collapsed"
-                                            data-bs-toggle="collapse" data-bs-target="#subCategory-collapse10"
+                                            class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 collapsed hover-effect"
+                                            data-bs-toggle="collapse" data-bs-target="#subCategory-collapse{{ $category->id }}"
                                             aria-expanded="false">
-                                            <span class="icons"><i class="fas fa-desktop"></i></span>
-                                            <span class="text-cat">Web Design</span>
+                                            <span class="text-cat">{{ $category->name }}</span>
                                         </button>
-                                        <div class="collapse" id="subCategory-collapse10">
+                                        @if ($category->courses->count() > 0)
+                                        <div class="collapse" id="subCategory-collapse{{ $category->id }}">
                                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                                @foreach ($category->courses as $course)
                                                 <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses91d5.html?category=responsive-design"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Responsive Design</a>
+                                                    <a class="text-dark text-14px fw-400 w-100 hover-effect"
+                                                        href="{{ route('detailCourse', $course->slug) }}"
+                                                        style="padding-left: 35px;">{{ $course->name }}</a>
                                                 </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses885f.html?category=wordpress-theme"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">WordPress Theme</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses0c91.html?category=bootstrap"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Bootstrap</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/coursesb5f1.html?category=html-amp-css"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">HTML &amp; CSS</a>
-                                                </li>
+                                                @endforeach
                                             </ul>
                                         </div>
+                                        @endif
                                     </li>
-                                    <li>
-                                        <button
-                                            class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 collapsed"
-                                            data-bs-toggle="collapse" data-bs-target="#subCategory-collapse13"
-                                            aria-expanded="false">
-                                            <span class="icons"><i class="fas fa-pencil-alt"></i></span>
-                                            <span class="text-cat">Graphic Design</span>
-                                        </button>
-                                        <div class="collapse" id="subCategory-collapse13">
-                                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses4696.html?category=photoshop"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Photoshop</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/coursesd1b3.html?category=adobe-illustrator"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Adobe Illustrator</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/coursesf6aa.html?category=drawing"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Drawing</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses6e7b.html?category=logo-design"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Logo Design</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses2e21.html?category=digital-art"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Digital Art</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <button
-                                            class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 collapsed"
-                                            data-bs-toggle="collapse" data-bs-target="#subCategory-collapse14"
-                                            aria-expanded="false">
-                                            <span class="icons"><i class="fas fa-male"></i></span>
-                                            <span class="text-cat">User Experience</span>
-                                        </button>
-                                        <div class="collapse" id="subCategory-collapse14">
-                                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses5b8a.html?category=user-experience-design"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">User Experience Design</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses1c01.html?category=mobile-app-design"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Mobile App Design</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses6896.html?category=user-interface"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">User Interface</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/coursesd12a.html?category=design-thinking"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Design Thinking</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses2c28.html?category=figma"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Figma</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/coursesaa5c.html?category=prototyping"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Prototyping</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <button
-                                            class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 collapsed"
-                                            data-bs-toggle="collapse" data-bs-target="#subCategory-collapse15"
-                                            aria-expanded="false">
-                                            <span class="icons"><i class="fas fa-magic"></i></span>
-                                            <span class="text-cat">Interior Design</span>
-                                        </button>
-                                        <div class="collapse" id="subCategory-collapse15">
-                                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses6921.html?category=color-theory"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Color Theory</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses340a.html?category=lighting-design"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Lighting Design</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses8f26.html?category=sketchup"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">SketchUp</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses55aa.html?category=home-improvement"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Home Improvement</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/coursesb29e.html?category=3d-lighting"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">3D Lighting</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <button
-                                            class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 collapsed"
-                                            data-bs-toggle="collapse" data-bs-target="#subCategory-collapse16"
-                                            aria-expanded="false">
-                                            <span class="icons"><i class="fas fa-cube"></i></span>
-                                            <span class="text-cat">3D and Animation</span>
-                                        </button>
-                                        <div class="collapse" id="subCategory-collapse16">
-                                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses43c0.html?category=blender"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Blender</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses01b3.html?category=motion-graphics"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Motion Graphics</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/coursesb587.html?category=after-effects"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">After Effects</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/coursesd853.html?category=maya"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Maya</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/coursesaa8a.html?category=zbrush"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">zBrush</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/coursesf09c.html?category=character-modeling"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Character Modeling</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <button
-                                            class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 collapsed"
-                                            data-bs-toggle="collapse" data-bs-target="#subCategory-collapse27"
-                                            aria-expanded="false">
-                                            <span class="icons"><i class="fas fa-user-secret"></i></span>
-                                            <span class="text-cat">Fashion</span>
-                                        </button>
-                                        <div class="collapse" id="subCategory-collapse27">
-                                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses80b0.html?category=fashion-design"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Fashion Design</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses21fb.html?category=sewing"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Sewing</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/coursesd657.html?category=t-shirt-design"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">T-shirt Design</a>
-                                                </li>
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100"
-                                                        href="home/courses2cea.html?category=jewelry-design"
-                                                        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
-                                                        style="padding-left: 35px;">Jewelry Design</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <button
-                                            class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 collapsed"
-                                            data-bs-toggle="collapse" data-bs-target="#subCategory-collapse51"
-                                            aria-expanded="false">
-                                            <span class="icons"><i class="fab fa-500px"></i></span>
-                                            <span class="text-cat">Frontend Development</span>
-                                        </button>
-                                        <div class="collapse" id="subCategory-collapse51">
-                                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                            </ul>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 py-2 w-100">
-                                            <i class="fas fa-list me-2"></i> All courses</a>
-                                    </li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </li>
 
-
-                        <li class="bg-light">
-                            <a href="course_bundles.html"
-                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500">
-                                <i class="fas fa-cube me-2"></i> Course bundles</a>
-                        </li>
-
+                        <!-- Thi thử Toeic -->
                         <li class="bg-light">
                             <a href="addons/bootcamp/bootcamp_list.html"
-                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500">
-                                <i class="fab fa-centercode me-2"></i> Bootcamp</a>
+                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 hover-effect active-effect">
+                                <i class="fas fa-book me-2"></i> Thi thử Toeic</a>
                         </li>
 
+                        <!-- Giới thiệu -->
                         <li class="bg-light">
                             <a href="addons/team_training/packages.html"
-                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500">
-                                <i class="fas fa-users me-2"></i> Team training</a>
+                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 hover-effect active-effect">
+                                <i class="fas fa-info-circle me-2"></i> Giới thiệu</a>
                         </li>
 
+                        <!-- Liên hệ -->
                         <li class="bg-light">
-                            <button
-                                class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 collapsed"
-                                data-bs-toggle="collapse" data-bs-target="#ebook-category-collapse"
-                                aria-expanded="false">
-                                <i class="fas fa-file me-2"></i>
-                                Ebook </button>
-                            <div class="collapse" id="ebook-category-collapse">
-                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small bg-white pt-2">
-                                    <li>
-                                        <a href="ebook209b.html?category=kids&amp;price=all&amp;rating=all"
-                                            class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 py-2 w-100">
-                                            Kids</a>
-                                    </li>
-                                    <li>
-                                        <a href="ebook2dbf.html?category=science-fiction-amp-fantasy&amp;price=all&amp;rating=all"
-                                            class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 py-2 w-100">
-                                            Science Fiction &amp; Fantasy</a>
-                                    </li>
-                                    <li>
-                                        <a href="ebooke323.html?category=politics&amp;price=all&amp;rating=all"
-                                            class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 py-2 w-100">
-                                            Politics</a>
-                                    </li>
-                                    <li>
-                                        <a href="ebook9776.html?category=cooking-amp-foods&amp;price=all&amp;rating=all"
-                                            class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 py-2 w-100">
-                                            Cooking &amp; Foods</a>
-                                    </li>
-                                    <li>
-                                        <a href="ebook2b87.html?category=motivation&amp;price=all&amp;rating=all"
-                                            class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 py-2 w-100">
-                                            Motivation</a>
-                                    </li>
-                                    <li>
-                                        <a href="ebookdf72.html?category=freelancing-amp-outsourcing&amp;price=all&amp;rating=all"
-                                            class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 py-2 w-100">
-                                            Freelancing &amp; Outsourcing</a>
-                                    </li>
-                                    <li>
-                                        <a href="ebookb3b4.html?category=programming-language&amp;price=all&amp;rating=all"
-                                            class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 py-2 w-100">
-                                            Programming Language</a>
-                                    </li>
-                                    <li>
-                                        <a href="ebook78f6.html?category=education&amp;price=all&amp;rating=all"
-                                            class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 py-2 w-100">
-                                            Education</a>
-                                    </li>
-                                    <li>
-                                        <a href="ebook.html"
-                                            class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 py-2 w-100">
-                                            <i class="fas fa-list me-2"></i> All ebooks</a>
-                                    </li>
-                                </ul>
-                            </div>
+                            <a href="tutors.html"
+                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 hover-effect active-effect">
+                                <i class="fas fa-phone me-2"></i> Liên hệ</a>
                         </li>
-
-                        <li class="bg-light"><a
-                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500"
-                                href="tutors.html"><i class="fas fa-chalkboard-teacher me-2"></i>Find a
-                                tutor</a></li>
-
-
-                        <li class="bg-light">
-                            <a href="page/home-1.html"
-                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500">
-                                <i class="fas fa-arrow-alt-circle-right me-2"></i> Preview Home Page-1</a>
-                        </li>
-                        <li class="bg-light">
-                            <a href="page/home-2.html"
-                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500">
-                                <i class="fas fa-arrow-alt-circle-right me-2"></i> Preview Home Page-2</a>
-                        </li>
-                        <li class="bg-light">
-                            <a href="page/home-3.html"
-                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500">
-                                <i class="fas fa-arrow-alt-circle-right me-2"></i> Preview Home Page-3</a>
-                        </li>
-                        <li class="bg-light">
-                            <a href="page/home-4.html"
-                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500">
-                                <i class="fas fa-arrow-alt-circle-right me-2"></i> Preview Home Page-4</a>
-                        </li>
-                        <li class="bg-light">
-                            <a href="page/home-5.html"
-                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500">
-                                <i class="fas fa-arrow-alt-circle-right me-2"></i> Preview Home Page-5</a>
-                        </li>
-                        <li class="bg-light">
-                            <a href="page/home-6.html"
-                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500">
-                                <i class="fas fa-arrow-alt-circle-right me-2"></i> Preview Home Page-6</a>
-                        </li>
-                        <li class="bg-light">
-                            <a href="page/home-7.html"
-                                class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500">
-                                <i class="fas fa-arrow-alt-circle-right me-2"></i> Preview Home Page-7</a>
-                        </li>
-
                     </ul>
                 </div>
-
             </div>
         </div>
     </div>
 </section>
+@push('css')
+    <style>
+        /* CSS cải tiến cho hover và active */
+        .navbar-nav .nav-item .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        /* Hiệu ứng hover */
+        .navbar-nav .nav-item .nav-link.hover-effect:hover {
+            color: #ff6600 !important; /* Màu cam (phù hợp với logo của bạn) */
+        }
+
+        /* Hiệu ứng gạch chân khi hover */
+        .navbar-nav .nav-item .nav-link.hover-effect:hover::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: #ff6600;
+            bottom: 0;
+            left: 0;
+            transform: scaleX(1);
+            transition: transform 0.3s ease;
+        }
+
+        /* Hiệu ứng active */
+        .navbar-nav .nav-item .nav-link.active-effect.active {
+            color: #ff6600 !important;
+        }
+
+        .navbar-nav .nav-item .nav-link.active-effect.active::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: #ff6600;
+            bottom: 0;
+            left: 0;
+        }
+
+        /* Cải thiện dropdown menu */
+        .navbarHover {
+            display: none;
+            position: absolute;
+            background: white;
+            min-width: 220px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            z-index: 1000;
+            border-radius: 4px;
+            padding: 8px 0;
+            margin-top: 5px;
+        }
+
+        .navbar-nav .nav-item:hover .navbarHover {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Style cho các mục trong dropdown */
+        .navbarHover li {
+            padding: 0;
+            list-style: none;
+        }
+
+        .navbarHover li a {
+            padding: 10px 15px;
+            color: #212529;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .navbarHover li a:hover {
+            color: #ff6600;
+            background-color: #f8f9fa;
+        }
+
+        /* CSS cho submenu */
+        .dropdown-submenu {
+            position: relative;
+        }
+
+        .sub-category-menu {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            padding: 8px 0;
+        }
+
+        .dropdown-submenu:hover .sub-category-menu {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        /* CSS cho menu mobile */
+        @media (max-width: 991.98px) {
+            /* Style cho các nút trong menu mobile */
+            .btn-toggle-list, .btn-toggle {
+                padding: 10px 15px;
+                width: 100%;
+                text-align: left;
+                transition: all 0.3s ease;
+            }
+            
+            .btn-toggle-list:hover, .btn-toggle:hover {
+                color: #ff6600 !important;
+                background-color: #f8f9fa;
+            }
+            
+            .btn-toggle-list.active, .btn-toggle.active {
+                color: #ff6600 !important;
+            }
+            
+            /* Ẩn các hình ảnh không cần thiết trên mobile */
+            .mobile-view-offcanves img,
+            .mobile-view-offcanves svg:not(.fa-*) {
+                display: none !important;
+            }
+            
+            /* Cải thiện menu mobile - loại bỏ khoảng cách thừa */
+            .offcanvas-body .flex-shrink-0 {
+                margin-top: 0 !important;
+            }
+            
+            .offcanvas-body ul.list-unstyled {
+                padding: 0 !important;
+            }
+            
+            .offcanvas-body .list-unstyled li {
+                margin-bottom: 5px;
+            }
+            
+            /* Cải thiện dropdown trong mobile */
+            .offcanvas-body .collapse {
+                padding-left: 15px;
+            }
+        }
+    </style>
+@endpush
+
