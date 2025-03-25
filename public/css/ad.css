@@ -1,0 +1,252 @@
+/* Move all styles here */
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+.navbar {
+    background-color: #002a5c !important;
+    padding: 0;
+    height: 40px;
+}
+.navbar-brand img {
+    height: 24px;
+    width: 24px;
+}
+.nav-link {
+    color: white !important;
+    padding: 10px 15px !important;
+    font-size: 13px;
+    height: 40px;
+    display: flex !important;
+    align-items: center;
+}
+.nav-link:hover, .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+.nav-link i {
+    margin-right: 5px;
+    font-size: 14px;
+}
+.navbar-brand {
+    padding: 0;
+    margin-right: 0;
+}
+.dropdown-menu {
+    margin-top: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    padding: 0;
+}
+.dropdown-item {
+    padding: 8px 15px;
+    font-size: 13px;
+}
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+.search-input {
+    height: 30px;
+    font-size: 13px;
+    border-radius: 3px 0 0 3px;
+    width: 200px;
+}
+.search-input::placeholder {
+    color: #999;
+}
+.btn-search {
+    height: 30px;
+    padding: 0 10px;
+    background: white;
+    border: 1px solid #ced4da;
+    border-left: none;
+    border-radius: 0 3px 3px 0;
+}
+.navbar-nav.ms-2 .nav-link {
+    padding: 0 10px !important;
+}
+.navbar-nav.ms-2 i {
+    font-size: 16px;
+}
+.table {
+    font-size: 13px;
+}
+.status-new {
+    background-color: #5cb85c;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+.status-converted {
+    background-color: #d9534f;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+.status-nurturing {
+    background-color: #337ab7;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+.status-no-potential {
+    background-color: #777;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+.call-info {
+    background-color: #f0f7fc;
+    border-left: 3px solid #0066b2;
+    padding: 8px;
+    margin-top: 5px;
+    font-size: 12px;
+}
+.call-text {
+    color: #555;
+    font-style: italic;
+}
+.text-primary {
+    color: #0066b2 !important;
+}
+.footer {
+    background-color: #f5f5f5;
+    padding: 8px;
+    font-size: 13px;
+    border-top: 1px solid #ddd;
+}
+.navbar-brand.dropdown-toggle::after {
+    margin-left: 0.5rem;
+    vertical-align: middle;
+}
+
+.navbar .dropdown-menu {
+    font-size: 13px;
+    padding: 0.25rem 0;
+    min-width: 200px;
+}
+
+.navbar .dropdown-item {
+    padding: 0.5rem 1rem;
+}
+
+.navbar .dropdown-item i {
+    width: 20px;
+    margin-right: 0.5rem;
+}
+.search-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    padding: 2rem;
+}
+
+.search-overlay.active {
+    display: block;
+}
+
+.search-overlay-content {
+    max-width: 800px;
+    margin: 2rem auto;
+    color: white;
+}
+
+.search-overlay .form-control {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid white;
+    border-radius: 0;
+    color: white;
+    font-size: 1.5rem;
+    padding: 1rem 0;
+}
+
+.search-overlay .form-control:focus {
+    box-shadow: none;
+    border-color: #0066b2;
+}
+
+.search-overlay .btn-close {
+    filter: invert(1);
+}
+.page-header {
+    padding: 15px 20px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+.page-title {
+    font-size: 18px;
+    font-weight: normal;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-create {
+    background: #0d6efd;
+    border: none;
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+.btn-import {
+    border-color: #0d6efd;
+    color: #0d6efd;
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+.filter-section {
+    padding: 10px 20px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+.filter-label {
+    color: #666;
+    font-size: 13px;
+}
+
+.filter-input {
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: #555;
+}
+
+.filter-input::placeholder {
+    color: #999;
+}
+
+.btn-icon {
+    color: #666;
+    border: 1px solid #ddd;
+    padding: 4px 8px;
+    background: #fff;
+}
+
+.btn-icon:hover {
+    background: #f8f9fa;
+}
+
+.btn-close-search {
+    border: none;
+    background: transparent;
+    color: #666;
+    padding: 0;
+    font-size: 16px;
+}
+.navbar {
+    background-color: #002a5c !important;
+    padding: 0;
+    height: 40px;
+  }

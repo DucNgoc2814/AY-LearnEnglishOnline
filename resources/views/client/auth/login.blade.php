@@ -1,7 +1,7 @@
 @extends('client.layouts.master')
 @section('title', 'Home page | AY-LearnEnglish')
 @section('content')
-    <section class="sign-up my-5">
+    <section class="sign-up my-5 py-5">
         <div class="container ">
             <div class="row">
                 <div class="col-lg-7 col-md-6 col-sm-12 col-12 text-center">

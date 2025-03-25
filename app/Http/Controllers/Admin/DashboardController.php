@@ -39,4 +39,4 @@ class DashboardController extends BaseController
             'topCourses'
         ));
     }
-} 
+}

@@ -50,7 +50,7 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-    public function examResults() 
+    public function examResults()
     {
         return $this->hasMany(ExamResult::class);
     }
@@ -61,7 +61,7 @@ class User extends Authenticatable
     }
     /**
      * Lấy tổng số khóa học đã đăng ký
-     * 
+     *
      * @return int
      */
     public function getTotalCoursesAttribute()
@@ -71,10 +71,10 @@ class User extends Authenticatable
 
     /**
      * Lấy tổng số khóa học đã hoàn thành
-     * 
+     *
      * @return int
      */
-    public function getCompletedCoursesAttribute() 
+    public function getCompletedCoursesAttribute()
     {
         return $this->enrollments()
             ->where('status', 'completed')
@@ -88,4 +88,4 @@ class User extends Authenticatable
             ->where('status', 'active')
             ->exists();
     }
-} 
+}

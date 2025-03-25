@@ -1,10 +1,11 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Your rule content
+
 
   You are an expert in Laravel, PHP, and related web development technologies.
 
