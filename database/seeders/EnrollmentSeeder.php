@@ -9,10 +9,36 @@ class EnrollmentSeeder extends Seeder
 {
     public function run()
     {
-        Enrollment::create(['userId' => 1, 'courseId' => 1, 'status' => 'active', 'progress' => 0, 'startDate' => now(), 'completionDate' => null, 'lastAccessDate' => now()]);
-        Enrollment::create(['userId' => 2, 'courseId' => 1, 'status' => 'active', 'progress' => 20, 'startDate' => now(), 'completionDate' => null, 'lastAccessDate' => now()]);
-        Enrollment::create(['userId' => 3, 'courseId' => 2, 'status' => 'completed', 'progress' => 100, 'startDate' => now()->subDays(10), 'completionDate' => now()->subDays(5), 'lastAccessDate' => now()->subDays(5)]);
-        Enrollment::create(['userId' => 4, 'courseId' => 2, 'status' => 'active', 'progress' => 50, 'startDate' => now(), 'completionDate' => null, 'lastAccessDate' => now()]);
-        Enrollment::create(['userId' => 5, 'courseId' => 3, 'status' => 'active', 'progress' => 10, 'startDate' => now(), 'completionDate' => null, 'lastAccessDate' => now()]);
+        $enrollments = [
+            [
+                'user_id' => 1,
+                'course_id' => 1,
+                'enroll_date' => '2024-01-01',
+                'status' => 'active',
+                'payment_status' => 'paid',
+                'amount_paid' => 0,
+                'progress_percentage' => 0,
+                'last_access_date' => '2024-01-01 10:00:00',
+                'completion_date' => null,
+                'notes' => 'Enrolled in Laravel Basics course'
+            ],
+            [
+                'user_id' => 2,
+                'course_id' => 1,
+                'enroll_date' => '2024-01-02',
+                'status' => 'active',
+                'payment_status' => 'paid',
+                'amount_paid' => 0,
+                'progress_percentage' => 10,
+                'last_access_date' => '2024-01-02 15:30:00',
+                'completion_date' => null,
+                'notes' => 'Started first module'
+            ],
+            // Thêm 8 enrollment khác...
+        ];
+
+        foreach ($enrollments as $enrollment) {
+            Enrollment::create($enrollment);
+        }
     }
 }

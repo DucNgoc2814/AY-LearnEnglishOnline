@@ -29,6 +29,11 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'phone_number' => fake()->numerify('##########'),
+            'birth_date' => fake()->dateTimeBetween('-50 years', '-18 years'),
+            'auth_google_id' => null,
+            'role_token' => null,
+            'refresh_token' => null,
         ];
     }
 

@@ -2,127 +2,99 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Course extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'category_id',
         'title',
         'slug',
         'description',
-        'short_description',
-        'course_type',
-        'course_format',
         'price',
-        'sale_price',
-        'estimated_hours',
-        'has_certificate',
-        'requires_enrollment',
-        'thumbnail',
-        'preview_video',
-        'total_students',
-        'rating',
-        'total_ratings',
-        'course_outline',
+        'duration',
+        'level',
         'requirements',
         'learning_outcomes',
         'release_date',
         'order',
         'is_featured',
-        'is_active',
+        'is_active'
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
-        'sale_price' => 'decimal:2',
-        'release_date' => 'datetime',
-        'estimated_hours' => 'integer',
-        'has_certificate' => 'boolean',
-        'requires_enrollment' => 'boolean',
-        'total_students' => 'integer',
-        'rating' => 'decimal:2',
-        'total_ratings' => 'integer',
-        'course_outline' => 'json',
-        'requirements' => 'json',
-        'learning_outcomes' => 'json',
-        'order' => 'integer',
+        'learning_outcomes' => 'array',
+        'requirements' => 'array',
         'is_featured' => 'boolean',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'release_date' => 'datetime'
     ];
 
     /**
-     * Get the category this course belongs to
+     * Lấy danh mục khóa học
      */
     public function category(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(Category::class);
     }
 
     /**
-     * Get all lessons for this course
+     * Lấy danh sách bài học
      */
     public function lessons(): HasMany
     {
-        return $this->hasMany(Lesson::class, 'course_id');
+        return $this->hasMany(Lesson::class);
     }
 
     /**
-     * Get all online rooms for this course
-     */
-    public function onlineRooms(): MorphMany
-    {
-        return $this->morphMany(OnlineRoom::class, 'roomable');
-    }
-
-    /**
-     * Get all enrollments for this course
-     */
-    public function enrollments(): HasMany
-    {
-        return $this->hasMany(Enrollment::class, 'course_id');
-    }
-
-    /**
-     * Get all ratings for this course
-     */
-    public function ratings(): HasMany
-    {
-        return $this->hasMany(Rating::class, 'course_id');
-    }
-
-    /**
-     * Get all orders for this course
-     */
-    public function orders(): HasMany
-    {
-        return $this->hasMany(Order::class, 'course_id');
-    }
-
-    /**
-     * Get all final exams for this course
-     */
-    public function finalExams(): HasMany
-    {
-        return $this->hasMany(FinalExam::class, 'course_id');
-    }
-
-    /**
-     * Get all classes for this course
+     * Lấy danh sách lớp học
      */
     public function classes(): HasMany
     {
-        return $this->hasMany(ClassRoom::class, 'course_id');
+        return $this->hasMany(ClassRoom::class);
     }
 
     /**
-     * Get all resources for this course
+     * Lấy danh sách ghi danh
+     */
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    /**
+     * Lấy danh sách đánh giá
+     */
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    /**
+     * Lấy danh sách chứng chỉ
+     */
+    public function certificates(): HasMany
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
+    /**
+     * Lấy danh sách bình luận
+     */
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    /**
+     * Lấy danh sách tài nguyên
      */
     public function resources(): MorphMany
     {
@@ -130,104 +102,186 @@ class Course extends Model
     }
 
     /**
-     * Calculate the total number of lessons
+     * Lấy giá hiển thị (giá sale nếu có, ngược lại là giá gốc)
      */
-    public function totalLessons(): int
+    public function getCurrentPrice()
     {
-        return $this->lessons()->count();
+        return $this->sale_price ?? $this->price;
     }
 
     /**
-     * Calculate the total number of enrollments
+     * Kiểm tra xem khóa học có đang giảm giá không
      */
-    public function totalEnrollments(): int
+    public function hasDiscount()
+    {
+        return !is_null($this->sale_price) && $this->sale_price < $this->price;
+    }
+
+    /**
+     * Tính phần trăm giảm giá
+     */
+    public function getDiscountPercentage()
+    {
+        if ($this->hasDiscount()) {
+            return round((($this->price - $this->sale_price) / $this->price) * 100);
+        }
+        return 0;
+    }
+
+    /**
+     * Scope cho khóa học đang hoạt động
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope cho khóa học đã được xuất bản
+     */
+    public function scopePublished($query)
+    {
+        return $query->where('is_active', true)
+            ->where('release_date', '<=', now());
+    }
+
+    /**
+     * Scope cho khóa học nổi bật
+     */
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
+    }
+
+    /**
+     * Scope cho khóa học mới nhất
+     */
+    public function scopeNewest($query)
+    {
+        return $query->orderBy('release_date', 'desc');
+    }
+
+    /**
+     * Scope cho khóa học phổ biến nhất
+     */
+    public function scopePopular($query)
+    {
+        return $query->orderBy('total_students', 'desc');
+    }
+
+    /**
+     * Scope cho khóa học có đánh giá cao nhất
+     */
+    public function scopeTopRated($query)
+    {
+        return $query->where('total_ratings', '>', 0)
+            ->orderBy('rating', 'desc');
+    }
+
+    public function updateRating()
+    {
+        $this->rating = $this->ratings()->avg('rating') ?? 0;
+        $this->total_ratings = $this->ratings()->count();
+        $this->save();
+    }
+
+    /**
+     * Lấy URL hình ảnh đại diện khóa học
+     */
+    public function getThumbnailUrl(): string
+    {
+        if ($this->thumbnail) {
+            return asset('storage/' . $this->thumbnail);
+        }
+        return asset('images/default-course.png');
+    }
+
+    /**
+     * Lấy độ dài khóa học dưới dạng định dạng
+     */
+    public function getFormattedDuration(): string
+    {
+        $hours = floor($this->duration / 60);
+        $minutes = $this->duration % 60;
+
+        if ($hours > 0) {
+            return sprintf('%d giờ %d phút', $hours, $minutes);
+        }
+
+        return sprintf('%d phút', $minutes);
+    }
+
+    /**
+     * Lấy giá khóa học dưới dạng định dạng
+     */
+    public function getFormattedPrice(): string
+    {
+        if ($this->price == 0) {
+            return 'Miễn phí';
+        }
+        return number_format($this->price, 0) . ' đ';
+    }
+
+    /**
+     * Lấy tổng số học viên khóa học
+     */
+    public function getTotalStudents(): int
     {
         return $this->enrollments()->count();
     }
 
     /**
-     * Calculate the total revenue from orders
+     * Lấy tỉ lệ hoàn thành khóa học
      */
-    public function totalRevenue(): float
+    public function getCompletionRate(): float
     {
-        return $this->orders()
-            ->where('orderStatusId', 3)
-            ->sum('paymentAmount');
+        $total = $this->enrollments()->count();
+        if ($total === 0) {
+            return 0;
+        }
+
+        $completed = $this->enrollments()
+            ->where('status', 'completed')
+            ->count();
+
+        return round(($completed / $total) * 100, 2);
     }
 
     /**
-     * Calculate the total duration of all videos in the course
+     * Lấy đánh giá trung bình khóa học
      */
-    public function totalDuration(): string
+    public function getAverageRating(): float
     {
-        $totalSeconds = $this->lessons()
-            ->join('resources', function($join) {
-                $join->on('lessons.id', '=', 'resources.resourceable_id')
-                    ->where('resourceable_type', 'App\\Models\\Lesson')
-                    ->where('file_type', 'video');
-            })
-            ->sum('resources.duration');
-            
-        $hours = floor($totalSeconds / 3600);
-        $minutes = floor(($totalSeconds % 3600) / 60);
-        $seconds = $totalSeconds % 60;
-
-        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+        return $this->ratings()->avg('rating') ?? 0;
     }
 
     /**
-     * Calculate the total number of tests in the course
+     * Lấy tổng số bài học khóa học
      */
-    public function totalTests(): int
+    public function getTotalLessons(): int
     {
-        $lessons = $this->lessons()->get();
-        $lessonTests = $lessons->sum(function($lesson) {
-            return $lesson->totalTests();
-        });
-        $finalTests = $this->finalExams()->count();
-        return $lessonTests + $finalTests;
+        return $this->lessons()->count();
     }
 
     /**
-     * Check if a user is enrolled in this course
+     * Kiểm tra xem học viên đã đăng ký khóa học chưa
      */
-    public function isEnrolledByUser($userId): bool
+    public function hasEnrolledStudent($studentId): bool
     {
         return $this->enrollments()
-            ->where('user_id', $userId)
-            ->whereNull('deleted_at')
+            ->where('student_id', $studentId)
             ->exists();
     }
 
     /**
-     * Check if this course requires enrollment in a class
+     * Kiểm tra xem học viên đã hoàn thành khóa học chưa
      */
-    public function requiresClass(): bool
+    public function isCompleted($studentId): bool
     {
-        return $this->course_type === 'instructor_led' || 
-               ($this->course_type === 'hybrid' && $this->requires_enrollment);
+        $enrollment = $this->enrollments()
+            ->where('student_id', $studentId)
+            ->first();
+
+        return $enrollment && $enrollment->isCompleted();
     }
-    
-    /**
-     * Check if this course is self-paced (can be studied independently)
-     */
-    public function isSelfPaced(): bool
-    {
-        return $this->course_type === 'self_paced' || $this->course_type === 'hybrid';
-    }
-    
-    /**
-     * Get available classes for this course
-     */
-    public function availableClasses()
-    {
-        return $this->hasMany(ClassRoom::class, 'course_id')
-            ->where('status', 'active')
-            ->where('start_date', '>', now())
-            ->where('is_active', true)
-            ->where(function($query) {
-                $query->where('current_students', '<', 'max_students')
-                      ->orWhereNull('max_students');
-            });
-    }
-}
+} 

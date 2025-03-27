@@ -4,65 +4,35 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Certificate;
+use Illuminate\Support\Str;
 
 class CertificateSeeder extends Seeder
 {
     public function run()
     {
-        Certificate::create([
-            'userId' => 1,
-            'courseId' => 1,
-            'certificateNumber' => 'CERT-001',
-            'issueDate' => now(),
-            'file' => 'path/to/certificate1.pdf',
-            'status' => 'issued',
-            'note' => null,
-            'approvedBy' => null,
-            'approvedAt' => null
-        ]);
-        Certificate::create([
-            'userId' => 2,
-            'courseId' => 1,
-            'certificateNumber' => 'CERT-002',
-            'issueDate' => now(),
-            'file' => 'path/to/certificate2.pdf',
-            'status' => 'issued',
-            'note' => null,
-            'approvedBy' => null,
-            'approvedAt' => null
-        ]);
-        Certificate::create([
-            'userId' => 3,
-            'courseId' => 2,
-            'certificateNumber' => 'CERT-003',
-            'issueDate' => now(),
-            'file' => 'path/to/certificate3.pdf',
-            'status' => 'issued',
-            'note' => null,
-            'approvedBy' => null,
-            'approvedAt' => null
-        ]);
-        Certificate::create([
-            'userId' => 4,
-            'courseId' => 2,
-            'certificateNumber' => 'CERT-004',
-            'issueDate' => now(),
-            'file' => 'path/to/certificate4.pdf',
-            'status' => 'issued',
-            'note' => null,
-            'approvedBy' => null,
-            'approvedAt' => null
-        ]);
-        Certificate::create([
-            'userId' => 5,
-            'courseId' => 3,
-            'certificateNumber' => 'CERT-005',
-            'issueDate' => now(),
-            'file' => 'path/to/certificate5.pdf',
-            'status' => 'issued',
-            'note' => null,
-            'approvedBy' => null,
-            'approvedAt' => null
-        ]);
+        $certificates = [
+            [
+                'user_id' => 3,
+                'course_id' => 1,
+                'enrollment_id' => 1,
+                'certificate_number' => Certificate::generateCertificateNumber(),
+                'verification_code' => Str::uuid(),
+                'title' => 'Laravel Basics Certificate',
+                'issue_date' => '2024-03-15',
+                'expiry_date' => '2026-03-15',
+                'certificate_url' => 'certificates/laravel-basics-user3.pdf',
+                'meta_data' => json_encode([
+                    'grade' => 'A',
+                    'completion_percentage' => 100,
+                    'hours_spent' => 40
+                ]),
+                'is_verified' => true
+            ],
+            // Thêm 9 certificate khác...
+        ];
+
+        foreach ($certificates as $certificate) {
+            Certificate::create($certificate);
+        }
     }
 }

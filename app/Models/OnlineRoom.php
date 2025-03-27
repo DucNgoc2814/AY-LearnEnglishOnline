@@ -2,173 +2,271 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Carbon\Carbon;
 
 class OnlineRoom extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'room_id',
-        'room_type',
-        'roomable_id',
         'roomable_type',
-        'title',
-        'description',
+        'roomable_id',
+        'room_id',
         'host_id',
-        'host_email',
-        'join_url',
-        'host_url',
+        'meeting_id',
         'password',
-        'scheduled_start',
-        'scheduled_end',
-        'duration_minutes',
-        'recurrence_pattern',
-        'meeting_settings',
-        'status',
         'provider',
+        'settings',
+        'start_url',
+        'join_url',
+        'start_time',
+        'duration',
         'timezone',
-        'created_by',
-        'original_zoom_session_id',
+        'status',
+        'description',
+        'is_active',
+        'original_zoom_session_id'
     ];
 
     protected $casts = [
-        'roomable_id' => 'integer',
-        'host_id' => 'string',
-        'scheduled_start' => 'datetime',
-        'scheduled_end' => 'datetime',
-        'duration_minutes' => 'integer',
-        'recurrence_pattern' => 'json',
-        'meeting_settings' => 'json',
-        'original_zoom_session_id' => 'integer',
+        'settings' => 'json',
+        'start_time' => 'datetime',
+        'duration' => 'integer',
+        'is_active' => 'boolean'
     ];
 
     /**
-     * Get the owning roomable model (course, class, exam, etc.)
+     * Lấy buổi học của phòng học online
      */
-    public function roomable(): MorphTo
+    public function session(): BelongsTo
+    {
+        return $this->belongsTo(ClassSession::class, 'session_id');
+    }
+
+    /**
+     * Lấy bản ghi của phòng học online
+     */
+    public function recording(): HasOne
+    {
+        return $this->hasOne(OnlineSessionRecording::class, 'room_id');
+    }
+
+    /**
+     * Kiểm tra xem phòng học online đã bắt đầu chưa
+     */
+    public function isStarted(): bool
+    {
+        return $this->status === 'in_progress';
+    }
+
+    /**
+     * Kiểm tra xem phòng học online đã kết thúc chưa
+     */
+    public function isEnded(): bool
+    {
+        return $this->status === 'ended';
+    }
+
+    /**
+     * Kiểm tra xem phòng học online đã lên lịch chưa
+     */
+    public function isScheduled(): bool
+    {
+        return $this->status === 'scheduled';
+    }
+
+    /**
+     * Lấy thời gian còn lại đến khi phòng học bắt đầu
+     */
+    public function getTimeToStartAttribute(): ?string
+    {
+        if (!$this->start_time || $this->isStarted() || $this->isEnded()) {
+            return null;
+        }
+        
+        $now = Carbon::now();
+        if ($now->greaterThan($this->start_time)) {
+            return 'Đã quá giờ bắt đầu';
+        }
+        
+        $diff = $now->diff($this->start_time);
+        
+        if ($diff->days > 0) {
+            return sprintf('%d ngày %d giờ', $diff->days, $diff->h);
+        }
+        
+        if ($diff->h > 0) {
+            return sprintf('%d giờ %d phút', $diff->h, $diff->i);
+        }
+        
+        return sprintf('%d phút', $diff->i);
+    }
+
+    /**
+     * Bắt đầu phòng học online
+     */
+    public function start()
+    {
+        $this->start_time = now();
+        $this->status = 'in_progress';
+        $this->save();
+    }
+
+    /**
+     * Kết thúc phòng học online
+     */
+    public function end()
+    {
+        $this->end_time = now();
+        $this->calculateDuration();
+        $this->status = 'ended';
+        $this->save();
+    }
+
+    /**
+     * Hủy phòng học online
+     */
+    public function cancel(): self
+    {
+        $this->status = 'cancelled';
+        $this->save();
+        return $this;
+    }
+
+    /**
+     * Tạo URL tham gia cho học viên
+     */
+    public function generateStudentJoinUrl(User $user, bool $isHost = false): string
+    {
+        // Xử lý URL tùy theo provider
+        switch ($this->provider) {
+            case 'zoom':
+                $password = $isHost ? $this->password : $this->password;
+                $url = $this->join_url;
+                
+                if (strpos($url, '?') !== false) {
+                    $url .= '&';
+                } else {
+                    $url .= '?';
+                }
+                
+                $url .= 'name=' . urlencode($user->name);
+                
+                if ($password) {
+                    $url .= '&pwd=' . urlencode($password);
+                }
+                
+                return $url;
+                
+            case 'google_meet':
+                return $this->join_url;
+                
+            case 'microsoft_teams':
+                return $this->join_url;
+                
+            default:
+                return $this->join_url;
+        }
+    }
+
+    /**
+     * Scope lấy phòng học online sắp diễn ra
+     */
+    public function scopeUpcoming($query)
+    {
+        return $query->where('status', 'scheduled')
+            ->where('start_time', '>', Carbon::now());
+    }
+
+    /**
+     * Scope lấy phòng học online đang diễn ra
+     */
+    public function scopeInProgress($query)
+    {
+        return $query->where('status', 'in_progress');
+    }
+
+    /**
+     * Scope lấy phòng học online đã kết thúc
+     */
+    public function scopeEnded($query)
+    {
+        return $query->where('status', 'ended');
+    }
+
+    /**
+     * Scope lấy phòng học online đã hủy
+     */
+    public function scopeCancelled($query)
+    {
+        return $query->where('status', 'cancelled');
+    }
+
+    /**
+     * Scope lấy phòng học online theo nhà cung cấp
+     */
+    public function scopeByProvider($query, $provider)
+    {
+        return $query->where('provider', $provider);
+    }
+
+    public function calculateDuration()
+    {
+        if ($this->start_time && $this->end_time) {
+            $this->duration = $this->end_time->diffInMinutes($this->start_time);
+        }
+    }
+
+    public function getFormattedDuration(): string
+    {
+        $hours = floor($this->duration / 60);
+        $minutes = $this->duration % 60;
+
+        if ($hours > 0) {
+            return sprintf('%d giờ %d phút', $hours, $minutes);
+        }
+
+        return sprintf('%d phút', $minutes);
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'in_progress';
+    }
+
+    public function isInProgress(): bool
+    {
+        return $this->status === 'in_progress';
+    }
+
+    public function getTotalParticipants(): int
+    {
+        return $this->participants()->count();
+    }
+
+    public function host(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'host_id');
+    }
+
+    public function attendanceDetails(): HasMany
+    {
+        return $this->hasMany(OnlineAttendanceDetail::class);
+    }
+
+    public function roomable()
     {
         return $this->morphTo();
     }
 
-    /**
-     * Get the recordings for this room
-     */
-    public function recordings(): HasMany
+    public function recordings()
     {
-        return $this->hasMany(OnlineSessionRecording::class, 'online_room_id');
-    }
-
-    /**
-     * Get the attendance details for this room
-     */
-    public function attendanceDetails(): HasMany
-    {
-        return $this->hasMany(OnlineAttendanceDetail::class, 'online_room_id');
-    }
-
-    /**
-     * Check if the online room is active
-     */
-    public function isActive(): bool
-    {
-        return $this->status === 'active' || $this->status === 'in_progress';
-    }
-
-    /**
-     * Check if the online room is currently in session
-     */
-    public function isInSession(): bool
-    {
-        $now = Carbon::now();
-        
-        // If room is not active, it's not in session
-        if (!$this->isActive()) {
-            return false;
-        }
-        
-        // If status is explicitly set to in_progress, it's in session
-        if ($this->status === 'in_progress') {
-            return true;
-        }
-        
-        // Check if current time is between scheduled start and end
-        return $now->between(
-            $this->scheduled_start, 
-            $this->scheduled_end ?? $this->scheduled_start->copy()->addMinutes($this->duration_minutes)
-        );
-    }
-
-    /**
-     * Get the next occurrence of this room if it's recurring
-     */
-    public function getNextOccurrence(): ?Carbon
-    {
-        // If room is not recurring, return scheduled start
-        if (empty($this->recurrence_pattern)) {
-            return $this->scheduled_start;
-        }
-        
-        $now = Carbon::now();
-        
-        // If scheduled start is in the future, return it
-        if ($this->scheduled_start->gt($now)) {
-            return $this->scheduled_start;
-        }
-        
-        // Simple implementation for daily, weekly, and monthly patterns
-        // In a real implementation, you'd want to use a more robust solution
-        $pattern = $this->recurrence_pattern;
-        $type = $pattern['type'] ?? null;
-        
-        if (!$type) {
-            return null;
-        }
-        
-        $nextDate = $this->scheduled_start->copy();
-        
-        while ($nextDate->lt($now)) {
-            if ($type === 'daily') {
-                $nextDate->addDays($pattern['interval'] ?? 1);
-            } elseif ($type === 'weekly') {
-                $nextDate->addWeeks($pattern['interval'] ?? 1);
-            } elseif ($type === 'monthly') {
-                $nextDate->addMonths($pattern['interval'] ?? 1);
-            }
-        }
-        
-        return $nextDate;
-    }
-
-    /**
-     * Get the formatted duration
-     */
-    public function getFormattedDuration(): string
-    {
-        $hours = floor($this->duration_minutes / 60);
-        $minutes = $this->duration_minutes % 60;
-        
-        if ($hours > 0) {
-            return sprintf('%d:%02d hours', $hours, $minutes);
-        } else {
-            return sprintf('%d minutes', $minutes);
-        }
-    }
-
-    /**
-     * Get the list of participants who attended this room
-     */
-    public function getParticipants()
-    {
-        return $this->attendanceDetails()
-            ->with('user')
-            ->select('user_id')
-            ->distinct()
-            ->get()
-            ->pluck('user');
+        return $this->hasMany(OnlineSessionRecording::class);
     }
 } 

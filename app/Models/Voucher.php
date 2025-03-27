@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Carbon\Carbon;
 
 class Voucher extends Model
 {
@@ -13,36 +12,34 @@ class Voucher extends Model
     protected $fillable = [
         'code',
         'sale',
-        'startDate',
-        'endDate',
-        'usageCount',
-        'maxUsage',
-        'minOrderValue',
-        'maxDiscount'
+        'start_date',
+        'end_date',
+        'usage_count',
+        'max_usage',
+        'min_order_value',
+        'max_discount'
     ];
 
     protected $casts = [
-        'sale' => 'integer',
-        'startDate' => 'datetime',
-        'endDate' => 'datetime',
-        'usageCount' => 'integer',
-        'maxUsage' => 'integer',
-        'minOrderValue' => 'integer',
-        'maxDiscount' => 'integer'
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+        'usage_count' => 'integer',
+        'max_usage' => 'integer',
+        'min_order_value' => 'integer',
+        'max_discount' => 'integer'
     ];
 
+    // Relationships
     public function orders()
     {
-        return $this->hasMany(Order::class, 'voucherId');
+        return $this->hasMany(Order::class, 'voucher_code', 'code');
     }
 
-    public function isValid()
+    // Check if voucher is valid
+    public function isValid(): bool
     {
-        $now = time();
-        $startTimestamp = strtotime($this->startDate);
-        $endTimestamp = strtotime($this->endDate);
-        $isDateValid = ($now >= $startTimestamp && $now <= $endTimestamp) || ($startTimestamp > $now);
-        $isUsageValid = ($this->maxUsage === null || $this->usageCount < $this->maxUsage);
-        return $isDateValid && $isUsageValid;
+        return $this->start_date <= now() &&
+            $this->end_date >= now() &&
+            ($this->max_usage === null || $this->usage_count < $this->max_usage);
     }
 } 

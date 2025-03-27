@@ -2,46 +2,33 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RecordingView extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'recording_id',
         'user_id',
-        'session_id',
-        'start_time',
-        'end_time',
-        'duration_seconds',
-        'completion_percentage',
-        'watch_position',
-        'view_count',
-        'last_viewed_at',
+        'view_date',
+        'duration_watched',
         'ip_address',
-        'device_info',
-        'is_downloaded',
+        'device',
+        'browser',
+        'notes'
     ];
 
     protected $casts = [
-        'recording_id' => 'integer',
-        'user_id' => 'integer',
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
-        'duration_seconds' => 'integer',
-        'completion_percentage' => 'decimal:2',
-        'watch_position' => 'integer',
-        'view_count' => 'integer',
-        'last_viewed_at' => 'datetime',
-        'device_info' => 'json',
-        'is_downloaded' => 'boolean',
+        'view_date' => 'datetime',
+        'duration_watched' => 'integer'
     ];
 
     /**
-     * Get the recording associated with this view
+     * Lấy bản ghi được xem
      */
     public function recording(): BelongsTo
     {
@@ -49,101 +36,107 @@ class RecordingView extends Model
     }
 
     /**
-     * Get the user associated with this view
+     * Lấy người dùng đã xem
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
+    }
+
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Student::class);
     }
 
     /**
-     * Check if the recording was watched completely
+     * Cập nhật thời gian xem và vị trí cuối cùng
+     */
+    public function updateProgress($currentTime)
+    {
+        $totalDuration = $this->recording->duration;
+        if ($totalDuration > 0) {
+            $this->progress = min(100, ($currentTime / $totalDuration) * 100);
+            $this->duration = $currentTime;
+            $this->save();
+        }
+    }
+
+    /**
+     * Kiểm tra xem video đã xem xong chưa
      */
     public function isCompleted(): bool
     {
-        return $this->completion_percentage >= 90;
+        return $this->progress >= 90;
     }
 
     /**
-     * Get the formatted duration
+     * Format thời lượng xem theo định dạng phút:giây
      */
     public function getFormattedDuration(): string
     {
-        $hours = floor($this->duration_seconds / 3600);
-        $minutes = floor(($this->duration_seconds % 3600) / 60);
-        $seconds = $this->duration_seconds % 60;
-        
+        $hours = floor($this->duration / 3600);
+        $minutes = floor(($this->duration % 3600) / 60);
+        $seconds = $this->duration % 60;
+
         if ($hours > 0) {
             return sprintf('%d:%02d:%02d', $hours, $minutes, $seconds);
-        } else {
-            return sprintf('%d:%02d', $minutes, $seconds);
         }
+
+        return sprintf('%02d:%02d', $minutes, $seconds);
     }
 
     /**
-     * Get the formatted watch position
+     * Lấy loại thiết bị từ user agent
      */
-    public function getFormattedWatchPosition(): string
+    public function getDeviceTypeFromUserAgent(): string
     {
-        $hours = floor($this->watch_position / 3600);
-        $minutes = floor(($this->watch_position % 3600) / 60);
-        $seconds = $this->watch_position % 60;
+        $userAgent = $this->user_agent;
         
-        if ($hours > 0) {
-            return sprintf('%d:%02d:%02d', $hours, $minutes, $seconds);
-        } else {
-            return sprintf('%d:%02d', $minutes, $seconds);
+        if (preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i', $userAgent)) {
+            return 'mobile';
         }
+        
+        if (preg_match('/android|ipad|playbook|silk/i', $userAgent)) {
+            return 'tablet';
+        }
+        
+        return 'desktop';
     }
 
     /**
-     * Update the view with the current watch position
-     * Returns the updated completion percentage
+     * Scope lấy các lượt xem đã hoàn thành
      */
-    public function updateWatchPosition(int $position, int $totalDuration = null): float
+    public function scopeCompleted($query)
     {
-        $this->watch_position = $position;
-        $this->last_viewed_at = now();
-        
-        // If total duration is provided, update completion percentage
-        if ($totalDuration) {
-            $this->completion_percentage = min(100, ($position / $totalDuration) * 100);
-        }
-        
-        $this->save();
-        
-        return $this->completion_percentage;
+        return $query->where('progress', '>=', 90);
     }
 
     /**
-     * Update the view time for a recording
+     * Scope lấy các lượt xem theo loại thiết bị
      */
-    public function recordViewTime(int $duration): void
+    public function scopeByDevice($query, string $deviceType)
     {
-        $this->duration_seconds += $duration;
-        $this->end_time = now();
-        $this->save();
+        return $query->where('device_type', $deviceType);
     }
 
     /**
-     * Get the device type from device info
+     * Scope lấy các lượt xem trong khoảng thời gian
      */
-    public function getDeviceType(): string
+    public function scopeInPeriod($query, $startDate, $endDate)
     {
-        $deviceInfo = $this->device_info;
-        
-        if (isset($deviceInfo['user_agent'])) {
-            $ua = $deviceInfo['user_agent'];
-            
-            if (preg_match('/mobile|android|iphone/i', $ua)) {
-                return 'Mobile';
-            } elseif (preg_match('/ipad|tablet/i', $ua)) {
-                return 'Tablet';
-            } else {
-                return 'Desktop';
-            }
+        return $query->whereBetween('viewed_at', [$startDate, $endDate]);
+    }
+
+    public function getFormattedProgress(): string
+    {
+        return round($this->progress * 100) . '%';
+    }
+
+    public function calculateDuration()
+    {
+        if ($this->started_at && $this->ended_at) {
+            $this->duration = $this->ended_at->diffInSeconds($this->started_at);
+            $this->save();
         }
-        
-        return 'Unknown';
     }
 } 

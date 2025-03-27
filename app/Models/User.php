@@ -2,42 +2,82 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'phoneNumber',
-        'birthDate',
-        'authGoogleId',
+        'phone_number',
+        'birth_date',
+        'auth_google_id',
         'role',
-        'roleToken',
-        'refreshToken'
+        'role_token',
+        'refresh_token',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
-        'roleToken',
-        'refreshToken'
+        'remember_token',
+        'role_token',
+        'refresh_token',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
-        'birthDate' => 'datetime',
         'email_verified_at' => 'datetime',
+        'birth_date' => 'datetime',
+        'password' => 'hashed',
     ];
+
+    // Relationships
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
 
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class);
+    }
+
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 
     public function ratings()
@@ -45,47 +85,51 @@ class User extends Authenticatable
         return $this->hasMany(Rating::class);
     }
 
-    public function comments()
+    public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
 
-    public function examResults()
+    public function blogs(): HasMany
     {
-        return $this->hasMany(ExamResult::class);
+        return $this->hasMany(Blog::class);
     }
 
-    public function lessonResults()
+    public function learningLogs()
     {
-        return $this->hasMany(LessonResult::class);
-    }
-    /**
-     * Lấy tổng số khóa học đã đăng ký
-     *
-     * @return int
-     */
-    public function getTotalCoursesAttribute()
-    {
-        return $this->enrollments()->count();
+        return $this->hasMany(LearningLog::class);
     }
 
-    /**
-     * Lấy tổng số khóa học đã hoàn thành
-     *
-     * @return int
-     */
-    public function getCompletedCoursesAttribute()
+    public function roles(): HasMany
     {
-        return $this->enrollments()
-            ->where('status', 'completed')
-            ->count();
+        return $this->hasMany(Role::class);
     }
 
-    public function hasEnrolledCourse($courseId)
+    public function testResults()
     {
-        return $this->enrollments()
-            ->where('course_id', $courseId)
-            ->where('status', 'active')
-            ->exists();
+        return $this->hasMany(TestResult::class);
+    }
+
+    // Scopes
+    public function scopeAdmin($query)
+    {
+        return $query->where('role', 'admin');
+    }
+
+    public function scopeRegularUsers($query)
+    {
+        return $query->where('role', 'user');
+    }
+
+    // Methods
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function hasPermission($permission): bool
+    {
+        // Thực hiện kiểm tra quyền
+        return true;
     }
 }

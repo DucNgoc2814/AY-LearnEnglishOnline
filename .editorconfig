@@ -16,3 +16,43 @@ indent_size = 2
 
 [docker-compose.yml]
 indent_size = 4
+
+# PHP specific settings (PSR-12 compliant)
+[*.php]
+indent_size = 4
+indent_style = space
+max_line_length = 120
+
+# Blade templates
+[*.blade.php]
+indent_size = 4
+indent_style = space
+
+# JavaScript, TypeScript, and JSON files
+[*.{js,ts,jsx,tsx,json}]
+indent_size = 2
+indent_style = space
+
+# CSS, SCSS, and Tailwind related files
+[*.{css,scss,sass}]
+indent_size = 2
+indent_style = space
+
+# Admin area (Tailwind specific)
+[resources/views/admin/**/*.blade.php]
+indent_size = 2
+indent_style = space
+
+# Client area (theme specific)
+[resources/views/client/**/*.blade.php]
+indent_size = 4
+indent_style = space
+
+# Laravel specific files
+[*.{php,blade.php}]
+max_line_length = 120
+
+# Configuration files
+[*.{xml,conf}]
+indent_size = 2
+indent_style = space

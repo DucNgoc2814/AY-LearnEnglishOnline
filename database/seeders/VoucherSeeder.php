@@ -9,10 +9,32 @@ class VoucherSeeder extends Seeder
 {
     public function run()
     {
-        Voucher::create(['code' => 'DISCOUNT10', 'sale' => 10, 'startDate' => now(), 'endDate' => now()->addDays(30), 'usageCount' => 0]);
-        Voucher::create(['code' => 'DISCOUNT20', 'sale' => 20, 'startDate' => now(), 'endDate' => now()->addDays(30), 'usageCount' => 0]);
-        Voucher::create(['code' => 'DISCOUNT30', 'sale' => 30, 'startDate' => now(), 'endDate' => now()->addDays(30), 'usageCount' => 0]);
-        Voucher::create(['code' => 'DISCOUNT40', 'sale' => 40, 'startDate' => now(), 'endDate' => now()->addDays(30), 'usageCount' => 0]);
-        Voucher::create(['code' => 'DISCOUNT50', 'sale' => 50, 'startDate' => now(), 'endDate' => now()->addDays(30), 'usageCount' => 0]);
+        $vouchers = [
+            [
+                'code' => 'WELCOME2024',
+                'sale' => 10,
+                'start_date' => '2024-01-01 00:00:00',
+                'end_date' => '2024-12-31 23:59:59',
+                'max_usage' => 100,
+                'usage_count' => 0,
+                'min_order_value' => 1000000,
+                'max_discount' => 500000
+            ],
+            [
+                'code' => 'NEWYEAR24',
+                'sale' => 200000,
+                'start_date' => '2024-01-01 00:00:00',
+                'end_date' => '2024-01-31 23:59:59',
+                'max_usage' => 50,
+                'usage_count' => 0,
+                'min_order_value' => 1500000,
+                'max_discount' => 200000
+            ],
+            // Thêm 8 voucher khác...
+        ];
+
+        foreach ($vouchers as $voucher) {
+            Voucher::create($voucher);
+        }
     }
-}
+} 

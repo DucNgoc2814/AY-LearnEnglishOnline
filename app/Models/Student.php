@@ -2,56 +2,273 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Student extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'userId',
-        'studentCode',
-        'fullName',
-        'dateOfBirth',
+        'user_id',
+        'student_code',
+        'full_name',
+        'date_of_birth',
         'gender',
         'phone',
         'address',
-        'avatar',
-        'bio',
-        'parent1Name',
-        'parent1Relationship',
-        'parent1Phone',
-        'parent1Email',
-        'parent1Occupation',
-        'parent1IsEmergencyContact',
-        'parent2Name',
-        'parent2Relationship',
-        'parent2Phone',
-        'parent2Email',
-        'parent2Occupation',
-        'parent2IsEmergencyContact',
-        'isActive'
+        'school',
+        'grade',
+        'parent1_name',
+        'parent1_phone',
+        'parent1_email',
+        'parent1_occupation',
+        'parent1_is_emergency_contact',
+        'parent2_name',
+        'parent2_phone',
+        'parent2_email',
+        'parent2_occupation',
+        'parent2_is_emergency_contact',
+        'is_active'
     ];
 
     protected $casts = [
-        'dateOfBirth' => 'date',
-        'parent1IsEmergencyContact' => 'boolean',
-        'parent2IsEmergencyContact' => 'boolean',
-        'isActive' => 'boolean'
+        'date_of_birth' => 'date',
+        'parent1_is_emergency_contact' => 'boolean',
+        'parent2_is_emergency_contact' => 'boolean',
+        'is_active' => 'boolean'
     ];
 
+    /**
+     * Lấy user liên kết với học viên
+     */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'userId');
+        return $this->belongsTo(User::class);
     }
 
+    /**
+     * Lấy các lớp học của học viên
+     */
     public function classes(): BelongsToMany
     {
-        return $this->belongsToMany(ClassRoom::class, 'class_student', 'studentId', 'classId')
-            ->withPivot('status', 'enrollmentDate', 'completionDate', 'notes')
+        return $this->belongsToMany(ClassRoom::class, 'class_student')
+            ->withPivot(['status', 'payment_date', 'invoice_number', 'enrollment_date', 'completion_date', 'notes'])
             ->withTimestamps();
+    }
+
+    /**
+     * Lấy danh sách điểm danh của học viên
+     */
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    /**
+     * Lấy danh sách kết quả hoạt động của học viên
+     */
+    public function activityResults(): HasMany
+    {
+        return $this->hasMany(ActivityResult::class);
+    }
+
+    /**
+     * Lấy tên đầy đủ của học viên
+     */
+    public function getFullName(): string
+    {
+        return trim($this->first_name . ' ' . $this->last_name);
+    }
+
+    /**
+     * Kiểm tra xem học viên đã tham gia lớp học nào chưa
+     */
+    public function isEnrolledInClass($classId): bool
+    {
+        return $this->classes()->where('classes.id', $classId)->exists();
+    }
+
+    /**
+     * Tính tỷ lệ tham gia lớp học
+     */
+    public function getAttendanceRate($classId): float
+    {
+        $classSessionsCount = ClassSession::where('class_id', $classId)->count();
+        
+        if ($classSessionsCount === 0) {
+            return 0;
+        }
+        
+        $attendedCount = $this->attendances()
+            ->whereHas('session', function ($query) use ($classId) {
+                $query->where('class_id', $classId);
+            })
+            ->whereIn('status', ['present', 'late'])
+            ->count();
+        
+        return ($attendedCount / $classSessionsCount) * 100;
+    }
+
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function certificates(): HasMany
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
+    public function learningProgress(): HasOne
+    {
+        return $this->hasOne(LearningProgress::class);
+    }
+
+    // Scopes
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    public function scopeInactive($query)
+    {
+        return $query->where('status', 'inactive');
+    }
+
+    // Methods
+    public function getAvatarUrl(): string
+    {
+        if ($this->avatar) {
+            return asset('storage/' . $this->avatar);
+        }
+        return asset('images/default-avatar.png');
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    public function isEnrolledIn($courseId): bool
+    {
+        return $this->enrollments()
+            ->where('course_id', $courseId)
+            ->where('status', 'active')
+            ->exists();
+    }
+
+    public function getEnrollmentProgress($courseId): float
+    {
+        $enrollment = $this->enrollments()
+            ->where('course_id', $courseId)
+            ->first();
+
+        return $enrollment ? $enrollment->progress : 0;
+    }
+
+    public function hasCompletedCourse($courseId): bool
+    {
+        $enrollment = $this->enrollments()
+            ->where('course_id', $courseId)
+            ->first();
+
+        return $enrollment && $enrollment->isCompleted();
+    }
+
+    public function hasCertificateFor($courseId): bool
+    {
+        return $this->certificates()
+            ->where('course_id', $courseId)
+            ->exists();
+    }
+
+    public function getTotalEnrollments(): int
+    {
+        return $this->enrollments()->count();
+    }
+
+    public function getCompletedEnrollments(): int
+    {
+        return $this->enrollments()
+            ->where('status', 'completed')
+            ->count();
+    }
+
+    public function getTotalCertificates(): int
+    {
+        return $this->certificates()->count();
+    }
+
+    public function getAverageProgress(): float
+    {
+        $enrollments = $this->enrollments;
+        if ($enrollments->isEmpty()) {
+            return 0;
+        }
+
+        return round($enrollments->avg('progress'), 2);
+    }
+
+    public function getEmergencyContact()
+    {
+        if ($this->parent1_is_emergency_contact) {
+            return [
+                'name' => $this->parent1_name,
+                'relationship' => $this->parent1_relationship,
+                'phone' => $this->parent1_phone,
+                'email' => $this->parent1_email
+            ];
+        }
+
+        if ($this->parent2_is_emergency_contact) {
+            return [
+                'name' => $this->parent2_name,
+                'relationship' => $this->parent2_relationship,
+                'phone' => $this->parent2_phone,
+                'email' => $this->parent2_email
+            ];
+        }
+
+        return null;
+    }
+
+    public function getFullParentInfo()
+    {
+        $parents = [];
+
+        if ($this->parent1_name) {
+            $parents[] = [
+                'name' => $this->parent1_name,
+                'relationship' => $this->parent1_relationship,
+                'phone' => $this->parent1_phone,
+                'email' => $this->parent1_email,
+                'occupation' => $this->parent1_occupation,
+                'is_emergency_contact' => $this->parent1_is_emergency_contact
+            ];
+        }
+
+        if ($this->parent2_name) {
+            $parents[] = [
+                'name' => $this->parent2_name,
+                'relationship' => $this->parent2_relationship,
+                'phone' => $this->parent2_phone,
+                'email' => $this->parent2_email,
+                'occupation' => $this->parent2_occupation,
+                'is_emergency_contact' => $this->parent2_is_emergency_contact
+            ];
+        }
+
+        return $parents;
+    }
+
+    public function testResults()
+    {
+        return $this->hasMany(TestResult::class, 'user_id', 'user_id');
     }
 } 

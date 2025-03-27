@@ -2,108 +2,98 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use WhichBrowser\Parser;
 
 class OnlineAttendanceDetail extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'online_room_id',
-        'user_id',
+        'attendance_id',
         'join_time',
         'leave_time',
         'duration_minutes',
-        'participant_id',
-        'participant_name',
-        'participant_email',
-        'attendance_status',
         'ip_address',
         'device_info',
-        'participation_data',
-        'notes',
-        'original_attendance_detail_id',
+        'camera_on',
+        'microphone_on',
+        'screen_sharing'
     ];
 
     protected $casts = [
-        'online_room_id' => 'integer',
-        'user_id' => 'integer',
         'join_time' => 'datetime',
         'leave_time' => 'datetime',
         'duration_minutes' => 'integer',
-        'device_info' => 'json',
-        'participation_data' => 'json',
-        'original_attendance_detail_id' => 'integer',
+        'camera_on' => 'boolean',
+        'microphone_on' => 'boolean',
+        'screen_sharing' => 'boolean'
     ];
 
-    /**
-     * Get the online room associated with this attendance detail
-     */
-    public function onlineRoom(): BelongsTo
+    // Relationships
+    public function attendance(): BelongsTo
     {
-        return $this->belongsTo(OnlineRoom::class, 'online_room_id');
+        return $this->belongsTo(Attendance::class);
     }
 
-    /**
-     * Get the user associated with this attendance detail
-     */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the formatted duration
-     */
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    // Methods
+    public function getDeviceInfo(): array
+    {
+        $parser = new Parser($this->device_info);
+        
+        return [
+            'browser' => $parser->browser->toString(),
+            'os' => $parser->os->toString(),
+            'device' => $parser->device->toString(),
+        ];
+    }
+
+    public function calculateDuration()
+    {
+        if ($this->join_time && $this->leave_time) {
+            $this->duration_minutes = $this->leave_time->diffInMinutes($this->join_time);
+            $this->save();
+        }
+    }
+
     public function getFormattedDuration(): string
     {
         $hours = floor($this->duration_minutes / 60);
         $minutes = $this->duration_minutes % 60;
-        
+
         if ($hours > 0) {
-            return sprintf('%d:%02d hours', $hours, $minutes);
-        } else {
-            return sprintf('%d minutes', $minutes);
+            return sprintf('%d:%02d', $hours, $minutes);
         }
+
+        return sprintf('%d minutes', $minutes);
     }
 
-    /**
-     * Check if the user attended for the minimum required time
-     */
-    public function hasMinimumAttendance(int $minimumMinutes = 15): bool
+    // Scopes
+    public function scopeToday($query)
     {
-        return $this->duration_minutes >= $minimumMinutes;
+        return $query->whereDate('join_time', today());
     }
 
-    /**
-     * Check if the user is currently in the meeting
-     */
-    public function isActive(): bool
+    public function scopeLoggedIn($query)
     {
-        return $this->join_time && !$this->leave_time;
+        return $query->whereNotNull('join_time')->whereNull('leave_time');
     }
 
-    /**
-     * Calculate the attendance percentage for a specific online room
-     */
-    public static function getAttendancePercentage(int $onlineRoomId, int $userId): float
+    public function scopeCompleted($query)
     {
-        $room = OnlineRoom::find($onlineRoomId);
-        if (!$room) {
-            return 0;
-        }
-        
-        $totalSessionMinutes = $room->duration_minutes;
-        if ($totalSessionMinutes <= 0) {
-            return 0;
-        }
-        
-        $totalAttendanceMinutes = static::where('online_room_id', $onlineRoomId)
-            ->where('user_id', $userId)
-            ->sum('duration_minutes');
-            
-        return min(100, ($totalAttendanceMinutes / $totalSessionMinutes) * 100);
+        return $query->whereNotNull('join_time')->whereNotNull('leave_time');
     }
 } 

@@ -9,65 +9,51 @@ class OrderSeeder extends Seeder
 {
     public function run()
     {
-        Order::create([
-            'userId' => 1,
-            'courseId' => 1,
-            'paymentAmount' => 100.00,
-            'price' => 100.00,
-            'paymentMethod' => 'credit_card',
-            'orderStatusId' => 1,
-            'transactionId' => 'txn_123456',
-            'paymentDate' => now(),
-            'voucherCode' => null,
-            'salePercentage' => 0
-        ]);
-        Order::create([
-            'userId' => 2,
-            'courseId' => 2,
-            'paymentAmount' => 150.00,
-            'price' => 150.00,
-            'paymentMethod' => 'paypal',
-            'orderStatusId' => 2,
-            'transactionId' => 'txn_123457',
-            'paymentDate' => now(),
-            'voucherCode' => null,
-            'salePercentage' => 0
-        ]);
-        Order::create([
-            'userId' => 3,
-            'courseId' => 3,
-            'paymentAmount' => 200.00,
-            'price' => 200.00,
-            'paymentMethod' => 'bank_transfer',
-            'orderStatusId' => 3,
-            'transactionId' => 'txn_123458',
-            'paymentDate' => now(),
-            'voucherCode' => null,
-            'salePercentage' => 0
-        ]);
-        Order::create([
-            'userId' => 4,
-            'courseId' => 4,
-            'paymentAmount' => 250.00,
-            'price' => 250.00,
-            'paymentMethod' => 'credit_card',
-            'orderStatusId' => 4,
-            'transactionId' => 'txn_123459',
-            'paymentDate' => now(),
-            'voucherCode' => null,
-            'salePercentage' => 0
-        ]);
-        Order::create([
-            'userId' => 5,
-            'courseId' => 5,
-            'paymentAmount' => 300.00,
-            'price' => 300.00,
-            'paymentMethod' => 'paypal',
-            'orderStatusId' => 1,
-            'transactionId' => 'txn_123460',
-            'paymentDate' => now(),
-            'voucherCode' => null,
-            'salePercentage' => 0
-        ]);
+        $orders = [
+            [
+                'user_id' => 5,
+                'course_id' => 1,
+                'order_status_id' => 1,
+                'transaction_id' => 'ORD003',
+                'payment_amount' => 1100000,
+                'price' => 1200000,
+                'sale_percentage' => 10,
+                'voucher_code' => null,
+                'payment_method' => 'bank_transfer',
+                'payment_date' => null,
+                'note' => 'Đang chờ xác nhận thanh toán'
+            ],
+            [
+                'user_id' => 3,
+                'course_id' => 1,
+                'order_status_id' => 3,
+                'transaction_id' => 'ORD001',
+                'payment_amount' => 1500000,
+                'price' => 1500000,
+                'sale_percentage' => 0,
+                'voucher_code' => null,
+                'payment_method' => 'momo',
+                'payment_date' => '2024-01-01 10:00:00',
+                'note' => 'Thanh toán khóa học Laravel Basic'
+            ],
+            [
+                'user_id' => 4,
+                'course_id' => 2,
+                'order_status_id' => 1,
+                'transaction_id' => 'TRANS002',
+                'payment_amount' => 1800000,
+                'price' => 2000000,
+                'sale_percentage' => 10,
+                'voucher_code' => 'SAVE10',
+                'payment_method' => 'vnpay',
+                'payment_date' => '2024-01-02 11:30:00',
+                'note' => 'Thanh toán khóa học React Advanced'
+            ],
+            // Thêm 7 order khác...
+        ];
+
+        foreach ($orders as $order) {
+            Order::create($order);
+        }
     }
 }
