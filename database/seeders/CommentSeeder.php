@@ -9,10 +9,30 @@ class CommentSeeder extends Seeder
 {
     public function run()
     {
-        Comment::create(['userId' => 1, 'lessonId' => 1, 'content' => 'Great lesson!']);
-        Comment::create(['userId' => 2, 'lessonId' => 1, 'content' => 'Very informative!']);
-        Comment::create(['userId' => 3, 'lessonId' => 2, 'content' => 'I learned a lot!']);
-        Comment::create(['userId' => 4, 'lessonId' => 2, 'content' => 'Excellent explanation!']);
-        Comment::create(['userId' => 5, 'lessonId' => 3, 'content' => 'Looking forward to the next lesson!']);
+        $comments = [
+            [
+                'user_id' => 3,
+                'commentable_type' => 'App\Models\Lesson',
+                'commentable_id' => 1,
+                'content' => 'Bài học rất hữu ích, cảm ơn giảng viên!',
+                'parent_id' => null,
+                'is_published' => true,
+                'likes' => 5
+            ],
+            [
+                'user_id' => 2, // teacher
+                'commentable_type' => 'App\Models\Lesson',
+                'commentable_id' => 1,
+                'content' => 'Cảm ơn bạn đã theo dõi bài giảng!',
+                'parent_id' => 1, // reply to first comment
+                'is_published' => true,
+                'likes' => 3
+            ],
+            // Thêm 8 comment khác...
+        ];
+
+        foreach ($comments as $comment) {
+            Comment::create($comment);
+        }
     }
 }

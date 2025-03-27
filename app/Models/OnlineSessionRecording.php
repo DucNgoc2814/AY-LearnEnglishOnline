@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,53 +10,44 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class OnlineSessionRecording extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'online_room_id',
-        'title',
-        'description',
-        'recording_url',
-        'download_url',
-        'duration_minutes',
-        'recorded_at',
-        'recording_type',
+        'recording_id',
+        'file_type',
         'file_size',
-        'chapters',
-        'transcript',
-        'is_processed',
-        'requires_authentication',
-        'downloadable',
+        'play_url',
+        'download_url',
+        'duration',
+        'recording_start',
+        'recording_end',
+        'status',
+        'password',
         'view_count',
         'is_active',
-        'original_video_record_id',
+        'original_video_record_id'
     ];
 
     protected $casts = [
-        'online_room_id' => 'integer',
-        'duration_minutes' => 'integer',
-        'recorded_at' => 'datetime',
         'file_size' => 'integer',
-        'chapters' => 'json',
-        'transcript' => 'json',
-        'is_processed' => 'boolean',
-        'requires_authentication' => 'boolean',
-        'downloadable' => 'boolean',
+        'duration' => 'integer',
+        'recording_start' => 'datetime',
+        'recording_end' => 'datetime',
         'view_count' => 'integer',
-        'is_active' => 'boolean',
-        'original_video_record_id' => 'integer',
+        'is_active' => 'boolean'
     ];
 
     /**
-     * Get the online room this recording belongs to
+     * Lấy phòng học online của bản ghi
      */
     public function onlineRoom(): BelongsTo
     {
-        return $this->belongsTo(OnlineRoom::class, 'online_room_id');
+        return $this->belongsTo(OnlineRoom::class);
     }
 
     /**
-     * Get all views for this recording
+     * Lấy danh sách lượt xem bản ghi
      */
     public function views(): HasMany
     {
@@ -63,132 +55,141 @@ class OnlineSessionRecording extends Model
     }
 
     /**
-     * Check if the recording is viewable by the given user
-     */
-    public function isViewableBy(User $user): bool
-    {
-        // If recording doesn't require authentication, it's viewable by all
-        if (!$this->requires_authentication) {
-            return true;
-        }
-
-        // Check if recording is active
-        if (!$this->is_active) {
-            return false;
-        }
-
-        // Get the online room
-        $room = $this->onlineRoom;
-        
-        // If room doesn't exist, not viewable
-        if (!$room) {
-            return false;
-        }
-
-        // Get the roomable entity (course or class)
-        $roomable = $room->roomable;
-        
-        // If roomable doesn't exist, not viewable
-        if (!$roomable) {
-            return false;
-        }
-
-        // If admin or instructor of the room, allow viewing
-        if ($user->hasRole(['admin', 'instructor']) && 
-            ($roomable->instructor_id == $user->id || $user->hasRole('admin'))) {
-            return true;
-        }
-
-        // Check if user is enrolled in the course/class
-        if ($roomable instanceof Course) {
-            return $roomable->isEnrolledByUser($user->id);
-        } elseif ($roomable instanceof ClassRoom) {
-            return $roomable->enrollments()
-                ->where('user_id', $user->id)
-                ->where('status', 'active')
-                ->exists();
-        }
-
-        return false;
-    }
-
-    /**
-     * Get the formatted duration of the recording
+     * Format thời lượng bản ghi theo định dạng giờ:phút:giây
      */
     public function getFormattedDuration(): string
     {
-        $hours = floor($this->duration_minutes / 60);
-        $minutes = $this->duration_minutes % 60;
-        
+        $hours = floor($this->duration / 3600);
+        $minutes = floor(($this->duration % 3600) / 60);
+        $seconds = $this->duration % 60;
+
         if ($hours > 0) {
-            return sprintf('%d:%02d hours', $hours, $minutes);
-        } else {
-            return sprintf('%d minutes', $minutes);
+            return sprintf('%d:%02d:%02d', $hours, $minutes, $seconds);
         }
+
+        return sprintf('%02d:%02d', $minutes, $seconds);
     }
 
     /**
-     * Get the formatted file size
+     * Format kích thước file theo định dạng dễ đọc (KB, MB, GB)
      */
     public function getFormattedFileSize(): string
     {
-        $size = $this->file_size;
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        
-        $i = 0;
-        while ($size >= 1024 && $i < count($units) - 1) {
+        $size = $this->file_size;
+        $unit = 0;
+
+        while ($size >= 1024 && $unit < count($units) - 1) {
             $size /= 1024;
-            $i++;
+            $unit++;
+        }
+
+        return round($size, 2) . ' ' . $units[$unit];
+    }
+
+    /**
+     * Kiểm tra xem bản ghi đã được xử lý chưa
+     */
+    public function isProcessed(): bool
+    {
+        return $this->status === 'processed';
+    }
+
+    /**
+     * Kiểm tra xem bản ghi đã xử lý thất bại chưa
+     */
+    public function isFailed(): bool
+    {
+        return $this->status === 'failed';
+    }
+
+    /**
+     * Scope lấy các bản ghi đã được xử lý
+     */
+    public function scopeProcessed($query)
+    {
+        return $query->where('status', 'processed');
+    }
+
+    /**
+     * Scope lấy các bản ghi đang được xử lý
+     */
+    public function scopeProcessing($query)
+    {
+        return $query->where('status', 'processing');
+    }
+
+    /**
+     * Scope lấy các bản ghi đã xử lý thất bại
+     */
+    public function scopeFailed($query)
+    {
+        return $query->where('status', 'failed');
+    }
+
+    /**
+     * Lấy URL bản ghi có bảo vệ (nếu cần)
+     */
+    public function getProtectedUrlAttribute(): string
+    {
+        if ($this->password) {
+            // Tạo URL có tham số token hoặc xác thực
+            return route('recordings.view', ['id' => $this->id]);
         }
         
-        return round($size, 2) . ' ' . $units[$i];
+        return $this->recording_url;
     }
 
     /**
-     * Get completion statistics for this recording
+     * Tăng lượt xem bản ghi
      */
-    public function getCompletionStats(): array
+    public function incrementViewCount(User $user = null): self
     {
-        $totalViews = $this->views()->count();
-        $completedViews = $this->views()
-            ->where('completion_percentage', '>=', 90)
-            ->count();
-            
-        $avgCompletion = $this->views()
-            ->avg('completion_percentage') ?? 0;
-            
-        return [
-            'total_views' => $totalViews,
-            'completed_views' => $completedViews,
-            'completion_rate' => $totalViews > 0 ? ($completedViews / $totalViews) * 100 : 0,
-            'avg_completion' => round($avgCompletion, 2),
-        ];
-    }
-
-    /**
-     * Record a view of this recording by a user
-     */
-    public function recordView(User $user, float $completionPercentage = 0): RecordingView
-    {
-        $view = RecordingView::firstOrNew([
-            'recording_id' => $this->id,
-            'user_id' => $user->id,
-            'session_id' => session()->getId(),
-        ]);
-        
-        $view->completion_percentage = max($view->completion_percentage ?? 0, $completionPercentage);
-        $view->view_count = ($view->view_count ?? 0) + 1;
-        $view->last_viewed_at = now();
-        $view->device_info = [
-            'user_agent' => request()->userAgent(),
-            'ip' => request()->ip(),
-        ];
-        
-        $view->save();
-        
-        // Update the overall view count
         $this->increment('view_count');
         
-        return $view;
+        if ($user) {
+            RecordingView::create([
+                'recording_id' => $this->id,
+                'user_id' => $user->id,
+                'viewed_at' => now(),
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent()
+            ]);
+        }
+        
+        return $this;
+    }
+
+    /**
+     * Tăng lượt tải bản ghi
+     */
+    public function incrementDownloadCount(): self
+    {
+        $this->increment('download_count');
+        return $this;
+    }
+
+    /**
+     * Kiểm tra xem bản ghi có khả dụng không
+     */
+    public function isAvailable(): bool
+    {
+        return $this->status === 'available';
+    }
+
+    /**
+     * Scope lấy các bản ghi phổ biến nhất
+     */
+    public function scopePopular($query)
+    {
+        return $query->orderBy('view_count', 'desc');
+    }
+
+    /**
+     * Scope lấy các bản ghi theo nhà cung cấp
+     */
+    public function scopeByProvider($query, string $provider)
+    {
+        return $query->where('provider', $provider);
     }
 } 

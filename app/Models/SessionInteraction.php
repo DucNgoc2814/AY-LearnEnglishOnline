@@ -2,32 +2,33 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SessionInteraction extends Model
 {
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'session_id',
-        'student_id',
+        'user_id',
         'type',
         'content',
-        'reaction_type',
-        'interaction_time',
         'is_private',
         'is_highlighted',
-        'is_answered',
+        'is_answered'
     ];
 
     protected $casts = [
-        'interaction_time' => 'datetime',
         'is_private' => 'boolean',
         'is_highlighted' => 'boolean',
-        'is_answered' => 'boolean',
+        'is_answered' => 'boolean'
     ];
 
     /**
-     * Get the session that owns this interaction.
+     * Lấy buổi học của tương tác
      */
     public function session(): BelongsTo
     {
@@ -35,10 +36,82 @@ class SessionInteraction extends Model
     }
 
     /**
-     * Get the student who made this interaction.
+     * Lấy học viên tạo tương tác
      */
     public function student(): BelongsTo
     {
-        return $this->belongsTo(Student::class, 'student_id');
+        return $this->belongsTo(Student::class);
+    }
+
+    /**
+     * Lấy người dùng tạo tương tác
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Scope lấy tương tác theo loại
+     */
+    public function scopeOfType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
+
+    /**
+     * Scope lấy tương tác theo học viên
+     */
+    public function scopeByStudent($query, $studentId)
+    {
+        return $query->where('student_id', $studentId);
+    }
+
+    /**
+     * Lấy độ dài tương tác dưới dạng chuỗi
+     */
+    public function getFormattedDuration(): string
+    {
+        $minutes = $this->duration;
+        $hours = floor($minutes / 60);
+        $remainingMinutes = $minutes % 60;
+
+        if ($hours > 0) {
+            return sprintf('%d giờ %d phút', $hours, $remainingMinutes);
+        }
+
+        return sprintf('%d phút', $minutes);
+    }
+
+    /**
+     * Scope lấy tương tác câu hỏi
+     */
+    public function scopeQuestion($query)
+    {
+        return $query->where('type', 'question');
+    }
+
+    /**
+     * Scope lấy tương tác câu trả lời
+     */
+    public function scopeAnswer($query)
+    {
+        return $query->where('type', 'answer');
+    }
+
+    /**
+     * Scope lấy tương tác bình luận
+     */
+    public function scopeComment($query)
+    {
+        return $query->where('type', 'comment');
+    }
+
+    /**
+     * Scope lấy tương tác bài kiểm tra
+     */
+    public function scopePoll($query)
+    {
+        return $query->where('type', 'poll');
     }
 } 

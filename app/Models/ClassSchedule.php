@@ -2,44 +2,255 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Carbon\Carbon;
 
 class ClassSchedule extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'classId',
-        'dayOfWeek',
-        'startTime',
-        'endTime',
-        'startDate',
-        'endDate',
-        'roomNumber',
+        'class_id',
+        'day_of_week',
+        'start_time',
+        'end_time',
+        'start_date',
+        'end_date',
+        'room_number',
+        'is_online',
+        'meeting_url',
         'notes',
-        'isRepeating',
-        'isActive'
+        'is_repeating',
+        'is_active'
     ];
 
     protected $casts = [
-        'startTime' => 'datetime:H:i',
-        'endTime' => 'datetime:H:i',
-        'startDate' => 'date',
-        'endDate' => 'date',
-        'isRepeating' => 'boolean',
-        'isActive' => 'boolean'
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+        'is_repeating' => 'boolean',
+        'is_active' => 'boolean',
+        'is_online' => 'boolean'
     ];
 
-    public function classRoom(): BelongsTo
+    /**
+     * Lấy lớp học của lịch học
+     */
+    public function class(): BelongsTo
     {
-        return $this->belongsTo(ClassRoom::class, 'classId');
+        return $this->belongsTo(ClassRoom::class, 'class_id');
     }
 
+    /**
+     * Lấy các buổi học theo lịch học này
+     */
     public function sessions(): HasMany
     {
-        return $this->hasMany(ClassSession::class, 'scheduleId');
+        return $this->hasMany(ClassSession::class, 'schedule_id');
+    }
+
+    /**
+     * Lấy ngày trong tuần dạng text
+     */
+    public function getDayOfWeekTextAttribute(): string
+    {
+        $days = [
+            1 => 'Thứ Hai',
+            2 => 'Thứ Ba',
+            3 => 'Thứ Tư',
+            4 => 'Thứ Năm',
+            5 => 'Thứ Sáu',
+            6 => 'Thứ Bảy',
+            0 => 'Chủ Nhật',
+        ];
+
+        return $days[$this->day_of_week] ?? 'Không xác định';
+    }
+
+    /**
+     * Lấy thời lượng của buổi học (phút)
+     */
+    public function getDuration(): int
+    {
+        return $this->start_time->diffInMinutes($this->end_time);
+    }
+
+    /**
+     * Lấy thời lượng của buổi học dạng text
+     */
+    public function getFormattedDurationAttribute(): string
+    {
+        $duration = $this->getDuration();
+        $hours = floor($duration / 60);
+        $minutes = $duration % 60;
+        
+        if ($hours > 0) {
+            return sprintf('%d giờ %d phút', $hours, $minutes);
+        }
+        
+        return sprintf('%d phút', $minutes);
+    }
+
+    /**
+     * Lấy ngày kế tiếp theo lịch học
+     */
+    public function getNextOccurrenceAttribute(): ?Carbon
+    {
+        $now = Carbon::now();
+        $targetDay = $this->day_of_week;
+        
+        // Nếu lịch học đã kết thúc
+        if ($this->end_date && $now->greaterThan($this->end_date)) {
+            return null;
+        }
+        
+        // Tìm ngày kế tiếp có cùng thứ
+        $nextDate = $now->copy();
+        while ($nextDate->dayOfWeek != $targetDay) {
+            $nextDate->addDay();
+        }
+        
+        // Nếu đã qua thời gian học trong ngày, thêm 1 tuần
+        $classTime = Carbon::parse($this->start_time);
+        $todayClassTime = $nextDate->copy()->setHour($classTime->hour)->setMinute($classTime->minute)->setSecond(0);
+        
+        if ($now->greaterThan($todayClassTime) && $now->dayOfWeek == $targetDay) {
+            $nextDate->addWeek();
+        }
+        
+        // Kiểm tra xem ngày kế tiếp có nằm trong khoảng thời gian lịch học không
+        if ($this->end_date && $nextDate->greaterThan($this->end_date)) {
+            return null;
+        }
+        
+        if ($this->start_date && $nextDate->lessThan($this->start_date)) {
+            return Carbon::parse($this->start_date);
+        }
+        
+        return $nextDate;
+    }
+
+    /**
+     * Tạo các buổi học từ lịch học
+     */
+    public function createSessions(Carbon $startDate, Carbon $endDate): array
+    {
+        $sessions = [];
+        $current = $startDate->copy();
+        $targetDay = $this->day_of_week;
+        
+        // Đảm bảo ngày bắt đầu và kết thúc nằm trong khoảng thời gian lịch học
+        if ($this->start_date && $startDate->lessThan($this->start_date)) {
+            $current = Carbon::parse($this->start_date);
+        }
+        
+        if ($this->end_date && $endDate->greaterThan($this->end_date)) {
+            $endDate = Carbon::parse($this->end_date);
+        }
+        
+        // Tìm ngày đầu tiên có cùng thứ
+        while ($current->dayOfWeek != $targetDay && $current->lessThan($endDate)) {
+            $current->addDay();
+        }
+        
+        // Tạo các buổi học
+        while ($current->lessThanOrEqualTo($endDate)) {
+            $session = ClassSession::create([
+                'class_id' => $this->class_id,
+                'schedule_id' => $this->id,
+                'session_date' => $current->toDateString(),
+                'start_time' => $this->start_time,
+                'end_time' => $this->end_time,
+                'room_number' => $this->room_number,
+                'session_type' => 'regular',
+                'topic' => 'Buổi học theo lịch',
+                'status' => 'scheduled'
+            ]);
+            
+            $sessions[] = $session;
+            
+            // Thêm 1 tuần cho buổi học kế tiếp
+            $current->addWeek();
+        }
+        
+        return $sessions;
+    }
+
+    /**
+     * Scope lấy lịch học đang hoạt động
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Scope lấy lịch học theo ngày trong tuần
+     */
+    public function scopeByDay($query, $day)
+    {
+        return $query->where('day_of_week', $day);
+    }
+
+    /**
+     * Scope lấy lịch học hiện tại (chưa kết thúc)
+     */
+    public function scopeCurrent($query)
+    {
+        return $query->where(function ($q) {
+            $q->whereNull('end_date')
+                ->orWhere('end_date', '>=', now());
+        });
+    }
+
+    public function isActive(): bool
+    {
+        if (!$this->is_active) {
+            return false;
+        }
+
+        if ($this->end_date && $this->end_date->isPast()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function overlaps(ClassSchedule $other): bool
+    {
+        if ($this->day_of_week !== $other->day_of_week) {
+            return false;
+        }
+
+        return $this->start_time < $other->end_time && $this->end_time > $other->start_time;
+    }
+
+    public function generateSessions($startDate, $endDate)
+    {
+        $dates = [];
+        $current = $startDate->copy();
+
+        while ($current <= $endDate) {
+            if ($current->format('l') === ucfirst($this->day_of_week)) {
+                $dates[] = $current->copy();
+            }
+            $current->addDay();
+        }
+
+        foreach ($dates as $date) {
+            $this->sessions()->create([
+                'class_id' => $this->class_id,
+                'session_date' => $date,
+                'start_time' => $this->start_time->format('H:i:s'),
+                'end_time' => $this->end_time->format('H:i:s'),
+                'room_number' => $this->room_number,
+                'status' => 'scheduled'
+            ]);
+        }
     }
 } 

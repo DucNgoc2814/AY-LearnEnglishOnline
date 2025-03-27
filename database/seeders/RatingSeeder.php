@@ -9,10 +9,28 @@ class RatingSeeder extends Seeder
 {
     public function run()
     {
-        Rating::create(['userId' => 1, 'courseId' => 1, 'rating' => 5, 'feedback' => 'Excellent course!']);
-        Rating::create(['userId' => 2, 'courseId' => 1, 'rating' => 4, 'feedback' => 'Very good!']);
-        Rating::create(['userId' => 3, 'courseId' => 2, 'rating' => 3, 'feedback' => 'Average course.']);
-        Rating::create(['userId' => 4, 'courseId' => 2, 'rating' => 2, 'feedback' => 'Not what I expected.']);
-        Rating::create(['userId' => 5, 'courseId' => 3, 'rating' => 5, 'feedback' => 'Loved it!']);
+        $ratings = [
+            [
+                'user_id' => 3,
+                'course_id' => 1,
+                'rating' => 5,
+                'review' => 'Khóa học rất hay và dễ hiểu. Giảng viên nhiệt tình.',
+                'is_verified' => true,
+                'is_published' => true
+            ],
+            [
+                'user_id' => 4,
+                'course_id' => 1,
+                'rating' => 4,
+                'review' => 'Nội dung phong phú, tuy nhiên cần thêm bài tập thực hành.',
+                'is_verified' => true,
+                'is_published' => true
+            ],
+            // Thêm 8 rating khác...
+        ];
+
+        foreach ($ratings as $rating) {
+            Rating::create($rating);
+        }
     }
 }

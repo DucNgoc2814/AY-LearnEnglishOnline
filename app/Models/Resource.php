@@ -2,52 +2,56 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Resource extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'title',
         'description',
-        'file_path',
+        'type',
+        'url',
         'file_type',
         'file_size',
+        'download_count',
+        'is_public',
+        'order',
+        'is_active',
+        'resourceable_type',
+        'resourceable_id',
+        'file_path',
         'file_extension',
         'file_url',
         'external_url',
-        'duration',
         'preview_path',
-        'resourceable_id',
-        'resourceable_type',
         'category',
-        'is_downloadable',
-        'is_active',
-        'is_featured',
-        'order',
         'resource_level',
         'access_type',
-        'original_lesson_video_id',
+        'is_downloadable',
+        'is_featured',
+        'duration',
+        'original_lesson_video_id'
     ];
 
     protected $casts = [
         'file_size' => 'integer',
-        'duration' => 'integer',
-        'resourceable_id' => 'integer',
-        'is_downloadable' => 'boolean',
-        'is_active' => 'boolean',
-        'is_featured' => 'boolean',
+        'download_count' => 'integer',
+        'is_public' => 'boolean',
         'order' => 'integer',
-        'original_lesson_video_id' => 'integer',
+        'is_active' => 'boolean',
+        'is_downloadable' => 'boolean',
+        'is_featured' => 'boolean',
+        'duration' => 'integer'
     ];
 
     /**
-     * Get the parent resourceable model
+     * Lấy model sở hữu resource này
      */
     public function resourceable(): MorphTo
     {
@@ -55,112 +59,129 @@ class Resource extends Model
     }
 
     /**
-     * Get the original lesson video this resource was created from
+     * Lấy video bài học gốc
      */
-    public function originalLessonVideo(): BelongsTo
+    public function originalLessonVideo()
     {
         return $this->belongsTo(LessonVideo::class, 'original_lesson_video_id');
     }
 
     /**
-     * Get all attendance details for this resource
+     * Người tạo tài liệu
      */
-    public function attendanceDetails(): HasMany
+    public function creator(): BelongsTo
     {
-        return $this->hasMany(OnlineAttendanceDetail::class, 'resource_id');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     /**
-     * Get all learning logs for this resource
+     * Người cập nhật tài liệu
      */
-    public function learningLogs(): HasMany
+    public function updater(): BelongsTo
     {
-        return $this->hasMany(LearningLog::class, 'resource_id');
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     /**
-     * Check if this resource is a video
+     * Kiểm tra xem tài liệu có phải là công khai không
      */
-    public function isVideo(): bool
+    public function isPublic(): bool
     {
-        return $this->file_type === 'video';
+        return $this->is_public;
     }
 
     /**
-     * Check if this resource is a document
+     * Kiểm tra xem tài liệu có nổi bật không
+     */
+    public function isFeatured(): bool
+    {
+        return $this->is_featured;
+    }
+
+    /**
+     * Kiểm tra xem tài liệu có thể tải xuống không
+     */
+    public function isDownloadable(): bool
+    {
+        return $this->is_downloadable;
+    }
+
+    /**
+     * Ghi nhận lượt tải xuống
+     */
+    public function incrementDownloadCount(): self
+    {
+        $this->download_count = ($this->download_count ?: 0) + 1;
+        $this->save();
+        
+        return $this;
+    }
+
+    /**
+     * Kiểm tra xem tài liệu có phải là kiểu file không
+     */
+    public function isFile(): bool
+    {
+        return !empty($this->file_path);
+    }
+
+    /**
+     * Kiểm tra xem tài liệu có phải là kiểu URL không
+     */
+    public function isUrl(): bool
+    {
+        return !empty($this->url) && empty($this->file_path);
+    }
+
+    /**
+     * Kiểm tra xem tài liệu có phải là văn bản không
      */
     public function isDocument(): bool
     {
-        return in_array($this->file_type, ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx']);
+        $documentTypes = ['doc', 'docx', 'pdf', 'txt', 'rtf', 'odt'];
+        return $this->isFile() && in_array(strtolower($this->file_type), $documentTypes);
     }
 
     /**
-     * Check if this resource is an audio
-     */
-    public function isAudio(): bool
-    {
-        return $this->file_type === 'audio';
-    }
-
-    /**
-     * Check if this resource is an image
+     * Kiểm tra xem tài liệu có phải là hình ảnh không
      */
     public function isImage(): bool
     {
-        return $this->file_type === 'image';
+        $imageTypes = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
+        return $this->isFile() && in_array(strtolower($this->file_type), $imageTypes);
     }
 
     /**
-     * Check if this resource is free (no enrollment required)
+     * Kiểm tra xem tài liệu có phải là video không
      */
-    public function isFree(): bool
+    public function isVideo(): bool
     {
-        return $this->access_type === 'free';
+        $videoTypes = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mkv'];
+        return $this->isFile() && in_array(strtolower($this->file_type), $videoTypes);
     }
 
     /**
-     * Check if this resource requires enrollment
+     * Kiểm tra xem tài liệu có phải là âm thanh không
      */
-    public function requiresEnrollment(): bool
+    public function isAudio(): bool
     {
-        return $this->access_type === 'enrolled' || $this->access_type === 'premium';
+        $audioTypes = ['mp3', 'wav', 'ogg', 'aac', 'flac', 'wma'];
+        return $this->isFile() && in_array(strtolower($this->file_type), $audioTypes);
     }
 
     /**
-     * Check if this resource is premium (requires payment)
+     * Lấy kích thước file theo định dạng đọc được (KB, MB, GB)
      */
-    public function isPremium(): bool
+    public function getFormattedSizeAttribute(): string
     {
-        return $this->access_type === 'premium';
-    }
-
-    /**
-     * Get the formatted duration
-     */
-    public function getDurationFormatted(): string
-    {
-        $seconds = $this->duration;
-        
-        $hours = floor($seconds / 3600);
-        $minutes = floor(($seconds % 3600) / 60);
-        $remainingSeconds = $seconds % 60;
-        
-        if ($hours > 0) {
-            return sprintf('%d:%02d:%02d', $hours, $minutes, $remainingSeconds);
-        } else {
-            return sprintf('%d:%02d', $minutes, $remainingSeconds);
+        if (!$this->file_size) {
+            return '0 KB';
         }
-    }
-
-    /**
-     * Get the formatted file size
-     */
-    public function getFormattedFileSize(): string
-    {
-        $size = $this->file_size;
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
         
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $size = $this->file_size;
         $i = 0;
+        
         while ($size >= 1024 && $i < count($units) - 1) {
             $size /= 1024;
             $i++;
@@ -170,33 +191,175 @@ class Resource extends Model
     }
 
     /**
-     * Get completion statistics for this resource
+     * Lấy URL tải xuống tài liệu
      */
-    public function getCompletionStats(): array
+    public function getDownloadUrlAttribute(): ?string
     {
-        $totalUsers = 0;
-        $completedUsers = 0;
-        $avgProgress = 0;
-        
-        if ($this->isVideo()) {
-            $totalUsers = $this->attendanceDetails()->count('DISTINCT user_id');
-            $completedUsers = $this->attendanceDetails()
-                ->where('is_completed', true)
-                ->count('DISTINCT user_id');
-            $avgProgress = $this->attendanceDetails()->avg('view_progress') ?? 0;
-        } else {
-            $totalUsers = $this->learningLogs()->count('DISTINCT user_id');
-            $completedUsers = $this->learningLogs()
-                ->where('is_completed', true)
-                ->count('DISTINCT user_id');
-            $avgProgress = $this->learningLogs()->avg('progress_percentage') ?? 0;
+        if (!$this->isDownloadable()) {
+            return null;
         }
         
-        return [
-            'total_users' => $totalUsers,
-            'completed_users' => $completedUsers,
-            'completion_rate' => $totalUsers > 0 ? ($completedUsers / $totalUsers) * 100 : 0,
-            'average_progress' => round($avgProgress, 2)
-        ];
+        if ($this->isFile()) {
+            return route('resources.download', $this->id);
+        }
+        
+        return $this->url;
+    }
+
+    /**
+     * Scope lấy các tài liệu công khai
+     */
+    public function scopePublic($query)
+    {
+        return $query->where('is_public', true);
+    }
+
+    /**
+     * Scope lấy các tài liệu nổi bật
+     */
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
+    }
+
+    /**
+     * Scope lấy các tài liệu có thể tải xuống
+     */
+    public function scopeDownloadable($query)
+    {
+        return $query->where('is_downloadable', true);
+    }
+
+    /**
+     * Scope lấy các tài liệu theo loại
+     */
+    public function scopeOfType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
+
+    /**
+     * Scope lấy các tài liệu đang hoạt động
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Scope lấy các tài liệu theo thứ tự
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('order', 'asc');
+    }
+
+    public function getFileSize($formatted = true)
+    {
+        if (!$formatted) {
+            return $this->file_size;
+        }
+
+        $units = ['B', 'KB', 'MB', 'GB'];
+        $size = $this->file_size;
+        $unit = 0;
+
+        while ($size >= 1024 && $unit < count($units) - 1) {
+            $size /= 1024;
+            $unit++;
+        }
+
+        return round($size, 2) . ' ' . $units[$unit];
+    }
+
+    public function getDuration($formatted = true)
+    {
+        if (!$formatted || !$this->duration) {
+            return $this->duration;
+        }
+
+        $hours = floor($this->duration / 3600);
+        $minutes = floor(($this->duration % 3600) / 60);
+        $seconds = $this->duration % 60;
+
+        if ($hours > 0) {
+            return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+        }
+        
+        return sprintf('%02d:%02d', $minutes, $seconds);
+    }
+
+    public function isAccessibleBy(User $user): bool
+    {
+        switch ($this->access_type) {
+            case 'free':
+                return true;
+            case 'enrolled':
+                return $user->enrollments()
+                    ->whereHas('course', function ($query) {
+                        $query->whereHas('resources', function ($q) {
+                            $q->where('id', $this->id);
+                        });
+                    })
+                    ->exists();
+            case 'premium':
+                return $user->hasActivePremiumSubscription();
+            default:
+                return false;
+        }
+    }
+
+    public function uploadedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function scopeByType($query, $type)
+    {
+        return $query->where('file_type', $type);
+    }
+
+    public function getFormattedFileSize(): string
+    {
+        $bytes = $this->file_size;
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+        for ($i = 0; $bytes > 1024; $i++) {
+            $bytes /= 1024;
+        }
+
+        return round($bytes, 2) . ' ' . $units[$i];
+    }
+
+    public function getFileExtension(): string
+    {
+        return pathinfo($this->file_name, PATHINFO_EXTENSION);
+    }
+
+    public function isPDF(): bool
+    {
+        return $this->file_type === 'application/pdf';
+    }
+
+    public function getIconClass(): string
+    {
+        if ($this->isImage()) {
+            return 'fa-image';
+        } elseif ($this->isPDF()) {
+            return 'fa-file-pdf';
+        } elseif ($this->isVideo()) {
+            return 'fa-video';
+        } elseif ($this->isAudio()) {
+            return 'fa-music';
+        } elseif ($this->isDocument()) {
+            return 'fa-file-word';
+        }
+
+        return 'fa-file';
+    }
+
+    public function sessions()
+    {
+        return $this->hasMany(ClassSession::class);
     }
 } 

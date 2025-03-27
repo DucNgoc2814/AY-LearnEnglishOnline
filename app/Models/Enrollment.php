@@ -2,174 +2,266 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Enrollment extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
         'course_id',
-        'class_id',
-        'enrollment_type',
         'enrollment_date',
-        'expiration_date',
-        'progress_percentage',
-        'last_activity_date',
-        'completed_date',
-        'certificate_issued',
-        'certificate_url',
-        'payment_status',
-        'payment_method',
-        'amount_paid',
-        'transaction_id',
-        'invoice_id',
-        'discount_applied',
+        'expiry_date',
         'status',
-        'notes',
+        'progress',
+        'last_access_date',
+        'completion_date',
+        'notes'
     ];
 
     protected $casts = [
-        'user_id' => 'integer',
-        'course_id' => 'integer',
-        'class_id' => 'integer',
         'enrollment_date' => 'datetime',
-        'expiration_date' => 'datetime',
-        'progress_percentage' => 'decimal:2',
-        'last_activity_date' => 'datetime',
-        'completed_date' => 'datetime',
-        'certificate_issued' => 'boolean',
-        'amount_paid' => 'decimal:2',
-        'discount_applied' => 'decimal:2',
+        'expiry_date' => 'datetime',
+        'last_access_date' => 'datetime',
+        'completion_date' => 'datetime',
+        'progress' => 'integer'
     ];
 
     /**
-     * Get the user associated with this enrollment
+     * Lấy thông tin học viên
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
     /**
-     * Get the course associated with this enrollment
+     * Lấy thông tin khóa học
      */
     public function course(): BelongsTo
     {
-        return $this->belongsTo(Course::class, 'course_id');
+        return $this->belongsTo(Course::class);
     }
 
     /**
-     * Get the class associated with this enrollment
+     * Lấy thông tin tiến độ học tập
      */
-    public function classRoom(): BelongsTo
+    public function progress(): HasMany
     {
-        return $this->belongsTo(ClassRoom::class, 'class_id');
+        return $this->hasMany(Progress::class);
     }
 
     /**
-     * Check if the enrollment is for a course
-     */
-    public function isForCourse(): bool
-    {
-        return $this->enrollment_type === 'course' || is_null($this->class_id);
-    }
-
-    /**
-     * Check if the enrollment is for a class
-     */
-    public function isForClass(): bool
-    {
-        return $this->enrollment_type === 'class' || !is_null($this->class_id);
-    }
-
-    /**
-     * Check if the enrollment is paid
-     */
-    public function isPaid(): bool
-    {
-        return $this->payment_status === 'paid';
-    }
-
-    /**
-     * Check if the enrollment is active
+     * Kiểm tra trạng thái ghi danh
      */
     public function isActive(): bool
     {
-        // Enrollment is not active if status is not 'active'
-        if ($this->status !== 'active') {
-            return false;
-        }
-        
-        // Check if enrollment has expired
-        if ($this->expiration_date && Carbon::now()->gt($this->expiration_date)) {
-            return false;
-        }
-        
-        // Check if enrollment is completed
-        if ($this->completed_date) {
-            return false;
-        }
-        
-        return true;
+        return $this->status === 'active';
     }
 
     /**
-     * Check if the enrollment is completed
+     * Kiểm tra trạng thái hoàn thành
      */
     public function isCompleted(): bool
     {
-        return !is_null($this->completed_date) || $this->progress_percentage >= 100;
+        return $this->status === 'completed';
     }
 
     /**
-     * Check if the certificate has been issued
+     * Kiểm tra trạng thái hết hạn
      */
-    public function hasCertificate(): bool
+    public function isExpired(): bool
     {
-        return $this->certificate_issued && !empty($this->certificate_url);
+        if (!$this->expiry_date) {
+            return false;
+        }
+        return $this->expiry_date->isPast();
     }
 
     /**
-     * Update the enrollment progress based on completed lessons
+     * Kiểm tra trạng thái hủy
      */
-    public function updateProgress(): float
+    public function isCancelled(): bool
     {
-        // Only relevant for course enrollments
-        if (!$this->isForCourse()) {
-            return $this->progress_percentage;
-        }
+        return $this->status === 'cancelled';
+    }
+
+    /**
+     * Cập nhật trạng thái ghi danh
+     */
+    public function updateStatus(string $status): self
+    {
+        $this->status = $status;
         
-        $course = $this->course;
-        if (!$course) {
-            return $this->progress_percentage;
-        }
-        
-        $totalLessons = $course->lessons()->count();
-        if ($totalLessons === 0) {
-            return 0;
-        }
-        
-        $completedLessons = LessonProgress::where('user_id', $this->user_id)
-            ->whereIn('lesson_id', $course->lessons()->pluck('id'))
-            ->where('is_completed', true)
-            ->count();
-        
-        $progress = ($completedLessons / $totalLessons) * 100;
-        $this->progress_percentage = $progress;
-        $this->last_activity_date = Carbon::now();
-        
-        // If completed, set completion date
-        if ($progress >= 100 && !$this->completed_date) {
-            $this->completed_date = Carbon::now();
+        if ($status === 'completed') {
+            $this->completion_date = now();
+            $this->progress = 100;
         }
         
         $this->save();
+        return $this;
+    }
+
+    /**
+     * Cập nhật tiến độ học tập
+     */
+    public function updateProgress()
+    {
+        $totalLessons = $this->course->lessons()->count();
+        if ($totalLessons === 0) {
+            return;
+        }
+
+        $completedLessons = $this->progress()
+            ->where('status', 'completed')
+            ->count();
+
+        $this->progress = round(($completedLessons / $totalLessons) * 100, 2);
+        $this->save();
+
+        if ($this->progress >= 100) {
+            $this->updateStatus('completed');
+        }
+    }
+
+    /**
+     * Đánh dấu là đã thanh toán
+     */
+    public function markAsPaid(string $paymentMethod, string $transactionId, float $amount): self
+    {
+        $this->payment_status = 'paid';
+        $this->payment_method = $paymentMethod;
+        $this->transaction_id = $transactionId;
+        $this->paid_amount = $amount;
+        $this->save();
         
-        return $progress;
+        return $this;
+    }
+
+    /**
+     * Scope lấy các ghi danh đang hoạt động
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope lấy các ghi danh đã hoàn thành
+     */
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'completed');
+    }
+
+    /**
+     * Scope lấy các ghi danh đã hết hạn
+     */
+    public function scopeExpired($query)
+    {
+        return $query->where('expiry_date', '<', now());
+    }
+
+    /**
+     * Scope lấy các ghi danh đã được thanh toán
+     */
+    public function scopePaid($query)
+    {
+        return $query->where('payment_status', 'paid');
+    }
+
+    /**
+     * Scope lấy các ghi danh chưa thanh toán
+     */
+    public function scopeUnpaid($query)
+    {
+        return $query->where('payment_status', 'unpaid');
+    }
+
+    /**
+     * Bắt đầu học
+     */
+    public function start()
+    {
+        $this->enrollment_date = now();
+        $this->status = 'active';
+        $this->save();
+    }
+
+    /**
+     * Hoàn thành khóa học
+     */
+    public function complete()
+    {
+        $this->completion_date = now();
+        $this->status = 'completed';
+        $this->progress = 100;
+        $this->save();
+    }
+
+    /**
+     * Kiểm tra trạng thái có quyền truy cập
+     */
+    public function hasAccess(): bool
+    {
+        return $this->isActive() && !$this->isExpired();
+    }
+
+    /**
+     * Gia hạn quyền truy cập
+     */
+    public function extend($days)
+    {
+        if ($this->expiry_date) {
+            $this->expiry_date = $this->expiry_date->addDays($days);
+        } else {
+            $this->expiry_date = now()->addDays($days);
+        }
+        $this->save();
+    }
+
+    /**
+     * Lấy thời gian đã học
+     */
+    public function getTimeSpent(): int
+    {
+        return $this->progress()->sum('time_spent');
+    }
+
+    /**
+     * Lấy thời gian đã học dưới dạng chuỗi
+     */
+    public function getFormattedTimeSpent(): string
+    {
+        $minutes = $this->getTimeSpent();
+        $hours = floor($minutes / 60);
+        $remainingMinutes = $minutes % 60;
+
+        if ($hours > 0) {
+            return sprintf('%d giờ %d phút', $hours, $remainingMinutes);
+        }
+
+        return sprintf('%d phút', $minutes);
+    }
+
+    /**
+     * Lấy số ngày còn lại
+     */
+    public function getRemainingDays(): int
+    {
+        if (!$this->expiry_date) {
+            return -1; // Unlimited access
+        }
+        return max(0, now()->diffInDays($this->expiry_date));
+    }
+
+    public function certificate()
+    {
+        return $this->hasOne(Certificate::class);
     }
 } 

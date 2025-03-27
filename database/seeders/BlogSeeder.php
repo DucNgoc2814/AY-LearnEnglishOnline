@@ -9,10 +9,38 @@ class BlogSeeder extends Seeder
 {
     public function run()
     {
-        Blog::create(['name' => 'Latest Updates', 'description' => 'Description of the latest updates.', 'image' => null, 'language' => 'en']);
-        Blog::create(['name' => 'Learning Tips', 'description' => 'Tips for effective learning.', 'image' => null, 'language' => 'en']);
-        Blog::create(['name' => 'Course Highlights', 'description' => 'Highlights of our courses.', 'image' => null, 'language' => 'en']);
-        Blog::create(['name' => 'Student Success Stories', 'description' => 'Stories from our successful students.', 'image' => null, 'language' => 'en']);
-        Blog::create(['name' => 'Upcoming Events', 'description' => 'Information about upcoming events.', 'image' => null, 'language' => 'en']);
+        $blogs = [
+            [
+                'user_id' => 2,
+                'title' => 'Tại sao nên học Laravel trong năm 2024?',
+                'slug' => 'tai-sao-nen-hoc-laravel-trong-nam-2024',
+                'content' => 'Nội dung chi tiết về lợi ích của Laravel...',
+                'summary' => 'Laravel là framework PHP phổ biến nhất hiện nay...',
+                'featured_image' => 'blogs/laravel-2024.jpg',
+                'is_published' => true,
+                'published_at' => now(),
+                'views' => 150,
+                'likes' => 45,
+                'allow_comments' => true
+            ],
+            [
+                'user_id' => 2,
+                'title' => 'Các tính năng mới trong Laravel 11',
+                'slug' => 'cac-tinh-nang-moi-trong-laravel-11',
+                'content' => 'Chi tiết về các tính năng mới trong Laravel 11...',
+                'summary' => 'Khám phá những tính năng hấp dẫn trong phiên bản mới...',
+                'featured_image' => 'blogs/laravel-11.jpg',
+                'is_published' => true,
+                'published_at' => now(),
+                'views' => 120,
+                'likes' => 30,
+                'allow_comments' => true
+            ],
+            // Thêm các blog khác...
+        ];
+
+        foreach ($blogs as $blog) {
+            Blog::create($blog);
+        }
     }
 }
