@@ -53,6 +53,7 @@ Route::middleware('web')->group(function () {
         });
 
         Route::prefix('hoc-khoa-hoc')->group(function () {
+            
             // Route mặc định
             Route::get('/{courseSlug}', [CourseController::class, 'learning'])
                 ->name('course.learning');

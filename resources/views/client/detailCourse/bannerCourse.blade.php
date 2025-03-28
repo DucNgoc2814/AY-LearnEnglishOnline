@@ -4,8 +4,8 @@
                 <div class="row">
                     <div class="col-lg-8 col-md-12 col-sm-12 col-12">
                         <div class="courses-details-1st-text">
-                            <h1>{{ $course->name }}</h1>
-                            <p class="mb-3">{{ $course->sortDescription }}</p>
+                            <h1>{{ $course->title }}</h1>
+                            <p class="mb-3">{{ $course->short_description }}</p>
                             <div class="review">
                                 <div class="row ">
                                     <div class="col-12 course-heading-info mb-3">
@@ -15,7 +15,7 @@
                                         </div>
                                         <div class="info-tag">
                                             <i class="fa-regular fa-user text-15px mt-7px"></i>
-                                            <p class="text-15px mt-1">{{ $course->totalStudent }}</p>
+                                            <p class="text-15px mt-1">{{ $course->total_students }}</p>
                                         </div>
 
                                         <div class="info-tag">

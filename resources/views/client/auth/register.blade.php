@@ -29,7 +29,7 @@
                                 <h5>Số điện thoại</h5>
                                 <div class="position-relative">
                                     <i class="fa-solid fa-user"></i>
-                                    <input class="form-control" id="phoneNumber" type="text" name="phoneNumber"
+                                    <input class="form-control" id="phone_number" type="text" name="phone_number"
                                         placeholder="Nhập số điện thoại" required>
                                 </div>
                             </div>

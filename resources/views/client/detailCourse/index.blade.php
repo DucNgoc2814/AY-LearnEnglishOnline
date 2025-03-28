@@ -34,7 +34,7 @@
                                 </div>
                             </div>
                             <div class="ammount d-flex">
-                                <h1 class="fw-500 text-danger">{{ number_format($course->salePrice, 0, ',', '.') }}đ</h1>
+                                <h1 class="fw-500 text-danger">{{ number_format($course->sale_price, 0, ',', '.') }}đ</h1>
                                 <h3 class="fw-500"><del>{{ number_format($course->price, 0, ',', '.') }}đ</del></h3>
                             </div>
                             <div class="enrol">
@@ -73,7 +73,7 @@
 
                             <!-- button -->
                             <div class="button">
-                                @if ($isEnrolled)
+                                @if ($course->isEnrolledByUser(Auth::id()))
                                     <a href="{{ route('course.learning', $course->slug) }}" class="enrolled">
                                         <i class="fas fa-play-circle"></i> Vào học
                                     </a>
@@ -99,7 +99,7 @@
                                                         <img src="{{ asset('themes/client/uploads/thumbnails/course_thumbnails/optimized/course_thumbnail_default-new_131701063901.jpg') }}"
                                                             alt="Course logo">
                                                     </div>
-                                                    <h2 class="custom-modal-course-title">Khóa học {{ $course->name }}</h2>
+                                                    <h2 class="custom-modal-course-title">Khóa học {{ $course->title }}</h2>
                                                 </div>
                                                 <p class="custom-modal-course-description">
                                                     Khóa học {{ $course->name }} này là nền tảng vững chắc để học tiếp
@@ -138,7 +138,7 @@
                                                                 <span class="custom-modal-price-label">Giá ưu đãi hôm
                                                                     nay</span>
                                                                 <span
-                                                                    class="custom-modal-sale-price">{{ number_format($course->salePrice) }}đ</span>
+                                                                    class="custom-modal-sale-price">{{ number_format($course->sale_price) }}đ</span>
                                                             </div>
 
                                                             <!-- Thêm div hiển thị giá giảm từ voucher -->

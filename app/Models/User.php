@@ -60,10 +60,6 @@ class User extends Authenticatable
         return $this->hasOne(Student::class);
     }
 
-    public function employee()
-    {
-        return $this->hasOne(Employee::class);
-    }
 
     public function enrollments()
     {
