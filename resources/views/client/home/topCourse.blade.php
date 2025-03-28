@@ -18,27 +18,27 @@
                                     </div>
                                 </div>
                                 <div class="courses-text">
-                                    <h5 class="mb-2">{{ $course->name }}</h5>
+                                    <h5 class="mb-2">{{ $course->title }}</h5>
                                     <div class="review-icon d-flex align-items-center mb-1">
                                         <div class="review-icon-star d-flex align-items-center">
                                             @for ($i = 0; $i < $course->rating; $i++)
                                                 <i class="fa-solid fa-star filled mx-0"></i>
                                             @endfor
-                                            <p class="m-0 ms-1">({{ $course->totalRating }} lượt)</p>
+                                            <p class="m-0 ms-1">({{ $course->total_ratings }} lượt)</p>
                                         </div>
                                         <div class="review-btn d-flex align-items-center ms-auto">
                                             <p class="m-0 text-primary fw-bold">
                                                 <i class="fa-solid fa-users p-0 text-15px text-primary"></i>
-                                                {{ $course->totalStudent }}
+                                                {{ $course->total_students }}
                                             </p>
                                         </div>
                                     </div>
 
-                                    <p class="ellipsis-line-2">{{ $course->shortDescription }}</p>
+                                    <p class="ellipsis-line-2">{{ $course->short_description }}</p>
                                     <div class="courses-price-border">
                                         <div class="courses-price">
                                             <div class="courses-price-left">
-                                                <h5 class="text-danger">{{ number_format($course->salePrice, 0, ',', '.') }}</h5>
+                                                <h5 class="text-danger">{{ number_format($course->sale_price, 0, ',', '.') }}</h5>
                                                 <p class="mt-1"><del>{{ number_format($course->price, 0, ',', '.') }}</del></p>
                                             </div>
                                             <div class="courses-price-right d-flex align-items-center">

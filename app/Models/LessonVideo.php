@@ -89,4 +89,8 @@ class LessonVideo extends Model
     {
         return $query->where('is_free', true);
     }
+
+    public function totalDuration(){
+        return $this->sum('duration');
+    }
 } 

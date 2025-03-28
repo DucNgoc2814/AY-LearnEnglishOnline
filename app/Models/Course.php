@@ -102,6 +102,38 @@ class Course extends Model
     }
 
     /**
+     * Lấy danh sách bài thi
+     */
+    public function exams(): MorphMany
+    {
+        return $this->morphMany(Test::class, 'testable')->where('type', 'exam');
+    }
+
+    /**
+     * Lấy danh sách bài kiểm tra
+     */
+    public function tests(): MorphMany
+    {
+        return $this->morphMany(Test::class, 'testable')->where('type', 'test');
+    }
+
+    /**
+     * Lấy danh sách bài kiểm tra bài học
+     */
+    public function lessonTests(): MorphMany
+    {
+        return $this->morphMany(Test::class, 'testable')->where('type', 'lesson_test');
+    }
+
+    /**
+     * Lấy danh sách bài thi cuối khóa
+     */
+    public function finalExams(): MorphMany
+    {
+        return $this->morphMany(Test::class, 'testable')->where('type', 'final_exam');
+    }
+
+    /**
      * Lấy giá hiển thị (giá sale nếu có, ngược lại là giá gốc)
      */
     public function getCurrentPrice()
@@ -222,13 +254,6 @@ class Course extends Model
         return number_format($this->price, 0) . ' đ';
     }
 
-    /**
-     * Lấy tổng số học viên khóa học
-     */
-    public function getTotalStudents(): int
-    {
-        return $this->enrollments()->count();
-    }
 
     /**
      * Lấy tỉ lệ hoàn thành khóa học
@@ -284,4 +309,39 @@ class Course extends Model
 
         return $enrollment && $enrollment->isCompleted();
     }
-} 
+
+    public function totalDuration()
+    {
+        return $this->lessons()
+            ->join('lesson_videos', 'lessons.id', '=', 'lesson_videos.lesson_id')
+            ->sum('lesson_videos.duration');
+    }
+
+    public function totalLessons()
+    {
+        return $this->lessons()->count();
+    }
+
+    public function totalTests()
+    {
+        return $this->lessonTests()->count() 
+            + $this->finalExams()->count();
+
+    }
+
+    public function isEnrolledByUser($userId){
+        $user = User::find($userId);
+        
+        if (!$user) {
+            return false;
+        }
+
+        if ($user->role === 'admin') {
+            return true;
+        }
+
+        return $this->enrollments()
+            ->where('user_id', $userId)
+            ->exists();
+    }
+}

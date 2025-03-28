@@ -13,12 +13,12 @@ class Employee extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id',
         'employee_code',
         'name',
         'position',
         'department',
         'email',
+        'password',
         'phone',
         'address',
         'is_active',
@@ -33,13 +33,6 @@ class Employee extends Model
         'resignation_date' => 'date'
     ];
 
-    /**
-     * Lấy user liên kết với nhân viên
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
     /**
      * Lấy danh sách vai trò của nhân viên

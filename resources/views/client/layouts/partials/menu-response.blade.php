@@ -53,7 +53,7 @@
                                         <ul class="sub-category-menu">
                                             @foreach ($category->courses as $course)
                                                 <li><a
-                                                        href="{{ route('detailCourse', $course->slug) }}">{{ $course->name }}</a>
+                                                        href="{{ route('detailCourse', $course->slug) }}">{{ $course->title }}</a>
                                                 </li>
                                             @endforeach
                                         </ul>
