@@ -5,6 +5,7 @@ namespace App\Repositories;
 use Illuminate\Database\Eloquent\Model;
 use App\Repositories\Interfaces\BaseRepositoryInterface;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 abstract class BaseRepository implements BaseRepositoryInterface
 {
@@ -114,75 +115,20 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Handle generic file upload
      */
-    public function handleFileUpload($file, string $folder, string $type)
+    public function handleFileUpload($file, $folder, $type)
     {
         try {
-            if (!$file) {
-                throw new \Exception("No file provided");
-            }
+            $fileName = uniqid() . '_' . time();
+            $extension = $file->getClientOriginalExtension();
+            $path = "$folder/$type/$fileName.$extension";
 
-            // Get correct extension from original filename
-            $originalName = $file->getClientOriginalName();
-            $extension = pathinfo($originalName, PATHINFO_EXTENSION);
-
-            // If no extension found, try to get from mime type
-            if (empty($extension)) {
-                $mimeType = $file->getMimeType();
-                $extension = match($mimeType) {
-                    'image/jpeg' => 'jpg',
-                    'image/png' => 'png',
-                    'image/gif' => 'gif',
-                    'image/webp' => 'webp',
-                    'video/mp4' => 'mp4',
-                    'video/webm' => 'webm',
-                    'video/ogg' => 'ogg',
-                    default => throw new \Exception("Unsupported mime type: {$mimeType}")
-                };
-            }
-
-            // Validate extension
-            $allowedExtensions = match($type) {
-                'images' => $this->allowedImageExtensions,
-                'videos' => $this->allowedVideoExtensions,
-                'sounds' => $this->allowedAudioExtensions,
-                default => throw new \Exception("Invalid file type")
-            };
-
-            if (!in_array(strtolower($extension), $allowedExtensions)) {
-                throw new \Exception("File type not allowed. Allowed types: " . implode(', ', $allowedExtensions));
-            }
-
-            // Generate unique filename
-            $filename = uniqid() . '_' . time() . '.' . $extension;
-            $path = "{$folder}/{$type}/{$filename}";
-
-            // Get file content
-            $content = file_get_contents($file->getRealPath());
-            if (!$content) {
-                throw new \Exception("Could not read file content");
-            }
-
-            // Upload to S3
-            $uploaded = Storage::disk('s3')->put($path, $content, 'public');
-
-            if (!$uploaded) {
-                throw new \Exception("Failed to upload file to S3: {$path}");
-            }
-
-            // Return CloudFront URL
-            return $this->getCloudFrontUrl($path);
-
-        } catch (\Exception $e) {
-            \Log::error("File upload error ({$type}): " . $e->getMessage(), [
-                'exception' => $e,
-                'folder' => $folder,
-                'type' => $type,
-                'file_info' => $file ? [
-                    'name' => $file->getClientOriginalName(),
-                    'mime' => $file->getMimeType(),
-                    'size' => $file->getSize()
-                ] : null
+            Storage::disk('s3')->put($path, file_get_contents($file), [
+                'ContentType' => $file->getMimeType(),
             ]);
+
+            return $path;
+        } catch (\Exception $e) {
+            Log::error("File upload error ($type): " . $e->getMessage());
             throw $e;
         }
     }

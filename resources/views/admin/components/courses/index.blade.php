@@ -45,17 +45,18 @@
                 <thead>
                     <tr>
                         <th class="border ps-1 py-1 border-gray-300 text-start">
-                            <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                            <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600">
                         </th>
                         <th class="border ps-1 py-1 border-gray-300 text-start">STT</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Tên danh mục</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Tên khóa học</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Ảnh khóa học</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Giá khóa học <i class="fas fa-sort"></i>
-                        </th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Giá giảm</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Số bài học <i class="fas fa-sort"></i></th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Ngày tạo <i class="fas fa-sort"></i></th>
+                        <th class="border ps-1 py-1 border-gray-300 text-start">Danh mục</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-start">Tiêu đề</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-start">Loại khóa học</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-start">Hình thức</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-start">Giá gốc</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-start">Giá khuyến mãi</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-start">Số học viên</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-start">Đánh giá</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-start">Trạng thái</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center">Thao tác</th>
                     </tr>
                 </thead>
@@ -63,26 +64,64 @@
                     @foreach ($courses as $key => $item)
                         <tr class="hover:bg-gray-100 transition-colors duration-150">
                             <td class="ps-1 pt-1">
-                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out" data-id="{{ $item->id }}">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600"
+                                    data-id="{{ $item->id }}">
                             </td>
                             <td class="ps-1 pt-1">
                                 {{ ($pagination['current_page'] - 1) * $pagination['per_page'] + $key + 1 }}
                             </td>
                             <td class="ps-1 pt-1">{{ $item->category->name ?? 'N/A' }}</td>
-                            <td class="ps-1 pt-1"><a href="#" class="text-blue-500">{{ $item->name }}</a></td>
+                            <td class="ps-1 pt-1"><a href="#" class="text-blue-500">{{ $item->title }}</a></td>
                             <td class="ps-1 pt-1">
-                                <img src="{{ asset($item->thumbnail) }}" alt="{{ $item->name }}"
-                                    class="w-12 h-12 object-cover">
+                                @switch($item->course_type)
+                                    @case('self_paced')
+                                        <span class="text-green-600">Tự học</span>
+                                    @break
+
+                                    @case('instructor_led')
+                                        <span class="text-blue-600">Có giảng viên</span>
+                                    @break
+
+                                    @case('hybrid')
+                                        <span class="text-purple-600">Kết hợp</span>
+                                    @break
+                                @endswitch
+                            </td>
+                            <td class="ps-1 pt-1">
+                                @switch($item->course_format)
+                                    @case('online')
+                                        <span class="text-blue-600">Trực tuyến</span>
+                                    @break
+
+                                    @case('offline')
+                                        <span class="text-orange-600">Trực tiếp</span>
+                                    @break
+
+                                    @case('hybrid')
+                                        <span class="text-purple-600">Kết hợp</span>
+                                    @break
+                                @endswitch
                             </td>
                             <td class="ps-1 pt-1">{{ number_format($item->price) }}đ</td>
-                            <td class="ps-1 pt-1">{{ $item->salePrice ? number_format($item->salePrice) . 'đ' : 'N/A' }}
+                            <td class="ps-1 pt-1">{{ $item->sale_price ? number_format($item->sale_price) . 'đ' : 'N/A' }}
                             </td>
-                            {{-- <td class="ps-1 pt-1">{{ $item->totalLessons() }}</td> --}}
-                            <td class="ps-1 pt-1">{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
+                            <td class="ps-1 pt-1">{{ number_format($item->total_students) }}</td>
+                            <td class="ps-1 pt-1">
+                                <div class="flex items-center">
+                                    {{ number_format($item->rating, 1) }}
+                                    <i class="fas fa-star text-yellow-400 ml-1"></i>
+                                    <span class="text-gray-500 text-sm ml-1">({{ $item->total_ratings }})</span>
+                                </div>
+                            </td>
+                            <td class="ps-1 pt-1">
+                                <span
+                                    class="px-2 py-1 rounded-full text-sm {{ $item->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                    {{ $item->is_active ? 'Hoạt động' : 'Không hoạt động' }}
+                                </span>
+                            </td>
                             <td class="ps-1 pt-1 text-center">
                                 <div class="flex justify-center space-x-2">
-                                    <a href="{{ route('admin.courses.by.course', ['courseId' => $item->id]) }}"
-                                        class="text-blue-500 hover:text-blue-700" title="Xem chi tiết">
+                                    <a href="" class="text-blue-500 hover:text-blue-700" title="Xem chi tiết">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <button class="text-blue-500 hover:text-blue-700"
@@ -197,22 +236,3 @@
     @include('admin.components.courses.modals.trash')
 
 @endsection
-
-@push('scripts')
-    <script>
-        function populateEditModal(item) {
-            modalHandler.open('editCourseModal');
-
-            modalHandler.setEditModalData('editCourseModal', {
-                name: item.name,
-                categoryId: item.categoryId,
-                price: item.price,
-                salePrice: item.salePrice,
-                description: item.description,
-                isTop: item.isTop,
-                thumbnail: item.thumbnail,
-                actionUrl: `/admin/courses/${item.id}`
-            });
-        }
-    </script>
-@endpush
