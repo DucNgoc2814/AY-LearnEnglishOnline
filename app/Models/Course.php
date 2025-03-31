@@ -18,15 +18,26 @@ class Course extends Model
         'title',
         'slug',
         'description',
+        'short_description',
+        'course_type',
+        'course_format',
         'price',
-        'duration',
-        'level',
+        'sale_price',
+        'estimated_hours',
+        'has_certificate',
+        'requires_enrollment',
+        'thumbnail',
+        'preview_video',
+        'total_students',
+        'rating',
+        'total_ratings',
+        'course_outline',
         'requirements',
         'learning_outcomes',
         'release_date',
         'order',
         'is_featured',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
@@ -284,4 +295,4 @@ class Course extends Model
 
         return $enrollment && $enrollment->isCompleted();
     }
-} 
+}

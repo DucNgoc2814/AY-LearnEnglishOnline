@@ -26,7 +26,7 @@ class CourseController extends BaseController
 
     /**
      * Display the course detail page
-     * 
+     *
      * @param string $slug Course slug
      * @return \Illuminate\View\View
      */

@@ -77,7 +77,7 @@
                             <td class="ps-1 pt-1">{{ number_format($item->price) }}đ</td>
                             <td class="ps-1 pt-1">{{ $item->salePrice ? number_format($item->salePrice) . 'đ' : 'N/A' }}
                             </td>
-                            <td class="ps-1 pt-1">{{ $item->totalLessons() }}</td>
+                            {{-- <td class="ps-1 pt-1">{{ $item->totalLessons() }}</td> --}}
                             <td class="ps-1 pt-1">{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y') }}</td>
                             <td class="ps-1 pt-1 text-center">
                                 <div class="flex justify-center space-x-2">
