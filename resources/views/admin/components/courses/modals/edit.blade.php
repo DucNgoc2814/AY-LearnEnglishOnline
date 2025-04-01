@@ -133,8 +133,8 @@
                                             Chọn ảnh
                                         </button>
                                     </div>
-                                    <div id="thumbnail-preview" class="relative">
-                                        <!-- Ảnh hiện tại sẽ được hiển thị ở đây -->
+                                    <div class="preview-container mb-3">
+                                        <img id="editThumbnailPreview" src="" class="hidden max-w-xs">
                                     </div>
                                 </div>
                             </div>
@@ -157,8 +157,10 @@
                                             Chọn video
                                         </button>
                                     </div>
-                                    <div id="video-preview" class="relative">
-                                        <!-- Video hiện tại sẽ được hiển thị ở đây -->
+                                    <div class="preview-container mb-3">
+                                        <video id="editVideoPreview" class="hidden max-w-xs" controls>
+                                            <source src="" type="video/mp4">
+                                        </video>
                                     </div>
                                 </div>
                             </div>
@@ -225,7 +227,33 @@
 </div>
 
 <script>
+// Thêm function mới để gọi API
+function editCourse(id) {
+    console.log('Editing course:', id); // Debug log
+
+    fetch(`/admin/courses/${id}/edit`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(response => {
+            console.log('Response:', response); // Debug log
+            if (response.status) {
+                populateEditModal(response.data);
+            } else {
+                throw new Error(response.message || 'Có lỗi xảy ra khi lấy thông tin khóa học');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra: ' + error.message);
+        });
+}
+
 function populateEditModal(item) {
+    console.log('Populating modal with:', item); // Để debug
     modalHandler.open('editCourseModal');
     const form = document.getElementById('editCourseForm');
 
@@ -233,82 +261,110 @@ function populateEditModal(item) {
     form.action = `/admin/courses/${item.id}`;
 
     // Điền các giá trị vào form
-    form.querySelector('#title').value = item.title;
-    form.querySelector('#category_id').value = item.category_id;
-    form.querySelector('#description').value = item.description;
-    form.querySelector('#short_description').value = item.short_description;
-    form.querySelector('#course_type').value = item.course_type;
-    form.querySelector('#course_format').value = item.course_format;
-    form.querySelector('#price').value = item.price;
+    form.querySelector('#title').value = item.title || '';
+    form.querySelector('#category_id').value = item.category_id || '';
+    form.querySelector('#description').value = item.description || '';
+    form.querySelector('#short_description').value = item.short_description || '';
+    form.querySelector('#course_type').value = item.course_type || '';
+    form.querySelector('#course_format').value = item.course_format || '';
+    form.querySelector('#price').value = item.price || '';
     form.querySelector('#sale_price').value = item.sale_price || '';
     form.querySelector('#estimated_hours').value = item.estimated_hours || '';
-    form.querySelector('#has_certificate').checked = item.has_certificate;
-    form.querySelector('#requires_enrollment').checked = item.requires_enrollment;
-    form.querySelector('#is_featured').checked = item.is_featured;
-    form.querySelector('#is_active').checked = item.is_active;
+    form.querySelector('#has_certificate').checked = Boolean(item.has_certificate);
+    form.querySelector('#requires_enrollment').checked = Boolean(item.requires_enrollment);
+    form.querySelector('#is_featured').checked = Boolean(item.is_featured);
+    form.querySelector('#is_active').checked = Boolean(item.is_active);
 
     // Xử lý ngày phát hành
     if (item.release_date) {
         const releaseDate = new Date(item.release_date);
-        const formattedDate = releaseDate.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:mm
+        const formattedDate = releaseDate.toISOString().slice(0, 16);
         form.querySelector('#release_date').value = formattedDate;
+    } else {
+        form.querySelector('#release_date').value = '';
     }
 
     // Hiển thị ảnh hiện tại
-    const thumbnailPreview = document.getElementById('thumbnail-preview');
-    if (item.thumbnail) {
-        thumbnailPreview.innerHTML = `
-            <div class="mt-2 relative">
-                <p class="text-sm text-gray-600 mb-1">Ảnh hiện tại:</p>
-                <div class="relative group">
-                    <img src="/storage/${item.thumbnail}"
-                         alt="Current thumbnail"
-                         class="h-20 w-20 object-cover rounded border border-gray-300">
-                    <button type="button"
-                            onclick="clearThumbnail()"
-                            class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full p-1 hidden group-hover:block">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        `;
+    const thumbnailPreview = document.getElementById('editThumbnailPreview');
+    if (item.full_thumbnail) {
+        console.log('Setting thumbnail:', item.full_thumbnail); // Để debug
+        thumbnailPreview.src = item.full_thumbnail;
+        thumbnailPreview.classList.remove('hidden');
     } else {
-        thumbnailPreview.innerHTML = '<p class="text-sm text-gray-500">Chưa có ảnh</p>';
+        thumbnailPreview.classList.add('hidden');
     }
 
     // Hiển thị video hiện tại
-    const videoPreview = document.getElementById('video-preview');
-    if (item.preview_video) {
-        videoPreview.innerHTML = `
-            <div class="mt-2 relative">
-                <p class="text-sm text-gray-600 mb-1">Video hiện tại:</p>
-                <div class="relative group">
-                    <video width="320" height="240" controls class="rounded border border-gray-300">
-                        <source src="/storage/${item.preview_video}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    <button type="button"
-                            onclick="clearVideo()"
-                            class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full p-1 hidden group-hover:block">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        `;
+    const videoPreview = document.getElementById('editVideoPreview');
+    const videoSource = videoPreview.querySelector('source');
+    if (item.full_video) {
+        console.log('Setting video:', item.full_video); // Để debug
+        videoSource.src = item.full_video;
+        videoPreview.load(); // Quan trọng: Load lại video sau khi thay đổi source
+        videoPreview.classList.remove('hidden');
     } else {
-        videoPreview.innerHTML = '<p class="text-sm text-gray-500">Chưa có video</p>';
+        videoPreview.classList.add('hidden');
+    }
+
+    // Xóa các input hidden remove_thumbnail và remove_preview_video nếu có
+    const removeThumbInput = form.querySelector('input[name="remove_thumbnail"]');
+    if (removeThumbInput) removeThumbInput.remove();
+
+    const removeVideoInput = form.querySelector('input[name="remove_preview_video"]');
+    if (removeVideoInput) removeVideoInput.remove();
+}
+
+// Hàm xử lý preview ảnh mới
+function previewImage(input) {
+    const preview = document.getElementById('editThumbnailPreview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+        }
+        reader.readAsDataURL(input.files[0]);
+
+        // Xóa input hidden remove_thumbnail nếu có
+        const form = document.getElementById('editCourseForm');
+        const removeInput = form.querySelector('input[name="remove_thumbnail"]');
+        if (removeInput) removeInput.remove();
     }
 }
 
-// Thêm hàm xóa ảnh
+// Hàm xử lý preview video mới
+function previewVideo(input) {
+    const preview = document.getElementById('editVideoPreview');
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        // Kiểm tra kích thước file (100MB)
+        if (file.size > 100 * 1024 * 1024) {
+            alert('File video quá lớn. Vui lòng chọn file nhỏ hơn 100MB.');
+            input.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.querySelector('source').src = e.target.result;
+            preview.load(); // Quan trọng: Load lại video sau khi thay đổi source
+            preview.classList.remove('hidden');
+        }
+        reader.readAsDataURL(file);
+
+        // Xóa input hidden remove_preview_video nếu có
+        const form = document.getElementById('editCourseForm');
+        const removeInput = form.querySelector('input[name="remove_preview_video"]');
+        if (removeInput) removeInput.remove();
+    }
+}
+
+// Hàm xóa ảnh
 function clearThumbnail() {
-    const preview = document.getElementById('thumbnail-preview');
+    const preview = document.getElementById('editThumbnailPreview');
     const input = document.getElementById('thumbnail');
-    preview.innerHTML = '<p class="text-sm text-gray-500">Chưa có ảnh</p>';
+    preview.src = '';
+    preview.classList.add('hidden');
     input.value = '';
 
     // Thêm input hidden để đánh dấu xóa ảnh
@@ -322,11 +378,13 @@ function clearThumbnail() {
     }
 }
 
-// Thêm hàm xóa video
+// Hàm xóa video
 function clearVideo() {
-    const preview = document.getElementById('video-preview');
+    const preview = document.getElementById('editVideoPreview');
     const input = document.getElementById('preview_video');
-    preview.innerHTML = '<p class="text-sm text-gray-500">Chưa có video</p>';
+    preview.querySelector('source').src = '';
+    preview.load();
+    preview.classList.add('hidden');
     input.value = '';
 
     // Thêm input hidden để đánh dấu xóa video
@@ -337,65 +395,6 @@ function clearVideo() {
         removeInput.name = 'remove_preview_video';
         removeInput.value = '1';
         form.appendChild(removeInput);
-    }
-}
-
-function previewImage(input) {
-    const preview = document.getElementById('thumbnail-preview');
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.innerHTML = `
-                <div class="mt-2">
-                    <p class="text-sm text-gray-600 mb-1">Ảnh đã chọn:</p>
-                    <img src="${e.target.result}"
-                         alt="Preview thumbnail"
-                         class="h-20 w-20 object-cover rounded border border-gray-300">
-                </div>
-            `;
-        }
-        reader.readAsDataURL(input.files[0]);
-
-        // Xóa input hidden remove_thumbnail nếu có
-        const form = document.getElementById('editCourseForm');
-        const removeInput = form.querySelector('input[name="remove_thumbnail"]');
-        if (removeInput) {
-            removeInput.remove();
-        }
-    }
-}
-
-function previewVideo(input) {
-    const preview = document.getElementById('video-preview');
-    if (input.files && input.files[0]) {
-        const file = input.files[0];
-        // Kiểm tra kích thước file (100MB)
-        if (file.size > 100 * 1024 * 1024) {
-            alert('File video quá lớn. Vui lòng chọn file nhỏ hơn 100MB.');
-            input.value = '';
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.innerHTML = `
-                <div class="mt-2">
-                    <p class="text-sm text-gray-600 mb-1">Video đã chọn:</p>
-                    <video width="320" height="240" controls class="rounded">
-                        <source src="${e.target.result}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            `;
-        }
-        reader.readAsDataURL(file);
-
-        // Xóa input hidden remove_preview_video nếu có
-        const form = document.getElementById('editCourseForm');
-        const removeInput = form.querySelector('input[name="remove_preview_video"]');
-        if (removeInput) {
-            removeInput.remove();
-        }
     }
 }
 </script>

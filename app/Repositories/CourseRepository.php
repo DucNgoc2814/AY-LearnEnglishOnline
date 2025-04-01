@@ -194,4 +194,15 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
     {
         return $this->model->findOrFail($id);
     }
+
+    public function findWithFullUrls($id)
+    {
+        $course = $this->findOrFail($id);
+
+        // Add full URLs for image and video
+        $course->full_thumbnail = $this->getFullUrl($course->thumbnail);
+        $course->full_video = $this->getFullUrl($course->preview_video);
+
+        return $course;
+    }
 }

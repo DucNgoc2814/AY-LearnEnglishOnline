@@ -44,25 +44,25 @@
             <table class="min-w-full bg-white border border-gray-300">
                 <thead>
                     <tr>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">
+                        <th class="border ps-1 py-1 border-gray-300 text-center">
                             <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600">
                         </th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">STT</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Danh mục</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Tiêu đề</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Loại khóa học</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Hình thức</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Giá gốc</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Giá khuyến mãi</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Số học viên</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Đánh giá</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-start">Trạng thái</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center">STT</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center">Danh mục</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center">Tiêu đề</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center">Loại khóa học</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center">Hình thức</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center">Giá gốc</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center">Giá khuyến mãi</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center">Số học viên</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center">Đánh giá</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center">Trạng thái</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($courses as $key => $item)
-                        <tr class="hover:bg-gray-100 transition-colors duration-150">
+                        <tr class="hover:bg-gray-100 transition-colors duration-150 text-center">
                             <td class="ps-1 pt-1">
                                 <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600"
                                     data-id="{{ $item->id }}">
@@ -125,7 +125,8 @@
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <button class="text-blue-500 hover:text-blue-700"
-                                        onclick="populateEditModal({{ json_encode($item) }})" title="Chỉnh sửa">
+                                        onclick="editCourse({{ $item->id }})"
+                                        title="Chỉnh sửa">
                                         <i class="far fa-edit"></i>
                                     </button>
                                     <form action="{{ route('admin.courses.destroy', $item->id) }}" method="POST"

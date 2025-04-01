@@ -264,4 +264,24 @@ abstract class BaseRepository implements BaseRepositoryInterface
             return false;
         }
     }
+
+    public function getFullUrl($path)
+    {
+        if (empty($path)) {
+            return null;
+        }
+
+        // Check if path is already a full URL
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        // Use CloudFront URL if configured, otherwise fallback to S3
+        $cloudFrontUrl = config('filesystems.disks.cloudfront.url');
+        if ($cloudFrontUrl) {
+            return rtrim($cloudFrontUrl, '/') . '/' . ltrim($path, '/');
+        }
+
+        return Storage::disk('s3')->url($path);
+    }
 }

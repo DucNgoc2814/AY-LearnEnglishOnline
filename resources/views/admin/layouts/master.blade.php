@@ -112,6 +112,19 @@
                 return xhr;
             }
             window.XMLHttpRequest = newXHR;
+
+            // Add CSRF token to all fetch requests
+            let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            let originalFetch = window.fetch;
+            window.fetch = function(url, options = {}) {
+                options.headers = {
+                    ...options.headers,
+                    'X-CSRF-TOKEN': token,
+                    'Accept': 'application/json'
+                };
+                return originalFetch(url, options);
+            };
         });
     </script>
 </body>
