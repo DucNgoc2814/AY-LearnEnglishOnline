@@ -15,14 +15,21 @@
                             trơn tru và giàu cảm hứng.
                         </p>
 
+                        <div class="alert alert-info mb-3">
+                            <strong>Thông báo bảo mật:</strong>
+                            Mỗi tài khoản chỉ có thể đăng nhập trên một trình duyệt tại một thời điểm.
+                            Vui lòng đăng xuất khỏi phiên hiện tại trước khi đăng nhập ở thiết bị mới.
+                        </div>
+
                         <form action="{{ route('login.submit') }}" method="post" id="login-form">
                             @csrf
                             <div class="mb-4">
                                 <h5>Email</h5>
                                 <div class="position-relative">
                                     <i class="fa-solid fa-user"></i>
+                                    {{-- <i class="fa-solid fa-shield-halved"></i> --}}
                                     <input class="form-control" id="email" type="email" name="email"
-                                        placeholder="Nhập email">
+                                        placeholder="Nhập email" value="{{ old('email') }}">
                                 </div>
                             </div>
                             <div class="">
@@ -45,6 +52,7 @@
                                     Đăng nhập </button>
                             </div>
                         </form>
+
                         <div class="text-center">
                             <p>
                                 Bạn chưa có tài khoản? <a href="{{ route('register') }}">Đăng ký</a>

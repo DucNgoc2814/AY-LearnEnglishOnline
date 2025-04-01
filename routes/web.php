@@ -36,6 +36,9 @@ Route::middleware('web')->group(function () {
         Route::post('/dang-nhap', [AuthController::class, 'login'])->name('login.submit');
     });
 
+    // Route để kiểm tra trạng thái đăng nhập
+    Route::get('/check-auth', [AuthController::class, 'checkAuth'])->name('check.auth');
+
     Route::get('/khoa-hoc/{slug}', [CourseController::class, 'detailCourse'])->name('detailCourse');
     Route::get('/danh-muc/{slug?}', [CategoryController::class, 'index'])->name('category.index');
 

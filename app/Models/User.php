@@ -30,6 +30,8 @@ class User extends Authenticatable implements JWTSubject
         'role',
         'role_token',
         'refresh_token',
+        'device_id',
+        'active_token',
     ];
 
     /**
@@ -42,6 +44,7 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
         'role_token',
         'refresh_token',
+        'active_token',
     ];
 
     /**

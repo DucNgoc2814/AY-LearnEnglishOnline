@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
+use App\Services\DeviceService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +15,13 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class JwtMiddleware
 {
+    protected $deviceService;
+
+    public function __construct(DeviceService $deviceService)
+    {
+        $this->deviceService = $deviceService;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -28,20 +37,51 @@ class JwtMiddleware
                 ]);
         }
 
+        $user = Auth::user();
+        $deviceId = $this->deviceService->getDeviceIdentifier($request);
+
+        // Check if user is trying to access from a different browser
+        if ($user->device_id && $user->device_id !== $deviceId) {
+            // User is trying to access from a different browser
+            Auth::logout();
+            session()->flush();
+
+            return redirect()->route('login')
+                ->with('notification', [
+                    'message' => 'Tài khoản của bạn đang được đăng nhập từ một thiết bị khác. Vui lòng đăng xuất ở thiết bị đó trước khi đăng nhập ở đây.',
+                    'type' => 'error'
+                ]);
+        }
+
         try {
             if (!session('jwt_token')) {
                 // Create a new token if not exists
-                $token = JWTAuth::fromUser(Auth::user());
+                $token = JWTAuth::fromUser($user);
                 session(['jwt_token' => $token]);
+
+                // Update device info in database
+                User::where('id', $user->id)->update([
+                    'device_id' => $deviceId,
+                    'active_token' => $token
+                ]);
             } else {
                 // Verify existing token
                 JWTAuth::setToken(session('jwt_token'));
-                $user = JWTAuth::authenticate();
 
-                if (!$user) {
-                    // If token doesn't authenticate a user, create a new one
-                    $token = JWTAuth::fromUser(Auth::user());
+                try {
+                    $jwtUser = JWTAuth::authenticate();
+                    if (!$jwtUser) {
+                        throw new JWTException('Invalid token');
+                    }
+                } catch (JWTException $e) {
+                    // Token is invalid, create new one
+                    $token = JWTAuth::fromUser($user);
                     session(['jwt_token' => $token]);
+
+                    // Update token in database
+                    User::where('id', $user->id)->update([
+                        'active_token' => $token
+                    ]);
                 }
             }
         } catch (TokenExpiredException $e) {
@@ -49,14 +89,29 @@ class JwtMiddleware
             try {
                 $refreshed = JWTAuth::refresh(session('jwt_token'));
                 session(['jwt_token' => $refreshed]);
+
+                // Update token in database
+                User::where('id', $user->id)->update([
+                    'active_token' => $refreshed
+                ]);
             } catch (JWTException $e) {
-                $token = JWTAuth::fromUser(Auth::user());
+                $token = JWTAuth::fromUser($user);
                 session(['jwt_token' => $token]);
+
+                // Update token in database
+                User::where('id', $user->id)->update([
+                    'active_token' => $token
+                ]);
             }
         } catch (TokenInvalidException|JWTException $e) {
             // For any JWT error, generate a new token
-            $token = JWTAuth::fromUser(Auth::user());
+            $token = JWTAuth::fromUser($user);
             session(['jwt_token' => $token]);
+
+            // Update token in database
+            User::where('id', $user->id)->update([
+                'active_token' => $token
+            ]);
         }
 
         return $next($request);

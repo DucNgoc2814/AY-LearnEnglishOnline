@@ -24,7 +24,7 @@
 
 </head>
 
-<body class="">
+<body class="{{ Auth::check() ? 'user-logged-in' : '' }}">
     <header>
         @if (!str_starts_with(Route::currentRouteName(), 'course.learning'))
             @include('client.layouts.partials.header')
@@ -43,7 +43,9 @@
 
     @stack('scripts')
 
+    @if (Auth::check())
+        <script src="{{ asset('js/auth-checker.js') }}"></script>
+    @endif
 </body>
-
 
 </html>
