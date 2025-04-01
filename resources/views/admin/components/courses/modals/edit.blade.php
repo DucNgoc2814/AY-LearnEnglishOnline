@@ -1,18 +1,22 @@
-<div class="fixed inset-0 z-50 overflow-y-auto hidden" id="editCourseModal" aria-labelledby="editCourseModalLabel" aria-hidden="true">
+<div class="fixed inset-0 z-50 overflow-y-auto hidden" id="editCourseModal" aria-labelledby="editCourseModalLabel"
+    aria-hidden="true">
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
             <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
         </div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+        <div
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div class="flex justify-between items-center pb-3 border-b">
                     <h3 class="text-lg font-medium text-gray-900" id="editCourseModalLabel">Chỉnh sửa khóa học</h3>
                     <button type="button" class="text-gray-400 hover:text-gray-500"
                         onclick="modalHandler.close('editCourseModal')" aria-label="Close">
                         <span class="sr-only">Close</span>
-                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
@@ -35,10 +39,11 @@
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="category_id">
                                     Danh mục <span class="text-red-500">*</span>
                                 </label>
-                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                <select
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="category_id" name="category_id" required>
                                     <option value="">Chọn danh mục</option>
-                                    @foreach(\App\Models\Category::all() as $category)
+                                    @foreach (\App\Models\Category::all() as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>
@@ -48,7 +53,8 @@
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="course_type">
                                     Loại khóa học <span class="text-red-500">*</span>
                                 </label>
-                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                <select
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="course_type" name="course_type" required>
                                     <option value="self_paced">Tự học</option>
                                     <option value="instructor_led">Có giảng viên</option>
@@ -60,7 +66,8 @@
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="course_format">
                                     Hình thức học <span class="text-red-500">*</span>
                                 </label>
-                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                <select
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="course_format" name="course_format" required>
                                     <option value="online">Trực tuyến</option>
                                     <option value="offline">Trực tiếp</option>
@@ -120,21 +127,22 @@
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="thumbnail">
                                     Ảnh đại diện
                                 </label>
-                                <div class="flex items-center space-x-2">
-                                    <div class="relative">
-                                        <input type="file"
-                                            class="hidden"
-                                            id="thumbnail" name="thumbnail"
-                                            accept="image/*"
-                                            onchange="previewImage(this);">
-                                        <button type="button"
-                                            onclick="document.getElementById('thumbnail').click()"
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                            Chọn ảnh
-                                        </button>
+                                <div class="flex flex-col space-y-2">
+                                    <!-- Preview container -->
+                                    <div class="preview-container">
+                                        <img id="editThumbnailPreview" src="" class="hidden max-w-xs h-auto rounded-lg shadow-md" style="max-height: 200px; object-fit: contain;">
                                     </div>
-                                    <div class="preview-container mb-3">
-                                        <img id="editThumbnailPreview" src="" class="hidden max-w-xs">
+
+                                    <!-- Controls -->
+                                    <div class="flex items-center">
+                                        <div class="relative">
+                                            <input type="file" class="hidden" id="thumbnail" name="thumbnail" accept="image/*" onchange="previewImage(this);">
+                                            <button type="button"
+                                                onclick="document.getElementById('thumbnail').click()"
+                                                class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                                Chọn ảnh
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -143,24 +151,25 @@
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="preview_video">
                                     Video giới thiệu
                                 </label>
-                                <div class="flex items-center space-x-2">
-                                    <div class="relative">
-                                        <input type="file"
-                                            class="hidden"
-                                            id="preview_video"
-                                            name="preview_video"
-                                            accept="video/*"
-                                            onchange="previewVideo(this);">
-                                        <button type="button"
-                                            onclick="document.getElementById('preview_video').click()"
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                            Chọn video
-                                        </button>
-                                    </div>
-                                    <div class="preview-container mb-3">
-                                        <video id="editVideoPreview" class="hidden max-w-xs" controls>
+                                <div class="flex flex-col space-y-2">
+                                    <!-- Preview container -->
+                                    <div class="preview-container">
+                                        <video id="editVideoPreview" class="hidden max-w-xs rounded-lg shadow-md" style="max-height: 300px; width: 100%;" controls>
                                             <source src="" type="video/mp4">
+                                            Your browser does not support the video tag.
                                         </video>
+                                    </div>
+
+                                    <!-- Controls -->
+                                    <div class="flex items-center">
+                                        <div class="relative">
+                                            <input type="file" class="hidden" id="preview_video" name="preview_video" accept="video/*" onchange="previewVideo(this);">
+                                            <button type="button"
+                                                onclick="document.getElementById('preview_video').click()"
+                                                class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                                Chọn video
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -216,7 +225,8 @@
                             onclick="modalHandler.close('editCourseModal')">
                             Hủy
                         </button>
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <button type="submit"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Cập nhật
                         </button>
                     </div>
@@ -227,176 +237,232 @@
 </div>
 
 <script>
-// Thêm function mới để gọi API
-function editCourse(id) {
-    console.log('Editing course:', id); // Debug log
+    // Thêm function mới để gọi API
+    function editCourse(id) {
+        console.log('Editing course:', id); // Debug log
 
-    fetch(`/admin/courses/${id}/edit`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(response => {
-            console.log('Response:', response); // Debug log
-            if (response.status) {
-                populateEditModal(response.data);
-            } else {
-                throw new Error(response.message || 'Có lỗi xảy ra khi lấy thông tin khóa học');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Có lỗi xảy ra: ' + error.message);
-        });
-}
-
-function populateEditModal(item) {
-    console.log('Populating modal with:', item); // Để debug
-    modalHandler.open('editCourseModal');
-    const form = document.getElementById('editCourseForm');
-
-    // Cập nhật action URL của form
-    form.action = `/admin/courses/${item.id}`;
-
-    // Điền các giá trị vào form
-    form.querySelector('#title').value = item.title || '';
-    form.querySelector('#category_id').value = item.category_id || '';
-    form.querySelector('#description').value = item.description || '';
-    form.querySelector('#short_description').value = item.short_description || '';
-    form.querySelector('#course_type').value = item.course_type || '';
-    form.querySelector('#course_format').value = item.course_format || '';
-    form.querySelector('#price').value = item.price || '';
-    form.querySelector('#sale_price').value = item.sale_price || '';
-    form.querySelector('#estimated_hours').value = item.estimated_hours || '';
-    form.querySelector('#has_certificate').checked = Boolean(item.has_certificate);
-    form.querySelector('#requires_enrollment').checked = Boolean(item.requires_enrollment);
-    form.querySelector('#is_featured').checked = Boolean(item.is_featured);
-    form.querySelector('#is_active').checked = Boolean(item.is_active);
-
-    // Xử lý ngày phát hành
-    if (item.release_date) {
-        const releaseDate = new Date(item.release_date);
-        const formattedDate = releaseDate.toISOString().slice(0, 16);
-        form.querySelector('#release_date').value = formattedDate;
-    } else {
-        form.querySelector('#release_date').value = '';
+        fetch(`/admin/courses/${id}/edit`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(response => {
+                console.log('Response:', response); // Debug log
+                if (response.status) {
+                    populateEditModal(response.data);
+                } else {
+                    throw new Error(response.message || 'Có lỗi xảy ra khi lấy thông tin khóa học');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra: ' + error.message);
+            });
     }
 
-    // Hiển thị ảnh hiện tại
-    const thumbnailPreview = document.getElementById('editThumbnailPreview');
-    if (item.full_thumbnail) {
-        console.log('Setting thumbnail:', item.full_thumbnail); // Để debug
-        thumbnailPreview.src = item.full_thumbnail;
-        thumbnailPreview.classList.remove('hidden');
-    } else {
-        thumbnailPreview.classList.add('hidden');
-    }
-
-    // Hiển thị video hiện tại
-    const videoPreview = document.getElementById('editVideoPreview');
-    const videoSource = videoPreview.querySelector('source');
-    if (item.full_video) {
-        console.log('Setting video:', item.full_video); // Để debug
-        videoSource.src = item.full_video;
-        videoPreview.load(); // Quan trọng: Load lại video sau khi thay đổi source
-        videoPreview.classList.remove('hidden');
-    } else {
-        videoPreview.classList.add('hidden');
-    }
-
-    // Xóa các input hidden remove_thumbnail và remove_preview_video nếu có
-    const removeThumbInput = form.querySelector('input[name="remove_thumbnail"]');
-    if (removeThumbInput) removeThumbInput.remove();
-
-    const removeVideoInput = form.querySelector('input[name="remove_preview_video"]');
-    if (removeVideoInput) removeVideoInput.remove();
-}
-
-// Hàm xử lý preview ảnh mới
-function previewImage(input) {
-    const preview = document.getElementById('editThumbnailPreview');
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-            preview.classList.remove('hidden');
-        }
-        reader.readAsDataURL(input.files[0]);
-
-        // Xóa input hidden remove_thumbnail nếu có
+    function populateEditModal(item) {
+        console.log('Populating modal with:', item); // Để debug
+        modalHandler.open('editCourseModal');
         const form = document.getElementById('editCourseForm');
-        const removeInput = form.querySelector('input[name="remove_thumbnail"]');
-        if (removeInput) removeInput.remove();
+
+        // Cập nhật action URL của form
+        form.action = `/admin/courses/${item.id}`;
+
+        // Điền các giá trị vào form
+        form.querySelector('#title').value = item.title || '';
+        form.querySelector('#category_id').value = item.category_id || '';
+        form.querySelector('#description').value = item.description || '';
+        form.querySelector('#short_description').value = item.short_description || '';
+        form.querySelector('#course_type').value = item.course_type || '';
+        form.querySelector('#course_format').value = item.course_format || '';
+        form.querySelector('#price').value = item.price || '';
+        form.querySelector('#sale_price').value = item.sale_price || '';
+        form.querySelector('#estimated_hours').value = item.estimated_hours || '';
+        form.querySelector('#has_certificate').checked = Boolean(item.has_certificate);
+        form.querySelector('#requires_enrollment').checked = Boolean(item.requires_enrollment);
+        form.querySelector('#is_featured').checked = Boolean(item.is_featured);
+        form.querySelector('#is_active').checked = Boolean(item.is_active);
+
+        // Xử lý ngày phát hành
+        if (item.release_date) {
+            const releaseDate = new Date(item.release_date);
+            const formattedDate = releaseDate.toISOString().slice(0, 16);
+            form.querySelector('#release_date').value = formattedDate;
+        } else {
+            form.querySelector('#release_date').value = '';
+        }
+
+        // Hiển thị ảnh hiện tại
+        const thumbnailPreview = document.getElementById('editThumbnailPreview');
+        if (item.full_thumbnail) {
+            console.log('Setting thumbnail:', item.full_thumbnail); // Để debug
+            thumbnailPreview.src = item.full_thumbnail;
+            thumbnailPreview.classList.remove('hidden');
+        } else {
+            thumbnailPreview.classList.add('hidden');
+        }
+
+        // Hiển thị video hiện tại
+        const videoPreview = document.getElementById('editVideoPreview');
+        const videoSource = videoPreview.querySelector('source');
+        if (item.full_video) {
+            console.log('Setting video:', item.full_video); // Để debug
+            videoSource.src = item.full_video;
+            videoPreview.load(); // Quan trọng: Load lại video sau khi thay đổi source
+            videoPreview.classList.remove('hidden');
+        } else {
+            videoPreview.classList.add('hidden');
+        }
+
+        // Xóa các input hidden remove_thumbnail và remove_preview_video nếu có
+        const removeThumbInput = form.querySelector('input[name="remove_thumbnail"]');
+        if (removeThumbInput) removeThumbInput.remove();
+
+        const removeVideoInput = form.querySelector('input[name="remove_preview_video"]');
+        if (removeVideoInput) removeVideoInput.remove();
     }
-}
 
-// Hàm xử lý preview video mới
-function previewVideo(input) {
-    const preview = document.getElementById('editVideoPreview');
-    if (input.files && input.files[0]) {
-        const file = input.files[0];
-        // Kiểm tra kích thước file (100MB)
-        if (file.size > 100 * 1024 * 1024) {
-            alert('File video quá lớn. Vui lòng chọn file nhỏ hơn 100MB.');
-            input.value = '';
-            return;
+    // Hàm xử lý preview ảnh mới
+    function previewImage(input) {
+        const preview = document.getElementById('editThumbnailPreview');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+
+            // Xóa input hidden remove_thumbnail nếu có
+            const form = document.getElementById('editCourseForm');
+            const removeInput = form.querySelector('input[name="remove_thumbnail"]');
+            if (removeInput) removeInput.remove();
         }
+    }
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.querySelector('source').src = e.target.result;
-            preview.load(); // Quan trọng: Load lại video sau khi thay đổi source
-            preview.classList.remove('hidden');
+    // Hàm xử lý preview video mới
+    function previewVideo(input) {
+        const preview = document.getElementById('editVideoPreview');
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            // Kiểm tra kích thước file (100MB)
+            if (file.size > 100 * 1024 * 1024) {
+                alert('File video quá lớn. Vui lòng chọn file nhỏ hơn 100MB.');
+                input.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.querySelector('source').src = e.target.result;
+                preview.load(); // Quan trọng: Load lại video sau khi thay đổi source
+                preview.classList.remove('hidden');
+            }
+            reader.readAsDataURL(file);
+
+            // Xóa input hidden remove_preview_video nếu có
+            const form = document.getElementById('editCourseForm');
+            const removeInput = form.querySelector('input[name="remove_preview_video"]');
+            if (removeInput) removeInput.remove();
         }
-        reader.readAsDataURL(file);
+    }
 
-        // Xóa input hidden remove_preview_video nếu có
+    // Hàm xóa ảnh
+    function clearThumbnail() {
+        const preview = document.getElementById('editThumbnailPreview');
+        const input = document.getElementById('thumbnail');
+        preview.src = '';
+        preview.classList.add('hidden');
+        input.value = '';
+
+        // Thêm input hidden để đánh dấu xóa ảnh
         const form = document.getElementById('editCourseForm');
-        const removeInput = form.querySelector('input[name="remove_preview_video"]');
-        if (removeInput) removeInput.remove();
+        if (!form.querySelector('input[name="remove_thumbnail"]')) {
+            const removeInput = document.createElement('input');
+            removeInput.type = 'hidden';
+            removeInput.name = 'remove_thumbnail';
+            removeInput.value = '1';
+            form.appendChild(removeInput);
+        }
     }
-}
 
-// Hàm xóa ảnh
-function clearThumbnail() {
-    const preview = document.getElementById('editThumbnailPreview');
-    const input = document.getElementById('thumbnail');
-    preview.src = '';
-    preview.classList.add('hidden');
-    input.value = '';
+    // Hàm xóa video
+    function clearVideo() {
+        const preview = document.getElementById('editVideoPreview');
+        const input = document.getElementById('preview_video');
+        preview.querySelector('source').src = '';
+        preview.load();
+        preview.classList.add('hidden');
+        input.value = '';
 
-    // Thêm input hidden để đánh dấu xóa ảnh
-    const form = document.getElementById('editCourseForm');
-    if (!form.querySelector('input[name="remove_thumbnail"]')) {
-        const removeInput = document.createElement('input');
-        removeInput.type = 'hidden';
-        removeInput.name = 'remove_thumbnail';
-        removeInput.value = '1';
-        form.appendChild(removeInput);
+        // Thêm input hidden để đánh dấu xóa video
+        const form = document.getElementById('editCourseForm');
+        if (!form.querySelector('input[name="remove_preview_video"]')) {
+            const removeInput = document.createElement('input');
+            removeInput.type = 'hidden';
+            removeInput.name = 'remove_preview_video';
+            removeInput.value = '1';
+            form.appendChild(removeInput);
+        }
     }
-}
-
-// Hàm xóa video
-function clearVideo() {
-    const preview = document.getElementById('editVideoPreview');
-    const input = document.getElementById('preview_video');
-    preview.querySelector('source').src = '';
-    preview.load();
-    preview.classList.add('hidden');
-    input.value = '';
-
-    // Thêm input hidden để đánh dấu xóa video
-    const form = document.getElementById('editCourseForm');
-    if (!form.querySelector('input[name="remove_preview_video"]')) {
-        const removeInput = document.createElement('input');
-        removeInput.type = 'hidden';
-        removeInput.name = 'remove_preview_video';
-        removeInput.value = '1';
-        form.appendChild(removeInput);
-    }
-}
 </script>
 
+<style>
+/* Thêm styles cho preview containers */
+.preview-container {
+    min-height: 50px;
+    border: 2px dashed #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8fafc;
+}
 
+.preview-container img,
+.preview-container video {
+    max-width: 100%;
+    border-radius: 0.375rem;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect cho preview */
+.preview-container img:hover,
+.preview-container video:hover {
+    transform: scale(1.02);
+}
+
+/* Style cho buttons */
+button {
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+/* Loading indicator */
+.loading {
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+</style>

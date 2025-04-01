@@ -112,27 +112,10 @@ class CourseController extends BaseController
 
     public function edit($id)
     {
-        try {
             $course = $this->courseService->findWithFullUrls($id);
-
-            // Debug log
-            \Log::info('Course data:', ['course' => $course]);
-
             return response()->json([
                 'status' => true,
                 'data' => $course
             ]);
-        } catch (\Exception $e) {
-            // Log error
-            \Log::error('Error in course edit:', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return response()->json([
-                'status' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
     }
 }
