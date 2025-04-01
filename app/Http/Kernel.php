@@ -64,6 +64,7 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'jwt' => \App\Http\Middleware\JwtMiddleware::class,
     ];
 
     /**
@@ -79,5 +80,6 @@ class Kernel extends HttpKernel
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'check.course.access' => \App\Http\Middleware\CheckCourseAccess::class,
+        'jwt' => \App\Http\Middleware\JwtMiddleware::class,
     ];
 }

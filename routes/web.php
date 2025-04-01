@@ -40,7 +40,7 @@ Route::middleware('web')->group(function () {
     Route::get('/danh-muc/{slug?}', [CategoryController::class, 'index'])->name('category.index');
 
     // Routes cho user đã đăng nhập
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['auth', 'jwt'])->group(function () {
         Route::post('/dang-xuat', [AuthController::class, 'logout'])->name('logout');
         Route::get('/thanh-toan', [PaymentController::class, 'showQrPayment'])->name('checkout');
         Route::get('/thanh-toan/{slug}', [PaymentController::class, 'showQrPayment'])->name('payment.qr');
@@ -53,7 +53,7 @@ Route::middleware('web')->group(function () {
         });
 
         Route::prefix('hoc-khoa-hoc')->group(function () {
-            
+
             // Route mặc định
             Route::get('/{courseSlug}', [CourseController::class, 'learning'])
                 ->name('course.learning');

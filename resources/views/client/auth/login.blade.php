@@ -15,7 +15,7 @@
                             trơn tru và giàu cảm hứng.
                         </p>
 
-                        <form action="{{ route('login') }}" method="post" id="login-form">
+                        <form action="{{ route('login.submit') }}" method="post" id="login-form">
                             @csrf
                             <div class="mb-4">
                                 <h5>Email</h5>

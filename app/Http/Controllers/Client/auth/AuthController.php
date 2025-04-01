@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * @package App\Http\Controllers\Client\Auth
@@ -20,7 +21,7 @@ class AuthController extends Controller
 {
     /**
      * Show registration form
-     * 
+     *
      * @return View
      */
     public function showRegisterForm(): View
@@ -30,7 +31,7 @@ class AuthController extends Controller
 
     /**
      * Handle registration request
-     * 
+     *
      * @param RegisterRequest $request
      * @return RedirectResponse
      */
@@ -60,7 +61,7 @@ class AuthController extends Controller
 
     /**
      * Show login form
-     * 
+     *
      * @return View
      */
     public function showLoginForm(): View
@@ -70,19 +71,28 @@ class AuthController extends Controller
 
     /**
      * Handle login request
-     * 
+     *
      * @param LoginRequest $request
      * @return RedirectResponse
      */
     public function login(LoginRequest $request): RedirectResponse
     {
-        if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+        $credentials = $request->only('email', 'password');
+
+        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()->withInput()
                 ->with('notification', [
                     'message' => 'Email hoặc mật khẩu không chính xác',
                     'type' => 'error'
                 ]);
         }
+
+        // Generate JWT token
+        $user = Auth::user();
+        $token = JWTAuth::fromUser($user);
+
+        // Store token in session
+        session(['jwt_token' => $token]);
 
         return redirect()->intended(route('home'))
             ->with('notification', [
@@ -93,13 +103,19 @@ class AuthController extends Controller
 
     /**
      * Handle logout request
-     * 
+     *
      * @return RedirectResponse
      */
     public function logout(): RedirectResponse
     {
+        // Invalidate JWT token
+        if (session()->has('jwt_token')) {
+            JWTAuth::setToken(session('jwt_token'))->invalidate();
+            session()->forget('jwt_token');
+        }
+
         Auth::logout();
-        
+
         return redirect()->route('home')
             ->with('notification', [
                 'message' => 'Đăng xuất thành công.',
