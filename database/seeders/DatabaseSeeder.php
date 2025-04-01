@@ -33,7 +33,8 @@ class DatabaseSeeder extends Seeder
             AttendanceSeeder::class,
             OnlineRoomSeeder::class,
             SessionInteractionSeeder::class,
-            LearningLogSeeder::class
+            LearningLogSeeder::class,
+            LessonAndTestSeeder::class,
         ]);
     }
 }

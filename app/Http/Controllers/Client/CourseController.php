@@ -32,8 +32,15 @@ class CourseController extends BaseController
      */
     public function detailCourse($slug)
     {
-        $course = Course::where('slug', $slug)->first();
-        $relatedCourses = Course::where('category_id', $course->categoryId)
+        $course = Course::with([
+            'lessons',
+            'lessons.lessonTests' => function($query) {
+                $query->where('type', 'lesson_test')
+                      ->whereNull('deleted_at');
+            }
+        ])->where('slug', $slug)->first();
+        
+        $relatedCourses = Course::where('category_id', $course->category_id)
             ->where('id', '!=', $course->id)
             ->get();
 
@@ -42,7 +49,19 @@ class CourseController extends BaseController
             $isEnrolled = $course->isEnrolledByUser(Auth::id());
         }
 
-        return view('client.detailCourse.index', compact('course', 'relatedCourses', 'isEnrolled'));
+        $courseStats = [
+            'total_lessons' => $course->totalLessons(),
+            'total_videos' => $course->totalVideos(),
+            'total_tests' => $course->totalTests(),
+            'total_duration' => $course->totalDuration(),
+        ];
+
+        return view('client.detailCourse.index', compact(
+            'course', 
+            'relatedCourses', 
+            'isEnrolled',
+            'courseStats'
+        ));
     }
 
     /**

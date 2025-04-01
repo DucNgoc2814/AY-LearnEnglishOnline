@@ -6,6 +6,7 @@ use App\Http\Controllers\Client\CategoryController;
 use App\Http\Controllers\Client\CourseController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\PaymentController;
+use App\Http\Controllers\Client\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,5 +67,18 @@ Route::middleware('web')->group(function () {
             Route::get('/{courseSlug}/bai-hoc/{lessonSlug}/bai-kiem-tra/{testSlug}', [CourseController::class, 'learning'])
                 ->name('course.learning.test');
         });
+
+        // Comment routes
+        Route::middleware(['auth'])->group(function () {
+            Route::post('/comments', [App\Http\Controllers\Client\CommentController::class, 'store'])->name('client.comments.store');
+            Route::post('/comments/{comment}/reply', [App\Http\Controllers\Client\CommentController::class, 'reply'])->name('client.comments.reply');
+            
+            // Rating routes
+            Route::post('/ratings', [App\Http\Controllers\Client\CommentController::class, 'storeRating'])->name('client.ratings.store');
+        });
     });
+
+    // Routes không cần auth
+    Route::get('/courses/{course}/comments', [App\Http\Controllers\Client\CommentController::class, 'getCourseComments'])->name('client.courses.comments');
+    Route::get('/courses/{course}/ratings', [App\Http\Controllers\Client\CommentController::class, 'getCourseRatings'])->name('client.courses.ratings');
 });

@@ -46,9 +46,9 @@ class Test extends Model
     // }
 
     // Relationships
-    public function testable(): MorphTo
+    public function testable()
     {
-        return $this->morphTo('testable', 'testable_type', 'testable_id');
+        return $this->morphTo();
     }
 
     public function questions(): HasMany
@@ -59,6 +59,12 @@ class Test extends Model
     public function results(): HasMany
     {
         return $this->hasMany(TestResult::class);
+    }
+
+    public function lesson()
+    {
+        return $this->belongsTo(Lesson::class, 'testable_id')
+                    ->where('testable_type', 'App\Models\Lesson');
     }
 
     // Methods
