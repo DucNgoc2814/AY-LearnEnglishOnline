@@ -130,7 +130,9 @@
                                 <div class="flex flex-col space-y-2">
                                     <!-- Preview container -->
                                     <div class="preview-container">
-                                        <img id="editThumbnailPreview" src="" class="hidden max-w-xs h-auto rounded-lg shadow-md" style="max-height: 200px; object-fit: contain;">
+                                        <img id="editThumbnailPreview" src="" class="hidden max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
+                                            style="max-height: 200px; object-fit: contain;"
+                                            onclick="openImageModal(this.src)">
                                     </div>
 
                                     <!-- Controls -->
@@ -154,7 +156,9 @@
                                 <div class="flex flex-col space-y-2">
                                     <!-- Preview container -->
                                     <div class="preview-container">
-                                        <video id="editVideoPreview" class="hidden max-w-xs rounded-lg shadow-md" style="max-height: 300px; width: 100%;" controls>
+                                        <video id="editVideoPreview" class="hidden max-w-xs rounded-lg shadow-md cursor-pointer"
+                                            style="max-height: 300px; width: 100%;"
+                                            onclick="openVideoModal(this.querySelector('source').src)" controls>
                                             <source src="" type="video/mp4">
                                             Your browser does not support the video tag.
                                         </video>
@@ -231,6 +235,57 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thêm modal xem ảnh -->
+<div id="imageModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+        <div class="relative bg-white rounded-lg max-w-3xl w-full mx-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-xl font-semibold text-gray-900" id="imageModalLabel">Xem ảnh</h3>
+                <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeImageModal()">
+                    <span class="sr-only">Đóng</span>
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Body -->
+            <div class="p-4">
+                <img id="modalImage" src="" alt="Preview" class="w-full h-auto">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thêm modal xem video -->
+<div id="videoModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="videoModalLabel" aria-hidden="true">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+        <div class="relative bg-white rounded-lg max-w-4xl w-full mx-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-xl font-semibold text-gray-900" id="videoModalLabel">Xem video</h3>
+                <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeVideoModal()">
+                    <span class="sr-only">Đóng</span>
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Body -->
+            <div class="p-4">
+                <video id="modalVideo" class="w-full h-auto" controls>
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
         </div>
     </div>
@@ -407,6 +462,61 @@
             form.appendChild(removeInput);
         }
     }
+
+    function openImageModal(src) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = src;
+        modal.classList.remove('hidden');
+        // Prevent body scrolling
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageModal() {
+        const modal = document.getElementById('imageModal');
+        modal.classList.add('hidden');
+        // Restore body scrolling
+        document.body.style.overflow = 'auto';
+    }
+
+    function openVideoModal(src) {
+        const modal = document.getElementById('videoModal');
+        const modalVideo = document.getElementById('modalVideo');
+        modalVideo.querySelector('source').src = src;
+        modalVideo.load(); // Reload video with new source
+        modal.classList.remove('hidden');
+        // Prevent body scrolling
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideoModal() {
+        const modal = document.getElementById('videoModal');
+        const modalVideo = document.getElementById('modalVideo');
+        modalVideo.pause(); // Pause video when closing modal
+        modal.classList.add('hidden');
+        // Restore body scrolling
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+        const imageModal = document.getElementById('imageModal');
+        const videoModal = document.getElementById('videoModal');
+        if (event.target === imageModal) {
+            closeImageModal();
+        }
+        if (event.target === videoModal) {
+            closeVideoModal();
+        }
+    }
+
+    // Close modals with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeImageModal();
+            closeVideoModal();
+        }
+    });
 </script>
 
 <style>
@@ -464,5 +574,33 @@ button:active {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* Add styles for modal content */
+.modal-content {
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Add hover effect for preview items */
+.preview-container img,
+.preview-container video {
+    cursor: pointer;
+}
+
+.preview-container img:hover,
+.preview-container video:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 </style>
