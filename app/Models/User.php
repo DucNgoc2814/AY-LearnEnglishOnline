@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Model;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -32,6 +33,9 @@ class User extends Authenticatable implements JWTSubject
         'refresh_token',
         'device_id',
         'active_token',
+        'last_login_at',
+        'login_lock',
+        'login_lock_expires_at',
     ];
 
     /**

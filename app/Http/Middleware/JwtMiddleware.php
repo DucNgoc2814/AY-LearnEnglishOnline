@@ -42,9 +42,17 @@ class JwtMiddleware
 
         // Check if user is trying to access from a different browser
         if ($user->device_id && $user->device_id !== $deviceId) {
-            // User is trying to access from a different browser
+            // User is trying to access from a different browser - force logout
             Auth::logout();
             session()->flush();
+
+            // Log this event
+            \Illuminate\Support\Facades\Log::warning('Session hijacking attempt detected', [
+                'user_id' => $user->id,
+                'expected_device' => $user->device_id,
+                'current_device' => $deviceId,
+                'ip' => $request->ip()
+            ]);
 
             return redirect()->route('login')
                 ->with('notification', [
@@ -53,65 +61,44 @@ class JwtMiddleware
                 ]);
         }
 
-        try {
-            if (!session('jwt_token')) {
-                // Create a new token if not exists
-                $token = JWTAuth::fromUser($user);
-                session(['jwt_token' => $token]);
-
-                // Update device info in database
-                User::where('id', $user->id)->update([
-                    'device_id' => $deviceId,
-                    'active_token' => $token
-                ]);
-            } else {
-                // Verify existing token
-                JWTAuth::setToken(session('jwt_token'));
-
-                try {
-                    $jwtUser = JWTAuth::authenticate();
-                    if (!$jwtUser) {
-                        throw new JWTException('Invalid token');
-                    }
-                } catch (JWTException $e) {
-                    // Token is invalid, create new one
-                    $token = JWTAuth::fromUser($user);
-                    session(['jwt_token' => $token]);
-
-                    // Update token in database
-                    User::where('id', $user->id)->update([
-                        'active_token' => $token
-                    ]);
-                }
-            }
-        } catch (TokenExpiredException $e) {
-            // If token is expired, refresh it
-            try {
-                $refreshed = JWTAuth::refresh(session('jwt_token'));
-                session(['jwt_token' => $refreshed]);
-
-                // Update token in database
-                User::where('id', $user->id)->update([
-                    'active_token' => $refreshed
-                ]);
-            } catch (JWTException $e) {
-                $token = JWTAuth::fromUser($user);
-                session(['jwt_token' => $token]);
-
-                // Update token in database
-                User::where('id', $user->id)->update([
-                    'active_token' => $token
-                ]);
-            }
-        } catch (TokenInvalidException|JWTException $e) {
-            // For any JWT error, generate a new token
+        // If no JWT token in session, create one
+        if (!session('jwt_token')) {
+            // Create a new token
             $token = JWTAuth::fromUser($user);
             session(['jwt_token' => $token]);
 
-            // Update token in database
+            // Update device info in database
             User::where('id', $user->id)->update([
+                'device_id' => $deviceId,
                 'active_token' => $token
             ]);
+        } else {
+            // Verify existing token
+            JWTAuth::setToken(session('jwt_token'));
+
+            try {
+                $jwtUser = JWTAuth::authenticate();
+                if (!$jwtUser) {
+                    throw new JWTException('Invalid token');
+                }
+
+                // Ensure device ID is always up to date
+                if ($user->device_id !== $deviceId) {
+                    User::where('id', $user->id)->update([
+                        'device_id' => $deviceId
+                    ]);
+                }
+            } catch (JWTException $e) {
+                // Token is invalid, create new one
+                $token = JWTAuth::fromUser($user);
+                session(['jwt_token' => $token]);
+
+                // Update token in database
+                User::where('id', $user->id)->update([
+                    'active_token' => $token,
+                    'device_id' => $deviceId
+                ]);
+            }
         }
 
         return $next($request);

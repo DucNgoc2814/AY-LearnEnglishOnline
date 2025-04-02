@@ -17,15 +17,21 @@ class DeviceService
     {
         $userAgent = $request->header('User-Agent');
         $ip = $request->ip();
+        $acceptLanguage = $request->header('Accept-Language') ?? '';
+        $acceptEncoding = $request->header('Accept-Encoding') ?? '';
 
-        // Parse user agent to get device info
+        // Get browser fingerprint details
         $parser = new Parser($userAgent);
 
-        // Create a unique device ID
+        // Create a unique device ID with more browser-specific information
         $deviceInfo = [
             'browser' => $parser->browser->toString(),
+            'browser_version' => $parser->browser->version->toString(),
             'os' => $parser->os->toString(),
+            'os_version' => $parser->os->version->toString(),
             'device' => $parser->device->toString(),
+            'accept_language' => $acceptLanguage,
+            'accept_encoding' => $acceptEncoding,
             'ip' => $ip,
         ];
 

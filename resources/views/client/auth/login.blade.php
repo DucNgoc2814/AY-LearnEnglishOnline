@@ -1,6 +1,10 @@
 @extends('client.layouts.master')
 @section('title', 'Home page | AY-LearnEnglish')
 @section('content')
+    @if(session('clear_storage_script'))
+        {!! session('clear_storage_script') !!}
+    @endif
+
     <section class="sign-up my-5 py-5">
         <div class="container ">
             <div class="row">
@@ -28,6 +32,24 @@
                         <script>
                             // Check for auto logout notification
                             document.addEventListener('DOMContentLoaded', function() {
+                                // Ngăn chặn việc quay lại trang này sau khi đã đăng nhập
+                                history.pushState(null, null, location.href);
+                                window.onpopstate = function () {
+                                    history.go(1);
+                                };
+
+                                // Thêm timestamp vào form để đảm bảo mỗi request là duy nhất
+                                const loginForm = document.getElementById('login-form');
+                                if (loginForm) {
+                                    loginForm.addEventListener('submit', function() {
+                                        const timeInput = document.createElement('input');
+                                        timeInput.type = 'hidden';
+                                        timeInput.name = 'request_time';
+                                        timeInput.value = new Date().getTime();
+                                        loginForm.appendChild(timeInput);
+                                    });
+                                }
+
                                 const showAutoLogoutNotification = () => {
                                     const alert = document.getElementById('auto-logout-alert');
                                     if (alert) {
@@ -46,6 +68,16 @@
                                         }, 10000); // 10 seconds
                                     }
                                 };
+
+                                // Xóa cache trang để đảm bảo luôn load mới
+                                if (!window.performance.navigation.type) {
+                                    // Xóa cache nếu không phải do quay lại
+                                    window.onpageshow = function(event) {
+                                        if (event.persisted) {
+                                            window.location.reload();
+                                        }
+                                    };
+                                }
 
                                 // Check URL parameter
                                 if (window.location.href.indexOf('auto_logout=1') > -1) {
@@ -78,6 +110,31 @@
                                 }
                             });
                         </script>
+
+                        @if(session('force_logout_option'))
+                        <div class="alert alert-warning mb-3">
+                            <strong>Chú ý:</strong>
+                            <p>Bạn đang cố gắng đăng nhập trên một thiết bị mới, trong khi tài khoản của bạn đã đăng nhập ở thiết bị khác.</p>
+                            <form action="{{ route('login.submit') }}" method="post" class="mt-3">
+                                @csrf
+                                <input type="hidden" name="email" value="{{ old('email') }}">
+                                <input type="hidden" name="password" value="{{ session('temp_password') }}">
+                                <input type="hidden" name="force_logout_token" value="{{ session('force_logout_token') }}">
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất thiết bị cũ và đăng nhập tại đây
+                                </button>
+                            </form>
+                        </div>
+                        <script>
+                            // Store password temporarily in session storage
+                            const passwordField = document.getElementById('password');
+                            if (passwordField) {
+                                passwordField.addEventListener('input', function() {
+                                    sessionStorage.setItem('temp_password', this.value);
+                                });
+                            }
+                        </script>
+                        @endif
 
                         <form action="{{ route('login.submit') }}" method="post" id="login-form">
                             @csrf

@@ -28,7 +28,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Đặt tất cả routes auth trong middleware web
 Route::middleware('web')->group(function () {
     // Routes cho khách
-    Route::middleware('guest')->group(function () {
+    Route::middleware(['guest', 'prevent-back-history'])->group(function () {
         Route::get('/dang-ky', [AuthController::class, 'showRegisterForm'])->name('register');
         Route::post('/dang-ky', [AuthController::class, 'register'])->name('register.submit');
 
@@ -47,7 +47,7 @@ Route::middleware('web')->group(function () {
     Route::get('/danh-muc/{slug?}', [CategoryController::class, 'index'])->name('category.index');
 
     // Routes cho user đã đăng nhập
-    Route::middleware(['auth', 'jwt'])->group(function () {
+    Route::middleware(['auth', 'jwt', 'prevent-back-history'])->group(function () {
         Route::post('/dang-xuat', [AuthController::class, 'logout'])->name('logout');
         Route::get('/thanh-toan', [PaymentController::class, 'showQrPayment'])->name('checkout');
         Route::get('/thanh-toan/{slug}', [PaymentController::class, 'showQrPayment'])->name('payment.qr');

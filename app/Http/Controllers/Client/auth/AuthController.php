@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -51,11 +52,13 @@ class AuthController extends Controller
     public function register(RegisterRequest $request): RedirectResponse
     {
         try {
-            User::create([
+            DB::table('users')->insert([
                 'name' => $request->name,
                 'email' => $request->email,
                 'phoneNumber' => $request->phoneNumber,
                 'password' => Hash::make($request->password),
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
 
             return redirect()->route('login')
@@ -64,6 +67,7 @@ class AuthController extends Controller
                     'type' => 'success'
                 ]);
         } catch (\Exception $e) {
+            Log::error('Đăng ký thất bại', ['error' => $e->getMessage()]);
             return back()->withInput()
                 ->with('notification', [
                     'message' => 'Đăng ký thất bại. Vui lòng thử lại.',
@@ -75,10 +79,16 @@ class AuthController extends Controller
     /**
      * Show login form
      *
-     * @return View
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function showLoginForm(): View
+    public function showLoginForm()
     {
+        // Nếu đã đăng nhập, chuyển hướng về trang chủ
+        if (Auth::check()) {
+            return redirect()->route('home');
+        }
+
+        // Trả về view login
         return view('client.auth.login');
     }
 
@@ -90,105 +100,160 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): RedirectResponse
     {
-        // Try to get user
-        $user = User::where('email', $request->email)->first();
+        // Nếu đã đăng nhập, chuyển hướng về trang chủ
+        if (Auth::check()) {
+            return redirect()->route('home');
+        }
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        // Reset các khóa hết hạn
+        DB::table('users')
+            ->whereNotNull('login_lock_expires_at')
+            ->where('login_lock_expires_at', '<', now())
+            ->update([
+                'login_lock' => null,
+                'login_lock_expires_at' => null
+            ]);
+
+        try {
+            // Tìm người dùng theo email
+            $userRecord = DB::table('users')->where('email', $request->email)->first();
+
+            if (!$userRecord || !Hash::check($request->password, $userRecord->password)) {
+                return back()->withInput(['email' => $request->email])
+                    ->with('notification', [
+                        'message' => 'Email hoặc mật khẩu không chính xác',
+                        'type' => 'error'
+                    ]);
+            }
+
+            // Tạo khóa đăng nhập
+            $lockId = Str::uuid()->toString();
+
+            // Kiểm tra xem người dùng có đang đăng nhập ở nơi khác không
+            $existingLock = DB::table('users')
+                ->where('id', $userRecord->id)
+                ->where(function ($query) {
+                    $query->whereNotNull('login_lock')
+                          ->where('login_lock_expires_at', '>', now());
+                })
+                ->first();
+
+            if ($existingLock) {
+                return back()->withInput(['email' => $request->email])
+                    ->with('notification', [
+                        'message' => 'Có một yêu cầu đăng nhập khác đang được xử lý. Vui lòng thử lại sau.',
+                        'type' => 'warning'
+                    ]);
+            }
+
+            // Đặt khóa đăng nhập trong 10 giây
+            DB::table('users')
+                ->where('id', $userRecord->id)
+                ->update([
+                    'login_lock' => $lockId,
+                    'login_lock_expires_at' => now()->addSeconds(10)
+                ]);
+
+            try {
+                // Lấy device identifier
+                $deviceId = $this->deviceService->getDeviceIdentifier($request);
+
+                // Kiểm tra lại xem người dùng có đang đăng nhập ở nơi khác không
+                $latestUser = DB::table('users')->where('id', $userRecord->id)->first();
+                if ($latestUser->login_lock !== $lockId) {
+                    // Khóa đã bị thay đổi, có thể có người đang đăng nhập cùng lúc
+                    return back()->withInput(['email' => $request->email])
+                        ->with('notification', [
+                            'message' => 'Có người khác đang đăng nhập vào tài khoản này. Vui lòng thử lại sau.',
+                            'type' => 'error'
+                        ]);
+                }
+
+                // Kiểm tra thiết bị hiện tại với thiết bị đã đăng nhập
+                if ($latestUser->device_id && $latestUser->device_id !== $deviceId) {
+                    // Xác thực token hiện tại
+                    try {
+                        $tokenValid = $latestUser->active_token ?
+                            JWTAuth::setToken($latestUser->active_token)->check() : false;
+
+                        if ($tokenValid) {
+                            return back()->withInput(['email' => $request->email])
+                                ->with('notification', [
+                                    'message' => 'Tài khoản này đang được đăng nhập trên thiết bị khác. Vui lòng đăng xuất thiết bị đó trước.',
+                                    'type' => 'error'
+                                ]);
+                        }
+                    } catch (\Exception $e) {
+                        // Token không hợp lệ, tiếp tục đăng nhập
+                        Log::info('Token không hợp lệ, tiếp tục đăng nhập mới', [
+                            'user_id' => $latestUser->id,
+                            'error' => $e->getMessage()
+                        ]);
+                    }
+                }
+
+                // Vô hiệu hóa token cũ nếu có
+                if ($latestUser->active_token) {
+                    try {
+                        JWTAuth::setToken($latestUser->active_token)->invalidate();
+                    } catch (\Exception $e) {
+                        Log::error('Lỗi vô hiệu hóa token cũ', ['error' => $e->getMessage()]);
+                    }
+                }
+
+                // Lấy đối tượng User cho Auth
+                $user = User::find($latestUser->id);
+                if (!$user) {
+                    throw new \Exception("Không tìm thấy người dùng id: {$latestUser->id}");
+                }
+
+                // Đăng nhập người dùng
+                Auth::login($user, $request->boolean('remember'));
+
+                // Tạo JWT token mới
+                $token = JWTAuth::fromUser($user);
+
+                // Cập nhật thông tin thiết bị và token
+                DB::table('users')
+                    ->where('id', $latestUser->id)
+                    ->update([
+                        'device_id' => $deviceId,
+                        'active_token' => $token,
+                        'last_login_at' => now(),
+                        'login_lock' => null,
+                        'login_lock_expires_at' => null
+                    ]);
+
+                // Lưu token vào session
+                session(['jwt_token' => $token]);
+
+                return redirect()->intended(route('home'))
+                    ->with('notification', [
+                        'message' => 'Đăng nhập thành công!',
+                        'type' => 'success'
+                    ]);
+
+            } catch (\Exception $e) {
+                // Xóa khóa trong trường hợp có lỗi
+                DB::table('users')
+                    ->where('id', $userRecord->id)
+                    ->where('login_lock', $lockId)
+                    ->update([
+                        'login_lock' => null,
+                        'login_lock_expires_at' => null
+                    ]);
+
+                throw $e;
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Đăng nhập thất bại', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return back()->withInput(['email' => $request->email])
                 ->with('notification', [
-                    'message' => 'Email hoặc mật khẩu không chính xác',
+                    'message' => 'Đăng nhập thất bại. Vui lòng thử lại.',
                     'type' => 'error'
                 ]);
         }
-
-        // Get device identifier
-        $deviceId = $this->deviceService->getDeviceIdentifier($request);
-        $deviceName = $this->deviceService->getDeviceName($request);
-
-        // Check if user is already logged in on a different device/browser
-        if ($user->device_id && $user->device_id !== $deviceId) {
-            // Completely block login - no force login option
-            return back()->withInput(['email' => $request->email])
-                ->with('notification', [
-                    'message' => 'Tài khoản này đang được đăng nhập từ một thiết bị khác.
-                               Vui lòng đăng xuất khỏi thiết bị đó trước khi đăng nhập ở đây.',
-                    'type' => 'error'
-                ]);
-        }
-
-        // Login the user
-        Auth::login($user, $request->boolean('remember'));
-
-        // Generate JWT token
-        $token = JWTAuth::fromUser($user);
-
-        // Update user with new device and token
-        User::where('id', $user->id)->update([
-            'device_id' => $deviceId,
-            'active_token' => $token
-        ]);
-
-        // Store token in session
-        session(['jwt_token' => $token]);
-        session(['device_name' => $deviceName]);
-
-        // Store browser ID if provided in header
-        $browserId = $request->header('X-Browser-ID');
-        if ($browserId) {
-            session(['browser_id' => $browserId]);
-        }
-
-        return redirect()->intended(route('home'))
-            ->with('notification', [
-                'message' => 'Đăng nhập thành công!',
-                'type' => 'success'
-            ]);
-    }
-
-    /**
-     * Check session status
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function sessionStatus(Request $request)
-    {
-        $user = Auth::user();
-        $browserId = $request->header('X-Browser-ID');
-
-        Log::info('Session status check', [
-            'user_id' => $user ? $user->id : 'none',
-            'browser_id' => $browserId
-        ]);
-
-        if (!$user) {
-            return response()->json(['active' => false, 'reason' => 'not_authenticated']);
-        }
-
-        // Get current device ID
-        $deviceId = $this->deviceService->getDeviceIdentifier($request);
-
-        // Check if the device ID matches
-        if ($user->device_id && $user->device_id !== $deviceId) {
-            Log::warning('Device ID mismatch', [
-                'user_id' => $user->id,
-                'stored_device' => $user->device_id,
-                'current_device' => $deviceId
-            ]);
-
-            return response()->json(['active' => false, 'reason' => 'device_mismatch']);
-        }
-
-        // Check if token is valid
-        if (session('jwt_token') && $user->active_token !== session('jwt_token')) {
-            Log::warning('Token mismatch', [
-                'user_id' => $user->id
-            ]);
-
-            return response()->json(['active' => false, 'reason' => 'token_invalid']);
-        }
-
-        return response()->json(['active' => true]);
     }
 
     /**
@@ -197,42 +262,63 @@ class AuthController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        Log::info('Manual logout requested', [
-            'user_id' => $user ? $user->id : 'none',
-        ]);
+            if ($user) {
+                // Đảm bảo xóa khóa đăng nhập cùng lúc với thông tin thiết bị
+                DB::table('users')
+                    ->where('id', $user->id)
+                    ->update([
+                        'device_id' => null,
+                        'active_token' => null,
+                        'login_lock' => null,
+                        'login_lock_expires_at' => null
+                    ]);
 
-        if ($user) {
-            // Clear device and token
-            User::where('id', $user->id)->update([
-                'device_id' => null,
-                'active_token' => null
-            ]);
-        }
-
-        // Invalidate the JWT token
-        if (session('jwt_token')) {
-            try {
-                JWTAuth::setToken(session('jwt_token'))->invalidate();
-            } catch (\Exception $e) {
-                Log::error('Error invalidating JWT token', [
-                    'error' => $e->getMessage()
-                ]);
+                // Vô hiệu hóa JWT token nếu có
+                if ($token = session('jwt_token')) {
+                    try {
+                        JWTAuth::setToken($token)->invalidate();
+                    } catch (\Exception $e) {
+                        Log::error('Lỗi vô hiệu hóa JWT token', ['error' => $e->getMessage()]);
+                    }
+                }
             }
+
+            // Đăng xuất
+            Auth::logout();
+
+            // Xóa tất cả dữ liệu session
+            Session::flush();
+
+            // Xóa dữ liệu trình duyệt và chuyển hướng đến URL tuyệt đối
+            $loginUrl = route('login');
+            $script = "
+                <script>
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.replace('{$loginUrl}');
+                </script>
+            ";
+
+            return redirect()->route('login')
+                ->with('notification', [
+                    'message' => 'Đăng xuất thành công.',
+                    'type' => 'success'
+                ])
+                ->with('clear_storage_script', $script);
+
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi đăng xuất', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return redirect()->route('login')
+                ->with('notification', [
+                    'message' => 'Đã có lỗi xảy ra khi đăng xuất.',
+                    'type' => 'error'
+                ]);
         }
-
-        // Standard logout
-        Auth::logout();
-        session()->flush();
-
-        return redirect()->route('login')
-            ->with('notification', [
-                'message' => 'Bạn đã đăng xuất thành công.',
-                'type' => 'success'
-            ]);
     }
 
     /**
@@ -246,46 +332,184 @@ class AuthController extends Controller
     }
 
     /**
-     * Check if user is still logged in
+     * Check session status
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function checkAuth(Request $request)
+    public function sessionStatus(Request $request): JsonResponse
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        if (!$user) {
-            return response()->json(['authenticated' => false]);
-        }
+            if (!$user) {
+                return response()->json([
+                    'active' => false,
+                    'reason' => 'not_authenticated'
+                ]);
+            }
 
-        // Check if current device is still authorized
-        $deviceId = $this->deviceService->getDeviceIdentifier($request);
+            // Lấy thông tin người dùng từ database
+            $userRecord = DB::table('users')->find($user->id);
+            if (!$userRecord) {
+                Auth::logout();
+                Session::flush();
+                return response()->json([
+                    'active' => false,
+                    'reason' => 'user_not_found'
+                ]);
+            }
 
-        if ($user->device_id && $user->device_id !== $deviceId) {
-            // Someone is trying to access from a different browser
-            Auth::logout();
-            session()->flush();
+            $currentDeviceId = $this->deviceService->getDeviceIdentifier($request);
 
+            // Kiểm tra nếu thiết bị hiện tại không khớp với thiết bị đã đăng nhập
+            if ($userRecord->device_id !== $currentDeviceId) {
+                // Đăng xuất phiên hiện tại
+                Auth::logout();
+                Session::flush();
+
+                // Tạo script để xóa dữ liệu và chuyển hướng
+                $loginUrl = route('login');
+                $script = "
+                    <script>
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.replace('{$loginUrl}');
+                    </script>
+                ";
+
+                return response()->json([
+                    'active' => false,
+                    'reason' => 'device_mismatch',
+                    'message' => 'Phiên đăng nhập của bạn đã kết thúc do có người đăng nhập từ thiết bị khác.',
+                    'script' => $script
+                ]);
+            }
+
+            // Kiểm tra token
+            if (!session('jwt_token') || $userRecord->active_token !== session('jwt_token')) {
+                Auth::logout();
+                Session::flush();
+
+                return response()->json([
+                    'active' => false,
+                    'reason' => 'token_mismatch',
+                    'message' => 'Phiên đăng nhập không hợp lệ.',
+                    'reload' => true
+                ]);
+            }
+
+            return response()->json(['active' => true]);
+
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi kiểm tra phiên', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return response()->json([
-                'authenticated' => false,
-                'message' => 'Có người đang cố gắng đăng nhập vào tài khoản của bạn từ một thiết bị khác.',
-                'login_attempt' => true
+                'active' => false,
+                'reason' => 'error',
+                'message' => 'Đã có lỗi xảy ra khi kiểm tra phiên.'
             ]);
         }
+    }
 
-        // Check if token is still valid
-        if (session('jwt_token') && $user->active_token !== session('jwt_token')) {
-            Auth::logout();
-            session()->flush();
+    /**
+     * Check if user is still authenticated
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkAuth(Request $request): JsonResponse
+    {
+        try {
+            $user = Auth::user();
 
+            if (!$user) {
+                return response()->json(['authenticated' => false]);
+            }
+
+            // Kiểm tra thiết bị
+            $deviceId = $this->deviceService->getDeviceIdentifier($request);
+            $userRecord = DB::table('users')->find($user->id);
+
+            if (!$userRecord) {
+                Auth::logout();
+                Session::flush();
+                return response()->json([
+                    'authenticated' => false,
+                    'message' => 'Không tìm thấy thông tin người dùng.'
+                ]);
+            }
+
+            // Kiểm tra nếu có phiên đăng nhập đang được xử lý
+            if ($userRecord->login_lock && $userRecord->login_lock_expires_at && $userRecord->login_lock_expires_at > now()) {
+                Auth::logout();
+                Session::flush();
+
+                $loginUrl = route('login');
+                $script = "
+                    <script>
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.replace('{$loginUrl}');
+                    </script>
+                ";
+
+                return response()->json([
+                    'authenticated' => false,
+                    'message' => 'Có một phiên đăng nhập mới đang được xử lý.',
+                    'script' => $script
+                ]);
+            }
+
+            // Kiểm tra nếu thiết bị hiện tại không khớp với thiết bị đã đăng nhập
+            if ($userRecord->device_id !== $deviceId) {
+                Auth::logout();
+                Session::flush();
+
+                $loginUrl = route('login');
+                $script = "
+                    <script>
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.replace('{$loginUrl}');
+                    </script>
+                ";
+
+                return response()->json([
+                    'authenticated' => false,
+                    'message' => 'Phiên đăng nhập của bạn đã kết thúc do có người đăng nhập từ thiết bị khác.',
+                    'script' => $script
+                ]);
+            }
+
+            // Kiểm tra token
+            if (!session('jwt_token') || $userRecord->active_token !== session('jwt_token')) {
+                Auth::logout();
+                Session::flush();
+
+                $loginUrl = route('login');
+                $script = "
+                    <script>
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.replace('{$loginUrl}');
+                    </script>
+                ";
+
+                return response()->json([
+                    'authenticated' => false,
+                    'message' => 'Phiên đăng nhập không hợp lệ hoặc đã hết hạn.',
+                    'script' => $script
+                ]);
+            }
+
+            return response()->json(['authenticated' => true]);
+        } catch (\Exception $e) {
+            Log::error('Lỗi kiểm tra xác thực', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return response()->json([
                 'authenticated' => false,
-                'message' => 'Phiên đăng nhập của bạn đã hết hạn hoặc không hợp lệ.'
+                'message' => 'Đã có lỗi xảy ra khi kiểm tra xác thực.'
             ]);
         }
-
-        return response()->json(['authenticated' => true]);
     }
 
     /**
@@ -471,5 +695,43 @@ class AuthController extends Controller
             'time' => now()->toDateTimeString(),
             'total_count' => count($pendingKeys)
         ]);
+    }
+
+    private function logoutOtherDevices(int $userId): void
+    {
+        try {
+            $user = User::find($userId);
+
+            if ($user && $user->active_token) {
+                try {
+                    JWTAuth::setToken($user->active_token)->invalidate();
+                } catch (\Exception $e) {
+                    Log::error('Error invalidating JWT token', ['error' => $e->getMessage()]);
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Error logging out other devices', ['error' => $e->getMessage()]);
+        }
+    }
+
+    private function forceLogout(): void
+    {
+        try {
+            $user = Auth::user();
+
+            if ($user) {
+                DB::table('users')
+                    ->where('id', $user->id)
+                    ->update([
+                        'device_id' => null,
+                        'active_token' => null
+                    ]);
+            }
+
+            Auth::logout();
+            Session::flush();
+        } catch (\Exception $e) {
+            Log::error('Force logout failed', ['error' => $e->getMessage()]);
+        }
     }
 }

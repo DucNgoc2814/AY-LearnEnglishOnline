@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initSessionManager() {
     // Configuration
-    const BROWSER_CLOSED_TIMEOUT = 100; // 30 seconds after closing browser to release account
-    const HEARTBEAT_INTERVAL = 100;     // 15 seconds between server checks
+    const BROWSER_CLOSED_TIMEOUT = 1000; // 30 seconds after closing browser to release account
+    const HEARTBEAT_INTERVAL = 1000000;     // 15 seconds between server checks
     const ACTIVITY_EVENTS = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
 
     // State management
