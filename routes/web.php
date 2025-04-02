@@ -38,6 +38,10 @@ Route::middleware('web')->group(function () {
 
     // Route để kiểm tra trạng thái đăng nhập
     Route::get('/check-auth', [AuthController::class, 'checkAuth'])->name('check.auth');
+    Route::get('/session-status', [AuthController::class, 'sessionStatus'])->name('session.status');
+    Route::get('/schedule-logout', [AuthController::class, 'scheduleLogout'])->name('schedule.logout');
+    Route::match(['get', 'post'], '/cancel-logout', [AuthController::class, 'cancelLogout'])->name('cancel.logout');
+    Route::get('/debug-schedule', [AuthController::class, 'checkScheduledLogout'])->name('debug.schedule');
 
     Route::get('/khoa-hoc/{slug}', [CourseController::class, 'detailCourse'])->name('detailCourse');
     Route::get('/danh-muc/{slug?}', [CategoryController::class, 'index'])->name('category.index');

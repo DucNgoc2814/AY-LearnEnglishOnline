@@ -45,6 +45,7 @@
 
     @if (Auth::check())
         <script src="{{ asset('js/auth-checker.js') }}"></script>
+        <script src="{{ asset('js/session-manager.js') }}"></script>
     @endif
 </body>
 
