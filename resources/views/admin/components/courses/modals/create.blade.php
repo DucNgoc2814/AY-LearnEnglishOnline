@@ -146,7 +146,7 @@
                                             <input type="file" class="hidden" id="thumbnail" name="thumbnail"
                                                 accept="image/*" required onchange="previewImage(this);">
                                             <button type="button"
-                                                onclick="document.getElementById('thumbnail').click()"
+                                                onclick="handleImageClick()"
                                                 class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
                                                 Chọn ảnh
                                             </button>
@@ -177,7 +177,7 @@
                                             <input type="file" class="hidden" id="preview_video"
                                                 name="preview_video" accept="video/*" onchange="previewVideo(this);">
                                             <button type="button"
-                                                onclick="document.getElementById('preview_video').click()"
+                                                onclick="handleVideoClick()"
                                                 class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
                                                 Chọn video
                                             </button>
@@ -318,6 +318,8 @@
             }
             reader.readAsDataURL(input.files[0]);
         }
+        // Reset input để có thể chọn lại cùng một file
+        input.value = input.value;
     }
 
     function previewVideo(input) {
@@ -339,6 +341,8 @@
             }
             reader.readAsDataURL(file);
         }
+        // Reset input để có thể chọn lại cùng một file
+        input.value = input.value;
     }
 
     function openImageModal(src) {
@@ -391,6 +395,18 @@
             closeVideoModal();
         }
     });
+
+    function handleImageClick() {
+        const input = document.getElementById('thumbnail');
+        input.value = ''; // Reset input trước khi mở dialog
+        input.click();
+    }
+
+    function handleVideoClick() {
+        const input = document.getElementById('preview_video');
+        input.value = ''; // Reset input trước khi mở dialog
+        input.click();
+    }
 </script>
 
 <!-- Thêm styles -->
