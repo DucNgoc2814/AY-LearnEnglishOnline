@@ -4,10 +4,15 @@ namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Repositories\Interfaces\BaseRepositoryInterface;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 abstract class BaseRepository implements BaseRepositoryInterface
 {
     protected $model;
+    protected $allowedImageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    protected $allowedVideoExtensions = ['mp4', 'mov', 'avi', 'wmv', 'webm'];
+    protected $allowedAudioExtensions = ['mp3', 'wav', 'ogg', 'm4a'];
 
     public function __construct(Model $model)
     {
@@ -81,212 +86,240 @@ abstract class BaseRepository implements BaseRepositoryInterface
         }
         return false;
     }
-    public function handleImage($image, string $path, ?string $oldImage = null)
+
+    /**
+     * Get CloudFront URL from path
+     */
+    public function getCloudFrontUrl($path)
+    {
+        if (config('filesystems.disks.cloudfront.domain')) {
+            return 'https://' . config('filesystems.disks.cloudfront.domain') . '/' . $path;
+        }
+
+        // Fallback to S3 URL if CloudFront is not configured
+        return Storage::disk('s3')->url($path);
+    }
+
+    /**
+     * Validate file extension
+     */
+    public function validateFileExtension($file, array $allowedExtensions)
+    {
+        $extension = strtolower($file->getClientOriginalExtension());
+        if (!in_array($extension, $allowedExtensions)) {
+            throw new \Exception("File type not allowed. Allowed types: " . implode(', ', $allowedExtensions));
+        }
+        return $extension;
+    }
+
+    /**
+     * Handle generic file upload
+     */
+    public function handleFileUpload($file, string $folder, $type)
     {
         try {
-            // Delete old image if exists
-            if ($oldImage) {
-                $this->deleteImage($oldImage);
+            if (!$file || !$file->isValid()) {
+                throw new \Exception('Invalid file');
             }
 
-            // Generate unique filename with timestamp
-            $filename = time() . '_' . $image->getClientOriginalName();
+            $fileName = uniqid() . '_' . time();
+            $extension = $file->getClientOriginalExtension();
+            $path = "$folder/$type/$fileName.$extension";
 
-            // Make sure the path exists
-            $fullPath = public_path("uploads/{$path}");
-            if (!file_exists($fullPath)) {
-                mkdir($fullPath, 0755, true);
+            // Upload file to S3
+            $result = Storage::disk('s3')->put($path, file_get_contents($file), [
+                'ContentType' => $file->getMimeType(),
+                'ACL' => 'public-read'
+            ]);
+
+            if (!$result) {
+                throw new \Exception('Failed to upload file to S3');
             }
 
-            // Move the uploaded file to the destination
-            $image->move($fullPath, $filename);
+            \Log::info("File uploaded successfully", [
+                'path' => $path,
+                'type' => $type,
+                'size' => $file->getSize(),
+                'mime' => $file->getMimeType()
+            ]);
 
-            // Return relative path for database storage
-            return "uploads/{$path}/{$filename}";
-
+            return $path;
         } catch (\Exception $e) {
-            return false;
+            \Log::error("File upload error: " . $e->getMessage(), [
+                'file' => $file ? $file->getClientOriginalName() : null,
+                'folder' => $folder,
+                'type' => $type
+            ]);
+            throw $e;
         }
     }
-    public function deleteImage(string $path)
+
+    /**
+     * Handle image upload
+     */
+    public function handleImage($image, string $folder)
     {
-        try {
-            $fullPath = public_path($path);
-            if (file_exists($fullPath)) {
-                unlink($fullPath);
-                return true;
-            }
-            return false;
-        } catch (\Exception $e) {
-            return false;
-        }
+        return $this->handleFileUpload($image, $folder, 'images');
     }
-    public function handleMultipleImages(array $images, string $path)
+
+    /**
+     * Handle video upload
+     */
+    public function handleVideo($video, string $folder)
+    {
+        if (!$video || !$video->isValid()) {
+            return null;
+        }
+        return $this->handleFileUpload($video, $folder, 'videos');
+    }
+
+    /**
+     * Handle audio upload
+     */
+    public function handleAudio($audio, string $folder)
+    {
+        return $this->handleFileUpload($audio, $folder, 'sounds');
+    }
+
+    /**
+     * Handle multiple file uploads
+     */
+    public function handleMultipleFiles(array $files, string $folder, string $type)
     {
         try {
-            $imagePaths = [];
-            foreach ($images as $image) {
-                $imagePath = $this->handleImage($image, $path);
-                if ($imagePath) {
-                    $imagePaths[] = $imagePath;
+            $paths = [];
+            foreach ($files as $file) {
+                $path = $this->handleFileUpload($file, $folder, $type);
+                if ($path) {
+                    $paths[] = $path;
                 }
             }
-            return $imagePaths;
+            return $paths;
         } catch (\Exception $e) {
-            return false;
-        }
-    }
-    public function updateImage($newImage, string $path, ?string $oldImagePath = null)
-    {
-        // dd([
-        //     'new_image' => $newImage,
-        //     'path' => $path,
-        //     'old_image_path' => $oldImagePath
-        // ]);
-
-        try {
-            // Handle the new image upload (this will also delete the old image)
-            $newImagePath = $this->handleImage($newImage, $path, $oldImagePath);
-
-            if (!$newImagePath) {
-                throw new \Exception('Failed to upload new image');
-            }
-
-            return $newImagePath;
-        } catch (\Exception $e) {
+            \Log::error("Multiple files upload error ({$type}): " . $e->getMessage());
             return false;
         }
     }
 
-    public function handleVideo($video, string $path, ?string $oldVideo = null)
+    /**
+     * Handle multiple images upload
+     */
+    public function handleMultipleImages(array $images, string $folder)
+    {
+        return $this->handleMultipleFiles($images, $folder, 'images');
+    }
+
+    /**
+     * Handle multiple videos upload
+     */
+    public function handleMultipleVideos(array $videos, string $folder)
+    {
+        return $this->handleMultipleFiles($videos, $folder, 'videos');
+    }
+
+    /**
+     * Handle multiple audios upload
+     */
+    public function handleMultipleAudios(array $audios, string $folder)
+    {
+        return $this->handleMultipleFiles($audios, $folder, 'sounds');
+    }
+
+    /**
+     * Update file with deletion of old file
+     */
+    public function updateFile($newFile, string $folder, string $type, ?string $oldFilePath = null)
     {
         try {
-            // Delete old video if exists
-            if ($oldVideo) {
-                $this->deleteVideo($oldVideo);
+            // Delete old file if exists
+            if (!empty($oldFilePath)) {
+                $this->deleteFile($oldFilePath);
             }
 
-            // Generate unique filename with timestamp
-            $filename = time() . '_' . $video->getClientOriginalName();
-
-            // Make sure the path exists
-            $fullPath = public_path("uploads/{$path}");
-            if (!file_exists($fullPath)) {
-                mkdir($fullPath, 0755, true);
-            }
-
-            // Move the uploaded file to the destination
-            $video->move($fullPath, $filename);
-
-            // Return relative path for database storage
-            return "uploads/{$path}/{$filename}";
-
+            // Upload new file
+            return $this->handleFileUpload($newFile, $folder, $type);
         } catch (\Exception $e) {
+            \Log::error("File update error ({$type}): " . $e->getMessage());
             return false;
         }
     }
 
-    public function deleteVideo(string $path)
+    /**
+     * Update image
+     */
+    public function updateImage($newImage, string $folder, ?string $oldImagePath = null)
+    {
+        return $this->updateFile($newImage, $folder, 'images', $oldImagePath);
+    }
+
+    /**
+     * Update video
+     */
+    public function updateVideo($newVideo, string $folder, ?string $oldVideoPath = null)
+    {
+        return $this->updateFile($newVideo, $folder, 'videos', $oldVideoPath);
+    }
+
+    /**
+     * Update audio
+     */
+    public function updateAudio($newAudio, string $folder, ?string $oldAudioPath = null)
+    {
+        return $this->updateFile($newAudio, $folder, 'sounds', $oldAudioPath);
+    }
+
+    /**
+     * Delete file from S3
+     */
+    public function deleteFile(string $path)
     {
         try {
-            $fullPath = public_path($path);
-            if (file_exists($fullPath)) {
-                unlink($fullPath);
-                return true;
+            // If the path is a full URL, extract just the path portion
+            if (filter_var($path, FILTER_VALIDATE_URL)) {
+                $cloudFrontDomain = config('filesystems.disks.cloudfront.domain');
+                $path = str_replace("https://{$cloudFrontDomain}/", '', $path);
             }
+
+            // Ensure the path doesn't start with a slash
+            $path = ltrim($path, '/');
+
+            \Log::info('Attempting to delete file', ['path' => $path]);
+
+            if (Storage::disk('s3')->exists($path)) {
+                $result = Storage::disk('s3')->delete($path);
+                \Log::info('File deletion result', ['result' => $result]);
+                return $result;
+            }
+
+            \Log::warning('File not found for deletion', ['path' => $path]);
             return false;
+
         } catch (\Exception $e) {
+            \Log::error('File deletion error: ' . $e->getMessage(), [
+                'path' => $path,
+                'exception' => $e
+            ]);
             return false;
         }
     }
 
-    public function handleMultipleVideos(array $videos, string $path)
+    public function getFullUrl($path)
     {
-        try {
-            $videoPaths = [];
-            foreach ($videos as $video) {
-                $videoPath = $this->handleVideo($video, $path);
-                if ($videoPath) {
-                    $videoPaths[] = $videoPath;
-                }
-            }
-            return $videoPaths;
-        } catch (\Exception $e) {
-            return false;
+        if (empty($path)) {
+            return null;
         }
-    }
 
-    public function updateVideo($newVideo, string $path, ?string $oldVideoPath = null)
-    {
-        try {
-            // Handle the new video upload (this will also delete the old video)
-            $newVideoPath = $this->handleVideo($newVideo, $path, $oldVideoPath);
-
-            if (!$newVideoPath) {
-                throw new \Exception('Failed to upload new video');
-            }
-
-            return $newVideoPath;
-        } catch (\Exception $e) {
-            return false;
+        // Check if path is already a full URL
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
         }
-    }
 
-    public function handleAudio($audio, string $path, ?string $oldAudio = null)
-    {
-        try {
-            // Delete old audio if exists
-            if ($oldAudio) {
-                $this->deleteAudio($oldAudio);
-            }
-
-            // Generate unique filename with timestamp
-            $filename = time() . '_' . $audio->getClientOriginalName();
-
-            // Make sure the path exists
-            $fullPath = public_path("uploads/{$path}");
-            if (!file_exists($fullPath)) {
-                mkdir($fullPath, 0755, true);
-            }
-
-            // Move the uploaded file to the destination
-            $audio->move($fullPath, $filename);
-
-            // Return relative path for database storage
-            return "uploads/{$path}/{$filename}";
-
-        } catch (\Exception $e) {
-            return false;
+        // Use CloudFront URL if configured, otherwise fallback to S3
+        $cloudFrontUrl = config('filesystems.disks.cloudfront.url');
+        if ($cloudFrontUrl) {
+            return rtrim($cloudFrontUrl, '/') . '/' . ltrim($path, '/');
         }
-    }
 
-    public function deleteAudio(string $path)
-    {
-        try {
-            $fullPath = public_path($path);
-            if (file_exists($fullPath)) {
-                unlink($fullPath);
-                return true;
-            }
-            return false;
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
-
-    public function updateAudio($newAudio, string $path, ?string $oldAudioPath = null)
-    {
-        try {
-            // Handle the new audio upload (this will also delete the old audio)
-            $newAudioPath = $this->handleAudio($newAudio, $path, $oldAudioPath);
-
-            if (!$newAudioPath) {
-                throw new \Exception('Failed to upload new audio');
-            }
-
-            return $newAudioPath;
-        } catch (\Exception $e) {
-            return false;
-        }
+        return Storage::disk('s3')->url($path);
     }
 }

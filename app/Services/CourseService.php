@@ -27,4 +27,21 @@ class CourseService extends BaseService implements CourseServiceInterface
             return $this->errorResponse('Có lỗi xảy ra khi tìm kiếm');
         }
     }
+
+    public function findWithFullUrls($id)
+    {
+        try {
+            $course = $this->repository->findWithFullUrls($id);
+            if (!$course) {
+                throw new \Exception('Không tìm thấy khóa học');
+            }
+            return $course;
+        } catch (\Exception $e) {
+            \Log::error('Error in CourseService findWithFullUrls:', [
+                'id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
 }

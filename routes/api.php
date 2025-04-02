@@ -20,3 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/apply-coupon', [VoucherController::class, 'applyCoupon']);
+
+Route::get('/table-columns/{tableId}', function ($tableId) {
+    $columns = config("table-columns.{$tableId}", []);
+    return response()->json($columns);
+});

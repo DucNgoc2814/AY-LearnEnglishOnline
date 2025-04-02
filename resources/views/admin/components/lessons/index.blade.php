@@ -81,7 +81,6 @@
                                 </tr>
                                 <tr>
                                     <th class="text-left p-2">Tổng thời lượng:</th>
-                                    <td class="p-2">{{ $course->totalDuration() }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -332,7 +331,7 @@
 
         function populateEditModal(item) {
             modalHandler.open('editLessonModal');
-            
+
             modalHandler.setEditModalData('editLessonModal', {
                 name: item.name,
                 orderNumber: item.orderNumber,
@@ -374,7 +373,7 @@
 
         function populateEditVideoModal(video) {
             modalHandler.open('editVideoLessonModal');
-            
+
             modalHandler.setEditModalData('editVideoLessonModal', {
                 name: video.name,
                 duration: video.duration,
@@ -384,35 +383,35 @@
                 actionUrl: `/admin/video-lessons/${video.id}`
             });
         }
-        
+
         function confirmBulkDelete() {
             const selectedIds = tableHandler.getSelectedIds();
             if (selectedIds.length === 0) {
                 alert('Vui lòng chọn ít nhất một mục để xóa');
                 return;
             }
-            
+
             if (confirm(`Bạn có chắc chắn muốn xóa ${selectedIds.length} mục đã chọn?`)) {
                 // Gửi request xóa hàng loạt
                 const form = document.createElement('form');
                 form.method = 'POST';
                 form.action = '{{ route('admin.lessons.bulk-delete') }}';
-                
+
                 const csrfToken = document.createElement('input');
                 csrfToken.type = 'hidden';
                 csrfToken.name = '_token';
                 csrfToken.value = '{{ csrf_token() }}';
-                
+
                 const method = document.createElement('input');
                 method.type = 'hidden';
                 method.name = '_method';
                 method.value = 'DELETE';
-                
+
                 const ids = document.createElement('input');
                 ids.type = 'hidden';
                 ids.name = 'ids';
                 ids.value = selectedIds.join(',');
-                
+
                 form.appendChild(csrfToken);
                 form.appendChild(method);
                 form.appendChild(ids);
@@ -421,18 +420,18 @@
             }
         }
     </script>
-    
+
     <style>
         .video-list-container {
             overflow: hidden;
             transition: max-height 0.3s ease-in-out;
             max-height: 0;
         }
-        
+
         .video-list-container.max-h-screen {
             max-height: 100vh;
         }
-        
+
         .rotate-180 {
             transform: rotate(180deg);
             transition: transform 0.3s ease;
