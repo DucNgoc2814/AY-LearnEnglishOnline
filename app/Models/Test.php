@@ -35,10 +35,20 @@ class Test extends Model
         'settings' => 'json'
     ];
 
+    // // Thêm debug
+    // protected static function boot()
+    // {
+    //     parent::boot();
+    //     static::addGlobalScope('debug', function ($query) {
+    //         \Log::info($query->toSql());
+    //         \Log::info($query->getBindings());
+    //     });
+    // }
+
     // Relationships
     public function testable(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo('testable', 'testable_type', 'testable_id');
     }
 
     public function questions(): HasMany

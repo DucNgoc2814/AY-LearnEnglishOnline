@@ -48,13 +48,6 @@ class Lesson extends Model
         return $this->belongsTo(Course::class);
     }
 
-    /**
-     * Lấy danh sách video của bài học
-     */
-    public function videos(): HasMany
-    {
-        return $this->hasMany(LessonVideo::class);
-    }
 
     /**
      * Lấy danh sách tiến độ học tập
@@ -218,5 +211,29 @@ class Lesson extends Model
         }
 
         return sprintf('%d phút', $minutes);
+    }
+
+    public function videoLessons()
+    {
+        return $this->hasMany(LessonVideo::class);
+    }
+
+    public function totalVideo()
+    {
+        return $this->videoLessons()->count();
+    }
+
+    public function totalVideoDuration()
+    {
+        return $this->videoLessons()->sum('duration');
+    }
+
+    /**
+     * Lấy danh sách bài kiểm tra của bài học
+     */
+    public function lessonTests(): MorphMany
+    {
+        return $this->morphMany(Test::class, 'testable')
+            ->where('type', 'lesson_test');
     }
 }
