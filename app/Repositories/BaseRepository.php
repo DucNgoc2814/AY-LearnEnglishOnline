@@ -115,20 +115,41 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Handle generic file upload
      */
-    public function handleFileUpload($file, $folder, $type)
+    public function handleFileUpload($file, string $folder, $type)
     {
         try {
+            if (!$file || !$file->isValid()) {
+                throw new \Exception('Invalid file');
+            }
+
             $fileName = uniqid() . '_' . time();
             $extension = $file->getClientOriginalExtension();
             $path = "$folder/$type/$fileName.$extension";
 
-            Storage::disk('s3')->put($path, file_get_contents($file), [
+            // Upload file to S3
+            $result = Storage::disk('s3')->put($path, file_get_contents($file), [
                 'ContentType' => $file->getMimeType(),
+                'ACL' => 'public-read'
+            ]);
+
+            if (!$result) {
+                throw new \Exception('Failed to upload file to S3');
+            }
+
+            \Log::info("File uploaded successfully", [
+                'path' => $path,
+                'type' => $type,
+                'size' => $file->getSize(),
+                'mime' => $file->getMimeType()
             ]);
 
             return $path;
         } catch (\Exception $e) {
-            Log::error("File upload error ($type): " . $e->getMessage());
+            \Log::error("File upload error: " . $e->getMessage(), [
+                'file' => $file ? $file->getClientOriginalName() : null,
+                'folder' => $folder,
+                'type' => $type
+            ]);
             throw $e;
         }
     }
@@ -250,17 +271,34 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Delete file from S3
      */
-    public function deleteFile(string $url)
+    public function deleteFile(string $path)
     {
         try {
-            // Extract path from CloudFront URL
-            $cloudFrontDomain = config('filesystems.disks.cloudfront.domain');
-            $path = str_replace("https://{$cloudFrontDomain}/", '', $url);
+            // If the path is a full URL, extract just the path portion
+            if (filter_var($path, FILTER_VALIDATE_URL)) {
+                $cloudFrontDomain = config('filesystems.disks.cloudfront.domain');
+                $path = str_replace("https://{$cloudFrontDomain}/", '', $path);
+            }
 
-            // Delete from S3
-            return Storage::disk('s3')->delete($path);
+            // Ensure the path doesn't start with a slash
+            $path = ltrim($path, '/');
+
+            \Log::info('Attempting to delete file', ['path' => $path]);
+
+            if (Storage::disk('s3')->exists($path)) {
+                $result = Storage::disk('s3')->delete($path);
+                \Log::info('File deletion result', ['result' => $result]);
+                return $result;
+            }
+
+            \Log::warning('File not found for deletion', ['path' => $path]);
+            return false;
+
         } catch (\Exception $e) {
-            \Log::error('File deletion error: ' . $e->getMessage());
+            \Log::error('File deletion error: ' . $e->getMessage(), [
+                'path' => $path,
+                'exception' => $e
+            ]);
             return false;
         }
     }

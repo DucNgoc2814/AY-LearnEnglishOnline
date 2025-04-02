@@ -82,8 +82,39 @@ class CourseController extends BaseController
      */
     public function update(UpdateRequest $request, $id)
     {
-        $result = $this->courseService->update($id, $request->validated());
-        return $this->redirectResponse($result);
+        try {
+            \Log::info('Course update request:', [
+                'id' => $id,
+                'validated_data' => $request->validated(),
+                'has_files' => [
+                    'thumbnail' => $request->hasFile('thumbnail'),
+                    'preview_video' => $request->hasFile('preview_video')
+                ],
+                'files' => [
+                    'thumbnail' => $request->file('thumbnail'),
+                    'preview_video' => $request->file('preview_video')
+                ]
+            ]);
+
+            $result = $this->courseService->update($id, $request->validated());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cập nhật thành công',
+                'data' => $result
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Course update error:', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 422);
+        }
     }
 
     /**
@@ -112,10 +143,10 @@ class CourseController extends BaseController
 
     public function edit($id)
     {
-            $course = $this->courseService->findWithFullUrls($id);
-            return response()->json([
-                'status' => true,
-                'data' => $course
-            ]);
+        $course = $this->courseService->findWithFullUrls($id);
+        return response()->json([
+            'status' => true,
+            'data' => $course
+        ]);
     }
 }

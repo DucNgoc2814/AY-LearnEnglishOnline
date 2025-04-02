@@ -31,14 +31,16 @@ class UpdateRequest extends FormRequest
             'has_certificate' => 'boolean',
             'requires_enrollment' => 'boolean',
             'thumbnail' => 'nullable|image|max:2048',
-            'preview_video' => 'nullable|file|mimes:mp4,webm,ogg|max:102400',
+            'preview_video' => 'nullable|mimes:mp4,mov,ogg,qt|max:102400',
             'course_outline' => 'nullable|json',
             'requirements' => 'nullable|array',
             'learning_outcomes' => 'nullable|array',
             'release_date' => 'nullable|date',
             'order' => 'nullable|integer|min:0',
             'is_featured' => 'boolean',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
+            'remove_thumbnail' => 'nullable|boolean',
+            'remove_preview_video' => 'nullable|boolean'
         ];
     }
 
@@ -67,7 +69,7 @@ class UpdateRequest extends FormRequest
             'order.integer' => 'Thứ tự phải là số nguyên',
             'order.min' => 'Thứ tự phải lớn hơn hoặc bằng 0',
             'preview_video.file' => 'Video giới thiệu phải là file',
-            'preview_video.mimes' => 'Video giới thiệu phải có định dạng: mp4, webm, ogg',
+            'preview_video.mimes' => 'Video giới thiệu phải có định dạng: mp4, mov, ogg, qt',
             'preview_video.max' => 'Video giới thiệu không được vượt quá 100MB'
         ];
     }

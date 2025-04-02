@@ -1,22 +1,27 @@
-<div class="fixed inset-0 z-50 overflow-y-auto hidden" id="createCourseModal" aria-labelledby="createCourseModalLabel" aria-hidden="true">
+<div class="fixed inset-0 z-50 overflow-y-auto hidden" id="createCourseModal" aria-labelledby="createCourseModalLabel"
+    aria-hidden="true">
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
             <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
         </div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+        <div
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div class="flex justify-between items-center pb-3 border-b">
                     <h3 class="text-lg font-medium text-gray-900" id="createCourseModalLabel">Thêm khóa học mới</h3>
                     <button type="button" class="text-gray-400 hover:text-gray-500"
                         onclick="modalHandler.close('createCourseModal')" aria-label="Close">
                         <span class="sr-only">Close</span>
-                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>
-                <form action="{{ route('admin.courses.store') }}" method="POST" enctype="multipart/form-data" id="createCourseForm">
+                <form action="{{ route('admin.courses.store') }}" method="POST" enctype="multipart/form-data"
+                    id="createCourseForm">
                     @csrf
                     <div class="grid grid-cols-2 gap-4 mt-4">
                         <!-- Cột trái -->
@@ -34,11 +39,13 @@
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="category_id">
                                     Danh mục <span class="text-red-500">*</span>
                                 </label>
-                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                <select
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="category_id" name="category_id" required>
                                     <option value="">Chọn danh mục</option>
                                     @foreach (\App\Models\Category::all() as $category)
-                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        <option value="{{ $category->id }}"
+                                            {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                             {{ $category->name }}
                                         </option>
                                     @endforeach
@@ -49,7 +56,8 @@
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="course_type">
                                     Loại khóa học <span class="text-red-500">*</span>
                                 </label>
-                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                <select
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="course_type" name="course_type" required>
                                     <option value="self_paced">Tự học</option>
                                     <option value="instructor_led">Có giảng viên</option>
@@ -61,7 +69,8 @@
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="course_format">
                                     Hình thức học <span class="text-red-500">*</span>
                                 </label>
-                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                <select
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="course_format" name="course_format" required>
                                     <option value="online">Trực tuyến</option>
                                     <option value="offline">Trực tiếp</option>
@@ -93,7 +102,8 @@
                                 </label>
                                 <input type="number"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="estimated_hours" name="estimated_hours" value="{{ old('estimated_hours') }}" min="0">
+                                    id="estimated_hours" name="estimated_hours" value="{{ old('estimated_hours') }}"
+                                    min="0">
                             </div>
                         </div>
 
@@ -121,34 +131,26 @@
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="thumbnail">
                                     Ảnh đại diện <span class="text-red-500">*</span>
                                 </label>
-                                <div class="flex items-center space-x-2">
-                                    <div class="relative">
-                                        <input type="file"
-                                            class="hidden"
-                                            id="thumbnail" name="thumbnail"
-                                            accept="image/*" required
-                                            onchange="previewImage(this);">
-                                        <button type="button"
-                                            onclick="document.getElementById('thumbnail').click()"
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                            Chọn ảnh
-                                        </button>
+                                <div class="flex flex-col space-y-2">
+                                    <!-- Preview container -->
+                                    <div class="preview-container">
+                                        <img id="thumbnailPreview" src=""
+                                            class="hidden max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
+                                            style="max-height: 200px; object-fit: contain;"
+                                            onclick="openImageModal(this.src)">
                                     </div>
-                                    <div id="thumbnail-preview" class="hidden">
-                                        <img src="" alt="Preview" class="h-20 w-20 object-cover rounded">
-                                        <button type="button"
-                                            onclick="clearImage()"
-                                            class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full p-1">
-                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <div id="upload-progress" class="hidden">
-                                        <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+
+                                    <!-- Controls -->
+                                    <div class="flex items-center">
+                                        <div class="relative">
+                                            <input type="file" class="hidden" id="thumbnail" name="thumbnail"
+                                                accept="image/*" required onchange="previewImage(this);">
+                                            <button type="button"
+                                                onclick="document.getElementById('thumbnail').click()"
+                                                class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                                Chọn ảnh
+                                            </button>
                                         </div>
-                                        <span class="text-sm text-gray-500">Đang tải lên...</span>
                                     </div>
                                 </div>
                             </div>
@@ -157,35 +159,29 @@
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="preview_video">
                                     Video giới thiệu
                                 </label>
-                                <div class="flex items-center space-x-2">
-                                    <div class="relative">
-                                        <input type="file"
-                                            class="hidden"
-                                            id="preview_video"
-                                            name="preview_video"
-                                            accept="video/*"
-                                            onchange="previewVideo(this);">
-                                        <button type="button"
-                                            onclick="document.getElementById('preview_video').click()"
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                            Chọn video
-                                        </button>
-                                    </div>
-                                    <div id="video-preview" class="hidden">
-                                        <video width="320" height="240" controls class="rounded">
+                                <div class="flex flex-col space-y-2">
+                                    <!-- Preview container -->
+                                    <div class="preview-container">
+                                        <video id="videoPreview"
+                                            class="hidden max-w-xs rounded-lg shadow-md cursor-pointer"
+                                            style="max-height: 300px; width: 100%;"
+                                            onclick="openVideoModal(this.querySelector('source').src)" controls>
                                             <source src="" type="video/mp4">
                                             Your browser does not support the video tag.
                                         </video>
-                                        <button type="button"
-                                            onclick="clearVideo()"
-                                            class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full p-1">
-                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
                                     </div>
-                                    <div id="video-upload-progress" class="hidden w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+
+                                    <!-- Controls -->
+                                    <div class="flex items-center">
+                                        <div class="relative">
+                                            <input type="file" class="hidden" id="preview_video"
+                                                name="preview_video" accept="video/*" onchange="previewVideo(this);">
+                                            <button type="button"
+                                                onclick="document.getElementById('preview_video').click()"
+                                                class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                                Chọn video
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -245,7 +241,8 @@
                             onclick="modalHandler.close('createCourseModal')">
                             Hủy
                         </button>
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <button type="submit"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Thêm mới
                         </button>
                     </div>
@@ -255,93 +252,187 @@
     </div>
 </div>
 
+<!-- Thêm modal xem ảnh -->
+<div id="imageModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="imageModalLabel"
+    aria-hidden="true">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+        <div class="relative bg-white rounded-lg max-w-3xl w-full mx-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-xl font-semibold text-gray-900" id="imageModalLabel">Xem ảnh</h3>
+                <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeImageModal()">
+                    <span class="sr-only">Đóng</span>
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Body -->
+            <div class="p-4">
+                <img id="modalImage" src="" alt="Preview" class="w-full h-auto">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thêm modal xem video -->
+<div id="videoModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="videoModalLabel"
+    aria-hidden="true">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+        <div class="relative bg-white rounded-lg max-w-4xl w-full mx-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-xl font-semibold text-gray-900" id="videoModalLabel">Xem video</h3>
+                <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeVideoModal()">
+                    <span class="sr-only">Đóng</span>
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Body -->
+            <div class="p-4">
+                <video id="modalVideo" class="w-full h-auto" controls>
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-function previewImage(input) {
-    const preview = document.getElementById('thumbnail-preview');
-    const img = preview.querySelector('img');
-
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            img.src = e.target.result;
-            preview.classList.remove('hidden');
-        }
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-function clearImage() {
-    const input = document.getElementById('thumbnail');
-    const preview = document.getElementById('thumbnail-preview');
-    input.value = '';
-    preview.classList.add('hidden');
-}
-
-function previewVideo(input) {
-    const preview = document.getElementById('video-preview');
-    const video = preview.querySelector('video source');
-
-    if (input.files && input.files[0]) {
-        const file = input.files[0];
-
-        // Kiểm tra kích thước file (100MB)
-        if (file.size > 100 * 1024 * 1024) {
-            alert('File video quá lớn. Vui lòng chọn file nhỏ hơn 100MB.');
-            input.value = '';
-            return;
-        }
-
-        // Kiểm tra định dạng file
-        const validTypes = ['video/mp4', 'video/webm', 'video/ogg'];
-        if (!validTypes.includes(file.type)) {
-            alert('Định dạng file không hợp lệ. Vui lòng chọn file MP4, WebM hoặc Ogg.');
-            input.value = '';
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            video.src = e.target.result;
-            video.parentElement.load();
-            preview.classList.remove('hidden');
-        }
-        reader.readAsDataURL(file);
-    }
-}
-
-function clearVideo() {
-    const input = document.getElementById('preview_video');
-    const preview = document.getElementById('video-preview');
-    const video = preview.querySelector('video source');
-    input.value = '';
-    video.src = '';
-    video.parentElement.load(); // Reload video element
-    preview.classList.add('hidden');
-}
-
-document.getElementById('createCourseForm').addEventListener('submit', function(e) {
-    const thumbnailInput = document.getElementById('thumbnail');
-    const videoInput = document.getElementById('preview_video');
-    const thumbnailProgress = document.getElementById('upload-progress');
-    const videoProgress = document.getElementById('video-upload-progress');
-
-    if (thumbnailInput.files.length > 0) {
-        thumbnailProgress.classList.remove('hidden');
-    }
-
-    if (videoInput.files.length > 0) {
-        videoProgress.classList.remove('hidden');
-        // Progress simulation for video
-        let width = 0;
-        const progressBar = videoProgress.querySelector('.bg-blue-600');
-        const interval = setInterval(() => {
-            if (width >= 100) {
-                clearInterval(interval);
-            } else {
-                width++;
-                progressBar.style.width = width + '%';
+    function previewImage(input) {
+        const preview = document.getElementById('thumbnailPreview');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
             }
-        }, 50);
+            reader.readAsDataURL(input.files[0]);
+        }
     }
-});
+
+    function previewVideo(input) {
+        const preview = document.getElementById('videoPreview');
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            // Kiểm tra kích thước file (100MB)
+            if (file.size > 100 * 1024 * 1024) {
+                alert('File video quá lớn. Vui lòng chọn file nhỏ hơn 100MB.');
+                input.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.querySelector('source').src = e.target.result;
+                preview.load(); // Quan trọng: Load lại video sau khi thay đổi source
+                preview.classList.remove('hidden');
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function openImageModal(src) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = src;
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageModal() {
+        const modal = document.getElementById('imageModal');
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    function openVideoModal(src) {
+        const modal = document.getElementById('videoModal');
+        const modalVideo = document.getElementById('modalVideo');
+        modalVideo.querySelector('source').src = src;
+        modalVideo.load();
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideoModal() {
+        const modal = document.getElementById('videoModal');
+        const modalVideo = document.getElementById('modalVideo');
+        modalVideo.pause();
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+        const imageModal = document.getElementById('imageModal');
+        const videoModal = document.getElementById('videoModal');
+        if (event.target === imageModal) {
+            closeImageModal();
+        }
+        if (event.target === videoModal) {
+            closeVideoModal();
+        }
+    }
+
+    // Close modals with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeImageModal();
+            closeVideoModal();
+        }
+    });
 </script>
+
+<!-- Thêm styles -->
+<style>
+    .preview-container {
+        min-height: 50px;
+        border: 2px dashed #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f8fafc;
+    }
+
+    .preview-container img,
+    .preview-container video {
+        max-width: 100%;
+        border-radius: 0.375rem;
+        transition: all 0.3s ease;
+    }
+
+    .preview-container img:hover,
+    .preview-container video:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Modal animation */
+    .modal-content {
+        animation: modalFadeIn 0.3s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+</style>
