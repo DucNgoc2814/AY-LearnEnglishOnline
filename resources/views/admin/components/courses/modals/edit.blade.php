@@ -27,9 +27,11 @@
                     <!-- Hidden input để lưu course id -->
                     <input type="hidden" name="course_id" id="course_id">
 
-                    <div class="grid grid-cols-2 gap-4 mt-4">
-                        <!-- Cột trái -->
+                    <div class="grid grid-cols-2 gap-6 mt-4">
+                        <!-- Thông tin cơ bản -->
                         <div>
+                            <h4 class="font-medium text-gray-900 mb-4">Thông tin cơ bản</h4>
+
                             <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
                                     Tên khóa học <span class="text-red-500">*</span>
@@ -38,6 +40,27 @@
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="title" name="title" required>
                             </div>
+
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="short_description">
+                                    Mô tả ngắn
+                                </label>
+                                <textarea
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="short_description" name="short_description" rows="2"></textarea>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="editDescription">
+                                    Mô tả chi tiết
+                                </label>
+                                <textarea
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="editDescription" name="description" rows="4"></textarea>
+                            </div>
+
+                            <!-- Phân loại -->
+                            <h4 class="font-medium text-gray-900 mb-4 mt-6">Phân loại</h4>
 
                             <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="category_id">
@@ -53,140 +76,130 @@
                                 </select>
                             </div>
 
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="course_type">
-                                    Loại khóa học <span class="text-red-500">*</span>
-                                </label>
-                                <select
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="course_type" name="course_type" required>
-                                    <option value="self_paced">Tự học</option>
-                                    <option value="instructor_led">Có giảng viên</option>
-                                    <option value="hybrid">Kết hợp</option>
-                                </select>
-                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="course_type">
+                                        Loại khóa học <span class="text-red-500">*</span>
+                                    </label>
+                                    <select
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="course_type" name="course_type" required>
+                                        <option value="self_paced">Tự học</option>
+                                        <option value="instructor_led">Có giảng viên</option>
+                                        <option value="hybrid">Kết hợp</option>
+                                    </select>
+                                </div>
 
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="course_format">
-                                    Hình thức học <span class="text-red-500">*</span>
-                                </label>
-                                <select
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="course_format" name="course_format" required>
-                                    <option value="online">Trực tuyến</option>
-                                    <option value="offline">Trực tiếp</option>
-                                    <option value="hybrid">Kết hợp</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="price">
-                                    Giá <span class="text-red-500">*</span>
-                                </label>
-                                <input type="number"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="price" name="price" min="0" required>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="sale_price">
-                                    Giá khuyến mãi
-                                </label>
-                                <input type="number"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="sale_price" name="sale_price" min="0">
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="estimated_hours">
-                                    Số giờ học dự kiến
-                                </label>
-                                <input type="number"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="estimated_hours" name="estimated_hours" min="0">
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="course_format">
+                                        Hình thức học <span class="text-red-500">*</span>
+                                    </label>
+                                    <select
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="course_format" name="course_format" required>
+                                        <option value="online">Trực tuyến</option>
+                                        <option value="offline">Trực tiếp</option>
+                                        <option value="hybrid">Kết hợp</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Cột phải -->
+                        <!-- Thông tin bổ sung -->
                         <div>
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
-                                    Mô tả chi tiết
-                                </label>
-                                <textarea
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="description" name="description" rows="3"></textarea>
-                            </div>
+                            <h4 class="font-medium text-gray-900 mb-4">Media</h4>
 
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="short_description">
-                                    Mô tả ngắn
+                            <!-- Thumbnail upload -->
+                            <div class="mb-6">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="thumbnail">
+                                    Ảnh đại diện <span class="text-red-500">*</span>
                                 </label>
-                                <textarea
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="short_description" name="short_description" rows="2"></textarea>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2">
-                                    Ảnh đại diện
-                                </label>
-                                <div class="flex flex-col space-y-2">
-                                    <div class="preview-container">
-                                        <img id="editThumbnailPreview" src="" alt="Preview"
-                                            class="hidden max-w-xs h-auto rounded-lg shadow-md">
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <input type="file" id="thumbnail" name="thumbnail" class="hidden"
-                                            accept="image/*" onchange="previewImage(this)">
-                                        <button type="button" onclick="document.getElementById('thumbnail').click()"
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                            Chọn ảnh
-                                        </button>
-                                        <button type="button" onclick="clearThumbnail()"
-                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                            Xóa ảnh
-                                        </button>
-                                    </div>
+                                <div class="preview-container mb-2">
+                                    <img id="editThumbnailPreview" src="" class="hidden max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
+                                        style="max-height: 200px; object-fit: contain;" onclick="openImageModal(this.src)">
                                 </div>
+                                <div class="flex items-center space-x-2">
+                                    <button type="button" id="chooseThumbnailBtn"
+                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                        Chọn ảnh
+                                    </button>
+                                    <button type="button" onclick="clearThumbnail()"
+                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                        Xóa ảnh
+                                    </button>
+                                </div>
+                                <input type="file" class="hidden" id="thumbnail" name="thumbnail" accept="image/*" onchange="previewImage(this);">
                             </div>
 
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2">
+                            <!-- Video upload -->
+                            <div class="mb-6">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="preview_video">
                                     Video giới thiệu
                                 </label>
-                                <div class="flex flex-col space-y-2">
-                                    <div class="preview-container">
-                                        <video id="editVideoPreview" class="hidden max-w-full" controls>
-                                            <source src="" type="video/mp4">
-                                        </video>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <input type="file" id="preview_video" name="preview_video" class="hidden"
-                                            accept="video/*" onchange="previewVideo(this)">
-                                        <button type="button"
-                                            onclick="document.getElementById('preview_video').click()"
-                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                            Chọn video
-                                        </button>
-                                        <button type="button" onclick="clearVideo()"
-                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                            Xóa video
-                                        </button>
-                                    </div>
+                                <div class="preview-container mb-2">
+                                    <video id="editVideoPreview" class="hidden max-w-xs rounded-lg shadow-md cursor-pointer"
+                                        style="max-height: 300px; width: 100%;" onclick="openVideoModal(this.querySelector('source').src)" controls>
+                                        <source src="" type="video/mp4">
+                                    </video>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button type="button" id="chooseVideoBtn"
+                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                        Chọn video
+                                    </button>
+                                    <button type="button" onclick="clearVideo()"
+                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                        Xóa video
+                                    </button>
+                                </div>
+                                <input type="file" class="hidden" id="preview_video" name="preview_video" accept="video/*" onchange="previewVideo(this);">
+                            </div>
+
+                            <h4 class="font-medium text-gray-900 mb-4 mt-6">Thông tin khác</h4>
+
+                            <!-- Giá và thời gian -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="price">
+                                        Giá <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="number"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="price" name="price" min="0" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="sale_price">
+                                        Giá khuyến mãi
+                                    </label>
+                                    <input type="number"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="sale_price" name="sale_price" min="0">
                                 </div>
                             </div>
 
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="release_date">
-                                    Ngày phát hành
-                                </label>
-                                <input type="datetime-local"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="release_date" name="release_date">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="estimated_hours">
+                                        Số giờ học dự kiến
+                                    </label>
+                                    <input type="number"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="estimated_hours" name="estimated_hours" min="0">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="release_date">
+                                        Ngày phát hành
+                                    </label>
+                                    <input type="datetime-local"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="release_date" name="release_date">
+                                </div>
                             </div>
 
-                            <div class="flex space-x-4">
+                            <!-- Checkboxes -->
+                            <div class="grid grid-cols-2 gap-4">
                                 <div class="mb-4">
                                     <label class="flex items-center">
                                         <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600"
@@ -222,7 +235,7 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-end pt-2 border-t">
+                    <div class="flex justify-end pt-4 border-t mt-6">
                         <button type="button"
                             class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
                             onclick="modalHandler.close('editCourseModal')">
@@ -331,8 +344,19 @@
         // Điền các giá trị vào form
         form.querySelector('#title').value = item.title || '';
         form.querySelector('#category_id').value = item.category_id || '';
-        form.querySelector('#description').value = item.description || '';
         form.querySelector('#short_description').value = item.short_description || '';
+
+        // Cập nhật nội dung cho TinyMCE với id mới
+        if (tinymce.get('editDescription')) {
+            tinymce.get('editDescription').setContent(item.description || '');
+        } else {
+            setTimeout(() => {
+                if (tinymce.get('editDescription')) {
+                    tinymce.get('editDescription').setContent(item.description || '');
+                }
+            }, 500);
+        }
+
         form.querySelector('#course_type').value = item.course_type || '';
         form.querySelector('#course_format').value = item.course_format || '';
         form.querySelector('#price').value = item.price || '';

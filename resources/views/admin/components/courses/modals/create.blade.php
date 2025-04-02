@@ -23,179 +23,159 @@
                 <form action="{{ route('admin.courses.store') }}" method="POST" enctype="multipart/form-data"
                     id="createCourseForm">
                     @csrf
-                    <div class="grid grid-cols-2 gap-4 mt-4">
-                        <!-- Cột trái -->
+                    <div class="grid grid-cols-2 gap-6 mt-4">
+                        <!-- Thông tin cơ bản -->
                         <div>
+                            <h4 class="font-medium text-gray-900 mb-4">Thông tin cơ bản</h4>
+
                             <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
                                     Tên khóa học <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="title" name="title" value="{{ old('title') }}" required>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="category_id">
-                                    Danh mục <span class="text-red-500">*</span>
-                                </label>
-                                <select
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="category_id" name="category_id" required>
-                                    <option value="">Chọn danh mục</option>
-                                    @foreach (\App\Models\Category::all() as $category)
-                                        <option value="{{ $category->id }}"
-                                            {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                            {{ $category->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="course_type">
-                                    Loại khóa học <span class="text-red-500">*</span>
-                                </label>
-                                <select
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="course_type" name="course_type" required>
-                                    <option value="self_paced">Tự học</option>
-                                    <option value="instructor_led">Có giảng viên</option>
-                                    <option value="hybrid">Kết hợp</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="course_format">
-                                    Hình thức học <span class="text-red-500">*</span>
-                                </label>
-                                <select
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="course_format" name="course_format" required>
-                                    <option value="online">Trực tuyến</option>
-                                    <option value="offline">Trực tiếp</option>
-                                    <option value="hybrid">Kết hợp</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="price">
-                                    Giá <span class="text-red-500">*</span>
-                                </label>
-                                <input type="number"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="price" name="price" value="{{ old('price', 0) }}" min="0" required>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="sale_price">
-                                    Giá khuyến mãi
-                                </label>
-                                <input type="number"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="sale_price" name="sale_price" value="{{ old('sale_price') }}" min="0">
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="estimated_hours">
-                                    Số giờ học dự kiến
-                                </label>
-                                <input type="number"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="estimated_hours" name="estimated_hours" value="{{ old('estimated_hours') }}"
-                                    min="0">
-                            </div>
-                        </div>
-
-                        <!-- Cột phải -->
-                        <div>
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
-                                    Mô tả chi tiết
-                                </label>
-                                <textarea
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="description" name="description" rows="3">{{ old('description') }}</textarea>
                             </div>
 
                             <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="short_description">
                                     Mô tả ngắn
                                 </label>
-                                <textarea
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="short_description" name="short_description" rows="2">{{ old('short_description') }}</textarea>
                             </div>
 
                             <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
+                                    Mô tả chi tiết
+                                </label>
+                                <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="description" name="description" rows="4">{{ old('description') }}</textarea>
+                            </div>
+
+                            <!-- Phân loại -->
+                            <h4 class="font-medium text-gray-900 mb-4 mt-6">Phân loại</h4>
+
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="category_id">
+                                    Danh mục <span class="text-red-500">*</span>
+                                </label>
+                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="category_id" name="category_id" required>
+                                    <option value="">Chọn danh mục</option>
+                                    @foreach (\App\Models\Category::all() as $category)
+                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="course_type">
+                                        Loại khóa học <span class="text-red-500">*</span>
+                                    </label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="course_type" name="course_type" required>
+                                        <option value="self_paced">Tự học</option>
+                                        <option value="instructor_led">Có giảng viên</option>
+                                        <option value="hybrid">Kết hợp</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="course_format">
+                                        Hình thức học <span class="text-red-500">*</span>
+                                    </label>
+                                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="course_format" name="course_format" required>
+                                        <option value="online">Trực tuyến</option>
+                                        <option value="offline">Trực tiếp</option>
+                                        <option value="hybrid">Kết hợp</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Thông tin bổ sung -->
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-4">Media</h4>
+
+                            <!-- Thumbnail upload -->
+                            <div class="mb-6">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="thumbnail">
                                     Ảnh đại diện <span class="text-red-500">*</span>
                                 </label>
-                                <div class="flex flex-col space-y-2">
-                                    <!-- Preview container -->
-                                    <div class="preview-container">
-                                        <img id="thumbnailPreview" src=""
-                                            class="hidden max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
-                                            style="max-height: 200px; object-fit: contain;"
-                                            onclick="openImageModal(this.src)">
-                                    </div>
-
-                                    <!-- Controls -->
-                                    <div class="flex items-center">
-                                        <div class="relative">
-                                            <input type="file" class="hidden" id="thumbnail" name="thumbnail"
-                                                accept="image/*" required onchange="previewImage(this);">
-                                            <button type="button"
-                                                onclick="document.getElementById('thumbnail').click()"
-                                                class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
-                                                Chọn ảnh
-                                            </button>
-                                        </div>
-                                    </div>
+                                <div class="preview-container mb-2">
+                                    <img id="thumbnailPreview" src="" class="hidden max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
+                                        style="max-height: 200px; object-fit: contain;" onclick="openImageModal(this.src)">
                                 </div>
+                                <button type="button" id="chooseThumbnailBtn"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                    Chọn ảnh
+                                </button>
+                                <input type="file" class="hidden" id="thumbnail" name="thumbnail" accept="image/*" required onchange="previewImage(this);">
                             </div>
 
-                            <div class="mb-4">
+                            <!-- Video upload -->
+                            <div class="mb-6">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="preview_video">
                                     Video giới thiệu
                                 </label>
-                                <div class="flex flex-col space-y-2">
-                                    <!-- Preview container -->
-                                    <div class="preview-container">
-                                        <video id="videoPreview"
-                                            class="hidden max-w-xs rounded-lg shadow-md cursor-pointer"
-                                            style="max-height: 300px; width: 100%;"
-                                            onclick="openVideoModal(this.querySelector('source').src)" controls>
-                                            <source src="" type="video/mp4">
-                                            Your browser does not support the video tag.
-                                        </video>
-                                    </div>
+                                <div class="preview-container mb-2">
+                                    <video id="videoPreview" class="hidden max-w-xs rounded-lg shadow-md cursor-pointer"
+                                        style="max-height: 300px; width: 100%;" onclick="openVideoModal(this.querySelector('source').src)" controls>
+                                        <source src="" type="video/mp4">
+                                    </video>
+                                </div>
+                                <button type="button" id="chooseVideoBtn"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                    Chọn video
+                                </button>
+                                <input type="file" class="hidden" id="preview_video" name="preview_video" accept="video/*" onchange="previewVideo(this);">
+                            </div>
 
-                                    <!-- Controls -->
-                                    <div class="flex items-center">
-                                        <div class="relative">
-                                            <input type="file" class="hidden" id="preview_video"
-                                                name="preview_video" accept="video/*" onchange="previewVideo(this);">
-                                            <button type="button"
-                                                onclick="document.getElementById('preview_video').click()"
-                                                class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
-                                                Chọn video
-                                            </button>
-                                        </div>
-                                    </div>
+                            <h4 class="font-medium text-gray-900 mb-4 mt-6">Thông tin khác</h4>
+
+                            <!-- Giá và thời gian -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="price">
+                                        Giá <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="price" name="price" value="{{ old('price', 0) }}" min="0" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="sale_price">
+                                        Giá khuyến mãi
+                                    </label>
+                                    <input type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="sale_price" name="sale_price" value="{{ old('sale_price') }}" min="0">
                                 </div>
                             </div>
 
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="release_date">
-                                    Ngày phát hành
-                                </label>
-                                <input type="datetime-local"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="release_date" name="release_date" value="{{ old('release_date') }}">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="estimated_hours">
+                                        Số giờ học dự kiến
+                                    </label>
+                                    <input type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="estimated_hours" name="estimated_hours" value="{{ old('estimated_hours') }}" min="0">
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="release_date">
+                                        Ngày phát hành
+                                    </label>
+                                    <input type="datetime-local" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="release_date" name="release_date" value="{{ old('release_date') }}">
+                                </div>
                             </div>
 
-                            <div class="flex space-x-4">
+                            <!-- Checkboxes -->
+                            <div class="grid grid-cols-2 gap-4">
                                 <div class="mb-4">
                                     <label class="flex items-center">
                                         <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600"
@@ -235,14 +215,12 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-end pt-2 border-t">
-                        <button type="button"
-                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
+                    <div class="flex justify-end pt-4 border-t mt-6">
+                        <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
                             onclick="modalHandler.close('createCourseModal')">
                             Hủy
                         </button>
-                        <button type="submit"
-                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Thêm mới
                         </button>
                     </div>
@@ -317,6 +295,7 @@
                 preview.classList.remove('hidden');
             }
             reader.readAsDataURL(input.files[0]);
+            input.value = input.value; // Reset file input để tránh trigger lại
         }
     }
 
@@ -390,6 +369,37 @@
             closeImageModal();
             closeVideoModal();
         }
+    });
+
+    // Thêm event listeners cho buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        const thumbnailBtn = document.getElementById('chooseThumbnailBtn');
+        const thumbnailInput = document.getElementById('thumbnail');
+        let thumbnailClicked = false;
+
+        thumbnailBtn.addEventListener('click', function() {
+            if (!thumbnailClicked) {
+                thumbnailClicked = true;
+                thumbnailInput.click();
+                setTimeout(() => {
+                    thumbnailClicked = false;
+                }, 100);
+            }
+        });
+
+        const videoBtn = document.getElementById('chooseVideoBtn');
+        const videoInput = document.getElementById('preview_video');
+        let videoClicked = false;
+
+        videoBtn.addEventListener('click', function() {
+            if (!videoClicked) {
+                videoClicked = true;
+                videoInput.click();
+                setTimeout(() => {
+                    videoClicked = false;
+                }, 100);
+            }
+        });
     });
 </script>
 
