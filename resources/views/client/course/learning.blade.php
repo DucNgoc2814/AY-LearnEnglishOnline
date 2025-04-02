@@ -129,47 +129,6 @@
                     @include('client.course.partials.videoContent')
                 @endif
 
-                <!-- Tab cho bình luận -->
-                <div class="comments-section mt-3 p-3 bg-white">
-                    <ul class="nav nav-tabs" id="learningTabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="learning-comments-tab" data-bs-toggle="tab"
-                                data-bs-target="#learning-comments" type="button" role="tab" aria-controls="learning-comments"
-                                aria-selected="true">
-                                <i class="far fa-comments me-1"></i> Bình luận
-                            </button>
-                        </li>
-                    </ul>
-                    <div class="tab-content p-3 border border-top-0 rounded-bottom">
-                        <div class="tab-pane fade show active" id="learning-comments" role="tabpanel" aria-labelledby="learning-comments-tab">
-                            <div class="comments mt-1">
-                                @auth
-                                    <div class="comment-form mb-2">
-                                        <form action="{{ route('client.comments.store') }}" method="POST" class="ajaxForm" id="learningCommentForm">
-                                            @csrf
-                                            <input type="hidden" name="commentable_type" value="App\Models\Course">
-                                            <input type="hidden" name="commentable_id" value="{{ $course->id }}">
-                                            <div class="form-group position-relative">
-                                                <textarea name="content" class="form-control pr-5" placeholder="Viết bình luận của bạn..." rows="2" id="learningCommentContent"></textarea>
-                                                <button type="submit" class="btn btn-link position-absolute send-icon" id="submitLearningComment">
-                                                    <i class="fas fa-paper-plane text-primary"></i>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                @else
-                                    <div class="alert alert-info py-2 mb-2">
-                                        Vui lòng <a href="{{ route('login') }}">đăng nhập</a> để bình luận
-                                    </div>
-                                @endauth
-
-                                <div class="learning-comments-list">
-                                    <!-- Bình luận sẽ được tải qua AJAX -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -513,8 +472,6 @@
             text-overflow: ellipsis;
         }
     </style>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <link rel="stylesheet" href="{{ asset('css/notification.css') }}">
 @endpush
 
 @push('scripts')
@@ -595,40 +552,7 @@
             }
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script src="{{ asset('js/notification.js') }}"></script>
+@endpush
 
-    <script>
-    $(function() {
-        // Kiểm tra thông báo từ session và hiển thị alert
-        @if(session('notification'))
-        if (typeof showNotification === 'function') {
-            showNotification("{{ session('notification.message') }}", "{{ session('notification.type') }}");
-        }
-        @endif
 
-        // Load bình luận khi trang được tải
-        loadLearningComments(1);
-        
-        // Xử lý phân trang cho comments
-        $(document).on('click', '.learning-comments-list .pagination a', function(e) {
-            e.preventDefault();
-            var page = $(this).data('page');
-            loadLearningComments(page);
-        });
-        
-        // Function để tải bình luận
-        function loadLearningComments(page) {
-            $.ajax({
-                url: '/courses/{{ $course->id }}/comments?page=' + page,
-                type: 'GET',
-                beforeSend: function() {
-                    $('.learning-comments-list').html('<div class="text-center py-3"><i class="fas fa-spinner fa-spin"></i> Đang tải bình luận...</div>');
-                },
-                success: function(response) {
-                    $('.learning-comments-list').html(response.html);
-                },
-                error: function() {
-                    $('.learning-comments-list').html('<div class="alert alert-danger">Có lỗi xảy ra khi tải bình luận.</div>');
-                }
-            });
+

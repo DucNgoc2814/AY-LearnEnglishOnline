@@ -2,7 +2,7 @@
     @if ($currentTest)
         <div class="content-header">
             <div class="test-title-container">
-                <h4 class="test-title mb-0">{{ $currentTest->name ?? 'Không tìm thấy tên bài kiểm tra' }}</h4>
+                <h3 class="test-title mb-0 fs-5">{{ $currentTest->name ?? 'Không tìm thấy tên bài kiểm tra' }}</h3>
                 <div class="timer-display">
                     <i class="fas fa-clock me-2"></i><span id="timer">30:00</span>
                 </div>
@@ -189,12 +189,18 @@
     .test-title-container {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 15px;
+        width: 100%;
     }
 
     .test-title {
         color: white;
         font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 80%;
     }
     
     .question-area {
