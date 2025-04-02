@@ -17,6 +17,9 @@
     @include('admin.layouts.partials.styles')
     @stack('styles')
 
+    <!-- TinyMCE -->
+    <script src="{{ asset('assets/libs/tinymce/tinymce.min.js') }}"></script>
+
     <!-- Loading Animation Style -->
     <style>
         #loading-screen {
@@ -69,6 +72,9 @@
 
     @include('admin.layouts.partials.scripts')
     @stack('scripts')
+
+    <!-- TinyMCE Config -->
+    <script src="{{ asset('assets/js/tinymce-config.js') }}"></script>
 
     <!-- Loading Screen Script -->
     <script>
