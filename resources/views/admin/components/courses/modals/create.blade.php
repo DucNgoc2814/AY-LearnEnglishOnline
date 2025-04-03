@@ -110,11 +110,17 @@
                                     <img id="thumbnailPreview" src="" class="hidden max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
                                         style="max-height: 200px; object-fit: contain;" onclick="openImageModal(this.src)">
                                 </div>
-                                <button type="button" id="chooseThumbnailBtn"
-                                    class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
-                                    Chọn ảnh
-                                </button>
-                                <input type="file" class="hidden" id="thumbnail" name="thumbnail" accept="image/*" required onchange="previewImage(this);">
+                                <div class="flex space-x-2">
+                                    <button type="button" id="chooseThumbnailBtn"
+                                        class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                        Chọn ảnh
+                                    </button>
+                                    <button type="button" onclick="clearThumbnail()"
+                                        class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                        Xóa ảnh
+                                    </button>
+                                </div>
+                                <input type="file" class="hidden" id="thumbnail" name="thumbnail" accept="image/*" required>
                             </div>
 
                             <!-- Video upload -->
@@ -128,11 +134,17 @@
                                         <source src="" type="video/mp4">
                                     </video>
                                 </div>
-                                <button type="button" id="chooseVideoBtn"
-                                    class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
-                                    Chọn video
-                                </button>
-                                <input type="file" class="hidden" id="preview_video" name="preview_video" accept="video/*" onchange="previewVideo(this);">
+                                <div class="flex space-x-2">
+                                    <button type="button" id="chooseVideoBtn"
+                                        class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                        Chọn video
+                                    </button>
+                                    <button type="button" onclick="clearVideo()"
+                                        class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                        Xóa video
+                                    </button>
+                                </div>
+                                <input type="file" class="hidden" id="preview_video" name="preview_video" accept="video/*">
                             </div>
 
                             <h4 class="font-medium text-gray-900 mb-4 mt-6">Thông tin khác</h4>
@@ -295,12 +307,13 @@
                 preview.classList.remove('hidden');
             }
             reader.readAsDataURL(input.files[0]);
-            input.value = input.value; // Reset file input để tránh trigger lại
         }
     }
 
     function previewVideo(input) {
         const preview = document.getElementById('videoPreview');
+        const videoSource = preview.querySelector('source');
+
         if (input.files && input.files[0]) {
             const file = input.files[0];
             // Kiểm tra kích thước file (100MB)
@@ -312,7 +325,7 @@
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                preview.querySelector('source').src = e.target.result;
+                videoSource.src = e.target.result;
                 preview.load(); // Quan trọng: Load lại video sau khi thay đổi source
                 preview.classList.remove('hidden');
             }
@@ -373,34 +386,81 @@
 
     // Thêm event listeners cho buttons
     document.addEventListener('DOMContentLoaded', function() {
-        const thumbnailBtn = document.getElementById('chooseThumbnailBtn');
-        const thumbnailInput = document.getElementById('thumbnail');
-        let thumbnailClicked = false;
+        // Biến để lưu trữ file đã chọn
+        let selectedThumbnail = null;
+        let selectedVideo = null;
 
-        thumbnailBtn.addEventListener('click', function() {
-            if (!thumbnailClicked) {
-                thumbnailClicked = true;
-                thumbnailInput.click();
-                setTimeout(() => {
-                    thumbnailClicked = false;
-                }, 100);
+        // Xử lý sự kiện click cho nút "Chọn ảnh"
+        document.getElementById('chooseThumbnailBtn').addEventListener('click', function() {
+            document.getElementById('thumbnail').click();
+        });
+
+        // Xử lý sự kiện click cho nút "Chọn video"
+        document.getElementById('chooseVideoBtn').addEventListener('click', function() {
+            document.getElementById('preview_video').click();
+        });
+
+        // Xử lý preview ảnh
+        document.getElementById('thumbnail').addEventListener('change', function(e) {
+            const preview = document.getElementById('thumbnailPreview');
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(this.files[0]);
+                selectedThumbnail = this.files[0];
             }
         });
 
-        const videoBtn = document.getElementById('chooseVideoBtn');
-        const videoInput = document.getElementById('preview_video');
-        let videoClicked = false;
+        // Xử lý preview video
+        document.getElementById('preview_video').addEventListener('change', function(e) {
+            const preview = document.getElementById('videoPreview');
+            const videoSource = preview.querySelector('source');
 
-        videoBtn.addEventListener('click', function() {
-            if (!videoClicked) {
-                videoClicked = true;
-                videoInput.click();
-                setTimeout(() => {
-                    videoClicked = false;
-                }, 100);
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                // Kiểm tra kích thước file (100MB)
+                if (file.size > 100 * 1024 * 1024) {
+                    alert('File video quá lớn. Vui lòng chọn file nhỏ hơn 100MB.');
+                    this.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    videoSource.src = e.target.result;
+                    preview.load();
+                    preview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+                selectedVideo = file;
             }
         });
     });
+
+    // Hàm xóa ảnh
+    function clearThumbnail() {
+        const preview = document.getElementById('thumbnailPreview');
+        const input = document.getElementById('thumbnail');
+        preview.src = '';
+        preview.classList.add('hidden');
+        input.value = '';
+        selectedThumbnail = null;
+    }
+
+    // Hàm xóa video
+    function clearVideo() {
+        const preview = document.getElementById('videoPreview');
+        const videoSource = preview.querySelector('source');
+        const input = document.getElementById('preview_video');
+        videoSource.src = '';
+        preview.load();
+        preview.classList.add('hidden');
+        input.value = '';
+        selectedVideo = null;
+    }
 </script>
 
 <!-- Thêm styles -->

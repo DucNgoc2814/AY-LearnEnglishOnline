@@ -41,23 +41,27 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border border-gray-300">
+            <table class="min-w-full bg-white border border-gray-300" data-table="courses">
                 <thead>
                     <tr>
                         <th class="border ps-1 py-1 border-gray-300 text-center">
                             <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600">
                         </th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center">STT</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center">Danh mục</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center">Tiêu đề</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center">Loại khóa học</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center">Hình thức</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center">Giá gốc</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center">Giá khuyến mãi</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center">Số học viên</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center">Đánh giá</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center">Trạng thái</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center">Thao tác</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="index">STT</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="category_id">Danh mục</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="title">Tiêu đề</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="course_type">Loại khóa học</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="course_format">Hình thức</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="price">Giá gốc</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="sale_price">Giá khuyến mãi</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="total_students">Số học viên</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="rating">Đánh giá</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="is_active">Trạng thái</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center">
+                            <button onclick="toggleColumnSelector('courses')" class="p-2 hover:bg-gray-100 rounded">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,12 +71,12 @@
                                 <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600"
                                     data-id="{{ $item->id }}">
                             </td>
-                            <td class="ps-1 pt-1">
+                            <td class="ps-1 pt-1" data-column="index">
                                 {{ ($pagination['current_page'] - 1) * $pagination['per_page'] + $key + 1 }}
                             </td>
-                            <td class="ps-1 pt-1">{{ $item->category->name ?? 'N/A' }}</td>
-                            <td class="ps-1 pt-1"><a href="#" class="text-blue-500">{{ $item->title }}</a></td>
-                            <td class="ps-1 pt-1">
+                            <td class="ps-1 pt-1" data-column="category_id">{{ $item->category->name ?? 'N/A' }}</td>
+                            <td class="ps-1 pt-1" data-column="title"><a href="#" class="text-blue-500">{{ $item->title }}</a></td>
+                            <td class="ps-1 pt-1" data-column="course_type">
                                 @switch($item->course_type)
                                     @case('self_paced')
                                         <span class="text-green-600">Tự học</span>
@@ -87,7 +91,7 @@
                                     @break
                                 @endswitch
                             </td>
-                            <td class="ps-1 pt-1">
+                            <td class="ps-1 pt-1" data-column="course_format">
                                 @switch($item->course_format)
                                     @case('online')
                                         <span class="text-blue-600">Trực tuyến</span>
@@ -102,18 +106,18 @@
                                     @break
                                 @endswitch
                             </td>
-                            <td class="ps-1 pt-1">{{ number_format($item->price) }}đ</td>
-                            <td class="ps-1 pt-1">{{ $item->sale_price ? number_format($item->sale_price) . 'đ' : 'N/A' }}
+                            <td class="ps-1 pt-1" data-column="price">{{ number_format($item->price) }}đ</td>
+                            <td class="ps-1 pt-1" data-column="sale_price">{{ $item->sale_price ? number_format($item->sale_price) . 'đ' : 'N/A' }}
                             </td>
-                            <td class="ps-1 pt-1">{{ number_format($item->total_students) }}</td>
-                            <td class="ps-1 pt-1">
+                            <td class="ps-1 pt-1" data-column="total_students">{{ number_format($item->total_students) }}</td>
+                            <td class="ps-1 pt-1" data-column="rating">
                                 <div class="flex items-center">
                                     {{ number_format($item->rating, 1) }}
                                     <i class="fas fa-star text-yellow-400 ml-1"></i>
                                     <span class="text-gray-500 text-sm ml-1">({{ $item->total_ratings }})</span>
                                 </div>
                             </td>
-                            <td class="ps-1 pt-1">
+                            <td class="ps-1 pt-1" data-column="is_active">
                                 <span
                                     class="px-2 py-1 rounded-full text-sm {{ $item->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                     {{ $item->is_active ? 'Hoạt động' : 'Không hoạt động' }}
@@ -121,12 +125,13 @@
                             </td>
                             <td class="ps-1 pt-1 text-center">
                                 <div class="flex justify-center space-x-2">
-                                    <a href="" class="text-blue-500 hover:text-blue-700" title="Xem chi tiết">
+                                    <button onclick="modalHandler.open('createLessonModal', {{ $item->id }})"
+                                        class="text-blue-500 hover:text-blue-700"
+                                        title="Thêm bài học">
                                         <i class="fas fa-eye"></i>
-                                    </a>
+                                    </button>
                                     <button class="text-blue-500 hover:text-blue-700"
-                                        onclick="editCourse({{ $item->id }})"
-                                        title="Chỉnh sửa">
+                                        onclick="editCourse({{ $item->id }})" title="Chỉnh sửa">
                                         <i class="far fa-edit"></i>
                                     </button>
                                     <form action="{{ route('admin.courses.destroy', $item->id) }}" method="POST"
@@ -235,5 +240,6 @@
     @include('admin.components.courses.modals.create')
     @include('admin.components.courses.modals.edit')
     @include('admin.components.courses.modals.trash')
+    @include('admin.components.lessons.modals.create')
 
 @endsection
