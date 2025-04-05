@@ -104,4 +104,16 @@ class VideoLessonController extends BaseController
         $result = $this->videoLessonService->restore($id);
         return $this->redirectResponse($result);
     }
+
+    /**
+     * Lấy danh sách video theo bài học
+     *
+     * @param int $lessonId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getVideosByLesson($lessonId)
+    {
+        $result = $this->videoLessonService->getVideosByLesson($lessonId);
+        return response()->json($result);
+    }
 }

@@ -146,6 +146,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
             Route::get('/{id}/edit', 'edit')->name('edit');
+            // Route::get('/{lessonId}/videos', 'getVideosByLesson')->name('videos');
             Route::put('/{id}', 'update')->name('update');
             Route::delete('/{id}', 'destroy')->name('destroy');
             Route::post('/{id}/restore', 'restore')->name('restore');
@@ -205,4 +206,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('final-exams', FinalExamController::class);
     Route::resource('question-lesson-tests', QuestionLessonTestController::class);
     Route::resource('question-final-exams', QuestionFinalExamController::class);
+
+    // New route
+    Route::get('/lessons/{lessonId}/videos', [VideoLessonController::class, 'getVideosByLesson'])->name('lessons.videos');
 });

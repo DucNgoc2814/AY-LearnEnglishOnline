@@ -182,13 +182,6 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    {{-- <div class="mt-2 text-right">
-                                        <button type="button"
-                                            onclick="addLesson(this, '{{ $item->title }}', {{ $item->id }})"
-                                            class="bg-blue-500 text-white px-2 py-1 rounded">
-                                            <i class="fas fa-plus mr-1"></i> Thêm bài học mới
-                                        </button>
-                                    </div> --}}
                                 </div>
                             </td>
                         </tr>
@@ -286,6 +279,7 @@
     @include('admin.components.courses.modals.edit')
     @include('admin.components.courses.modals.trash')
     @include('admin.components.lessons.modals.create')
+    @include('admin.components.video-lessons.modals.create')
 
     <style>
         .lesson-list {
@@ -304,19 +298,67 @@
             padding: 1rem;
             overflow: hidden;
             max-height: 0;
-            transition: max-height 0.3s ease-in-out;
+            transition: max-height 0.5s ease-in-out;
         }
         .lesson-list.active .lesson-content {
-            max-height: 1000px;
+            max-height: 2000px;
         }
         .toggle-lessons {
             cursor: pointer;
             transition: transform 0.3s ease;
-            color: #3182ce;
+            color: #9333ea;
         }
         .toggle-lessons.active {
             transform: rotate(90deg);
-            color: #2b6cb0;
+            color: #7e22ce;
+        }
+        .course-title {
+            color: #9333ea !important;
+            transition: color 0.2s;
+        }
+        .course-title:hover {
+            color: #7e22ce !important;
+            text-decoration: underline;
+        }
+        .video-list {
+            display: none;
+            background-color: #f3f4f6;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 10;
+        }
+        .video-list.active {
+            display: table-row;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .video-content {
+            padding: 0.5rem;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .video-list.active .video-content {
+            max-height: 1000px;
+        }
+        .toggle-videos {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            color: #9333ea;
+        }
+        .toggle-videos.active {
+            transform: rotate(90deg);
+            color: #7e22ce;
+        }
+        .lesson-title {
+            color: #9333ea;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .lesson-title:hover {
+            color: #7e22ce;
+            text-decoration: underline;
         }
     </style>
 
@@ -339,6 +381,22 @@
             modalForm.action = "{{ route('admin.lessons.store') }}";
         }
 
+        function addVideoLesson(lessonId, lessonName) {
+            // Mở modal
+            const modal = document.getElementById('createVideoLessonModal');
+            modal.classList.remove('hidden');
+
+            // Cập nhật thông tin trong modal
+            document.getElementById('lessonId').value = lessonId;
+            document.getElementById('createVideoLessonModalLabel').innerHTML = `Thêm video cho bài học: ${lessonName}`;
+
+            // Reset form
+            document.getElementById('createVideoLessonForm').reset();
+
+            // Gọi hàm setLessonIdForVideo từ modal
+            setLessonIdForVideo(lessonId);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Xử lý đóng/mở danh sách bài học
             const toggleButtons = document.querySelectorAll('.toggle-lessons');
@@ -354,6 +412,19 @@
                     // Đang mở -> đóng
                     const lessonContent = lessonRow.querySelector('.lesson-content');
                     lessonContent.style.maxHeight = '0';
+
+                    // Đóng tất cả các video đang mở trong lesson này
+                    const openVideos = lessonRow.querySelectorAll('.video-list.active');
+                    openVideos.forEach(videoRow => {
+                        const videoToggle = videoRow.previousElementSibling.querySelector('.toggle-videos');
+                        const videoContent = videoRow.querySelector('.video-content');
+                        videoContent.style.maxHeight = '0';
+
+                        setTimeout(() => {
+                            videoToggle.classList.remove('active');
+                            videoRow.classList.remove('active');
+                        }, 200);
+                    });
 
                     // Delay để animation chạy trước khi ẩn row
                     setTimeout(() => {
@@ -372,7 +443,7 @@
                     // Set max-height để animation chạy
                     setTimeout(() => {
                         const lessonContent = lessonRow.querySelector('.lesson-content');
-                        lessonContent.style.maxHeight = lessonContent.scrollHeight + 'px';
+                        lessonContent.style.maxHeight = (lessonContent.scrollHeight + 500) + 'px';
                     }, 10);
                 }
             }
@@ -414,13 +485,23 @@
                                 html += `
                                 <tr>
                                     <td class="border ps-1 py-1 text-center">${index + 1}</td>
-                                    <td class="border ps-1 py-1">${lesson.name}</td>
+                                    <td class="border ps-1 py-1">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-caret-right mr-2 toggle-videos" data-lesson-id="${lesson.id}"></i>
+                                            <a href="javascript:void(0)" class="lesson-title" data-lesson-id="${lesson.id}">${lesson.name}</a>
+                                        </div>
+                                    </td>
                                     <td class="border ps-1 py-1 text-center">${lesson.order_number}</td>
                                     <td class="border ps-1 py-1 text-center">${lesson.is_preview ? '<span class="text-green-600">Có</span>' : '<span class="text-red-600">Không</span>'}</td>
                                     <td class="border ps-1 py-1 text-center">${lesson.total_view}</td>
                                     <td class="border ps-1 py-1 text-center">
                                         <div class="flex justify-center space-x-2">
-                                            <a href="/admin/lessons/${lesson.id}/edit" class="text-blue-500 hover:text-blue-700">
+                                            <button type="button" class="text-purple-600 hover:text-purple-800"
+                                                onclick="addVideoLesson(${lesson.id}, '${lesson.name}')"
+                                                title="Thêm video">
+                                                <i class="fas fa-video"></i>
+                                            </button>
+                                            <a href="/admin/lessons/${lesson.id}/edit" class="text-purple-600 hover:text-purple-800">
                                                 <i class="far fa-edit"></i>
                                             </a>
                                             <form action="/admin/lessons/${lesson.id}" method="POST" class="inline">
@@ -431,6 +512,34 @@
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="video-list" id="videos-${lesson.id}">
+                                    <td colspan="6" class="p-0">
+                                        <div class="video-content">
+                                            <h4 class="text-md font-semibold mb-2 ml-4">Danh sách video</h4>
+                                            <div class="overflow-x-auto ml-4 mr-4">
+                                                <table class="min-w-full bg-white border border-gray-300">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="border ps-1 py-1 text-center">STT</th>
+                                                            <th class="border ps-1 py-1 text-center">Tiêu đề</th>
+                                                            <th class="border ps-1 py-1 text-center">Thời lượng</th>
+                                                            <th class="border ps-1 py-1 text-center">Định dạng</th>
+                                                            <th class="border ps-1 py-1 text-center">Thao tác</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="videos-data" data-lesson-id="${lesson.id}">
+                                                        <tr>
+                                                            <td colspan="5" class="text-center py-4">
+                                                                <i class="fas fa-spinner fa-spin mr-2"></i>
+                                                                Đang tải dữ liệu...
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -456,6 +565,145 @@
                         lessonRow.setAttribute('data-loaded', 'error');
                     });
             }
+
+            // Hàm để xử lý toggle cho video lessons
+            function setupVideoToggle() {
+                const videoToggles = document.querySelectorAll('.toggle-videos');
+                videoToggles.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const lessonId = this.getAttribute('data-lesson-id');
+                        toggleVideoList(lessonId);
+                    });
+                });
+            }
+
+            // Hàm xử lý toggle cho video
+            function toggleVideoList(lessonId) {
+                const toggleButton = document.querySelector(`.toggle-videos[data-lesson-id="${lessonId}"]`);
+                const videoRow = document.getElementById('videos-' + lessonId);
+                const lessonRow = videoRow.closest('.lesson-list');
+                const lessonContent = lessonRow.querySelector('.lesson-content');
+
+                if (videoRow.classList.contains('active')) {
+                    // Đang mở -> đóng
+                    const videoContent = videoRow.querySelector('.video-content');
+                    videoContent.style.maxHeight = '0';
+
+                    setTimeout(() => {
+                        toggleButton.classList.remove('active');
+                        videoRow.classList.remove('active');
+
+                        // Cập nhật lại max-height của lesson content
+                        lessonContent.style.maxHeight = (lessonContent.scrollHeight - videoContent.scrollHeight) + 'px';
+                    }, 250);
+                } else {
+                    // Đang đóng -> mở
+                    toggleButton.classList.add('active');
+                    videoRow.classList.add('active');
+
+                    if (!videoRow.getAttribute('data-loaded')) {
+                        loadVideos(lessonId);
+                    }
+
+                    setTimeout(() => {
+                        const videoContent = videoRow.querySelector('.video-content');
+                        videoContent.style.maxHeight = videoContent.scrollHeight + 'px';
+
+                        // Cập nhật lại max-height của lesson content để có thể hiển thị video
+                        lessonContent.style.maxHeight = (lessonContent.scrollHeight + videoContent.scrollHeight + 200) + 'px';
+                    }, 10);
+                }
+            }
+
+            // Hàm để tải dữ liệu video của bài học
+            function loadVideos(lessonId) {
+                const videoContainer = document.querySelector(`.videos-data[data-lesson-id="${lessonId}"]`);
+                const videoRow = document.getElementById('videos-' + lessonId);
+                const lessonRow = videoRow.closest('.lesson-list');
+                const lessonContent = lessonRow.querySelector('.lesson-content');
+
+                if (videoRow.getAttribute('data-loaded') === 'true') {
+                    return;
+                }
+
+                fetch(`/admin/lessons/${lessonId}/videos`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.videos && data.videos.length > 0) {
+                            let html = '';
+                            data.videos.forEach((video, index) => {
+                                html += `
+                                <tr>
+                                    <td class="border ps-1 py-1 text-center">${index + 1}</td>
+                                    <td class="border ps-1 py-1">${video.name || 'Không có tiêu đề'}</td>
+                                    <td class="border ps-1 py-1 text-center">${video.duration || 'N/A'}</td>
+                                    <td class="border ps-1 py-1 text-center">${video.video_type || 'N/A'}</td>
+                                    <td class="border ps-1 py-1 text-center">
+                                        <div class="flex justify-center space-x-2">
+                                            <a href="/admin/video-lessons/${video.id}/edit" class="text-blue-500 hover:text-blue-700">
+                                                <i class="far fa-edit"></i>
+                                            </a>
+                                            <form action="/admin/video-lessons/${video.id}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-500 hover:text-red-700"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa video này?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                `;
+                            });
+                            videoContainer.innerHTML = html;
+                        } else {
+                            videoContainer.innerHTML = '<tr><td colspan="5" class="text-center py-4">Chưa có video nào cho bài học này</td></tr>';
+                        }
+
+                        setTimeout(() => {
+                            const videoContent = videoRow.querySelector('.video-content');
+                            videoContent.style.maxHeight = videoContent.scrollHeight + 'px';
+
+                            // Cập nhật lại max-height của lesson content
+                            lessonContent.style.maxHeight = (lessonContent.scrollHeight + videoContent.scrollHeight + 200) + 'px';
+                        }, 100);
+
+                        videoRow.setAttribute('data-loaded', 'true');
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi tải video:', error);
+                        videoContainer.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Lỗi khi tải dữ liệu video</td></tr>';
+                        videoRow.setAttribute('data-loaded', 'error');
+                    });
+            }
+
+            // Thêm vào ngay sau hàm setupVideoToggle
+            function setupLessonTitleClick() {
+                const lessonTitles = document.querySelectorAll('.lesson-title');
+                lessonTitles.forEach(title => {
+                    title.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const lessonId = this.getAttribute('data-lesson-id');
+                        toggleVideoList(lessonId);
+                    });
+                });
+            }
+
+            // Cập nhật observer để cũng thiết lập sự kiện click cho lesson title
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                        setupVideoToggle();
+                        setupLessonTitleClick();
+                    }
+                });
+            });
+
+            const lessonsContainers = document.querySelectorAll('.lessons-data');
+            lessonsContainers.forEach(container => {
+                observer.observe(container, { childList: true });
+            });
         });
     </script>
 @endsection

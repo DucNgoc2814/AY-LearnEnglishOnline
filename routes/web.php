@@ -6,6 +6,7 @@ use App\Http\Controllers\Client\CategoryController;
 use App\Http\Controllers\Client\CourseController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\PaymentController;
+use App\Http\Controllers\Admin\VideoLessonController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +54,7 @@ Route::middleware('web')->group(function () {
         });
 
         Route::prefix('hoc-khoa-hoc')->group(function () {
-            
+
             // Route mặc định
             Route::get('/{courseSlug}', [CourseController::class, 'learning'])
                 ->name('course.learning');
