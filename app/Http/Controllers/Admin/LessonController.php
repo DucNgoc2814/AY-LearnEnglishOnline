@@ -114,4 +114,16 @@ class LessonController extends BaseController
         $result = $this->lessonService->restore($id);
         return $this->redirectResponse($result);
     }
+
+    /**
+     * Lấy danh sách bài học theo khóa học
+     *
+     * @param int $courseId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getLessonsByCourse($courseId)
+    {
+        $result = $this->lessonService->getLessonsByCourse($courseId);
+        return response()->json($result);
+    }
 }

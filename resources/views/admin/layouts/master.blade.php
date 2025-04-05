@@ -53,9 +53,6 @@
             font-size: 1.125rem;
         }
     </style>
-
-    <!-- Column Selector -->
-    <script src="{{ asset('js/column-selector.js') }}" defer></script>
 </head>
 
 <body>
@@ -136,8 +133,6 @@
             };
         });
     </script>
-
-    @include('admin.partials.column-selector')
 </body>
 
 </html>

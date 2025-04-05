@@ -11,7 +11,7 @@
                 <div class="flex justify-between items-center pb-3 border-b">
                     <h3 class="text-lg font-medium text-gray-900" id="createLessonModalLabel">Bài học của bạn</h3>
                     <button type="button" class="text-gray-400 hover:text-gray-500"
-                        onclick="modalHandler.close('createLessonModal')" aria-label="Close">
+                        onclick="closeCreateLessonModal()" aria-label="Close">
                         <span class="sr-only">Close</span>
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
@@ -19,6 +19,10 @@
                                 d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
+                </div>
+
+                <div class="mb-4 p-3 bg-blue-50 rounded-md mt-4">
+                    <p class="text-gray-700">Bạn đang thêm bài học cho khóa học: <span id="courseTitleDisplay" class="font-semibold"></span></p>
                 </div>
 
                 <form action="{{ route('admin.lessons.store') }}" method="POST" id="createLessonForm"
@@ -29,7 +33,6 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
                         <!-- Thông tin cơ bản -->
                         <div>
-
                             <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
                                     Tên bài học <span class="text-red-500">*</span>
@@ -55,7 +58,7 @@
                                     </label>
                                     <input type="number"
                                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="order_number" name="order_number" required>
+                                        id="order_number" name="order_number" value="1" required>
                                 </div>
 
                                 <div class="mb-4">
@@ -65,7 +68,7 @@
                                     <div class="mt-2">
                                         <label class="inline-flex items-center">
                                             <input type="checkbox" class="form-checkbox" name="is_preview"
-                                                id="is_preview">
+                                                id="is_preview" value="1">
                                             <span class="ml-2">Cho phép xem thử</span>
                                         </label>
                                     </div>
@@ -77,7 +80,7 @@
                     <div class="flex justify-end pt-4 border-t mt-6">
                         <button type="button"
                             class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
-                            onclick="modalHandler.close('createLessonModal')">
+                            onclick="closeCreateLessonModal()">
                             Hủy
                         </button>
                         <button type="submit"
@@ -92,15 +95,9 @@
 </div>
 
 <script>
-    window.modalHandler = {
-        open: function(modalId, courseId) {
-            document.getElementById(modalId).classList.remove('hidden');
-            if (courseId) {
-                document.getElementById('lessonCourseId').value = courseId;
-            }
-        },
-        close: function(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-        }
-    };
+    // Đóng modal
+    function closeCreateLessonModal() {
+        document.getElementById('createLessonModal').classList.add('hidden');
+        document.getElementById('createLessonForm').reset();
+    }
 </script>

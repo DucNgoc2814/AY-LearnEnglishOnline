@@ -58,7 +58,7 @@
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="rating">Đánh giá</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="is_active">Trạng thái</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center">
-                            <button onclick="toggleColumnSelector('courses')" class="p-2 hover:bg-gray-100 rounded">
+                            <button class="p-2 hover:bg-gray-100 rounded">
                                 <i class="fas fa-cog"></i>
                             </button>
                         </th>
@@ -75,7 +75,12 @@
                                 {{ ($pagination['current_page'] - 1) * $pagination['per_page'] + $key + 1 }}
                             </td>
                             <td class="ps-1 pt-1" data-column="category_id">{{ $item->category->name ?? 'N/A' }}</td>
-                            <td class="ps-1 pt-1" data-column="title"><a href="#" class="text-blue-500">{{ $item->title }}</a></td>
+                            <td class="ps-1 pt-1" data-column="title">
+                                <div class="flex items-center">
+                                    <i class="fas fa-caret-right mr-2 toggle-lessons" data-course-id="{{ $item->id }}"></i>
+                                    <a href="javascript:void(0)" class="text-blue-500 course-title" data-course-id="{{ $item->id }}">{{ $item->title }}</a>
+                                </div>
+                            </td>
                             <td class="ps-1 pt-1" data-column="course_type">
                                 @switch($item->course_type)
                                     @case('self_paced')
@@ -125,11 +130,15 @@
                             </td>
                             <td class="ps-1 pt-1 text-center">
                                 <div class="flex justify-center space-x-2">
-                                    <button onclick="modalHandler.open('createLessonModal', {{ $item->id }})"
-                                        class="text-blue-500 hover:text-blue-700"
-                                        title="Thêm bài học">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
+                                    <form action="{{ route('admin.lessons.store') }}" method="POST" class="inline">
+                                        @csrf
+                                        <input type="hidden" name="course_id" value="{{ $item->id }}">
+                                        <button type="button" onclick="addLesson(this, '{{ $item->title }}', {{ $item->id }})"
+                                            class="text-blue-500 hover:text-blue-700"
+                                            title="Thêm bài học">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </form>
                                     <button class="text-blue-500 hover:text-blue-700"
                                         onclick="editCourse({{ $item->id }})" title="Chỉnh sửa">
                                         <i class="far fa-edit"></i>
@@ -144,6 +153,42 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="lesson-list" id="lessons-{{ $item->id }}">
+                            <td colspan="12" class="p-0">
+                                <div class="lesson-content">
+                                    <h3 class="text-lg font-semibold mb-2">Danh sách bài học</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="min-w-full bg-white border border-gray-300">
+                                            <thead>
+                                                <tr>
+                                                    <th class="border ps-1 py-1 text-center">STT</th>
+                                                    <th class="border ps-1 py-1 text-center">Tên bài học</th>
+                                                    <th class="border ps-1 py-1 text-center">Thứ tự</th>
+                                                    <th class="border ps-1 py-1 text-center">Xem thử</th>
+                                                    <th class="border ps-1 py-1 text-center">Lượt xem</th>
+                                                    <th class="border ps-1 py-1 text-center">Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="lessons-data" data-course-id="{{ $item->id }}">
+                                                <tr>
+                                                    <td colspan="6" class="text-center py-4">
+                                                        <i class="fas fa-spinner fa-spin mr-2"></i>
+                                                        Đang tải dữ liệu...
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {{-- <div class="mt-2 text-right">
+                                        <button type="button"
+                                            onclick="addLesson(this, '{{ $item->title }}', {{ $item->id }})"
+                                            class="bg-blue-500 text-white px-2 py-1 rounded">
+                                            <i class="fas fa-plus mr-1"></i> Thêm bài học mới
+                                        </button>
+                                    </div> --}}
                                 </div>
                             </td>
                         </tr>
@@ -242,4 +287,175 @@
     @include('admin.components.courses.modals.trash')
     @include('admin.components.lessons.modals.create')
 
+    <style>
+        .lesson-list {
+            display: none;
+            background-color: #f9fafb;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .lesson-list.active {
+            display: table-row;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .lesson-content {
+            padding: 1rem;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease-in-out;
+        }
+        .lesson-list.active .lesson-content {
+            max-height: 1000px;
+        }
+        .toggle-lessons {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            color: #3182ce;
+        }
+        .toggle-lessons.active {
+            transform: rotate(90deg);
+            color: #2b6cb0;
+        }
+    </style>
+
+    <script>
+        function addLesson(button, courseTitle, courseId) {
+            // Mở modal
+            const modal = document.getElementById('createLessonModal');
+            modal.classList.remove('hidden');
+
+            // Cập nhật thông tin trong modal
+            document.getElementById('lessonCourseId').value = courseId;
+            document.getElementById('courseTitleDisplay').textContent = courseTitle;
+            document.getElementById('createLessonModalLabel').innerHTML = 'Thêm bài học cho khóa học';
+
+            // Đặt giá trị mặc định
+            document.getElementById('order_number').value = 1;
+
+            // Setup form submit
+            const modalForm = document.getElementById('createLessonForm');
+            modalForm.action = "{{ route('admin.lessons.store') }}";
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Xử lý đóng/mở danh sách bài học
+            const toggleButtons = document.querySelectorAll('.toggle-lessons');
+            const courseTitles = document.querySelectorAll('.course-title');
+
+            // Hàm xử lý toggle
+            function toggleLessonList(courseId) {
+                const toggleButton = document.querySelector(`.toggle-lessons[data-course-id="${courseId}"]`);
+                const lessonRow = document.getElementById('lessons-' + courseId);
+
+                // Thêm hiệu ứng mượt mà khi toggle
+                if (lessonRow.classList.contains('active')) {
+                    // Đang mở -> đóng
+                    const lessonContent = lessonRow.querySelector('.lesson-content');
+                    lessonContent.style.maxHeight = '0';
+
+                    // Delay để animation chạy trước khi ẩn row
+                    setTimeout(() => {
+                        toggleButton.classList.remove('active');
+                        lessonRow.classList.remove('active');
+                    }, 250);
+                } else {
+                    // Đang đóng -> mở
+                    toggleButton.classList.add('active');
+                    lessonRow.classList.add('active');
+
+                    if (!lessonRow.getAttribute('data-loaded')) {
+                        loadLessons(courseId);
+                    }
+
+                    // Set max-height để animation chạy
+                    setTimeout(() => {
+                        const lessonContent = lessonRow.querySelector('.lesson-content');
+                        lessonContent.style.maxHeight = lessonContent.scrollHeight + 'px';
+                    }, 10);
+                }
+            }
+
+            // Áp dụng sự kiện cho nút toggle
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const courseId = this.getAttribute('data-course-id');
+                    toggleLessonList(courseId);
+                });
+            });
+
+            // Áp dụng sự kiện cho tiêu đề khóa học
+            courseTitles.forEach(title => {
+                title.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const courseId = this.getAttribute('data-course-id');
+                    toggleLessonList(courseId);
+                });
+            });
+
+            // Hàm để tải dữ liệu bài học của khóa học
+            function loadLessons(courseId) {
+                const lessonContainer = document.querySelector(`.lessons-data[data-course-id="${courseId}"]`);
+                const lessonRow = document.getElementById('lessons-' + courseId);
+
+                // Kiểm tra xem đã tải dữ liệu chưa
+                if (lessonRow.getAttribute('data-loaded') === 'true') {
+                    return;
+                }
+
+                // Gọi API để lấy dữ liệu
+                fetch(`/admin/courses/${courseId}/lessons`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.lessons && data.lessons.length > 0) {
+                            let html = '';
+                            data.lessons.forEach((lesson, index) => {
+                                html += `
+                                <tr>
+                                    <td class="border ps-1 py-1 text-center">${index + 1}</td>
+                                    <td class="border ps-1 py-1">${lesson.name}</td>
+                                    <td class="border ps-1 py-1 text-center">${lesson.order_number}</td>
+                                    <td class="border ps-1 py-1 text-center">${lesson.is_preview ? '<span class="text-green-600">Có</span>' : '<span class="text-red-600">Không</span>'}</td>
+                                    <td class="border ps-1 py-1 text-center">${lesson.total_view}</td>
+                                    <td class="border ps-1 py-1 text-center">
+                                        <div class="flex justify-center space-x-2">
+                                            <a href="/admin/lessons/${lesson.id}/edit" class="text-blue-500 hover:text-blue-700">
+                                                <i class="far fa-edit"></i>
+                                            </a>
+                                            <form action="/admin/lessons/${lesson.id}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-500 hover:text-red-700"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa bài học này?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                `;
+                            });
+                            lessonContainer.innerHTML = html;
+                        } else {
+                            lessonContainer.innerHTML = '<tr><td colspan="6" class="text-center py-4">Chưa có bài học nào cho khóa học này</td></tr>';
+                        }
+
+                        // Cập nhật maxHeight sau khi tải dữ liệu
+                        setTimeout(() => {
+                            const lessonContent = lessonRow.querySelector('.lesson-content');
+                            lessonContent.style.maxHeight = lessonContent.scrollHeight + 'px';
+                        }, 100);
+
+                        // Đánh dấu đã tải dữ liệu
+                        lessonRow.setAttribute('data-loaded', 'true');
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi tải bài học:', error);
+                        lessonContainer.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-red-500">Lỗi khi tải dữ liệu bài học</td></tr>';
+                        lessonRow.setAttribute('data-loaded', 'error');
+                    });
+            }
+        });
+    </script>
 @endsection

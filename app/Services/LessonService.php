@@ -7,6 +7,7 @@ use App\Services\Interfaces\LessonServiceInterface;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\Interfaces\LessonRepositoryInterface;
+use Illuminate\Support\Facades\Log;
 
 class LessonService extends BaseService implements LessonServiceInterface
 {
@@ -46,6 +47,76 @@ class LessonService extends BaseService implements LessonServiceInterface
             ];
         } catch (\Exception $e) {
             return $this->errorResponse('Có lỗi xảy ra khi lấy danh sách');
+        }
+    }
+
+    public function create(array $data)
+    {
+        try {
+            Log::info('Creating lesson with data:', $data);
+
+            // Kiểm tra các trường bắt buộc
+            if (!isset($data['course_id'])) {
+                return [
+                    'status' => false,
+                    'message' => 'Thiếu thông tin khóa học'
+                ];
+            }
+
+            if (!isset($data['name']) || empty($data['name'])) {
+                return [
+                    'status' => false,
+                    'message' => 'Thiếu tên bài học'
+                ];
+            }
+
+            if (!isset($data['order_number'])) {
+                return [
+                    'status' => false,
+                    'message' => 'Thiếu thứ tự bài học'
+                ];
+            }
+
+            // Convert checkbox is_preview to boolean
+            $data['is_preview'] = isset($data['is_preview']) ? true : false;
+
+            $lesson = $this->repository->create($data);
+
+            return [
+                'status' => true,
+                'message' => 'Thêm bài học thành công',
+                'data' => $lesson
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error in LessonService create: ' . $e->getMessage());
+            return [
+                'status' => false,
+                'message' => 'Có lỗi xảy ra khi thêm bài học'
+            ];
+        }
+    }
+
+    /**
+     * Lấy danh sách bài học theo khóa học
+     *
+     * @param int $courseId
+     * @return array
+     */
+    public function getLessonsByCourse($courseId)
+    {
+        try {
+            $lessons = $this->repository->getByCourseId($courseId);
+
+            return [
+                'success' => true,
+                'lessons' => $lessons
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error in LessonService getLessonsByCourse: ' . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi lấy danh sách bài học: ' . $e->getMessage()
+            ];
         }
     }
 }
