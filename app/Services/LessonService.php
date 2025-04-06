@@ -119,4 +119,33 @@ class LessonService extends BaseService implements LessonServiceInterface
             ];
         }
     }
+
+    /**
+     * Lấy danh sách video của bài học
+     *
+     * @param int $lessonId
+     * @return array
+     */
+    public function getVideosByLesson($lessonId)
+    {
+        try {
+            $videos = $this->repository->getVideosByLessonId($lessonId);
+
+            return [
+                'success' => true,
+                'message' => 'Lấy danh sách video thành công',
+                'videos' => $videos
+            ];
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error in LessonService getVideosByLesson: ' . $e->getMessage(), [
+                'lesson_id' => $lessonId,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi lấy danh sách video: ' . $e->getMessage()
+            ];
+        }
+    }
 }

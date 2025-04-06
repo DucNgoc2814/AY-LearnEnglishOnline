@@ -50,11 +50,14 @@
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="index">STT</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="category_id">Danh mục</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="title">Tiêu đề</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="course_type">Loại khóa học</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="course_type">Loại khóa học
+                        </th>
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="course_format">Hình thức</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="price">Giá gốc</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="sale_price">Giá khuyến mãi</th>
-                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="total_students">Số học viên</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="sale_price">Giá khuyến mãi
+                        </th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="total_students">Số học viên
+                        </th>
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="rating">Đánh giá</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="is_active">Trạng thái</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center">
@@ -77,8 +80,10 @@
                             <td class="ps-1 pt-1" data-column="category_id">{{ $item->category->name ?? 'N/A' }}</td>
                             <td class="ps-1 pt-1" data-column="title">
                                 <div class="flex items-center">
-                                    <i class="fas fa-caret-right mr-2 toggle-lessons" data-course-id="{{ $item->id }}"></i>
-                                    <a href="javascript:void(0)" class="text-blue-500 course-title" data-course-id="{{ $item->id }}">{{ $item->title }}</a>
+                                    <i class="fas fa-caret-right mr-2 toggle-lessons"
+                                        data-course-id="{{ $item->id }}"></i>
+                                    <a href="javascript:void(0)" class="text-blue-500 course-title"
+                                        data-course-id="{{ $item->id }}">{{ $item->title }}</a>
                                 </div>
                             </td>
                             <td class="ps-1 pt-1" data-column="course_type">
@@ -112,9 +117,11 @@
                                 @endswitch
                             </td>
                             <td class="ps-1 pt-1" data-column="price">{{ number_format($item->price) }}đ</td>
-                            <td class="ps-1 pt-1" data-column="sale_price">{{ $item->sale_price ? number_format($item->sale_price) . 'đ' : 'N/A' }}
+                            <td class="ps-1 pt-1" data-column="sale_price">
+                                {{ $item->sale_price ? number_format($item->sale_price) . 'đ' : 'N/A' }}
                             </td>
-                            <td class="ps-1 pt-1" data-column="total_students">{{ number_format($item->total_students) }}</td>
+                            <td class="ps-1 pt-1" data-column="total_students">{{ number_format($item->total_students) }}
+                            </td>
                             <td class="ps-1 pt-1" data-column="rating">
                                 <div class="flex items-center">
                                     {{ number_format($item->rating, 1) }}
@@ -133,9 +140,9 @@
                                     <form action="{{ route('admin.lessons.store') }}" method="POST" class="inline">
                                         @csrf
                                         <input type="hidden" name="course_id" value="{{ $item->id }}">
-                                        <button type="button" onclick="addLesson(this, '{{ $item->title }}', {{ $item->id }})"
-                                            class="text-blue-500 hover:text-blue-700"
-                                            title="Thêm bài học">
+                                        <button type="button"
+                                            onclick="addLesson(this, '{{ $item->title }}', {{ $item->id }})"
+                                            class="text-blue-500 hover:text-blue-700" title="Thêm bài học">
                                             <i class="fas fa-eye"></i>
                                         </button>
                                     </form>
@@ -280,6 +287,33 @@
     @include('admin.components.courses.modals.trash')
     @include('admin.components.lessons.modals.create')
     @include('admin.components.video-lessons.modals.create')
+    @include('admin.components.video-lessons.modals.edit')
+
+    <!-- Modal xem ảnh cho index -->
+    <div id="imageVideoModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="imageVideoModalLabel"
+        aria-hidden="true">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+            <div class="relative bg-white rounded-lg max-w-3xl w-full mx-auto">
+                <!-- Header -->
+                <div class="flex items-center justify-between p-4 border-b">
+                    <h3 class="text-xl font-semibold text-gray-900" id="imageVideoModalLabel">Xem ảnh</h3>
+                    <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeImageModal()">
+                        <span class="sr-only">Đóng</span>
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <!-- Body -->
+                <div class="p-4">
+                    <img id="modalImage" src="" alt="Preview" class="w-full h-auto">
+                </div>
+            </div>
+        </div>
+    </div>
 
     <style>
         .lesson-list {
@@ -289,37 +323,45 @@
             transform: translateY(-10px);
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
+
         .lesson-list.active {
             display: table-row;
             opacity: 1;
             transform: translateY(0);
         }
+
         .lesson-content {
             padding: 1rem;
             overflow: hidden;
             max-height: 0;
             transition: max-height 0.5s ease-in-out;
         }
+
         .lesson-list.active .lesson-content {
             max-height: 2000px;
         }
+
         .toggle-lessons {
             cursor: pointer;
             transition: transform 0.3s ease;
             color: #9333ea;
         }
+
         .toggle-lessons.active {
             transform: rotate(90deg);
             color: #7e22ce;
         }
+
         .course-title {
             color: #9333ea !important;
             transition: color 0.2s;
         }
+
         .course-title:hover {
             color: #7e22ce !important;
             text-decoration: underline;
         }
+
         .video-list {
             display: none;
             background-color: #f3f4f6;
@@ -328,34 +370,41 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
             z-index: 10;
         }
+
         .video-list.active {
             display: table-row;
             opacity: 1;
             transform: translateY(0);
         }
+
         .video-content {
             padding: 0.5rem;
             overflow: hidden;
             max-height: 0;
             transition: max-height 0.5s ease-in-out;
         }
+
         .video-list.active .video-content {
             max-height: 1000px;
         }
+
         .toggle-videos {
             cursor: pointer;
             transition: transform 0.3s ease;
             color: #9333ea;
         }
+
         .toggle-videos.active {
             transform: rotate(90deg);
             color: #7e22ce;
         }
+
         .lesson-title {
             color: #9333ea;
             cursor: pointer;
             transition: color 0.2s;
         }
+
         .lesson-title:hover {
             color: #7e22ce;
             text-decoration: underline;
@@ -547,7 +596,8 @@
                             });
                             lessonContainer.innerHTML = html;
                         } else {
-                            lessonContainer.innerHTML = '<tr><td colspan="6" class="text-center py-4">Chưa có bài học nào cho khóa học này</td></tr>';
+                            lessonContainer.innerHTML =
+                                '<tr><td colspan="6" class="text-center py-4">Chưa có bài học nào cho khóa học này</td></tr>';
                         }
 
                         // Cập nhật maxHeight sau khi tải dữ liệu
@@ -561,7 +611,8 @@
                     })
                     .catch(error => {
                         console.error('Lỗi khi tải bài học:', error);
-                        lessonContainer.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-red-500">Lỗi khi tải dữ liệu bài học</td></tr>';
+                        lessonContainer.innerHTML =
+                            '<tr><td colspan="6" class="text-center py-4 text-red-500">Lỗi khi tải dữ liệu bài học</td></tr>';
                         lessonRow.setAttribute('data-loaded', 'error');
                     });
             }
@@ -594,7 +645,8 @@
                         videoRow.classList.remove('active');
 
                         // Cập nhật lại max-height của lesson content
-                        lessonContent.style.maxHeight = (lessonContent.scrollHeight - videoContent.scrollHeight) + 'px';
+                        lessonContent.style.maxHeight = (lessonContent.scrollHeight - videoContent
+                            .scrollHeight) + 'px';
                     }, 250);
                 } else {
                     // Đang đóng -> mở
@@ -610,7 +662,8 @@
                         videoContent.style.maxHeight = videoContent.scrollHeight + 'px';
 
                         // Cập nhật lại max-height của lesson content để có thể hiển thị video
-                        lessonContent.style.maxHeight = (lessonContent.scrollHeight + videoContent.scrollHeight + 200) + 'px';
+                        lessonContent.style.maxHeight = (lessonContent.scrollHeight + videoContent
+                            .scrollHeight + 200) + 'px';
                     }, 10);
                 }
             }
@@ -626,9 +679,14 @@
                     return;
                 }
 
+                console.log(`Đang tải videos cho bài học ID: ${lessonId}`);
                 fetch(`/admin/lessons/${lessonId}/videos`)
-                    .then(response => response.json())
+                    .then(response => {
+                        console.log('API Response status:', response.status);
+                        return response.json();
+                    })
                     .then(data => {
+                        console.log('API Response data:', data);
                         if (data.success && data.videos && data.videos.length > 0) {
                             let html = '';
                             data.videos.forEach((video, index) => {
@@ -640,9 +698,10 @@
                                     <td class="border ps-1 py-1 text-center">${video.video_type || 'N/A'}</td>
                                     <td class="border ps-1 py-1 text-center">
                                         <div class="flex justify-center space-x-2">
-                                            <a href="/admin/video-lessons/${video.id}/edit" class="text-blue-500 hover:text-blue-700">
+                                            <button class="text-blue-500 hover:text-blue-700"
+                                                onclick="editVideoLesson(${video.id})" title="Chỉnh sửa">
                                                 <i class="far fa-edit"></i>
-                                            </a>
+                                            </button>
                                             <form action="/admin/video-lessons/${video.id}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
@@ -658,7 +717,8 @@
                             });
                             videoContainer.innerHTML = html;
                         } else {
-                            videoContainer.innerHTML = '<tr><td colspan="5" class="text-center py-4">Chưa có video nào cho bài học này</td></tr>';
+                            videoContainer.innerHTML =
+                                '<tr><td colspan="5" class="text-center py-4">Chưa có video nào cho bài học này</td></tr>';
                         }
 
                         setTimeout(() => {
@@ -666,14 +726,16 @@
                             videoContent.style.maxHeight = videoContent.scrollHeight + 'px';
 
                             // Cập nhật lại max-height của lesson content
-                            lessonContent.style.maxHeight = (lessonContent.scrollHeight + videoContent.scrollHeight + 200) + 'px';
+                            lessonContent.style.maxHeight = (lessonContent.scrollHeight + videoContent
+                                .scrollHeight + 200) + 'px';
                         }, 100);
 
                         videoRow.setAttribute('data-loaded', 'true');
                     })
                     .catch(error => {
                         console.error('Lỗi khi tải video:', error);
-                        videoContainer.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Lỗi khi tải dữ liệu video</td></tr>';
+                        videoContainer.innerHTML =
+                            '<tr><td colspan="5" class="text-center py-4 text-red-500">Lỗi khi tải dữ liệu video</td></tr>';
                         videoRow.setAttribute('data-loaded', 'error');
                     });
             }
@@ -702,8 +764,25 @@
 
             const lessonsContainers = document.querySelectorAll('.lessons-data');
             lessonsContainers.forEach(container => {
-                observer.observe(container, { childList: true });
+                observer.observe(container, {
+                    childList: true
+                });
             });
+
+            // Thêm các hàm cho modal hỗ trợ edit video
+            function openImageModal(src) {
+                const modal = document.getElementById('imageVideoModal');
+                const modalImage = document.getElementById('modalImage');
+                modalImage.src = src;
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeImageModal() {
+                const modal = document.getElementById('imageVideoModal');
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
         });
     </script>
 @endsection

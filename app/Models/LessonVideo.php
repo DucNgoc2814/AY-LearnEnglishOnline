@@ -13,6 +13,8 @@ class LessonVideo extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'lesson_videos';
+
     protected $fillable = [
         'lesson_id',
         'name',
@@ -68,7 +70,7 @@ class LessonVideo extends Model
      */
     public function progress(): HasMany
     {
-        return $this->hasMany(VideoProgress::class);
+        return $this->hasMany(VideoProgress::class, 'video_id');
     }
 
     // Methods

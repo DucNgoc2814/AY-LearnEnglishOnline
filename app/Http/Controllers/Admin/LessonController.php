@@ -126,4 +126,16 @@ class LessonController extends BaseController
         $result = $this->lessonService->getLessonsByCourse($courseId);
         return response()->json($result);
     }
+
+    /**
+     * Lấy danh sách video của bài học
+     *
+     * @param int $lessonId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getVideosByLesson($lessonId)
+    {
+        $result = $this->lessonService->getVideosByLesson($lessonId);
+        return response()->json($result);
+    }
 }

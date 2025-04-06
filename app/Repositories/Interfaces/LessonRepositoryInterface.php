@@ -13,4 +13,12 @@ interface LessonRepositoryInterface extends BaseRepositoryInterface
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getByCourseId($courseId);
+
+    /**
+     * Lấy danh sách video của bài học
+     *
+     * @param int $lessonId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getVideosByLessonId($lessonId);
 }

@@ -125,32 +125,3 @@
     @include('admin.components.video-lessons.modals.trash')
 @endsection
 
-@push('scripts')
-    <script>
-        function populateEditModal(item) {
-            document.querySelector('#editVideoLessonModal #lessonName').value = item.name;
-            document.querySelector('#editVideoLessonModal #courseId').value = item.courseId;
-            document.querySelector('#editVideoLessonModal #duration').value = item.duration;
-            document.querySelector('#editVideoLessonModal #status').value = item.status;
-            document.querySelector('#editVideoLessonModal #description').value = item.description || '';
-
-            const currentThumbnailDiv = document.querySelector('#currentThumbnail');
-            if (item.thumbnail) {
-                currentThumbnailDiv.innerHTML = `
-                    <div class="mt-2">
-                        <p>Ảnh hiện tại:</p>
-                        <img src="{{ asset('') }}${item.thumbnail}"
-                             alt="Current thumbnail"
-                             class="img-thumbnail"
-                             style="max-width: 200px">
-                    </div>
-                `;
-            } else {
-                currentThumbnailDiv.innerHTML = '<p class="text-muted">Chưa có ảnh</p>';
-            }
-
-            const form = document.querySelector('#editVideoLessonModal form');
-            form.action = "{{ route('admin.video-lessons.update', '') }}/" + item.id;
-        }
-    </script>
-@endpush

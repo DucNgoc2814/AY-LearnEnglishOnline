@@ -1,5 +1,5 @@
-<div class="fixed inset-0 z-50 overflow-y-auto hidden" id="createVideoLessonModal" aria-labelledby="createVideoLessonModalLabel"
-    aria-hidden="true">
+<div class="fixed inset-0 z-50 overflow-y-auto hidden" id="createVideoLessonModal"
+    aria-labelledby="createVideoLessonModalLabel" aria-hidden="true">
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
             <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
@@ -9,9 +9,10 @@
             class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div class="flex justify-between items-center pb-3 border-b">
-                    <h3 class="text-lg font-medium text-gray-900" id="createVideoLessonModalLabel">Thêm bài giảng video mới</h3>
-                    <button type="button" class="text-gray-400 hover:text-gray-500"
-                        onclick="closeVideoLessonModal()" aria-label="Close">
+                    <h3 class="text-lg font-medium text-gray-900" id="createVideoLessonModalLabel">Thêm bài giảng video
+                        mới</h3>
+                    <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeVideoLessonModal()"
+                        aria-label="Close">
                         <span class="sr-only">Đóng</span>
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
@@ -21,7 +22,8 @@
                     </button>
                 </div>
 
-                <form action="{{ route('admin.video-lessons.store') }}" method="POST" enctype="multipart/form-data" id="createVideoLessonForm">
+                <form action="{{ route('admin.video-lessons.store') }}" method="POST" enctype="multipart/form-data"
+                    id="createVideoLessonForm">
                     @csrf
                     <input type="hidden" name="lesson_id" id="lessonId">
 
@@ -67,7 +69,8 @@
                                         File Video <span class="text-red-500">*</span>
                                     </label>
                                     <div class="preview-container mb-2">
-                                        <video id="videoPreview" class="hidden max-w-xs rounded-lg shadow-md cursor-pointer"
+                                        <video id="videoPreview"
+                                            class="hidden max-w-xs rounded-lg shadow-md cursor-pointer"
                                             style="max-height: 200px; width: 100%;" controls>
                                             <source src="" type="video/mp4">
                                         </video>
@@ -93,8 +96,8 @@
                                         </label>
                                         <input type="number"
                                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-100"
-                                            id="duration" name="duration"
-                                            placeholder="Thời lượng video (giây)" min="1" required readonly>
+                                            id="duration" name="duration" placeholder="Thời lượng video (giây)"
+                                            min="1" required readonly>
                                         <p class="mt-1 text-sm text-gray-500 duration-display"></p>
                                     </div>
                                 </div>
@@ -105,11 +108,14 @@
                                         Ảnh thumbnail <span class="text-red-500">*</span>
                                     </label>
                                     <div class="preview-container mb-2">
-                                        <img id="thumbnailPreview" src="" class="hidden max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
-                                            style="max-height: 150px; object-fit: contain;" onclick="openImageModal(this.src)">
+                                        <img id="thumbnailPreview" src=""
+                                            class="hidden max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
+                                            style="max-height: 150px; object-fit: contain;"
+                                            onclick="openImageModal(this.src)">
                                     </div>
                                     <div class="flex space-x-2">
-                                        <input type="file" class="hidden" id="thumbnailInput" name="thumbnail_url" accept="image/*"
+                                        <input type="file" class="hidden" id="thumbnailInput"
+                                            name="thumbnail_url" accept="image/*"
                                             onchange="handleThumbnailUpload(this)">
                                         <label for="thumbnailInput"
                                             class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded cursor-pointer">
@@ -171,223 +177,223 @@
 </div>
 
 <script>
-function detectVideoType(file) {
-    const videoTypeInput = document.getElementById('video_type');
+    function detectVideoType(file) {
+        const videoTypeInput = document.getElementById('video_type');
 
-    if (!file) {
-        videoTypeInput.value = '';
-        return;
-    }
-
-    const extension = file.name.split('.').pop().toLowerCase();
-    if (['mp4', 'mov', 'wmv', 'avi', 'flv'].includes(extension)) {
-        videoTypeInput.value = extension;
-    } else {
-        videoTypeInput.value = ''; // Không xác định được loại video
-    }
-}
-
-// Thêm hàm để set lessonId khi mở modal
-function setLessonIdForVideo(lessonId) {
-    document.getElementById('lessonId').value = lessonId;
-    // Hiển thị modal
-    document.getElementById('createVideoLessonModal').classList.remove('hidden');
-}
-
-function handleVideoUpload(file) {
-    if (!file) {
-        document.getElementById('duration').value = '';
-        document.querySelector('.duration-display').textContent = '';
-        return;
-    }
-
-    // Nhận diện loại video
-    detectVideoType(file);
-
-    // Tạo URL cho file và hiển thị video
-    const fileURL = URL.createObjectURL(file);
-    const preview = document.getElementById('videoPreview');
-    const videoSource = preview.querySelector('source');
-
-    // Hiển thị video preview
-    videoSource.src = fileURL;
-    preview.load();
-    preview.classList.remove('hidden');
-
-    // Tạo một phần tử video mới để lấy thời lượng
-    const tempVideo = document.createElement('video');
-    tempVideo.src = fileURL;
-
-    tempVideo.onloadedmetadata = function() {
-        // Làm tròn thời lượng thành số nguyên giây
-        const durationInSeconds = Math.max(1, Math.round(tempVideo.duration));
-        document.getElementById('duration').value = durationInSeconds;
-
-        // Hiển thị thời lượng dạng phút:giây
-        updateDurationDisplay(durationInSeconds);
-
-        // Giải phóng URL object khi không cần thiết nữa
-        URL.revokeObjectURL(fileURL);
-    };
-
-    tempVideo.onerror = function() {
-        console.error('Error loading video file');
-        document.getElementById('duration').value = '';
-        document.querySelector('.duration-display').textContent = '';
-        URL.revokeObjectURL(fileURL);
-
-        // Ẩn video preview nếu có lỗi
-        preview.classList.add('hidden');
-        videoSource.src = '';
-        preview.load();
-    };
-}
-
-function handleThumbnailUpload(input) {
-    const preview = document.getElementById('thumbnailPreview');
-
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-            preview.classList.remove('hidden');
+        if (!file) {
+            videoTypeInput.value = '';
+            return;
         }
 
-        reader.readAsDataURL(input.files[0]);
-    } else {
-        // Nếu không có file được chọn, ẩn preview
+        const extension = file.name.split('.').pop().toLowerCase();
+        if (['mp4', 'mov', 'wmv', 'avi', 'flv'].includes(extension)) {
+            videoTypeInput.value = extension;
+        } else {
+            videoTypeInput.value = ''; // Không xác định được loại video
+        }
+    }
+
+    // Thêm hàm để set lessonId khi mở modal
+    function setLessonIdForVideo(lessonId) {
+        document.getElementById('lessonId').value = lessonId;
+        // Hiển thị modal
+        document.getElementById('createVideoLessonModal').classList.remove('hidden');
+    }
+
+    function handleVideoUpload(file) {
+        if (!file) {
+            document.getElementById('duration').value = '';
+            document.querySelector('.duration-display').textContent = '';
+            return;
+        }
+
+        // Nhận diện loại video
+        detectVideoType(file);
+
+        // Tạo URL cho file và hiển thị video
+        const fileURL = URL.createObjectURL(file);
+        const preview = document.getElementById('videoPreview');
+        const videoSource = preview.querySelector('source');
+
+        // Hiển thị video preview
+        videoSource.src = fileURL;
+        preview.load();
+        preview.classList.remove('hidden');
+
+        // Tạo một phần tử video mới để lấy thời lượng
+        const tempVideo = document.createElement('video');
+        tempVideo.src = fileURL;
+
+        tempVideo.onloadedmetadata = function() {
+            // Làm tròn thời lượng thành số nguyên giây
+            const durationInSeconds = Math.max(1, Math.round(tempVideo.duration));
+            document.getElementById('duration').value = durationInSeconds;
+
+            // Hiển thị thời lượng dạng phút:giây
+            updateDurationDisplay(durationInSeconds);
+
+            // Giải phóng URL object khi không cần thiết nữa
+            URL.revokeObjectURL(fileURL);
+        };
+
+        tempVideo.onerror = function() {
+            console.error('Error loading video file');
+            document.getElementById('duration').value = '';
+            document.querySelector('.duration-display').textContent = '';
+            URL.revokeObjectURL(fileURL);
+
+            // Ẩn video preview nếu có lỗi
+            preview.classList.add('hidden');
+            videoSource.src = '';
+            preview.load();
+        };
+    }
+
+    function handleThumbnailUpload(input) {
+        const preview = document.getElementById('thumbnailPreview');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            // Nếu không có file được chọn, ẩn preview
+            preview.src = '';
+            preview.classList.add('hidden');
+        }
+    }
+
+    function updateDurationDisplay(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        const display = `${minutes} phút ${remainingSeconds} giây`;
+        document.querySelector('.duration-display').textContent = display;
+    }
+
+    function closeVideoLessonModal() {
+        document.getElementById('createVideoLessonModal').classList.add('hidden');
+        document.getElementById('createVideoLessonForm').reset();
+
+        // Reset previews
+        const videoPreview = document.getElementById('videoPreview');
+        const thumbnailPreview = document.getElementById('thumbnailPreview');
+
+        videoPreview.classList.add('hidden');
+        videoPreview.querySelector('source').src = '';
+        videoPreview.load();
+
+        thumbnailPreview.classList.add('hidden');
+        thumbnailPreview.src = '';
+
+        document.querySelector('.duration-display').textContent = '';
+    }
+
+    function openImageModal(src) {
+        const modal = document.getElementById('imageVideoModal');
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = src;
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageModal() {
+        const modal = document.getElementById('imageVideoModal');
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Xử lý thumbnail
+    function clearThumbnailUpload() {
+        const preview = document.getElementById('thumbnailPreview');
+        const input = document.getElementById('thumbnailInput');
         preview.src = '';
         preview.classList.add('hidden');
-    }
-}
-
-function updateDurationDisplay(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    const display = `${minutes} phút ${remainingSeconds} giây`;
-    document.querySelector('.duration-display').textContent = display;
-}
-
-function closeVideoLessonModal() {
-    document.getElementById('createVideoLessonModal').classList.add('hidden');
-    document.getElementById('createVideoLessonForm').reset();
-
-    // Reset previews
-    const videoPreview = document.getElementById('videoPreview');
-    const thumbnailPreview = document.getElementById('thumbnailPreview');
-
-    videoPreview.classList.add('hidden');
-    videoPreview.querySelector('source').src = '';
-    videoPreview.load();
-
-    thumbnailPreview.classList.add('hidden');
-    thumbnailPreview.src = '';
-
-    document.querySelector('.duration-display').textContent = '';
-}
-
-function openImageModal(src) {
-    const modal = document.getElementById('imageVideoModal');
-    const modalImage = document.getElementById('modalImage');
-    modalImage.src = src;
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeImageModal() {
-    const modal = document.getElementById('imageVideoModal');
-    modal.classList.add('hidden');
-    document.body.style.overflow = 'auto';
-}
-
-// Xử lý thumbnail
-function clearThumbnailUpload() {
-    const preview = document.getElementById('thumbnailPreview');
-    const input = document.getElementById('thumbnailInput');
-    preview.src = '';
-    preview.classList.add('hidden');
-    input.value = '';
-}
-
-// Xử lý video
-function clearVideoUpload() {
-    const preview = document.getElementById('videoPreview');
-    const videoSource = preview.querySelector('source');
-    const input = document.getElementById('videoUrlInput');
-
-    videoSource.src = '';
-    preview.load();
-    preview.classList.add('hidden');
-    input.value = '';
-
-    document.getElementById('duration').value = '';
-    document.querySelector('.duration-display').textContent = '';
-}
-
-// Thêm event listeners khi tài liệu đã sẵn sàng
-document.addEventListener('DOMContentLoaded', function() {
-    // Đảm bảo các sự kiện được đăng ký cho các input file
-    const thumbnailInput = document.getElementById('thumbnailInput');
-    if (thumbnailInput) {
-        thumbnailInput.addEventListener('change', function() {
-            handleThumbnailUpload(this);
-        });
+        input.value = '';
     }
 
-    const videoInput = document.getElementById('videoUrlInput');
-    if (videoInput) {
-        videoInput.addEventListener('change', function() {
-            handleVideoUpload(this.files[0]);
-        });
+    // Xử lý video
+    function clearVideoUpload() {
+        const preview = document.getElementById('videoPreview');
+        const videoSource = preview.querySelector('source');
+        const input = document.getElementById('videoUrlInput');
+
+        videoSource.src = '';
+        preview.load();
+        preview.classList.add('hidden');
+        input.value = '';
+
+        document.getElementById('duration').value = '';
+        document.querySelector('.duration-display').textContent = '';
     }
 
-    // Submit form xử lý
-    const form = document.getElementById('createVideoLessonForm');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            const thumbnailFile = document.getElementById('thumbnailInput').files[0];
-            const videoFile = document.getElementById('videoUrlInput').files[0];
+    // Thêm event listeners khi tài liệu đã sẵn sàng
+    document.addEventListener('DOMContentLoaded', function() {
+        // Đảm bảo các sự kiện được đăng ký cho các input file
+        const thumbnailInput = document.getElementById('thumbnailInput');
+        if (thumbnailInput) {
+            thumbnailInput.addEventListener('change', function() {
+                handleThumbnailUpload(this);
+            });
+        }
 
-            if (!thumbnailFile) {
-                e.preventDefault();
-                alert('Vui lòng chọn ảnh thumbnail');
-                return false;
+        const videoInput = document.getElementById('videoUrlInput');
+        if (videoInput) {
+            videoInput.addEventListener('change', function() {
+                handleVideoUpload(this.files[0]);
+            });
+        }
+
+        // Submit form xử lý
+        const form = document.getElementById('createVideoLessonForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const thumbnailFile = document.getElementById('thumbnailInput').files[0];
+                const videoFile = document.getElementById('videoUrlInput').files[0];
+
+                if (!thumbnailFile) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn ảnh thumbnail');
+                    return false;
+                }
+
+                if (!videoFile) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn file video');
+                    return false;
+                }
+
+                // Kiểm tra các trường khác nếu cần
+
+                return true;
+            });
+        }
+
+        // Đóng modal khi nhấn ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeVideoLessonModal();
+                closeImageModal();
             }
-
-            if (!videoFile) {
-                e.preventDefault();
-                alert('Vui lòng chọn file video');
-                return false;
-            }
-
-            // Kiểm tra các trường khác nếu cần
-
-            return true;
         });
-    }
 
-    // Đóng modal khi nhấn ESC
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeVideoLessonModal();
-            closeImageModal();
-        }
+        // Đóng modal khi click bên ngoài
+        const modal = document.getElementById('createVideoLessonModal');
+        const imageModal = document.getElementById('imageVideoModal');
+
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeVideoLessonModal();
+            }
+            if (event.target === imageModal) {
+                closeImageModal();
+            }
+        });
     });
-
-    // Đóng modal khi click bên ngoài
-    const modal = document.getElementById('createVideoLessonModal');
-    const imageModal = document.getElementById('imageVideoModal');
-
-    window.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            closeVideoLessonModal();
-        }
-        if (event.target === imageModal) {
-            closeImageModal();
-        }
-    });
-});
 </script>
 
 <!-- Thêm styles -->

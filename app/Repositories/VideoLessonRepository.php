@@ -6,8 +6,8 @@ use App\Models\LessonVideo;
 use App\Repositories\Interfaces\VideoLessonRepositoryInterface;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class VideoLessonRepository extends BaseRepository implements VideoLessonRepositoryInterface
 {
@@ -23,7 +23,7 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
     public function getQuery()
     {
         return $this->model
-            ->with('lesson')
+            ->with('category')
             ->whereNull('deleted_at')
             ->latest('id');
     }
@@ -33,40 +33,35 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
         try {
             DB::beginTransaction();
 
-            // Xử lý upload thumbnail
-            if (isset($data['thumbnail_url']) && $data['thumbnail_url'] instanceof \Illuminate\Http\UploadedFile) {
-                Log::info("Processing thumbnail upload", ['file' => $data['thumbnail_url']->getClientOriginalName()]);
+            // Handle thumbnail upload
+            if (isset($data['thumbnail'])) {
+                Log::info("Processing thumbnail upload", ['file' => $data['thumbnail']->getClientOriginalName()]);
 
-                $thumbnailPath = $this->handleImage($data['thumbnail_url'], 'video-lessons');
-                if (!$thumbnailPath) {
-                    throw new \Exception('Failed to upload thumbnail image');
+                $cloudFrontUrl = $this->handleImage($data['thumbnail'], 'video-lessons');
+                if (!$cloudFrontUrl) {
+                    throw new \Exception('Failed to upload thumbnail');
                 }
-                $data['thumbnail_url'] = $thumbnailPath;
-                Log::info("Thumbnail uploaded successfully", ['url' => $thumbnailPath]);
+                $data['thumbnail'] = $cloudFrontUrl;
+                Log::info("Thumbnail uploaded successfully", ['url' => $cloudFrontUrl]);
             }
 
-            // Xử lý upload video
-            if (isset($data['video_url']) && $data['video_url'] instanceof \Illuminate\Http\UploadedFile) {
-                Log::info("Processing video upload", ['file' => $data['video_url']->getClientOriginalName()]);
+            // Handle preview video upload if exists
+            if (isset($data['preview_video'])) {
+                Log::info("Processing preview video upload", ['file' => $data['preview_video']->getClientOriginalName()]);
 
-                $videoPath = $this->handleVideo($data['video_url'], 'video-lessons');
-                if (!$videoPath) {
-                    throw new \Exception('Failed to upload video file');
+                $videoUrl = $this->handleVideo($data['preview_video'], 'video-lessons');
+                if (!$videoUrl) {
+                    throw new \Exception('Failed to upload preview video');
                 }
-                $data['video_url'] = $videoPath;
-                Log::info("Video uploaded successfully", ['url' => $videoPath]);
+                $data['preview_video'] = $videoUrl;
+                Log::info("Preview video uploaded successfully", ['url' => $videoUrl]);
             }
 
-            // Đảm bảo duration là số nguyên
-            $data['duration'] = isset($data['duration']) ? (int) $data['duration'] : 0;
+            // Generate slug from title
+            $data['slug'] = Str::slug($data['title']);
 
-            // Đảm bảo các trường boolean được xử lý đúng
-            $data['is_downloadable'] = isset($data['is_downloadable']) ? true : false;
-            $data['is_preview'] = isset($data['is_preview']) ? true : false;
-            $data['view_count'] = 0; // Mặc định view_count là 0
-
-            // Tạo record
-            $videoLesson = parent::create($data);
+            // Create video lesson record
+            $videoLesson = $this->model->create($data);
 
             DB::commit();
             return $videoLesson;
@@ -75,120 +70,17 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
             DB::rollBack();
             Log::error('Video lesson creation error: ' . $e->getMessage(), [
                 'exception' => $e,
-                'data' => $data
+                'data' => array_merge($data, [
+                    'thumbnail_info' => isset($data['thumbnail']) ? [
+                        'name' => $data['thumbnail']->getClientOriginalName(),
+                        'type' => $data['thumbnail']->getMimeType()
+                    ] : null,
+                    'video_info' => isset($data['preview_video']) ? [
+                        'name' => $data['preview_video']->getClientOriginalName(),
+                        'type' => $data['preview_video']->getMimeType()
+                    ] : null
+                ])
             ]);
-            throw $e;
-        }
-    }
-
-    public function update($id, array $data)
-    {
-        try {
-            DB::beginTransaction();
-
-            $videoLesson = $this->findById($id);
-            if (!$videoLesson) {
-                throw new \Exception('Video lesson not found');
-            }
-
-            Log::info('Starting video lesson update:', [
-                'id' => $id,
-                'has_thumbnail' => isset($data['thumbnail_url']),
-                'has_video' => isset($data['video_url'])
-            ]);
-
-            // Xử lý thumbnail mới nếu có
-            if (isset($data['thumbnail_url']) && $data['thumbnail_url'] instanceof \Illuminate\Http\UploadedFile) {
-                Log::info('Processing new thumbnail upload', [
-                    'original_name' => $data['thumbnail_url']->getClientOriginalName()
-                ]);
-
-                // Xóa thumbnail cũ nếu có
-                if ($videoLesson->thumbnail_url) {
-                    Log::info('Deleting old thumbnail', ['path' => $videoLesson->thumbnail_url]);
-                    $this->deleteFile($videoLesson->thumbnail_url);
-                }
-
-                // Upload thumbnail mới
-                $thumbnailPath = $this->handleImage($data['thumbnail_url'], 'video-lessons');
-                if (!$thumbnailPath) {
-                    throw new \Exception('Failed to upload thumbnail');
-                }
-                $data['thumbnail_url'] = $thumbnailPath;
-                Log::info('New thumbnail uploaded', ['path' => $thumbnailPath]);
-            }
-
-            // Xử lý video mới nếu có
-            if (isset($data['video_url']) && $data['video_url'] instanceof \Illuminate\Http\UploadedFile) {
-                Log::info('Processing new video upload', [
-                    'original_name' => $data['video_url']->getClientOriginalName()
-                ]);
-
-                // Xóa video cũ nếu có
-                if ($videoLesson->video_url) {
-                    Log::info('Deleting old video', ['path' => $videoLesson->video_url]);
-                    $this->deleteFile($videoLesson->video_url);
-                }
-
-                // Upload video mới
-                $videoPath = $this->handleVideo($data['video_url'], 'video-lessons');
-                if (!$videoPath) {
-                    throw new \Exception('Failed to upload video');
-                }
-                $data['video_url'] = $videoPath;
-                Log::info('New video uploaded', ['path' => $videoPath]);
-            }
-
-            // Đảm bảo các trường boolean được xử lý đúng
-            if (isset($data['is_downloadable'])) {
-                $data['is_downloadable'] = filter_var($data['is_downloadable'], FILTER_VALIDATE_BOOLEAN);
-            }
-
-            if (isset($data['is_preview'])) {
-                $data['is_preview'] = filter_var($data['is_preview'], FILTER_VALIDATE_BOOLEAN);
-            }
-
-            // Update video lesson
-            $videoLesson->update($data);
-
-            DB::commit();
-
-            Log::info('Video lesson updated successfully', [
-                'id' => $id
-            ]);
-
-            return $videoLesson;
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Video lesson update error:', [
-                'id' => $id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            throw $e;
-        }
-    }
-
-    public function delete($id)
-    {
-        try {
-            $videoLesson = $this->findById($id);
-            if (!$videoLesson) {
-                throw new \Exception('Video lesson not found');
-            }
-
-            // Xóa các file liên quan
-            if ($videoLesson->thumbnail_url) {
-                $this->deleteFile($videoLesson->thumbnail_url);
-            }
-            if ($videoLesson->video_url) {
-                $this->deleteFile($videoLesson->video_url);
-            }
-
-            return parent::delete($id);
-        } catch (\Exception $e) {
-            Log::error('Video lesson deletion error: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -247,6 +139,145 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
         }
     }
 
+    public function update($id, array $data)
+    {
+        try {
+            DB::beginTransaction();
+
+            $videoLesson = $this->findById($id);
+            if (!$videoLesson) {
+                throw new \Exception('Video lesson not found');
+            }
+
+            Log::info('Starting video lesson update:', [
+                'id' => $id,
+                'has_thumbnail' => isset($data['thumbnail']),
+                'has_video' => isset($data['preview_video'])
+            ]);
+
+            // Handle thumbnail
+            if (isset($data['thumbnail'])) {
+                if ($data['thumbnail'] instanceof \Illuminate\Http\UploadedFile) {
+                    Log::info('Processing new thumbnail upload', [
+                        'original_name' => $data['thumbnail']->getClientOriginalName()
+                    ]);
+
+                    // Delete old thumbnail if exists
+                    if ($videoLesson->thumbnail) {
+                        Log::info('Deleting old thumbnail', ['path' => $videoLesson->thumbnail]);
+                        $this->deleteFile($videoLesson->thumbnail);
+                    }
+
+                    // Upload new thumbnail
+                    $thumbnailPath = $this->handleImage($data['thumbnail'], 'video-lessons');
+                    if (!$thumbnailPath) {
+                        throw new \Exception('Failed to upload thumbnail');
+                    }
+                    $data['thumbnail'] = $thumbnailPath;
+
+                    Log::info('New thumbnail uploaded', ['path' => $thumbnailPath]);
+                }
+            }
+
+            // Handle preview video
+            if (isset($data['preview_video'])) {
+                if ($data['preview_video'] instanceof \Illuminate\Http\UploadedFile) {
+                    Log::info('Processing new video upload', [
+                        'original_name' => $data['preview_video']->getClientOriginalName()
+                    ]);
+
+                    // Delete old video if exists
+                    if ($videoLesson->preview_video) {
+                        Log::info('Deleting old video', ['path' => $videoLesson->preview_video]);
+                        $this->deleteFile($videoLesson->preview_video);
+                    }
+
+                    // Upload new video
+                    $videoPath = $this->handleVideo($data['preview_video'], 'video-lessons');
+                    if (!$videoPath) {
+                        throw new \Exception('Failed to upload video');
+                    }
+                    $data['preview_video'] = $videoPath;
+
+                    Log::info('New video uploaded', ['path' => $videoPath]);
+                }
+            }
+
+            // Update video lesson record
+            $videoLesson->update($data);
+
+            DB::commit();
+
+            Log::info('Video lesson updated successfully', [
+                'id' => $id,
+                'thumbnail' => $videoLesson->thumbnail,
+                'preview_video' => $videoLesson->preview_video
+            ]);
+
+            return $videoLesson;
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Video lesson update error:', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
+        }
+    }
+
+    public function delete($id)
+    {
+        try {
+            $videoLesson = $this->findById($id);
+            if (!$videoLesson) {
+                throw new \Exception('Video lesson not found');
+            }
+
+            // Delete associated files
+            if ($videoLesson->thumbnail) {
+                $this->deleteFile($videoLesson->thumbnail);
+            }
+            if ($videoLesson->preview_video) {
+                $this->deleteFile($videoLesson->preview_video);
+            }
+
+            return parent::delete($id);
+        } catch (\Exception $e) {
+            Log::error('Video lesson deletion error: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function searchByName($search)
+    {
+        return $this->getQuery()
+            ->where('title', 'like', "%{$search}%")
+            ->paginate(config('crud.pagination.per_page'));
+    }
+
+    public function getAllWithTrashed()
+    {
+        return $this->model::onlyTrashed()->with('category');
+    }
+
+    public function findOrFail($id)
+    {
+        return $this->model->findOrFail($id);
+    }
+
+    public function findWithFullUrls($id)
+    {
+        $videoLesson = $this->findOrFail($id);
+
+        // Add full URLs for image and video
+        $videoLesson->thumbnail_url = $this->getFullUrl($videoLesson->thumbnail_url);
+        $videoLesson->video_url = $this->getFullUrl($videoLesson->video_url);
+
+        return $videoLesson;
+    }
+
     public function deleteFile($path)
     {
         try {
@@ -254,13 +285,13 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
                 return true;
             }
 
-            // Nếu path là URL đầy đủ, trích xuất chỉ phần path
+            // If path is a full URL, extract just the path portion
             if (filter_var($path, FILTER_VALIDATE_URL)) {
                 $cloudFrontDomain = config('filesystems.disks.cloudfront.domain');
                 $path = str_replace("https://{$cloudFrontDomain}/", '', $path);
             }
 
-            // Đảm bảo path không bắt đầu bằng dấu /
+            // Ensure the path doesn't start with a slash
             $path = ltrim($path, '/');
 
             Log::info('Attempting to delete file from S3', ['path' => $path]);
@@ -279,55 +310,5 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
             ]);
             return false;
         }
-    }
-
-    public function searchByName($search)
-    {
-        return $this->getQuery()
-            ->where('name', 'like', "%{$search}%")
-            ->paginate(config('crud.pagination.per_page'));
-    }
-
-    public function findWithFullUrls($id)
-    {
-        $videoLesson = $this->findOrFail($id);
-
-        // Thêm URL đầy đủ cho ảnh và video
-        $videoLesson->full_thumbnail = $this->getFullUrl($videoLesson->thumbnail_url);
-        $videoLesson->full_video = $this->getFullUrl($videoLesson->video_url);
-
-        return $videoLesson;
-    }
-
-    public function findOrFail($id)
-    {
-        return $this->model->findOrFail($id);
-    }
-
-    public function getFullUrl($path)
-    {
-        if (empty($path)) {
-            return null;
-        }
-
-        // Nếu path đã là URL đầy đủ, trả về luôn
-        if (filter_var($path, FILTER_VALIDATE_URL)) {
-            return $path;
-        }
-
-        // Tạo URL đầy đủ từ CloudFront
-        $cloudFrontDomain = config('filesystems.disks.cloudfront.domain');
-        return "https://{$cloudFrontDomain}/{$path}";
-    }
-
-    /**
-     * Lấy danh sách video theo bài học
-     *
-     * @param int $lessonId
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function getVideosByLesson($lessonId)
-    {
-        return $this->model->where('lesson_id', $lessonId)->get();
     }
 }

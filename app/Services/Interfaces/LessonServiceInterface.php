@@ -13,4 +13,12 @@ interface LessonServiceInterface extends BaseServiceInterface
      * @return array
      */
     public function getLessonsByCourse($courseId);
+
+    /**
+     * Lấy danh sách video của bài học
+     *
+     * @param int $lessonId
+     * @return array
+     */
+    public function getVideosByLesson($lessonId);
 }

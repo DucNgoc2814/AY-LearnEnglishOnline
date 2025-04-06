@@ -125,4 +125,37 @@ class LessonRepository extends BaseRepository implements LessonRepositoryInterfa
             ];
         }
     }
+
+    /**
+     * Lấy danh sách video của bài học
+     *
+     * @param int $lessonId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getVideosByLessonId($lessonId)
+    {
+        try {
+            $lesson = $this->findById($lessonId);
+            \Illuminate\Support\Facades\Log::info('LessonRepository: getVideosByLessonId called with ID: ' . $lessonId, [
+                'lesson' => $lesson ? ['id' => $lesson->id, 'name' => $lesson->name] : null
+            ]);
+
+            if (!$lesson) {
+                throw new \Exception('Không tìm thấy bài học');
+            }
+
+            // Sử dụng model trực tiếp thay vì DB query
+            $videos = \App\Models\LessonVideo::where('lesson_id', $lessonId)->get();
+            \Illuminate\Support\Facades\Log::info('LessonRepository: videos count: ' . count($videos));
+
+            return $videos;
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error in LessonRepository getVideosByLessonId: ' . $e->getMessage(), [
+                'lesson_id' => $lessonId,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            throw $e;
+        }
+    }
 }
