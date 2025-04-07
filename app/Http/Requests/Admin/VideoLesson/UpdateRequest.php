@@ -31,7 +31,7 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'lessonId' => 'required|exists:lessons,id',
+            'lesson_id' => 'required|exists:lessons,id',
             'name' => 'required|string|max:255',
             'videoUrl' => 'nullable|file|mimetypes:video/mp4,video/quicktime,video/x-ms-wmv,video/x-msvideo,video/x-flv|max:512000',
             'videoType' => 'required_with:videoUrl',
@@ -48,8 +48,8 @@ class UpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'lessonId.required' => 'Bài học không được để trống',
-            'lessonId.exists' => 'Bài học không tồn tại',
+            'lesson_id.required' => 'Bài học không được để trống',
+            'lesson_id.exists' => 'Bài học không tồn tại',
             'name.required' => 'Tên video không được để trống',
             'name.max' => 'Tên video không được vượt quá 255 ký tự',
             'videoUrl.file' => 'File video không hợp lệ',
@@ -72,7 +72,7 @@ class UpdateRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'lessonId' => 'Bài học',
+            'lesson_id' => 'Bài học',
             'name' => 'Tên video',
             'videoUrl' => 'File video',
             'videoType' => 'Loại video',

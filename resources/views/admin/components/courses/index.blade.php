@@ -286,6 +286,7 @@
     @include('admin.components.courses.modals.edit')
     @include('admin.components.courses.modals.trash')
     @include('admin.components.lessons.modals.create')
+    @include('admin.components.lessons.modals.edit')
     @include('admin.components.video-lessons.modals.create')
     @include('admin.components.video-lessons.modals.edit')
 
@@ -550,9 +551,10 @@
                                                 title="Thêm video">
                                                 <i class="fas fa-video"></i>
                                             </button>
-                                            <a href="/admin/lessons/${lesson.id}/edit" class="text-purple-600 hover:text-purple-800">
+                                            <button class="text-blue-500 hover:text-blue-700"
+                                                onclick="editLesson(${lesson.id})" title="Chỉnh sửa">
                                                 <i class="far fa-edit"></i>
-                                            </a>
+                                            </button>
                                             <form action="/admin/lessons/${lesson.id}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')

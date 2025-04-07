@@ -197,56 +197,79 @@
 
     // Thêm hàm editVideoLesson để xử lý khi nút edit được nhấn
     function editVideoLesson(id) {
+        console.log('Editing video lesson:', id); // Debug log
+
         // Fetch dữ liệu video lesson và mở modal
         fetch(`/admin/video-lessons/${id}/edit`)
-            .then(response => response.json())
-            .then(result => {
-                if (result.status) {
-                    openEditVideoLessonModal(result.data);
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(response => {
+                console.log('Response:', response); // Debug log
+                if (response.status) {
+                    populateEditModal(response.data);
                 } else {
-                    alert('Không thể tải thông tin video');
+                    throw new Error(response.message || 'Không thể tải thông tin video');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Đã xảy ra lỗi khi tải dữ liệu');
+                alert('Đã xảy ra lỗi khi tải dữ liệu: ' + error.message);
             });
     }
 
     // Hàm để mở modal và điền dữ liệu
-    function openEditVideoLessonModal(videoLesson) {
+    function populateEditModal(videoLesson) {
+        console.log('Populating modal with:', videoLesson); // Debug log
+        document.getElementById('editVideoLessonModal').classList.remove('hidden');
+
+        const form = document.getElementById('editVideoLessonForm');
+
+        // Cập nhật action của form
+        form.action = `/admin/video-lessons/${videoLesson.id}`;
+
         // Điền dữ liệu vào form
         document.getElementById('edit_videoId').value = videoLesson.id;
         document.getElementById('edit_lessonId').value = videoLesson.lesson_id;
         document.getElementById('edit_videoLessonName').value = videoLesson.name;
-        document.getElementById('edit_is_preview').checked = videoLesson.is_preview;
-        document.getElementById('edit_is_downloadable').checked = videoLesson.is_downloadable;
+        document.getElementById('edit_is_preview').checked = Boolean(videoLesson.is_preview);
+        document.getElementById('edit_is_downloadable').checked = Boolean(videoLesson.is_downloadable);
         document.getElementById('edit_duration').value = videoLesson.duration;
 
         // Hiển thị thời lượng
         updateEditDurationDisplay(videoLesson.duration);
 
         // Hiển thị video preview nếu có
+        const videoPreview = document.getElementById('edit_videoPreview');
+        const videoSource = videoPreview.querySelector('source');
         if (videoLesson.video_url) {
-            const videoPreview = document.getElementById('edit_videoPreview');
-            const videoSource = videoPreview.querySelector('source');
+            console.log('Setting video:', videoLesson.video_url); // Debug log
             videoSource.src = videoLesson.video_url;
             videoPreview.load();
             videoPreview.classList.remove('hidden');
+        } else {
+            videoPreview.classList.add('hidden');
         }
 
         // Hiển thị thumbnail nếu có
+        const thumbnailPreview = document.getElementById('edit_thumbnailPreview');
         if (videoLesson.thumbnail_url) {
-            const thumbnailPreview = document.getElementById('edit_thumbnailPreview');
+            console.log('Setting thumbnail:', videoLesson.thumbnail_url); // Debug log
             thumbnailPreview.src = videoLesson.thumbnail_url;
             thumbnailPreview.classList.remove('hidden');
+        } else {
+            thumbnailPreview.classList.add('hidden');
         }
 
-        // Cập nhật action của form
-        document.getElementById('editVideoLessonForm').action = `/admin/video-lessons/${videoLesson.id}`;
+        // Xóa các input hidden remove_thumbnail và remove_video_url nếu có
+        const removeThumbInput = form.querySelector('input[name="remove_thumbnail_url"]');
+        if (removeThumbInput) removeThumbInput.remove();
 
-        // Hiển thị modal
-        document.getElementById('editVideoLessonModal').classList.remove('hidden');
+        const removeVideoInput = form.querySelector('input[name="remove_video_url"]');
+        if (removeVideoInput) removeVideoInput.remove();
     }
 
     function handleEditVideoUpload(file) {
@@ -319,6 +342,14 @@
     function closeEditVideoLessonModal() {
         document.getElementById('editVideoLessonModal').classList.add('hidden');
         document.getElementById('editVideoLessonForm').reset();
+
+        // Xóa các input hidden nếu có
+        const form = document.getElementById('editVideoLessonForm');
+        const removeThumbnailInput = form.querySelector('input[name="remove_thumbnail_url"]');
+        if (removeThumbnailInput) removeThumbnailInput.remove();
+
+        const removeVideoInput = form.querySelector('input[name="remove_video_url"]');
+        if (removeVideoInput) removeVideoInput.remove();
     }
 
     // Xử lý thumbnail
@@ -328,6 +359,17 @@
         preview.src = '';
         preview.classList.add('hidden');
         input.value = '';
+
+        // Thêm input hidden để đánh dấu xóa thumbnail
+        let removeInput = document.querySelector('input[name="remove_thumbnail_url"]');
+        if (!removeInput) {
+            removeInput = document.createElement('input');
+            removeInput.type = 'hidden';
+            removeInput.name = 'remove_thumbnail_url';
+            removeInput.value = '1';
+            input.parentNode.appendChild(removeInput);
+        }
+        removeInput.value = '1';
     }
 
     // Xử lý video
@@ -343,6 +385,17 @@
 
         document.getElementById('edit_duration').value = '';
         document.querySelector('.edit-duration-display').textContent = '';
+
+        // Thêm input hidden để đánh dấu xóa video
+        let removeInput = document.querySelector('input[name="remove_video_url"]');
+        if (!removeInput) {
+            removeInput = document.createElement('input');
+            removeInput.type = 'hidden';
+            removeInput.name = 'remove_video_url';
+            removeInput.value = '1';
+            input.parentNode.appendChild(removeInput);
+        }
+        removeInput.value = '1';
     }
 
     // Thêm event listeners khi tài liệu đã sẵn sàng
