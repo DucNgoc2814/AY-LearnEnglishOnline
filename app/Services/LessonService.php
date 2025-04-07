@@ -148,4 +148,39 @@ class LessonService extends BaseService implements LessonServiceInterface
             ];
         }
     }
+
+    /**
+     * Lấy thông tin bài học với đường dẫn đầy đủ
+     *
+     * @param int $id
+     * @return mixed
+     */
+    public function findWithFullUrls($id)
+    {
+        try {
+            $lesson = $this->repository->findById($id);
+
+            if (!$lesson) {
+                return [
+                    'status' => false,
+                    'message' => 'Không tìm thấy bài học'
+                ];
+            }
+
+            // Lấy thông tin khóa học liên quan
+            $course = $lesson->course;
+
+            return $lesson;
+        } catch (\Exception $e) {
+            Log::error('Error in LessonService findWithFullUrls: ' . $e->getMessage(), [
+                'id' => $id,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return [
+                'status' => false,
+                'message' => 'Có lỗi xảy ra khi lấy thông tin bài học: ' . $e->getMessage()
+            ];
+        }
+    }
 }

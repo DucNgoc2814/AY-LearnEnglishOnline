@@ -97,7 +97,7 @@
 <script>
     // Đóng modal
     function closeCreateLessonModal() {
-        document.getElementById('createLessonModal').classList.add('hidden');
+        modalHandler.close('createLessonModal');
         document.getElementById('createLessonForm').reset();
     }
 </script>

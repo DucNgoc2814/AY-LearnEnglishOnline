@@ -210,7 +210,7 @@
             .then(response => {
                 console.log('Response:', response); // Debug log
                 if (response.status) {
-                    populateEditModal(response.data);
+                    populateVideoLessonEditModal(response.data);
                 } else {
                     throw new Error(response.message || 'Không thể tải thông tin video');
                 }
@@ -222,9 +222,9 @@
     }
 
     // Hàm để mở modal và điền dữ liệu
-    function populateEditModal(videoLesson) {
+    function populateVideoLessonEditModal(videoLesson) {
         console.log('Populating modal with:', videoLesson); // Debug log
-        document.getElementById('editVideoLessonModal').classList.remove('hidden');
+        modalHandler.open('editVideoLessonModal');
 
         const form = document.getElementById('editVideoLessonForm');
 
@@ -340,7 +340,7 @@
     }
 
     function closeEditVideoLessonModal() {
-        document.getElementById('editVideoLessonModal').classList.add('hidden');
+        modalHandler.close('editVideoLessonModal');
         document.getElementById('editVideoLessonForm').reset();
 
         // Xóa các input hidden nếu có
@@ -444,13 +444,23 @@
         });
 
         // Đóng modal khi click bên ngoài
-        const modal = document.getElementById('editVideoLessonModal');
         window.addEventListener('click', function(event) {
+            const modal = document.getElementById('editVideoLessonModal');
             if (event.target === modal) {
                 closeEditVideoLessonModal();
             }
         });
     });
+
+    function openImageModal(src) {
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = src;
+        modalHandler.open('imageVideoModal');
+    }
+
+    function closeImageModal() {
+        modalHandler.close('imageVideoModal');
+    }
 </script>
 
 <!-- Thêm styles -->

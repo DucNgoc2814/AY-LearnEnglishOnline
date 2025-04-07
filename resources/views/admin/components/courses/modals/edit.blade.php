@@ -322,7 +322,7 @@
             .then(response => {
                 console.log('Response:', response); // Debug log
                 if (response.status) {
-                    populateEditModal(response.data);
+                    populateCourseEditModal(response.data);
                 } else {
                     throw new Error(response.message || 'Có lỗi xảy ra khi lấy thông tin khóa học');
                 }
@@ -333,7 +333,7 @@
             });
     }
 
-    function populateEditModal(item) {
+    function populateCourseEditModal(item) {
         console.log('Populating modal with:', item); // Để debug
         modalHandler.open('editCourseModal');
         const form = document.getElementById('editCourseForm');
@@ -492,50 +492,26 @@
     }
 
     function openImageModal(src) {
-        const modal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
         modalImage.src = src;
-        modal.classList.remove('hidden');
-        // Prevent body scrolling
-        document.body.style.overflow = 'hidden';
+        modalHandler.open('imageModal');
     }
 
     function closeImageModal() {
-        const modal = document.getElementById('imageModal');
-        modal.classList.add('hidden');
-        // Restore body scrolling
-        document.body.style.overflow = 'auto';
+        modalHandler.close('imageModal');
     }
 
     function openVideoModal(src) {
-        const modal = document.getElementById('videoModal');
         const modalVideo = document.getElementById('modalVideo');
         modalVideo.querySelector('source').src = src;
         modalVideo.load(); // Reload video with new source
-        modal.classList.remove('hidden');
-        // Prevent body scrolling
-        document.body.style.overflow = 'hidden';
+        modalHandler.open('videoModal');
     }
 
     function closeVideoModal() {
-        const modal = document.getElementById('videoModal');
         const modalVideo = document.getElementById('modalVideo');
         modalVideo.pause(); // Pause video when closing modal
-        modal.classList.add('hidden');
-        // Restore body scrolling
-        document.body.style.overflow = 'auto';
-    }
-
-    // Close modals when clicking outside
-    window.onclick = function(event) {
-        const imageModal = document.getElementById('imageModal');
-        const videoModal = document.getElementById('videoModal');
-        if (event.target === imageModal) {
-            closeImageModal();
-        }
-        if (event.target === videoModal) {
-            closeVideoModal();
-        }
+        modalHandler.close('videoModal');
     }
 
     // Close modals with Escape key

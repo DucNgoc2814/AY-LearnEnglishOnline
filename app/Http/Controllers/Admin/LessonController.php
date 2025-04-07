@@ -79,6 +79,21 @@ class LessonController extends BaseController
     }
 
     /**
+     * Hiển thị chi tiết bài học để chỉnh sửa
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function edit($id)
+    {
+        $lesson = $this->lessonService->findWithFullUrls($id);
+        return response()->json([
+            'status' => true,
+            'data' => $lesson
+        ]);
+    }
+
+    /**
      * Cập nhật bài học
      *
      * @param UpdateRequest $request

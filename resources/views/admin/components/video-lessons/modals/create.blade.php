@@ -197,7 +197,7 @@
     function setLessonIdForVideo(lessonId) {
         document.getElementById('lessonId').value = lessonId;
         // Hiển thị modal
-        document.getElementById('createVideoLessonModal').classList.remove('hidden');
+        modalHandler.open('createVideoLessonModal');
     }
 
     function handleVideoUpload(file) {
@@ -276,7 +276,7 @@
     }
 
     function closeVideoLessonModal() {
-        document.getElementById('createVideoLessonModal').classList.add('hidden');
+        modalHandler.close('createVideoLessonModal');
         document.getElementById('createVideoLessonForm').reset();
 
         // Reset previews
@@ -294,17 +294,13 @@
     }
 
     function openImageModal(src) {
-        const modal = document.getElementById('imageVideoModal');
         const modalImage = document.getElementById('modalImage');
         modalImage.src = src;
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+        modalHandler.open('imageVideoModal');
     }
 
     function closeImageModal() {
-        const modal = document.getElementById('imageVideoModal');
-        modal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
+        modalHandler.close('imageVideoModal');
     }
 
     // Xử lý thumbnail
@@ -382,10 +378,10 @@
         });
 
         // Đóng modal khi click bên ngoài
-        const modal = document.getElementById('createVideoLessonModal');
-        const imageModal = document.getElementById('imageVideoModal');
-
         window.addEventListener('click', function(event) {
+            const modal = document.getElementById('createVideoLessonModal');
+            const imageModal = document.getElementById('imageVideoModal');
+
             if (event.target === modal) {
                 closeVideoLessonModal();
             }

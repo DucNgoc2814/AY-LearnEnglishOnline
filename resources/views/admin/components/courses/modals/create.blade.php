@@ -334,17 +334,13 @@
     }
 
     function openImageModal(src) {
-        const modal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
         modalImage.src = src;
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+        modalHandler.open('imageModal');
     }
 
     function closeImageModal() {
-        const modal = document.getElementById('imageModal');
-        modal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
+        modalHandler.close('imageModal');
     }
 
     function openVideoModal(src) {

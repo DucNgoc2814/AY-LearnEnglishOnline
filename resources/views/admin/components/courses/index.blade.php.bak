@@ -780,5 +780,89 @@
                 modalHandler.close('imageVideoModal');
             }
         });
+
+        // Hàm xử lý modal cho course
+        function editCourse(id) {
+            console.log('Editing course:', id);
+            fetch(`/admin/courses/${id}/edit`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status) {
+                        modalHandler.open('editCourseModal');
+                        populateCourseEditModal(data.data);
+                    } else {
+                        alert('Lỗi: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Đã xảy ra lỗi khi tải dữ liệu');
+                });
+        }
+
+        function populateCourseEditModal(data) {
+            const form = document.getElementById('editCourseForm');
+            form.action = `/admin/courses/${data.id}`;
+            // Điền dữ liệu vào form
+            document.getElementById('title').value = data.title;
+            document.getElementById('description').value = data.description;
+            // ... các trường khác
+        }
+
+        // Hàm xử lý modal cho lesson
+        function editLesson(id) {
+            console.log('Editing lesson:', id);
+            fetch(`/admin/lessons/${id}/edit`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status) {
+                        modalHandler.open('editLessonModal');
+                        populateLessonEditModal(data.data);
+                    } else {
+                        alert('Lỗi: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Đã xảy ra lỗi khi tải dữ liệu');
+                });
+        }
+
+        function populateLessonEditModal(data) {
+            const form = document.getElementById('editLessonForm');
+            form.action = `/admin/lessons/${data.id}`;
+            // Điền dữ liệu vào form
+            document.getElementById('editName').value = data.name;
+            document.getElementById('editDescription').value = data.description;
+            // ... các trường khác
+        }
+
+        // Hàm xử lý modal cho video lesson
+        function editVideoLesson(id) {
+            console.log('Editing video lesson:', id);
+            fetch(`/admin/video-lessons/${id}/edit`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status) {
+                        modalHandler.open('editVideoLessonModal');
+                        populateVideoLessonEditModal(data.data);
+                    } else {
+                        alert('Lỗi: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Đã xảy ra lỗi khi tải dữ liệu');
+                });
+        }
+
+        function populateVideoLessonEditModal(data) {
+            const form = document.getElementById('editVideoLessonForm');
+            form.action = `/admin/video-lessons/${data.id}`;
+            // Điền dữ liệu vào form
+            document.getElementById('edit_videoLessonName').value = data.name;
+            document.getElementById('edit_duration').value = data.duration;
+            // ... các trường khác
+        }
     </script>
 @endsection
