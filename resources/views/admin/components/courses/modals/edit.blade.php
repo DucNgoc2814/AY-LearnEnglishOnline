@@ -570,16 +570,34 @@
             method: 'POST',
             body: formData,
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
-            credentials: 'same-origin'
+            credentials: 'same-origin',
+            redirect: 'follow'
         })
         .then(response => {
             console.log('Response status:', response.status);
-            return response.json();
+            console.log('Is redirected:', response.redirected);
+            console.log('Response URL:', response.url);
+
+            if (response.redirected) {
+                window.location.href = response.url;
+                return null;
+            }
+
+            // Kiểm tra xem response có phải là JSON không
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.indexOf('application/json') !== -1) {
+                return response.json();
+            } else {
+                // Nếu không phải JSON, có thể là HTML, redirect sang URL hiện tại
+                window.location.reload();
+                return null;
+            }
         })
         .then(data => {
+            if (!data) return; // Đã redirect hoặc reload
+
             console.log('Server response:', data);
             if (data.success) {
                 alert('Cập nhật thành công!');

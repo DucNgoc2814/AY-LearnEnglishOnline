@@ -98,11 +98,15 @@ class CourseController extends BaseController
 
             $result = $this->courseService->update($id, $request->validated());
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Cập nhật thành công',
-                'data' => $result
-            ]);
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Cập nhật thành công',
+                    'data' => $result
+                ]);
+            }
+
+            return redirect()->route('admin.courses.index')->with('success', 'Cập nhật thành công');
         } catch (\Exception $e) {
             \Log::error('Course update error:', [
                 'id' => $id,
@@ -110,10 +114,14 @@ class CourseController extends BaseController
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 422);
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+                ], 422);
+            }
+
+            return redirect()->back()->withErrors(['message' => 'Có lỗi xảy ra: ' . $e->getMessage()])->withInput();
         }
     }
 
