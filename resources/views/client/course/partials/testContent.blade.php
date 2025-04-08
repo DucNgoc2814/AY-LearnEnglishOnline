@@ -1,111 +1,187 @@
 <div class="test-container">
     @if ($currentTest)
+        @php
+            $latestResult = Auth::user()->testResults()
+                ->where('test_id', $currentTest->id)
+                ->latest()
+                ->first();
+            $isRetaking = session('retaking_test_' . $currentTest->id, false);
+        @endphp
+
         <div class="content-header">
             <div class="test-title-container">
                 <h3 class="test-title mb-0 fs-5">{{ $currentTest->name ?? 'Không tìm thấy tên bài kiểm tra' }}</h3>
-                <div class="timer-display">
-                    <i class="fas fa-clock me-2"></i><span id="timer">30:00</span>
-                </div>
+                @if(!$latestResult || $isRetaking)
+                    <div class="timer-display">
+                        <i class="fas fa-clock me-2"></i><span id="timer">{{ $currentTest->duration ?? 30 }}:00</span>
+                    </div>
+                @endif
             </div>
         </div>
 
-        <form id="testForm" action="" method="POST">
-            @csrf
-            <div class="row mx-0 px-0">
-                <!-- Phần nội dung câu hỏi và câu trả lời bên trái -->
-                <div class="col-md-9">
-                    <div class="question-area">
-                        <!-- Di chuyển điều hướng lên đầu -->
-                        <div class="question-navigation mb-4">
-                            <div class="row">
-                                <div class="col-6">
-                                    <button type="button" id="prev-question-btn" class="btn btn-outline-secondary w-100" disabled onclick="navigateToPrevQuestion()">
-                                        <i class="fas fa-arrow-left me-2"></i>Câu trước
-                                    </button>
+        @if($latestResult && !$isRetaking)
+            <div class="test-result-container p-4">
+                <div class="row">
+                    <div class="col-md-8 mx-auto">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h4 class="mb-4">Kết quả bài kiểm tra</h4>
+                                <div class="result-stats mb-4">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="stat-item">
+                                                <h5>Điểm số</h5>
+                                                <p class="h2 mb-0">{{ $latestResult->score }}/{{ $currentTest->max_score }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="stat-item">
+                                                <h5>Câu đúng</h5>
+                                                <p class="h2 mb-0">{{ $latestResult->correct_answers }}/{{ $latestResult->total_questions }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="stat-item">
+                                                <h5>Trạng thái</h5>
+                                                <p class="h4 mb-0 {{ $latestResult->score >= $currentTest->min_score ? 'text-success' : 'text-danger' }}">
+                                                    {{ $latestResult->score >= $currentTest->min_score ? 'Đạt' : 'Chưa đạt' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-6">
-                                    <button type="button" id="next-question-btn" class="btn btn-outline-primary w-100" onclick="navigateToNextQuestion()">
-                                        Câu tiếp theo<i class="fas fa-arrow-right ms-2"></i>
-                                    </button>
-                                </div>
+                                
+                                @php
+                                    $totalAttempts = Auth::user()->testResults()
+                                        ->where('test_id', $currentTest->id)
+                                        ->count();
+                                    $canRetake = $latestResult->score < $currentTest->min_score && 
+                                        (!$currentTest->max_attempt || $totalAttempts < $currentTest->max_attempt);
+                                @endphp
+
+                                @if($canRetake)
+                                    <div class="retry-section mt-4">
+                                        <p>Bạn có thể làm lại bài kiểm tra để cải thiện điểm số.</p>
+                                        <a href="{{ route('test.retry', $currentTest->id) }}" class="btn btn-primary">
+                                            Làm lại bài kiểm tra
+                                        </a>
+                                        @if($currentTest->max_attempt)
+                                            <p class="mt-2 text-muted">
+                                                Còn {{ $currentTest->max_attempt - $totalAttempts }} lần làm lại
+                                            </p>
+                                        @endif
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                        
-                        <!-- Hiển thị số câu hỏi hiện tại -->
-                        <div class="question-counter mb-3">
-                            Câu <span id="current-question-num">1</span>/{{ $currentTest->questions->count() }}
-                        </div>
-                        
-                        <!-- Container chứa nội dung câu hỏi -->
-                        <div class="questions-container">
-                            <!-- Hiển thị lần lượt từng câu hỏi -->
-                            @foreach($currentTest->questions as $index => $question)
-                                <div class="question-slide" id="question-slide-{{ $index }}" style="{{ $index > 0 ? 'display: none;' : '' }}">
-                                    <div class="question-text mb-4">
-                                        <h5 class="fw-bold">Câu {{ $index + 1 }}: {{ $question->question }}</h5>
+                    </div>
+                </div>
+            </div>
+        @else
+            <form id="testForm" action="{{ route('test.submit', $currentTest->id) }}" method="POST">
+                @csrf
+                <div class="row mx-0 px-0">
+                    <!-- Phần nội dung câu hỏi và câu trả lời bên trái -->
+                    <div class="col-md-9">
+                        <div class="question-area">
+                            <!-- Di chuyển điều hướng lên đầu -->
+                            <div class="question-navigation mb-4">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button type="button" id="prev-question-btn" class="btn btn-outline-secondary w-100" disabled onclick="navigateToPrevQuestion()">
+                                            <i class="fas fa-arrow-left me-2"></i>Câu trước
+                                        </button>
                                     </div>
-                                    
-                                    @if ($question->image)
-                                        <div class="question-image mb-3">
-                                            <img src="{{ asset($question->image) }}" alt="Hình ảnh câu hỏi" class="img-fluid rounded">
+                                    <div class="col-6">
+                                        <button type="button" id="next-question-btn" class="btn btn-outline-primary w-100" onclick="navigateToNextQuestion()">
+                                            Câu tiếp theo<i class="fas fa-arrow-right ms-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Hiển thị số câu hỏi hiện tại -->
+                            <div class="question-counter mb-3">
+                                Câu <span id="current-question-num">1</span>/{{ $currentTest->questions->count() }}
+                            </div>
+                            
+                            <!-- Container chứa nội dung câu hỏi -->
+                            <div class="questions-container">
+                                @foreach($currentTest->questions as $index => $question)
+                                    <div class="question-slide" id="question-slide-{{ $index }}" style="{{ $index > 0 ? 'display: none;' : '' }}">
+                                        <div class="question-text mb-4">
+                                            <h5 class="fw-bold">Câu {{ $index + 1 }}: {{ $question->question }}</h5>
                                         </div>
-                                    @endif
-                                    
-                                    @if ($question->audio)
-                                        <div class="question-audio mb-3">
-                                            <audio controls class="w-100">
-                                                <source src="{{ asset($question->audio) }}" type="audio/mpeg">
-                                                Trình duyệt của bạn không hỗ trợ phát âm thanh.
-                                            </audio>
+                                        
+                                        @if ($question->image)
+                                            <div class="question-image mb-3">
+                                                <img src="{{ asset($question->image) }}" alt="Hình ảnh câu hỏi" class="img-fluid rounded">
+                                            </div>
+                                        @endif
+                                        
+                                        @if ($question->audio)
+                                            <div class="question-audio mb-3">
+                                                <audio controls class="w-100">
+                                                    <source src="{{ asset($question->audio) }}" type="audio/mpeg">
+                                                    Trình duyệt của bạn không hỗ trợ phát âm thanh.
+                                                </audio>
+                                            </div>
+                                        @endif
+                                        
+                                        <div class="answers-list">
+                                            @foreach ($question->answers as $answerIndex => $answer)
+                                                <div class="answer-option mb-3 ps-1">
+                                                    <input class="form-check-input" type="radio" name="answers[{{ $question->id }}]"
+                                                        id="answer{{ $answer->id }}" value="{{ $answer->id }}">
+                                                    <label class="form-check-label ms-2" for="answer{{ $answer->id }}">
+                                                        <span class="answer-letter">{{ chr(65 + $answerIndex) }}</span> {{ $answer->answer }}
+                                                    </label>
+                                                </div>
+                                            @endforeach
                                         </div>
-                                    @endif
-                                    
-                                    <div class="answers-list">
-                                        @foreach ($question->answers as $answerIndex => $answer)
-                                            <div class="answer-option mb-3 ps-1">
-                                                <input class="form-check-input" type="radio" name="answers[{{ $question->id }}]"
-                                                    id="answer{{ $answer->id }}" value="{{ $answer->id }}">
-                                                <label class="form-check-label ms-2" for="answer{{ $answer->id }}">
-                                                    <span class="answer-letter">{{ chr(65 + $answerIndex) }}</span> {{ $answer->answer }}
-                                                </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Phần danh sách câu hỏi bên phải -->
+                    <div class="col-md-3">
+                        <div class="sidebar-content mb-4">
+                            <div class="sidebar-header mb-3">
+                                <h6 class="fw-bold mb-3">Danh sách câu hỏi</h6>
+                                
+                                <div class="question-grid">
+                                    <div class="row row-cols-4 g-2">
+                                        @foreach($currentTest->questions as $index => $question)
+                                            <div class="col">
+                                                <button type="button" 
+                                                        class="question-number{{ $index == 0 ? ' active' : '' }}" 
+                                                        id="question-number-{{ $index }}" 
+                                                        onclick="showQuestion({{ $index }})">
+                                                    {{ $index + 1 }}
+                                                </button>
                                             </div>
                                         @endforeach
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Phần danh sách câu hỏi bên phải -->
-                <div class="col-md-3">
-                    <div class="sidebar-content mb-4">
-                        <div class="sidebar-header mb-3">
-                            <h6 class="fw-bold mb-3">Danh sách câu hỏi</h6>
-                            
-                            <div class="question-grid">
-                                <div class="row row-cols-4 g-2">
-                                    @foreach($currentTest->questions as $index => $question)
-                                        <div class="col">
-                                            <button type="button" 
-                                                    class="question-number{{ $index == 0 ? ' active' : '' }}" 
-                                                    id="question-number-{{ $index }}" 
-                                                    onclick="showQuestion({{ $index }})">
-                                                {{ $index + 1 }}
-                                            </button>
-                                        </div>
-                                    @endforeach
-                                </div>
                             </div>
+                            
+                            <button type="button" id="submit-test-btn" class="btn btn-primary w-100">
+                                <i class="fas fa-paper-plane me-2"></i>Nộp bài
+                            </button>
                         </div>
-                        
-                        <button type="button" id="submit-test-btn" class="btn btn-primary w-100">
-                            <i class="fas fa-paper-plane me-2"></i>Nộp bài
-                        </button>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
+
+            @if($isRetaking)
+                @php
+                    // Clear the retaking flag after showing the form
+                    session()->forget('retaking_test_' . $currentTest->id);
+                @endphp
+            @endif
+        @endif
     @else
         <div class="no-content">
             <i class="fas fa-info-circle"></i>
@@ -545,6 +621,40 @@
     [style*="width:"] {
         max-width: 100% !important;
     }
+
+    /* Thêm styles cho phần kết quả */
+    .test-result-container {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .stat-item {
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .stat-item h5 {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+
+    .stat-item .h2 {
+        color: #2d3748;
+        font-weight: 600;
+    }
+
+    .retry-section {
+        border-top: 1px solid #dee2e6;
+        padding-top: 20px;
+    }
+
+    .retry-section p {
+        color: #6c757d;
+        margin-bottom: 15px;
+    }
 </style>
 
 <script>
@@ -630,7 +740,7 @@ function confirmSubmitTest() {
     });
 }
 
-// Hàm nộp bài
+// Thay thế hàm submitTest cũ bằng hàm mới
 function submitTest(isTimeout = false) {
     // Nếu là hết thời gian, hiển thị thông báo khác
     if (isTimeout) {
@@ -642,7 +752,7 @@ function submitTest(isTimeout = false) {
             timer: 2000,
             timerProgressBar: true
         }).then(() => {
-            document.getElementById('testForm').submit();
+            submitTestAjax(true);
         });
     } else {
         // Hiển thị thông báo đang xử lý
@@ -657,12 +767,75 @@ function submitTest(isTimeout = false) {
             }
         });
         
-        // Giả lập thời gian xử lý (có thể bỏ đi trong thực tế)
-        setTimeout(() => {
-            document.getElementById('testForm').submit();
-        }, 1000);
+        submitTestAjax(false);
     }
 }
+
+function submitTestAjax(isTimeout) {
+    const form = document.getElementById('testForm');
+    const formData = new FormData(form);
+    
+    // Thêm thông tin thời gian bắt đầu và timeout
+    formData.append('started_at', window.testStartTime);
+    if (isTimeout) {
+        formData.append('timeout', '1');
+    }
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status) {
+            // Hiển thị kết quả
+            Swal.fire({
+                title: 'Nộp bài thành công!',
+                html: `
+                    <div class="test-result">
+                        <p>Điểm số: <strong>${data.data.score}/${data.data.total_questions * 100}</strong></p>
+                        <p>Số câu đúng: <strong>${data.data.correct_answers}/${data.data.total_questions}</strong></p>
+                        <p>Kết quả: <strong>${data.data.passed ? 'Đạt' : 'Chưa đạt'}</strong></p>
+                    </div>
+                `,
+                icon: 'success',
+                confirmButtonText: 'Xem chi tiết',
+                showCancelButton: true,
+                cancelButtonText: 'Đóng',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Chuyển đến trang xem chi tiết kết quả
+                    window.location.href = '/test-results/' + data.data.test_result_id;
+                } else {
+                    // Quay lại trang trước
+                    window.history.back();
+                }
+            });
+        } else {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: data.message,
+                icon: 'error',
+                confirmButtonText: 'Đóng'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            title: 'Lỗi!',
+            text: 'Có lỗi xảy ra khi nộp bài. Vui lòng thử lại.',
+            icon: 'error',
+            confirmButtonText: 'Đóng'
+        });
+    });
+}
+
+// Thêm biến lưu thời gian bắt đầu làm bài
+window.testStartTime = new Date().toISOString();
 
 // Hàm hiển thị câu hỏi được chọn
 function showQuestion(index) {

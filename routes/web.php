@@ -7,6 +7,7 @@ use App\Http\Controllers\Client\CourseController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\PaymentController;
 use App\Http\Controllers\Client\CommentController;
+use App\Http\Controllers\Client\TestResultController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,5 +77,8 @@ Route::middleware('web')->group(function () {
             // Rating routes
             Route::post('/ratings', [App\Http\Controllers\Client\CommentController::class, 'storeRating'])->name('client.ratings.store');
         });
+
+        Route::post('/test/{test}/submit', [TestResultController::class, 'submit'])->name('test.submit');
+        Route::get('/test/{test}/retry', [TestResultController::class, 'retry'])->name('test.retry');
     });
 });
