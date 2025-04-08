@@ -5,4 +5,5 @@ namespace App\Repositories\Interfaces;
 interface CourseRepositoryInterface extends BaseRepositoryInterface
 {
     public function searchByName($search);
+    public function findWithFullUrls($id);
 }

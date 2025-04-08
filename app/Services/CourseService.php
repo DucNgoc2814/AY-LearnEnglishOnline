@@ -7,6 +7,7 @@ use App\Services\Interfaces\CourseServiceInterface;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\Interfaces\CourseRepositoryInterface;
+use Illuminate\Support\Facades\Log;
 
 class CourseService extends BaseService implements CourseServiceInterface
 {
@@ -28,6 +29,12 @@ class CourseService extends BaseService implements CourseServiceInterface
         }
     }
 
+    /**
+     * Tìm khóa học với URLs đầy đủ
+     *
+     * @param int $id
+     * @return array
+     */
     public function findWithFullUrls($id)
     {
         try {
@@ -35,9 +42,10 @@ class CourseService extends BaseService implements CourseServiceInterface
             if (!$course) {
                 throw new \Exception('Không tìm thấy khóa học');
             }
+
             return $course;
         } catch (\Exception $e) {
-            \Log::error('Error in CourseService findWithFullUrls:', [
+            Log::error('Error in CourseService findWithFullUrls:', [
                 'id' => $id,
                 'error' => $e->getMessage()
             ]);

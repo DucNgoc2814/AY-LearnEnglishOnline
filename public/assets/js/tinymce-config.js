@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Khởi tạo TinyMCE cho cả hai modal
     tinymce.init({
-        selector: '#description, #editDescription',  // Thêm selector cho textarea trong modal edit
+        selector: '#description, #editDescription, #edit_description',  // Thêm selector cho textarea trong modal edit
         plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
         toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
         font_family_formats: 'Arial=arial,helvetica,sans-serif; Courier New=courier new,courier,monospace; AkrutiKndPadmini=Akpdmi-n',

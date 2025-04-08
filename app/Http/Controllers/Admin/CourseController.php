@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Services\Interfaces\CourseServiceInterface;
 use App\Http\Requests\Admin\Course\StoreRequest;
 use App\Http\Requests\Admin\Course\UpdateRequest;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @package App\Http\Controllers\Admin
@@ -83,20 +84,33 @@ class CourseController extends BaseController
     public function update(UpdateRequest $request, $id)
     {
         try {
-            \Log::info('Course update request:', [
+            // Lấy tất cả dữ liệu đã validate
+            $data = $request->validated();
+
+            // Log thông tin chi tiết về request
+            Log::info('Course update request detail:', [
                 'id' => $id,
-                'validated_data' => $request->validated(),
-                'has_files' => [
-                    'thumbnail' => $request->hasFile('thumbnail'),
-                    'preview_video' => $request->hasFile('preview_video')
-                ],
-                'files' => [
-                    'thumbnail' => $request->file('thumbnail'),
-                    'preview_video' => $request->file('preview_video')
-                ]
+                'all_files' => $request->allFiles(),
+                'has_thumbnail' => $request->hasFile('thumbnail'),
+                'has_preview_video' => $request->hasFile('preview_video'),
+                'remove_thumbnail' => $request->has('remove_thumbnail'),
+                'remove_preview_video' => $request->has('remove_preview_video')
             ]);
 
-            $result = $this->courseService->update($id, $request->validated());
+            // Xử lý flag xóa ảnh
+            if ($request->has('remove_thumbnail') && $request->input('remove_thumbnail') == '1') {
+                $data['thumbnail'] = null; // Đánh dấu xóa ảnh
+                Log::info('Marking thumbnail for removal');
+            }
+
+            // Xử lý flag xóa video
+            if ($request->has('remove_preview_video') && $request->input('remove_preview_video') == '1') {
+                $data['preview_video'] = null; // Đánh dấu xóa video
+                Log::info('Marking video for removal');
+            }
+
+            // Gọi service để cập nhật
+            $result = $this->courseService->update($id, $data);
 
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
@@ -108,7 +122,7 @@ class CourseController extends BaseController
 
             return redirect()->route('admin.courses.index')->with('success', 'Cập nhật thành công');
         } catch (\Exception $e) {
-            \Log::error('Course update error:', [
+            Log::error('Course update error:', [
                 'id' => $id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
@@ -149,6 +163,12 @@ class CourseController extends BaseController
         return $this->redirectResponse($result);
     }
 
+    /**
+     * Lấy thông tin khóa học để chỉnh sửa
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function edit($id)
     {
         $course = $this->courseService->findWithFullUrls($id);
