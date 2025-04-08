@@ -9,8 +9,10 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
@@ -29,6 +31,11 @@ class User extends Authenticatable
         'role',
         'role_token',
         'refresh_token',
+        'device_id',
+        'active_token',
+        'last_login_at',
+        'login_lock',
+        'login_lock_expires_at',
     ];
 
     /**
@@ -41,6 +48,7 @@ class User extends Authenticatable
         'remember_token',
         'role_token',
         'refresh_token',
+        'active_token',
     ];
 
     /**
@@ -127,5 +135,25 @@ class User extends Authenticatable
     {
         // Thực hiện kiểm tra quyền
         return true;
+    }
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }
