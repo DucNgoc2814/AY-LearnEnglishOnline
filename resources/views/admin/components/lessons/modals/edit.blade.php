@@ -22,53 +22,53 @@
                 </div>
 
                 <div class="mb-4 p-3 bg-blue-50 rounded-md mt-4">
-                    <p class="text-gray-700">Bạn đang chỉnh sửa bài học của khóa học: <span id="editCourseTitleDisplay" class="font-semibold"></span></p>
+                    <p class="text-gray-700">Bạn đang chỉnh sửa bài học của khóa học: <span id="edit_CourseTitleDisplay" class="font-semibold"></span></p>
                 </div>
 
-                <form id="editLessonForm" action="" method="POST" enctype="multipart/form-data">
+                <form id="edit_LessonForm" action="" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    <input type="hidden" name="course_id" id="editLessonCourseId">
+                    <input type="hidden" name="course_id" id="edit_LessonCourseId">
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
                         <!-- Thông tin cơ bản -->
                         <div>
                             <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="editName">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_Name">
                                     Tên bài học <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="editName" name="name" required>
+                                    id="edit_Name" name="name" required>
                             </div>
 
                             <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="editDescription">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_Description">
                                     Mô tả
                                 </label>
                                 <textarea
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="editDescription" name="description" rows="4"></textarea>
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline tinymce-editor"
+                                    id="edit_Description" name="description" rows="4"></textarea>
                             </div>
 
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="mb-4">
-                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="editOrderNumber">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_OrderNumber">
                                         Thứ tự <span class="text-red-500">*</span>
                                     </label>
                                     <input type="number"
                                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="editOrderNumber" name="order_number" required>
+                                        id="edit_OrderNumber" name="order_number" required>
                                 </div>
 
                                 <div class="mb-4">
-                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="editIsPreview">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_IsPreview">
                                         Cho phép xem thử
                                     </label>
                                     <div class="mt-2">
                                         <label class="inline-flex items-center">
                                             <input type="checkbox" class="form-checkbox" name="is_preview"
-                                                id="editIsPreview" value="1">
+                                                id="edit_IsPreview" value="1">
                                             <span class="ml-2">Cho phép xem thử</span>
                                         </label>
                                     </div>
@@ -116,43 +116,70 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Có lỗi xảy ra: ' + error.message);
+                // Đăng nhập lỗi chi tiết hơn để dễ debug
+                if (error.stack) {
+                    console.error('Stack trace:', error.stack);
+                }
+                // Hiển thị thông báo lỗi rõ ràng hơn
+                alert('Đã có lỗi xảy ra khi cập nhật bài học: ' + error.message);
+
+                // Đảm bảo nút submit được kích hoạt lại ngay cả khi có lỗi
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
             });
     }
 
     function populateLessonEditModal(item) {
         console.log('Populating modal with:', item); // Để debug
         modalHandler.open('editLessonModal');
-        const form = document.getElementById('editLessonForm');
+        const form = document.getElementById('edit_LessonForm');
 
         // Cập nhật action URL của form
         form.action = `/admin/lessons/${item.id}`;
 
         // Điền các giá trị vào form
-        form.querySelector('#editName').value = item.name || '';
-        form.querySelector('#editDescription').value = item.description || '';
-        form.querySelector('#editOrderNumber').value = item.order_number || '';
-        form.querySelector('#editIsPreview').checked = Boolean(item.is_preview);
-        form.querySelector('#editLessonCourseId').value = item.course_id || '';
-        document.getElementById('editCourseTitleDisplay').textContent = item.course_name || '';
+        form.querySelector('#edit_Name').value = item.name || '';
+
+        // Hiển thị tên khóa học
+        document.getElementById('edit_CourseTitleDisplay').textContent = item.course ? item.course.name : '';
+        form.querySelector('#edit_LessonCourseId').value = item.course_id || '';
+
+        // Xử lý TinyMCE cho phần mô tả
+        if (tinymce.get('edit_Description')) {
+            tinymce.get('edit_Description').setContent(item.description || '');
+        } else {
+            setTimeout(() => {
+                tinymce.init({
+                    selector: '#edit_Description',
+                    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                    height: 300,
+                    setup: function(editor) {
+                        editor.on('init', function() {
+                            editor.setContent(item.description || '');
+                        });
+                    }
+                });
+            }, 100);
+        }
+
+        form.querySelector('#edit_OrderNumber').value = item.order_number || '';
+        form.querySelector('#edit_IsPreview').checked = Boolean(item.is_preview);
 
         // Xử lý submit form
-        form.addEventListener('submit', function(e) {
+        form.onsubmit = function(e) {
             e.preventDefault();
             console.log('Form submitted');
 
-            const formData = new FormData();
-
-            // Thêm các trường dữ liệu cơ bản
-            const formElements = this.elements;
-            for (let element of formElements) {
-                if (element.name) {
-                    formData.append(element.name, element.value);
-                }
-            }
+            const formData = new FormData(this);
 
             // Thêm method PUT
             formData.append('_method', 'PUT');
+
+            // Lấy nội dung từ TinyMCE
+            if (tinymce.get('edit_Description')) {
+                formData.set('description', tinymce.get('edit_Description').getContent());
+            }
 
             const submitButton = this.querySelector('button[type="submit"]');
             const originalText = submitButton.innerHTML;
@@ -170,11 +197,22 @@
             })
             .then(response => {
                 console.log('Response status:', response.status);
-                return response.json();
+                // Kiểm tra xem response có phải là JSON không
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    // Nếu không phải JSON (có thể là HTML redirect), vẫn xem như thành công
+                    if (response.status >= 200 && response.status < 300) {
+                        return { success: true, message: 'Cập nhật thành công!' };
+                    } else {
+                        throw new Error('Phản hồi không hợp lệ từ máy chủ');
+                    }
+                }
             })
             .then(data => {
                 console.log('Server response:', data);
-                if (data.success) {
+                if (data.success || (data.status && data.status === true)) {
                     alert('Cập nhật thành công!');
                     window.location.reload();
                 } else {
@@ -183,17 +221,26 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Có lỗi xảy ra: ' + error.message);
+                // Đăng nhập lỗi chi tiết hơn để dễ debug
+                if (error.stack) {
+                    console.error('Stack trace:', error.stack);
+                }
+                // Hiển thị thông báo lỗi rõ ràng hơn
+                alert('Đã có lỗi xảy ra khi cập nhật bài học: ' + error.message);
             })
             .finally(() => {
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalText;
             });
-        });
+        };
     }
 
     // Đóng modal
     function closeEditLessonModal() {
+        // Xóa instance TinyMCE để tránh xung đột
+        if (tinymce.get('edit_Description')) {
+            tinymce.get('edit_Description').remove();
+        }
         modalHandler.close('editLessonModal');
     }
 </script>
