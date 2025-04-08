@@ -265,4 +265,30 @@ class CommentController extends Controller
             'ratingCounts' => $ratingCounts
         ]);
     }
+
+    public function getCourseComments($courseId)
+    {
+        try {
+            $comments = Comment::with('user', 'replies.user')
+                ->where('commentable_type', 'App\Models\Course')
+                ->where('commentable_id', $courseId)
+                ->where('parent_id', null)
+                ->where('is_published', true)
+                ->latest()
+                ->paginate(5);
+
+            $html = view('client.detailCourse.partials.comments', compact('comments'))->render();
+            
+            return response()->json([
+                'success' => true,
+                'html' => $html
+            ]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error loading comments: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi tải bình luận: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 } 

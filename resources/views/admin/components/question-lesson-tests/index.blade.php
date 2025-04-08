@@ -79,7 +79,7 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Tổng thời lượng:</th>
-                                                    <td>{{ $course->totalDuration() }}</td>
+                                                    <td></td>
                                                 </tr>
                                             </table>
                                         </div>

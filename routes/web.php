@@ -77,8 +77,4 @@ Route::middleware('web')->group(function () {
             Route::post('/ratings', [App\Http\Controllers\Client\CommentController::class, 'storeRating'])->name('client.ratings.store');
         });
     });
-
-    // Routes không cần auth
-    Route::get('/courses/{course}/comments', [App\Http\Controllers\Client\CommentController::class, 'getCourseComments'])->name('client.courses.comments');
-    Route::get('/courses/{course}/ratings', [App\Http\Controllers\Client\CommentController::class, 'getCourseRatings'])->name('client.courses.ratings');
 });
