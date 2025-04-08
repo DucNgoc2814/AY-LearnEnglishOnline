@@ -52,13 +52,28 @@ class VideoLessonController extends BaseController
      */
     public function store(StoreRequest $request)
     {
-        // dd([
-        //     'validated_data' => $request->validated(),
-        //     'files' => $request->allFiles()
-        // ]);
+        try {
+            \Illuminate\Support\Facades\Log::info('VideoLesson store request:', [
+                'validated_data' => $request->validated(),
+                'files' => [
+                    'has_thumbnail' => $request->hasFile('thumbnail_url'),
+                    'has_video' => $request->hasFile('video_url'),
+                    'thumbnail' => $request->file('thumbnail_url'),
+                    'video' => $request->file('video_url'),
+                    'all_files' => $request->allFiles()
+                ]
+            ]);
 
-        $result = $this->videoLessonService->create($request->validated());
-        return $this->redirectResponse($result);
+            $result = $this->videoLessonService->create($request->validated());
+            return $this->redirectResponse($result);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('VideoLesson store error:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
     }
 
     /**

@@ -188,8 +188,10 @@
         const extension = file.name.split('.').pop().toLowerCase();
         if (['mp4', 'mov', 'wmv', 'avi', 'flv'].includes(extension)) {
             videoTypeInput.value = extension;
+            console.log('Đã xác định định dạng video: ' + extension);
         } else {
             videoTypeInput.value = ''; // Không xác định được loại video
+            console.log('Không thể xác định định dạng video');
         }
     }
 
@@ -317,11 +319,13 @@
         const preview = document.getElementById('videoPreview');
         const videoSource = preview.querySelector('source');
         const input = document.getElementById('videoUrlInput');
+        const videoTypeInput = document.getElementById('video_type');
 
         videoSource.src = '';
         preview.load();
         preview.classList.add('hidden');
         input.value = '';
+        videoTypeInput.value = ''; // Xóa giá trị video_type khi xóa video
 
         document.getElementById('duration').value = '';
         document.querySelector('.duration-display').textContent = '';
@@ -350,6 +354,7 @@
             form.addEventListener('submit', function(e) {
                 const thumbnailFile = document.getElementById('thumbnailInput').files[0];
                 const videoFile = document.getElementById('videoUrlInput').files[0];
+                const videoTypeValue = document.getElementById('video_type').value;
 
                 if (!thumbnailFile) {
                     e.preventDefault();
@@ -363,7 +368,14 @@
                     return false;
                 }
 
-                // Kiểm tra các trường khác nếu cần
+                if (!videoTypeValue) {
+                    // Nếu chưa có giá trị video_type, tự động lấy từ đuôi file
+                    const extension = videoFile.name.split('.').pop().toLowerCase();
+                    if (['mp4', 'mov', 'wmv', 'avi', 'flv'].includes(extension)) {
+                        document.getElementById('video_type').value = extension;
+                        console.log('Đã tự động xác định định dạng video: ' + extension);
+                    }
+                }
 
                 return true;
             });

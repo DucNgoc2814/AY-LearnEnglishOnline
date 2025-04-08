@@ -34,31 +34,31 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
             DB::beginTransaction();
 
             // Handle thumbnail upload
-            if (isset($data['thumbnail'])) {
-                Log::info("Processing thumbnail upload", ['file' => $data['thumbnail']->getClientOriginalName()]);
+            if (isset($data['thumbnail_url'])) {
+                Log::info("Processing thumbnail upload", ['file' => $data['thumbnail_url']->getClientOriginalName()]);
 
-                $cloudFrontUrl = $this->handleImage($data['thumbnail'], 'video-lessons');
+                $cloudFrontUrl = $this->handleImage($data['thumbnail_url'], 'video-lessons');
                 if (!$cloudFrontUrl) {
                     throw new \Exception('Failed to upload thumbnail');
                 }
-                $data['thumbnail'] = $cloudFrontUrl;
+                $data['thumbnail_url'] = $cloudFrontUrl;
                 Log::info("Thumbnail uploaded successfully", ['url' => $cloudFrontUrl]);
             }
 
-            // Handle preview video upload if exists
-            if (isset($data['preview_video'])) {
-                Log::info("Processing preview video upload", ['file' => $data['preview_video']->getClientOriginalName()]);
+            // Handle video upload if exists
+            if (isset($data['video_url'])) {
+                Log::info("Processing video upload", ['file' => $data['video_url']->getClientOriginalName()]);
 
-                $videoUrl = $this->handleVideo($data['preview_video'], 'video-lessons');
+                $videoUrl = $this->handleVideo($data['video_url'], 'video-lessons');
                 if (!$videoUrl) {
-                    throw new \Exception('Failed to upload preview video');
+                    throw new \Exception('Failed to upload video');
                 }
-                $data['preview_video'] = $videoUrl;
-                Log::info("Preview video uploaded successfully", ['url' => $videoUrl]);
+                $data['video_url'] = $videoUrl;
+                Log::info("Video uploaded successfully", ['url' => $videoUrl]);
             }
 
-            // Generate slug from title
-            $data['slug'] = Str::slug($data['title']);
+            // Generate slug from name
+            $data['slug'] = Str::slug($data['name']);
 
             // Create video lesson record
             $videoLesson = $this->model->create($data);
@@ -71,13 +71,13 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
             Log::error('Video lesson creation error: ' . $e->getMessage(), [
                 'exception' => $e,
                 'data' => array_merge($data, [
-                    'thumbnail_info' => isset($data['thumbnail']) ? [
-                        'name' => $data['thumbnail']->getClientOriginalName(),
-                        'type' => $data['thumbnail']->getMimeType()
+                    'thumbnail_info' => isset($data['thumbnail_url']) ? [
+                        'name' => $data['thumbnail_url']->getClientOriginalName(),
+                        'type' => $data['thumbnail_url']->getMimeType()
                     ] : null,
-                    'video_info' => isset($data['preview_video']) ? [
-                        'name' => $data['preview_video']->getClientOriginalName(),
-                        'type' => $data['preview_video']->getMimeType()
+                    'video_info' => isset($data['video_url']) ? [
+                        'name' => $data['video_url']->getClientOriginalName(),
+                        'type' => $data['video_url']->getMimeType()
                     ] : null
                 ])
             ]);
@@ -151,53 +151,53 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
 
             Log::info('Starting video lesson update:', [
                 'id' => $id,
-                'has_thumbnail' => isset($data['thumbnail']),
-                'has_video' => isset($data['preview_video'])
+                'has_thumbnail' => isset($data['thumbnail_url']),
+                'has_video' => isset($data['video_url'])
             ]);
 
             // Handle thumbnail
-            if (isset($data['thumbnail'])) {
-                if ($data['thumbnail'] instanceof \Illuminate\Http\UploadedFile) {
+            if (isset($data['thumbnail_url'])) {
+                if ($data['thumbnail_url'] instanceof \Illuminate\Http\UploadedFile) {
                     Log::info('Processing new thumbnail upload', [
-                        'original_name' => $data['thumbnail']->getClientOriginalName()
+                        'original_name' => $data['thumbnail_url']->getClientOriginalName()
                     ]);
 
                     // Delete old thumbnail if exists
-                    if ($videoLesson->thumbnail) {
-                        Log::info('Deleting old thumbnail', ['path' => $videoLesson->thumbnail]);
-                        $this->deleteFile($videoLesson->thumbnail);
+                    if ($videoLesson->thumbnail_url) {
+                        Log::info('Deleting old thumbnail', ['path' => $videoLesson->thumbnail_url]);
+                        $this->deleteFile($videoLesson->thumbnail_url);
                     }
 
                     // Upload new thumbnail
-                    $thumbnailPath = $this->handleImage($data['thumbnail'], 'video-lessons');
+                    $thumbnailPath = $this->handleImage($data['thumbnail_url'], 'video-lessons');
                     if (!$thumbnailPath) {
                         throw new \Exception('Failed to upload thumbnail');
                     }
-                    $data['thumbnail'] = $thumbnailPath;
+                    $data['thumbnail_url'] = $thumbnailPath;
 
                     Log::info('New thumbnail uploaded', ['path' => $thumbnailPath]);
                 }
             }
 
-            // Handle preview video
-            if (isset($data['preview_video'])) {
-                if ($data['preview_video'] instanceof \Illuminate\Http\UploadedFile) {
+            // Handle video
+            if (isset($data['video_url'])) {
+                if ($data['video_url'] instanceof \Illuminate\Http\UploadedFile) {
                     Log::info('Processing new video upload', [
-                        'original_name' => $data['preview_video']->getClientOriginalName()
+                        'original_name' => $data['video_url']->getClientOriginalName()
                     ]);
 
                     // Delete old video if exists
-                    if ($videoLesson->preview_video) {
-                        Log::info('Deleting old video', ['path' => $videoLesson->preview_video]);
-                        $this->deleteFile($videoLesson->preview_video);
+                    if ($videoLesson->video_url) {
+                        Log::info('Deleting old video', ['path' => $videoLesson->video_url]);
+                        $this->deleteFile($videoLesson->video_url);
                     }
 
                     // Upload new video
-                    $videoPath = $this->handleVideo($data['preview_video'], 'video-lessons');
+                    $videoPath = $this->handleVideo($data['video_url'], 'video-lessons');
                     if (!$videoPath) {
                         throw new \Exception('Failed to upload video');
                     }
-                    $data['preview_video'] = $videoPath;
+                    $data['video_url'] = $videoPath;
 
                     Log::info('New video uploaded', ['path' => $videoPath]);
                 }
@@ -210,8 +210,8 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
 
             Log::info('Video lesson updated successfully', [
                 'id' => $id,
-                'thumbnail' => $videoLesson->thumbnail,
-                'preview_video' => $videoLesson->preview_video
+                'thumbnail_url' => $videoLesson->thumbnail_url,
+                'video_url' => $videoLesson->video_url
             ]);
 
             return $videoLesson;
@@ -236,11 +236,11 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
             }
 
             // Delete associated files
-            if ($videoLesson->thumbnail) {
-                $this->deleteFile($videoLesson->thumbnail);
+            if ($videoLesson->thumbnail_url) {
+                $this->deleteFile($videoLesson->thumbnail_url);
             }
-            if ($videoLesson->preview_video) {
-                $this->deleteFile($videoLesson->preview_video);
+            if ($videoLesson->video_url) {
+                $this->deleteFile($videoLesson->video_url);
             }
 
             return parent::delete($id);
