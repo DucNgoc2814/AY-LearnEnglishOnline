@@ -53,10 +53,6 @@ class CourseController extends BaseController
      */
     public function store(StoreRequest $request)
     {
-        // dd([
-        //     'validated_data' => $request->validated(),
-        //     'files' => $request->allFiles()
-        // ]);
 
         $result = $this->courseService->create($request->validated());
         return $this->redirectResponse($result);

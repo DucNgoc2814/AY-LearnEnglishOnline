@@ -43,13 +43,13 @@ class VideoLessonService extends BaseService implements VideoLessonServiceInterf
                 throw new \Exception('Không tìm thấy bài học video');
             }
 
-            return $this->successResponse($videoLesson, 'Lấy thông tin bài học video thành công');
+            return $videoLesson;
         } catch (\Exception $e) {
             Log::error('Error in VideoLessonService findWithFullUrls:', [
                 'id' => $id,
                 'error' => $e->getMessage()
             ]);
-            return $this->errorResponse($e->getMessage());
+            throw $e;
         }
     }
 }

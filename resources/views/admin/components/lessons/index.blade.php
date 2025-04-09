@@ -395,7 +395,7 @@
                 // Gửi request xóa hàng loạt
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = '{{ route('admin.lessons.bulk-delete') }}';
+                form.action = '';
 
                 const csrfToken = document.createElement('input');
                 csrfToken.type = 'hidden';

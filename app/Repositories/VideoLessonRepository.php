@@ -68,19 +68,50 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Video lesson creation error: ' . $e->getMessage(), [
-                'exception' => $e,
-                'data' => array_merge($data, [
-                    'thumbnail_info' => isset($data['thumbnail_url']) ? [
+
+            // Chuẩn bị thông tin log với kiểm tra kiểu dữ liệu
+            $logData = ['exception' => $e];
+
+            // Thêm thông tin về dữ liệu, kiểm tra kiểu dữ liệu cho thumbnail và video
+            $dataLog = $data;
+
+            // Xử lý thông tin thumbnail
+            if (isset($data['thumbnail_url'])) {
+                if ($data['thumbnail_url'] instanceof \Illuminate\Http\UploadedFile) {
+                    $dataLog['thumbnail_info'] = [
                         'name' => $data['thumbnail_url']->getClientOriginalName(),
                         'type' => $data['thumbnail_url']->getMimeType()
-                    ] : null,
-                    'video_info' => isset($data['video_url']) ? [
+                    ];
+                } else {
+                    $dataLog['thumbnail_info'] = [
+                        'name' => 'Đã được xử lý thành đường dẫn',
+                        'path' => $data['thumbnail_url']
+                    ];
+                }
+            } else {
+                $dataLog['thumbnail_info'] = null;
+            }
+
+            // Xử lý thông tin video
+            if (isset($data['video_url'])) {
+                if ($data['video_url'] instanceof \Illuminate\Http\UploadedFile) {
+                    $dataLog['video_info'] = [
                         'name' => $data['video_url']->getClientOriginalName(),
                         'type' => $data['video_url']->getMimeType()
-                    ] : null
-                ])
-            ]);
+                    ];
+                } else {
+                    $dataLog['video_info'] = [
+                        'name' => 'Đã được xử lý thành đường dẫn',
+                        'path' => $data['video_url']
+                    ];
+                }
+            } else {
+                $dataLog['video_info'] = null;
+            }
+
+            $logData['data'] = $dataLog;
+
+            Log::error('Video lesson creation error: ' . $e->getMessage(), $logData);
             throw $e;
         }
     }
@@ -152,12 +183,20 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
             Log::info('Starting video lesson update:', [
                 'id' => $id,
                 'has_thumbnail' => isset($data['thumbnail_url']),
-                'has_video' => isset($data['video_url'])
+                'has_video' => isset($data['video_url']),
+                'thumbnail_url_value' => isset($data['thumbnail_url']) ? (is_null($data['thumbnail_url']) ? 'null' : 'has value') : 'not set',
+                'video_url_value' => isset($data['video_url']) ? (is_null($data['video_url']) ? 'null' : 'has value') : 'not set'
             ]);
 
             // Handle thumbnail
-            if (isset($data['thumbnail_url'])) {
-                if ($data['thumbnail_url'] instanceof \Illuminate\Http\UploadedFile) {
+            if (array_key_exists('thumbnail_url', $data)) {
+                if (is_null($data['thumbnail_url'])) {
+                    // User wants to delete the thumbnail
+                    if ($videoLesson->thumbnail_url) {
+                        Log::info('Deleting thumbnail due to null value', ['path' => $videoLesson->thumbnail_url]);
+                        $this->deleteFile($videoLesson->thumbnail_url);
+                    }
+                } else if ($data['thumbnail_url'] instanceof \Illuminate\Http\UploadedFile) {
                     Log::info('Processing new thumbnail upload', [
                         'original_name' => $data['thumbnail_url']->getClientOriginalName()
                     ]);
@@ -180,8 +219,14 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
             }
 
             // Handle video
-            if (isset($data['video_url'])) {
-                if ($data['video_url'] instanceof \Illuminate\Http\UploadedFile) {
+            if (array_key_exists('video_url', $data)) {
+                if (is_null($data['video_url'])) {
+                    // User wants to delete the video
+                    if ($videoLesson->video_url) {
+                        Log::info('Deleting video due to null value', ['path' => $videoLesson->video_url]);
+                        $this->deleteFile($videoLesson->video_url);
+                    }
+                } else if ($data['video_url'] instanceof \Illuminate\Http\UploadedFile) {
                     Log::info('Processing new video upload', [
                         'original_name' => $data['video_url']->getClientOriginalName()
                     ]);
@@ -276,6 +321,42 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
         $videoLesson->video_url = $this->getFullUrl($videoLesson->video_url);
 
         return $videoLesson;
+    }
+
+    /**
+     * Get full URL for file path
+     *
+     * @param string|null $path
+     * @return string|null
+     */
+    public function getFullUrl($path)
+    {
+        if (empty($path)) {
+            return null;
+        }
+
+        // Nếu đã là URL đầy đủ, trả về nguyên dạng
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        // Đảm bảo path không có dấu / ở đầu
+        $path = ltrim($path, '/');
+
+        // Sử dụng CloudFront nếu có cấu hình
+        $cloudFrontDomain = config('filesystems.disks.cloudfront.domain');
+        if ($cloudFrontDomain) {
+            return "https://{$cloudFrontDomain}/{$path}";
+        }
+
+        // Fallback to S3 URL or add domain if S3 URL generation not available
+        $s3Domain = config('filesystems.disks.s3.url');
+        if ($s3Domain) {
+            return "{$s3Domain}/{$path}";
+        }
+
+        // Last resort
+        return $path;
     }
 
     public function deleteFile($path)

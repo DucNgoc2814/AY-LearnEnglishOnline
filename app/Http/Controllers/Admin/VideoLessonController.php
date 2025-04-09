@@ -67,7 +67,7 @@ class VideoLessonController extends BaseController
             $result = $this->videoLessonService->create($request->validated());
             return $this->redirectResponse($result);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('VideoLesson store error:', [
+                        \Illuminate\Support\Facades\Log::error('VideoLesson store error:', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -98,20 +98,33 @@ class VideoLessonController extends BaseController
     public function update(UpdateRequest $request, $id)
     {
         try {
-            \Illuminate\Support\Facades\Log::info('VideoLesson update request:', [
+            // Lấy tất cả dữ liệu đã validate
+            $data = $request->validated();
+
+            // Log thông tin chi tiết về request
+            \Illuminate\Support\Facades\Log::info('VideoLesson update request detail:', [
                 'id' => $id,
-                'validated_data' => $request->validated(),
-                'has_files' => [
-                    'thumbnail' => $request->hasFile('thumbnail'),
-                    'preview_video' => $request->hasFile('preview_video')
-                ],
-                'files' => [
-                    'thumbnail' => $request->file('thumbnail'),
-                    'preview_video' => $request->file('preview_video')
-                ]
+                'all_files' => $request->allFiles(),
+                'has_thumbnail' => $request->hasFile('thumbnail_url'),
+                'has_video' => $request->hasFile('video_url'),
+                'remove_thumbnail' => $request->has('remove_thumbnail_url'),
+                'remove_video' => $request->has('remove_video_url')
             ]);
 
-            $result = $this->videoLessonService->update($id, $request->validated());
+            // Xử lý flag xóa ảnh
+            if ($request->has('remove_thumbnail_url') && $request->input('remove_thumbnail_url') == '1') {
+                $data['thumbnail_url'] = null; // Đánh dấu xóa ảnh
+                \Illuminate\Support\Facades\Log::info('Marking thumbnail for removal');
+            }
+
+            // Xử lý flag xóa video
+            if ($request->has('remove_video_url') && $request->input('remove_video_url') == '1') {
+                $data['video_url'] = null; // Đánh dấu xóa video
+                \Illuminate\Support\Facades\Log::info('Marking video for removal');
+            }
+
+            // Gọi service để cập nhật
+            $result = $this->videoLessonService->update($id, $data);
 
             return response()->json([
                 'success' => true,
@@ -145,12 +158,12 @@ class VideoLessonController extends BaseController
     }
 
     /**
-     * Khôi phục bài học video đã xóa
+                 * Khôi phục bài học video đã xóa
      *
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function restore($id)
+                public function restore($id)
     {
         $result = $this->videoLessonService->restore($id);
         return $this->redirectResponse($result);

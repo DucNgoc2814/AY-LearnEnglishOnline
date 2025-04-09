@@ -70,11 +70,13 @@
                                     <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_videoUrlInput">
                                         File Video <span class="text-red-500">*</span>
                                     </label>
-                                    <div class="preview-container mb-2">
+                                    <!-- Container hiển thị video -->
+                                    <div id="current_video_container" class="preview-container mb-2">
                                         <video id="edit_videoPreview"
-                                            class="max-w-xs rounded-lg shadow-md cursor-pointer"
+                                            class="max-w-full rounded-lg shadow-md cursor-pointer"
                                             style="max-height: 200px; width: 100%;" controls>
                                             <source src="" type="video/mp4">
+                                            Trình duyệt của bạn không hỗ trợ thẻ video.
                                         </video>
                                     </div>
                                     <div class="flex space-x-2">
@@ -109,9 +111,10 @@
                                     <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_thumbnailInput">
                                         Ảnh thumbnail <span class="text-red-500">*</span>
                                     </label>
-                                    <div class="preview-container mb-2">
+                                    <!-- Container hiển thị thumbnail -->
+                                    <div id="current_thumbnail_container" class="preview-container mb-2">
                                         <img id="edit_thumbnailPreview" src=""
-                                            class="max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
+                                            class="max-w-full h-auto rounded-lg shadow-md cursor-pointer"
                                             style="max-height: 150px; object-fit: contain;"
                                             onclick="openImageModal(this.src)">
                                     </div>
@@ -208,9 +211,35 @@
                 return response.json();
             })
             .then(response => {
-                console.log('Response:', response); // Debug log
+                console.log('API Response:', response); // Debug log chi tiết
                 if (response.status) {
-                    populateVideoLessonEditModal(response.data);
+                    // Kiểm tra dữ liệu trả về từ API
+                    const videoData = response.data;
+                    console.log('Video URL:', videoData.video_url);
+                    console.log('Thumbnail URL:', videoData.thumbnail_url);
+
+                    // Kiểm tra và chuẩn hóa URL nếu cần
+                    if (videoData.video_url && !videoData.video_url.startsWith('http')) {
+                        // Nếu URL không bắt đầu bằng http, thêm domain
+                        if (videoData.video_url.startsWith('/')) {
+                            videoData.video_url = window.location.origin + videoData.video_url;
+                        } else {
+                            videoData.video_url = window.location.origin + '/' + videoData.video_url;
+                        }
+                        console.log('Fixed video URL:', videoData.video_url);
+                    }
+
+                    if (videoData.thumbnail_url && !videoData.thumbnail_url.startsWith('http')) {
+                        // Nếu URL không bắt đầu bằng http, thêm domain
+                        if (videoData.thumbnail_url.startsWith('/')) {
+                            videoData.thumbnail_url = window.location.origin + videoData.thumbnail_url;
+                        } else {
+                            videoData.thumbnail_url = window.location.origin + '/' + videoData.thumbnail_url;
+                        }
+                        console.log('Fixed thumbnail URL:', videoData.thumbnail_url);
+                    }
+
+                    populateVideoLessonEditModal(videoData);
                 } else {
                     throw new Error(response.message || 'Không thể tải thông tin video');
                 }
@@ -245,23 +274,128 @@
         // Hiển thị video preview nếu có
         const videoPreview = document.getElementById('edit_videoPreview');
         const videoSource = videoPreview.querySelector('source');
+        const videoContainer = document.getElementById('current_video_container');
+
         if (videoLesson.video_url) {
-            console.log('Setting video:', videoLesson.video_url); // Debug log
-            videoSource.src = videoLesson.video_url;
-            videoPreview.load();
-            videoPreview.classList.remove('hidden');
+            console.log('Setting video URL:', videoLesson.video_url); // Debug log
+
+            // Reset container
+            videoContainer.innerHTML = '';
+            videoContainer.appendChild(videoPreview);
+
+            try {
+                // Set video source và hiển thị
+                videoSource.src = videoLesson.video_url;
+                videoPreview.load();
+
+                // Hiển thị container
+                videoContainer.style.display = 'flex';
+                videoContainer.style.justifyContent = 'center';
+                videoContainer.style.alignItems = 'center';
+
+                // Hiển thị video
+                videoPreview.style.display = 'block';
+
+                // Log thành công
+                console.log('Video element set up completed, waiting for load event');
+
+                // Đăng ký sự kiện load
+                videoPreview.onloadeddata = function() {
+                    console.log('Video loaded successfully');
+                };
+
+                // Đăng ký sự kiện lỗi
+                videoPreview.onerror = function(e) {
+                    console.error('Error loading video:', e);
+                    // Hiển thị thông báo lỗi
+                    videoContainer.innerHTML = `
+                        <div class="text-center py-4">
+                            <p class="text-red-500">Không thể tải video. Lỗi: ${e.target.error ? e.target.error.message : 'Unknown error'}</p>
+                            <p class="text-gray-700 mt-2">URL: ${videoLesson.video_url}</p>
+                            <a href="${videoLesson.video_url}" target="_blank" class="text-blue-500 underline mt-1 inline-block">Mở video trong tab mới</a>
+                        </div>
+                    `;
+                };
+            } catch (error) {
+                console.error('Error setting up video:', error);
+                // Hiển thị thông báo lỗi
+                videoContainer.innerHTML = `
+                    <div class="text-center py-4">
+                        <p class="text-red-500">Lỗi khi cài đặt video: ${error.message}</p>
+                        <p class="text-gray-700 mt-2">URL: ${videoLesson.video_url}</p>
+                        <a href="${videoLesson.video_url}" target="_blank" class="text-blue-500 underline mt-1 inline-block">Mở video trong tab mới</a>
+                    </div>
+                `;
+            }
         } else {
-            videoPreview.classList.add('hidden');
+            // Hiển thị container rỗng với thông báo chưa có video
+            videoContainer.innerHTML = `
+                <div class="text-center py-4">
+                    <p class="text-gray-500">Chưa có video</p>
+                </div>
+            `;
         }
 
         // Hiển thị thumbnail nếu có
         const thumbnailPreview = document.getElementById('edit_thumbnailPreview');
+        const thumbnailContainer = document.getElementById('current_thumbnail_container');
+
         if (videoLesson.thumbnail_url) {
-            console.log('Setting thumbnail:', videoLesson.thumbnail_url); // Debug log
-            thumbnailPreview.src = videoLesson.thumbnail_url;
-            thumbnailPreview.classList.remove('hidden');
+            console.log('Setting thumbnail URL:', videoLesson.thumbnail_url); // Debug log
+
+            // Reset container
+            thumbnailContainer.innerHTML = '';
+            thumbnailContainer.appendChild(thumbnailPreview);
+
+            try {
+                // Set image source và hiển thị
+                thumbnailPreview.src = videoLesson.thumbnail_url;
+
+                // Hiển thị container
+                thumbnailContainer.style.display = 'flex';
+                thumbnailContainer.style.justifyContent = 'center';
+                thumbnailContainer.style.alignItems = 'center';
+
+                // Hiển thị thumbnail
+                thumbnailPreview.style.display = 'block';
+
+                // Log thành công
+                console.log('Thumbnail element set up completed, waiting for load event');
+
+                // Đăng ký sự kiện load
+                thumbnailPreview.onload = function() {
+                    console.log('Thumbnail loaded successfully');
+                };
+
+                // Đăng ký sự kiện lỗi
+                thumbnailPreview.onerror = function(e) {
+                    console.error('Error loading thumbnail:', e);
+                    // Hiển thị thông báo lỗi
+                    thumbnailContainer.innerHTML = `
+                        <div class="text-center py-4">
+                            <p class="text-red-500">Không thể tải ảnh</p>
+                            <p class="text-gray-700 mt-2">URL: ${videoLesson.thumbnail_url}</p>
+                            <a href="${videoLesson.thumbnail_url}" target="_blank" class="text-blue-500 underline mt-1 inline-block">Mở ảnh trong tab mới</a>
+                        </div>
+                    `;
+                };
+            } catch (error) {
+                console.error('Error setting up thumbnail:', error);
+                thumbnailContainer.innerHTML = `
+                    <div class="text-center py-4">
+                        <p class="text-red-500">Lỗi khi cài đặt ảnh: ${error.message}</p>
+                        <p class="text-gray-700 mt-2">URL: ${videoLesson.thumbnail_url}</p>
+                        <a href="${videoLesson.thumbnail_url}" target="_blank" class="text-blue-500 underline mt-1 inline-block">Mở ảnh trong tab mới</a>
+                    </div>
+                `;
+            }
         } else {
-            thumbnailPreview.classList.add('hidden');
+            // Hiển thị container rỗng với thông báo chưa có ảnh
+            thumbnailContainer.innerHTML = `
+                <div class="text-center py-4">
+                    <p class="text-gray-500">Chưa có ảnh thumbnail</p>
+                </div>
+            `;
         }
 
         // Xóa các input hidden remove_thumbnail và remove_video_url nếu có
@@ -284,11 +418,19 @@
         const fileURL = URL.createObjectURL(file);
         const preview = document.getElementById('edit_videoPreview');
         const videoSource = preview.querySelector('source');
+        const videoContainer = document.getElementById('current_video_container');
+
+        // Reset container nếu có lỗi trước đó
+        videoContainer.innerHTML = '';
+        videoContainer.appendChild(preview);
 
         // Hiển thị video preview
         videoSource.src = fileURL;
         preview.load();
-        preview.classList.remove('hidden');
+        preview.style.display = 'block';
+        videoContainer.style.display = 'flex';
+        videoContainer.style.justifyContent = 'center';
+        videoContainer.style.alignItems = 'center';
 
         // Tạo một phần tử video mới để lấy thời lượng
         const tempVideo = document.createElement('video');
@@ -310,22 +452,32 @@
             console.error('Error loading video file');
             URL.revokeObjectURL(fileURL);
 
-            // Ẩn video preview nếu có lỗi
-            preview.classList.add('hidden');
-            videoSource.src = '';
-            preview.load();
+            // Hiển thị thông báo lỗi
+            videoContainer.innerHTML = `
+                <div class="text-center py-4">
+                    <p class="text-red-500">Không thể tải video</p>
+                </div>
+            `;
         };
     }
 
     function handleEditThumbnailUpload(input) {
         const preview = document.getElementById('edit_thumbnailPreview');
+        const thumbnailContainer = document.getElementById('current_thumbnail_container');
 
         if (input.files && input.files[0]) {
+            // Reset container nếu có lỗi trước đó
+            thumbnailContainer.innerHTML = '';
+            thumbnailContainer.appendChild(preview);
+
             const reader = new FileReader();
 
             reader.onload = function(e) {
                 preview.src = e.target.result;
-                preview.classList.remove('hidden');
+                preview.style.display = 'block';
+                thumbnailContainer.style.display = 'flex';
+                thumbnailContainer.style.justifyContent = 'center';
+                thumbnailContainer.style.alignItems = 'center';
             }
 
             reader.readAsDataURL(input.files[0]);
@@ -356,8 +508,15 @@
     function clearEditThumbnailUpload() {
         const preview = document.getElementById('edit_thumbnailPreview');
         const input = document.getElementById('edit_thumbnailInput');
-        preview.src = '';
-        preview.classList.add('hidden');
+        const thumbnailContainer = document.getElementById('current_thumbnail_container');
+
+        // Hiển thị container rỗng với thông báo đã xóa ảnh
+        thumbnailContainer.innerHTML = `
+            <div class="text-center py-4">
+                <p class="text-gray-500">Đã xóa ảnh thumbnail</p>
+            </div>
+        `;
+
         input.value = '';
 
         // Thêm input hidden để đánh dấu xóa thumbnail
@@ -374,13 +533,16 @@
 
     // Xử lý video
     function clearEditVideoUpload() {
-        const preview = document.getElementById('edit_videoPreview');
-        const videoSource = preview.querySelector('source');
         const input = document.getElementById('edit_videoUrlInput');
+        const videoContainer = document.getElementById('current_video_container');
 
-        videoSource.src = '';
-        preview.load();
-        preview.classList.add('hidden');
+        // Hiển thị container rỗng với thông báo đã xóa video
+        videoContainer.innerHTML = `
+            <div class="text-center py-4">
+                <p class="text-gray-500">Đã xóa video</p>
+            </div>
+        `;
+
         input.value = '';
 
         document.getElementById('edit_duration').value = '';

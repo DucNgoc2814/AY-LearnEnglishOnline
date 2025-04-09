@@ -3,13 +3,11 @@
 namespace App\Http\Requests\Admin\VideoLesson;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Controllers\Config\CrudRules;
-use Illuminate\Validation\Rule;
 
 /**
- * @package App\Http\Requests\Admin\Lesson
+ * @package App\Http\Requests\Admin\VideoLesson
  * @author Your Name
- * @description Request validation cho cập nhật bài học
+ * @description Request validation cho cập nhật video bài học
  */
 class UpdateRequest extends FormRequest
 {
@@ -33,10 +31,12 @@ class UpdateRequest extends FormRequest
         return [
             'lesson_id' => 'required|exists:lessons,id',
             'name' => 'required|string|max:255',
-            'videoUrl' => 'nullable|file|mimetypes:video/mp4,video/quicktime,video/x-ms-wmv,video/x-msvideo,video/x-flv|max:512000',
-            'videoType' => 'required_with:videoUrl',
-            'duration' => 'required|integer',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'video_url' => 'nullable|file|mimetypes:video/mp4,video/quicktime,video/x-ms-wmv,video/x-msvideo,video/x-flv|max:512000',
+            'video_type' => 'required_with:video_url|string',
+            'duration' => 'required|integer|min:1',
+            'thumbnail_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_downloadable' => 'boolean',
+            'is_preview' => 'boolean'
         ];
     }
 
@@ -52,15 +52,19 @@ class UpdateRequest extends FormRequest
             'lesson_id.exists' => 'Bài học không tồn tại',
             'name.required' => 'Tên video không được để trống',
             'name.max' => 'Tên video không được vượt quá 255 ký tự',
-            'videoUrl.file' => 'File video không hợp lệ',
-            'videoUrl.mimetypes' => 'File video phải có định dạng MP4, MOV, WMV, AVI hoặc FLV',
-            'videoUrl.max' => 'File video không được vượt quá 500MB',
-            'videoType.required_with' => 'Loại video không được để trống khi có file video',
+            'video_url.file' => 'File video không hợp lệ',
+            'video_url.mimetypes' => 'File video phải có định dạng MP4, MOV, WMV, AVI hoặc FLV',
+            'video_url.max' => 'File video không được vượt quá 500MB',
+            'video_type.required_with' => 'Loại video không được để trống khi có file video',
+            'video_type.string' => 'Loại video phải là chuỗi ký tự',
             'duration.required' => 'Thời lượng không được để trống',
             'duration.integer' => 'Thời lượng phải là số nguyên',
-            'thumbnail.image' => 'File thumbnail phải là hình ảnh',
-            'thumbnail.mimes' => 'Ảnh thumbnail phải có định dạng JPEG, PNG, JPG hoặc GIF',
-            'thumbnail.max' => 'Ảnh thumbnail không được vượt quá 2MB'
+            'duration.min' => 'Thời lượng phải lớn hơn 0',
+            'thumbnail_url.image' => 'File thumbnail phải là hình ảnh',
+            'thumbnail_url.mimes' => 'Ảnh thumbnail phải có định dạng JPEG, PNG, JPG hoặc GIF',
+            'thumbnail_url.max' => 'Ảnh thumbnail không được vượt quá 2MB',
+            'is_downloadable.boolean' => 'Cho phép tải xuống phải là giá trị boolean',
+            'is_preview.boolean' => 'Cho phép xem thử phải là giá trị boolean'
         ];
     }
 
@@ -74,10 +78,23 @@ class UpdateRequest extends FormRequest
         return [
             'lesson_id' => 'Bài học',
             'name' => 'Tên video',
-            'videoUrl' => 'File video',
-            'videoType' => 'Loại video',
+            'video_url' => 'File video',
+            'video_type' => 'Loại video',
             'duration' => 'Thời lượng',
-            'thumbnail' => 'Ảnh thumbnail'
+            'thumbnail_url' => 'Ảnh thumbnail',
+            'is_downloadable' => 'Cho phép tải xuống',
+            'is_preview' => 'Cho phép xem thử'
         ];
+    }
+
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        throw new \Illuminate\Http\Exceptions\HttpResponseException(
+            response()->json([
+                'status' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422)
+        );
     }
 }
