@@ -30,7 +30,7 @@
                 <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 align-items-center ms-1">
                     <li class="nav-item">
                         <a class="nav-link header-dropdown ps-2 text-nowrap bg-white text-dark hover-effect active-effect"
-                            href="#" id="navbarDropdown1">
+                            href="{{ route('category.index') }}" id="navbarDropdown1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="feather feather-grid">
@@ -66,7 +66,7 @@
                 <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 ms-2">
                     <li class="nav-item">
                         <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap hover-effect active-effect"
-                            href="addons/bootcamp/bootcamp_list.html" id="navbarDropdown4">
+                            href="{{ route('practice-tests.index') }}" id="navbarDropdown4">
                             <span class="ms-2">Thi thử Toeic</span>
                         </a>
                     </li>
@@ -239,43 +239,16 @@
 
                         <!-- Danh mục -->
                         <li class="bg-light">
-                            <button
-                                class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 collapsed hover-effect active-effect"
-                                data-bs-toggle="collapse" data-bs-target="#category-collapse" aria-expanded="false">
+                            <a href="{{ route('category.index') }}"
+                                class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 hover-effect active-effect">
                                 <i class="fas fa-th-large me-2"></i>
-                                Danh mục </button>
-                            <div class="collapse" id="category-collapse">
-                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small bg-white pt-2">
-                                    @foreach ($categories as $category)
-                                    <li>
-                                        <button
-                                            class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 collapsed hover-effect"
-                                            data-bs-toggle="collapse" data-bs-target="#subCategory-collapse{{ $category->id }}"
-                                            aria-expanded="false">
-                                            <span class="text-cat">{{ $category->name }}</span>
-                                        </button>
-                                        @if ($category->courses->count() > 0)
-                                        <div class="collapse" id="subCategory-collapse{{ $category->id }}">
-                                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                                @foreach ($category->courses as $course)
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100 hover-effect"
-                                                        href="{{ route('detailCourse', $course->slug) }}"
-                                                        style="padding-left: 35px;">{{ $course->name }}</a>
-                                                </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                        @endif
-                                    </li>
-                                    @endforeach
-                                </ul>
-                            </div>
+                                Danh mục
+                            </a>
                         </li>
 
                         <!-- Thi thử Toeic -->
                         <li class="bg-light">
-                            <a href="addons/bootcamp/bootcamp_list.html"
+                            <a href="{{ route('practice-tests.index') }}"
                                 class="btn btn-toggle-list d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 hover-effect active-effect">
                                 <i class="fas fa-book me-2"></i> Thi thử Toeic</a>
                         </li>

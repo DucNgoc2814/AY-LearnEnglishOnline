@@ -1,0 +1,110 @@
+/* Banner Section Styles */
+.h-1-banner {
+    padding: 80px 0;
+    background: linear-gradient(to right, #f8f9fa 50%, #ffffff 50%);
+}
+
+.h-1-banner-text h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #2c3e50;
+}
+
+.h-1-banner-text h1 span {
+    color: #3498db;
+}
+
+.h-1-banner-text p {
+    font-size: 1.25rem;
+    color: #666;
+    max-width: 500px;
+}
+
+.banner-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.bannar-card {
+    margin-top: 50px;
+}
+
+.banner-card-1 {
+    transition: all 0.3s ease;
+}
+
+.banner-card-1:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.banner-card-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .h-1-banner-text h1 {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .h-1-banner {
+        background: #f8f9fa;
+        padding: 60px 0;
+    }
+
+    .h-1-banner-text {
+        text-align: center;
+    }
+
+    .h-1-banner-text p {
+        margin: 0 auto;
+    }
+
+    .banner-buttons {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .h-1-banner {
+        padding: 40px 0;
+    }
+
+    .h-1-banner-text h1 {
+        font-size: 2.5rem;
+    }
+
+    .h-1-banner-text p {
+        font-size: 1.1rem;
+    }
+
+    .bannar-card {
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .h-1-banner-text h1 {
+        font-size: 2rem;
+    }
+
+    .banner-buttons {
+        flex-direction: column;
+    }
+
+    .banner-buttons .btn {
+        width: 100%;
+    }
+} 

@@ -8,6 +8,7 @@ use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\PaymentController;
 use App\Http\Controllers\Client\CommentController;
 use App\Http\Controllers\Client\TestResultController;
+use App\Http\Controllers\Client\PracticeTestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,9 @@ Route::get('/', function () {
 
 Route::get('/trang-chu', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Route cho trang thi thử
+Route::get('/thi-thu-toeic', [PracticeTestController::class, 'index'])->name('practice-tests.index');
 
 // Đặt tất cả routes auth trong middleware web
 Route::middleware('web')->group(function () {
@@ -80,5 +84,12 @@ Route::middleware('web')->group(function () {
 
         Route::post('/test/{test}/submit', [TestResultController::class, 'submit'])->name('test.submit');
         Route::get('/test/{test}/retry', [TestResultController::class, 'retry'])->name('test.retry');
+    });
+
+    // Lesson routes
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/lessons/{lessonId}/{enrollmentId}', function ($lessonId, $enrollmentId) {
+            return view('lessons.view', compact('lessonId', 'enrollmentId'));
+        })->name('lessons.view');
     });
 });
