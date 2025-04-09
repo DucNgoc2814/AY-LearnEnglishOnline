@@ -23,12 +23,21 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
+// Direct video streaming route with no middleware
+Route::get('/stream-video/{videoId}', [CourseController::class, 'streamVideo'])->name('stream.video');
+
+// Direct video retrieval route with simple headers
+Route::get('/direct-video/{videoId}', [CourseController::class, 'directVideo'])->name('direct.video');
+
 Route::get('/', function () {
     return view('client.index');
 });
 
 Route::get('/trang-chu', [HomeController::class, 'index'])->name('home');
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Video proxy route - completely public, outside of all middleware groups
+Route::get('/video-proxy/{videoId}', [CourseController::class, 'videoProxy'])->name('video.proxy');
 
 // Route cho trang thi thử
 Route::get('/thi-thu-toeic', [PracticeTestController::class, 'index'])->name('practice-tests.index');
