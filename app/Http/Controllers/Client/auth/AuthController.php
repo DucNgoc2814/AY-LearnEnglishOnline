@@ -10,14 +10,17 @@ use App\Services\DeviceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 /**
  * @package App\Http\Controllers\Client\Auth
@@ -51,6 +54,8 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request): RedirectResponse
     {
+        $request = $this->sanitizeRequest($request);
+
         try {
             DB::table('users')->insert([
                 'name' => $request->name,
@@ -84,8 +89,15 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         // Nếu đã đăng nhập, chuyển hướng về trang chủ
-        if (Auth::check()) {
-            return redirect()->route('home');
+        if (session('jwt_token')) {
+            try {
+                // Validate token
+                JWTAuth::setToken(session('jwt_token'))->authenticate();
+                return redirect()->route('home');
+            } catch (\Exception $e) {
+                // Token is invalid, clear session and continue
+                Session::flush();
+            }
         }
 
         // Trả về view login
@@ -100,9 +112,22 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): RedirectResponse
     {
-        // Nếu đã đăng nhập, chuyển hướng về trang chủ
-        if (Auth::check()) {
-            return redirect()->route('home');
+        // Lưu token CSRF hiện tại
+        $currentToken = $request->session()->token();
+
+        // Đặt lại CSRF token mới
+        $request->session()->regenerateToken();
+
+        // Nếu đã đăng nhập (có JWT token), chuyển hướng về trang chủ
+        if (session('jwt_token')) {
+            try {
+                // Validate token
+                JWTAuth::setToken(session('jwt_token'))->authenticate();
+                return redirect()->route('home');
+            } catch (\Exception $e) {
+                // Token is invalid, clear session and continue
+                Session::flush();
+            }
         }
 
         // Reset các khóa hết hạn
@@ -146,6 +171,15 @@ class AuthController extends Controller
                     ]);
             }
 
+            // Check for force logout option
+            $forceLogout = $request->boolean('force_logout');
+            $forceLogoutToken = $request->input('force_logout_token');
+
+            // If has force logout token from session but not from request
+            if (session('force_logout_token') && !$forceLogoutToken) {
+                $forceLogoutToken = session('force_logout_token');
+            }
+
             // Đặt khóa đăng nhập trong 10 giây
             DB::table('users')
                 ->where('id', $userRecord->id)
@@ -170,17 +204,23 @@ class AuthController extends Controller
                 }
 
                 // Kiểm tra thiết bị hiện tại với thiết bị đã đăng nhập
-                if ($latestUser->device_id && $latestUser->device_id !== $deviceId) {
+                if (!$forceLogout && $latestUser->device_id && $latestUser->device_id !== $deviceId) {
                     // Xác thực token hiện tại
                     try {
                         $tokenValid = $latestUser->active_token ?
                             JWTAuth::setToken($latestUser->active_token)->check() : false;
 
                         if ($tokenValid) {
+                            // Provide option for force logout
+                            $forceLogoutToken = Str::random(40);
+                            session(['force_logout_token' => $forceLogoutToken]);
+                            session(['temp_password' => $request->password]);
+
                             return back()->withInput(['email' => $request->email])
+                                ->with('force_logout_option', true)
                                 ->with('notification', [
-                                    'message' => 'Tài khoản này đang được đăng nhập trên thiết bị khác. Vui lòng đăng xuất thiết bị đó trước.',
-                                    'type' => 'error'
+                                    'message' => 'Tài khoản này đang được đăng nhập trên thiết bị khác.',
+                                    'type' => 'warning'
                                 ]);
                         }
                     } catch (\Exception $e) {
@@ -201,14 +241,11 @@ class AuthController extends Controller
                     }
                 }
 
-                // Lấy đối tượng User cho Auth
+                // Lấy đối tượng User cho JWT
                 $user = User::find($latestUser->id);
                 if (!$user) {
                     throw new \Exception("Không tìm thấy người dùng id: {$latestUser->id}");
                 }
-
-                // Đăng nhập người dùng
-                Auth::login($user, $request->boolean('remember'));
 
                 // Tạo JWT token mới
                 $token = JWTAuth::fromUser($user);
@@ -218,16 +255,30 @@ class AuthController extends Controller
                     ->where('id', $latestUser->id)
                     ->update([
                         'device_id' => $deviceId,
-                        'active_token' => $token,
-                        'last_login_at' => now(),
                         'login_lock' => null,
-                        'login_lock_expires_at' => null
+                        'login_lock_expires_at' => null,
+                        'active_token' => $token,
+                        'last_login_at' => now()
                     ]);
 
                 // Lưu token vào session
                 session(['jwt_token' => $token]);
 
-                return redirect()->intended(route('home'))
+                // Xóa khóa phiên cũ
+                session()->forget([
+                    'force_logout_option',
+                    'force_logout_token',
+                    'temp_password'
+                ]);
+
+                // Kiểm tra xem có URL dự định không
+                $intendedUrl = session('intended_url');
+                if ($intendedUrl) {
+                    session()->forget('intended_url');
+                    return redirect()->to($intendedUrl);
+                }
+
+                return redirect()->route('home')
                     ->with('notification', [
                         'message' => 'Đăng nhập thành công!',
                         'type' => 'success'
@@ -265,7 +316,18 @@ class AuthController extends Controller
     public function logout(Request $request): RedirectResponse
     {
         try {
-            $user = Auth::user();
+            // Get user from JWT token
+            $token = session('jwt_token');
+            $user = null;
+
+            if ($token) {
+                try {
+                    $user = JWTAuth::setToken($token)->authenticate();
+                } catch (\Exception $e) {
+                    // Token is invalid, continue with logout
+                    Log::info('Invalid token during logout', ['error' => $e->getMessage()]);
+                }
+            }
 
             if ($user) {
                 // Đảm bảo xóa khóa đăng nhập cùng lúc với thông tin thiết bị
@@ -279,7 +341,7 @@ class AuthController extends Controller
                     ]);
 
                 // Vô hiệu hóa JWT token nếu có
-                if ($token = session('jwt_token')) {
+                if ($token) {
                     try {
                         JWTAuth::setToken($token)->invalidate();
                     } catch (\Exception $e) {
@@ -288,8 +350,10 @@ class AuthController extends Controller
                 }
             }
 
-            // Đăng xuất
-            Auth::logout();
+            // Xóa cookie nếu có
+            if (Cookie::has('remember_token')) {
+                Cookie::queue(Cookie::forget('remember_token'));
+            }
 
             // Xóa tất cả dữ liệu session
             Session::flush();
@@ -297,10 +361,11 @@ class AuthController extends Controller
             // Xóa dữ liệu trình duyệt và chuyển hướng đến URL tuyệt đối
             $loginUrl = route('login');
             $script = "
-                <script>
+                <script nonce=\"".csrf_token()."\">
                     localStorage.clear();
                     sessionStorage.clear();
-                    window.location.replace('{$loginUrl}');
+                    sessionStorage.setItem('auto_logout', '1');
+                    window.location.replace('".e($loginUrl)."');
                 </script>
             ";
 
@@ -339,20 +404,51 @@ class AuthController extends Controller
      */
     public function sessionStatus(Request $request): JsonResponse
     {
-        try {
-            $user = Auth::user();
+        $request = $this->sanitizeRequest($request);
 
-            if (!$user) {
+        try {
+            $token = session('jwt_token');
+
+            if (!$token) {
                 return response()->json([
                     'active' => false,
                     'reason' => 'not_authenticated'
                 ]);
             }
 
-            // Lấy thông tin người dùng từ database
+            try {
+                JWTAuth::setToken($token);
+                $user = JWTAuth::authenticate();
+
+                if (!$user) {
+                    return response()->json([
+                        'active' => false,
+                        'reason' => 'invalid_token'
+                    ]);
+                }
+            } catch (TokenExpiredException $e) {
+                Session::flush();
+                return response()->json([
+                    'active' => false,
+                    'reason' => 'token_expired'
+                ]);
+            } catch (TokenInvalidException $e) {
+                Session::flush();
+                return response()->json([
+                    'active' => false,
+                    'reason' => 'token_invalid'
+                ]);
+            } catch (JWTException $e) {
+                Session::flush();
+                return response()->json([
+                    'active' => false,
+                    'reason' => 'token_error'
+                ]);
+            }
+
+            // Kiểm tra thông tin người dùng từ database
             $userRecord = DB::table('users')->find($user->id);
             if (!$userRecord) {
-                Auth::logout();
                 Session::flush();
                 return response()->json([
                     'active' => false,
@@ -365,7 +461,6 @@ class AuthController extends Controller
             // Kiểm tra nếu thiết bị hiện tại không khớp với thiết bị đã đăng nhập
             if ($userRecord->device_id !== $currentDeviceId) {
                 // Đăng xuất phiên hiện tại
-                Auth::logout();
                 Session::flush();
 
                 // Tạo script để xóa dữ liệu và chuyển hướng
@@ -374,6 +469,7 @@ class AuthController extends Controller
                     <script>
                         localStorage.clear();
                         sessionStorage.clear();
+                        sessionStorage.setItem('auto_logout', '1');
                         window.location.replace('{$loginUrl}');
                     </script>
                 ";
@@ -387,8 +483,7 @@ class AuthController extends Controller
             }
 
             // Kiểm tra token
-            if (!session('jwt_token') || $userRecord->active_token !== session('jwt_token')) {
-                Auth::logout();
+            if ($userRecord->active_token !== $token) {
                 Session::flush();
 
                 return response()->json([
@@ -419,10 +514,30 @@ class AuthController extends Controller
      */
     public function checkAuth(Request $request): JsonResponse
     {
-        try {
-            $user = Auth::user();
+        $request = $this->sanitizeRequest($request);
 
-            if (!$user) {
+        try {
+            $token = session('jwt_token');
+
+            if (!$token) {
+                return response()->json(['authenticated' => false]);
+            }
+
+            try {
+                JWTAuth::setToken($token);
+                $user = JWTAuth::authenticate();
+
+                if (!$user) {
+                    return response()->json(['authenticated' => false]);
+                }
+            } catch (TokenExpiredException $e) {
+                Session::flush();
+                return response()->json(['authenticated' => false]);
+            } catch (TokenInvalidException $e) {
+                Session::flush();
+                return response()->json(['authenticated' => false]);
+            } catch (JWTException $e) {
+                Session::flush();
                 return response()->json(['authenticated' => false]);
             }
 
@@ -431,7 +546,6 @@ class AuthController extends Controller
             $userRecord = DB::table('users')->find($user->id);
 
             if (!$userRecord) {
-                Auth::logout();
                 Session::flush();
                 return response()->json([
                     'authenticated' => false,
@@ -441,7 +555,6 @@ class AuthController extends Controller
 
             // Kiểm tra nếu có phiên đăng nhập đang được xử lý
             if ($userRecord->login_lock && $userRecord->login_lock_expires_at && $userRecord->login_lock_expires_at > now()) {
-                Auth::logout();
                 Session::flush();
 
                 $loginUrl = route('login');
@@ -449,6 +562,7 @@ class AuthController extends Controller
                     <script>
                         localStorage.clear();
                         sessionStorage.clear();
+                        sessionStorage.setItem('auto_logout', '1');
                         window.location.replace('{$loginUrl}');
                     </script>
                 ";
@@ -462,7 +576,6 @@ class AuthController extends Controller
 
             // Kiểm tra nếu thiết bị hiện tại không khớp với thiết bị đã đăng nhập
             if ($userRecord->device_id !== $deviceId) {
-                Auth::logout();
                 Session::flush();
 
                 $loginUrl = route('login');
@@ -470,6 +583,7 @@ class AuthController extends Controller
                     <script>
                         localStorage.clear();
                         sessionStorage.clear();
+                        sessionStorage.setItem('auto_logout', '1');
                         window.location.replace('{$loginUrl}');
                     </script>
                 ";
@@ -482,8 +596,7 @@ class AuthController extends Controller
             }
 
             // Kiểm tra token
-            if (!session('jwt_token') || $userRecord->active_token !== session('jwt_token')) {
-                Auth::logout();
+            if ($userRecord->active_token !== $token) {
                 Session::flush();
 
                 $loginUrl = route('login');
@@ -491,6 +604,7 @@ class AuthController extends Controller
                     <script>
                         localStorage.clear();
                         sessionStorage.clear();
+                        sessionStorage.setItem('auto_logout', '1');
                         window.location.replace('{$loginUrl}');
                     </script>
                 ";
@@ -520,7 +634,20 @@ class AuthController extends Controller
      */
     public function scheduleLogout(Request $request)
     {
-        $user = Auth::user();
+        $request = $this->sanitizeRequest($request);
+
+        $token = session('jwt_token');
+        $user = null;
+
+        if ($token) {
+            try {
+                $user = JWTAuth::setToken($token)->authenticate();
+            } catch (\Exception $e) {
+                // Token is invalid
+                Log::warning('Invalid token in scheduleLogout', ['error' => $e->getMessage()]);
+            }
+        }
+
         $browserId = $request->input('browser_id') ?? $request->query('browser_id') ?? $request->header('X-Browser-ID');
         $delay = max(0, intval($request->input('delay', 30))); // Ensure delay is not negative
         $forceLogout = $request->input('force', 0) || $delay === 0;
@@ -613,7 +740,20 @@ class AuthController extends Controller
      */
     public function cancelLogout(Request $request)
     {
-        $user = Auth::user();
+        $request = $this->sanitizeRequest($request);
+
+        $token = session('jwt_token');
+        $user = null;
+
+        if ($token) {
+            try {
+                $user = JWTAuth::setToken($token)->authenticate();
+            } catch (\Exception $e) {
+                // Token is invalid
+                Log::warning('Invalid token in cancelLogout', ['error' => $e->getMessage()]);
+            }
+        }
+
         $browserId = $request->input('browser_id') ?? $request->query('browser_id') ?? $request->header('X-Browser-ID');
 
         Log::info('Cancel logout request received', [
@@ -670,6 +810,8 @@ class AuthController extends Controller
      */
     public function checkScheduledLogout(Request $request)
     {
+        $request = $this->sanitizeRequest($request);
+
         // Get all pending keys
         $pendingKeys = cache()->get('pending_logout_keys', []);
         $result = [];
@@ -717,7 +859,18 @@ class AuthController extends Controller
     private function forceLogout(): void
     {
         try {
-            $user = Auth::user();
+            // Get user from JWT token
+            $token = session('jwt_token');
+            $user = null;
+
+            if ($token) {
+                try {
+                    $user = JWTAuth::setToken($token)->authenticate();
+                } catch (\Exception $e) {
+                    // Token is invalid
+                    Log::warning('Invalid token in forceLogout', ['error' => $e->getMessage()]);
+                }
+            }
 
             if ($user) {
                 DB::table('users')
@@ -728,10 +881,54 @@ class AuthController extends Controller
                     ]);
             }
 
-            Auth::logout();
             Session::flush();
         } catch (\Exception $e) {
             Log::error('Force logout failed', ['error' => $e->getMessage()]);
         }
+    }
+
+    /**
+     * Làm sạch dữ liệu đầu vào để ngăn chặn XSS
+     *
+     * @param mixed $data
+     * @return mixed
+     */
+    private function sanitizeInput($data)
+    {
+        if (is_string($data)) {
+            // Loại bỏ các script tag và các thuộc tính nguy hiểm
+            $data = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $data);
+            $data = preg_replace('/on\w+="[^"]*"/i', '', $data);
+            $data = preg_replace('/on\w+=\'[^\']*\'/i', '', $data);
+
+            // HTML encode các ký tự đặc biệt để tránh XSS
+            return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+        } elseif (is_array($data)) {
+            foreach ($data as $key => $value) {
+                $data[$key] = $this->sanitizeInput($value);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Xử lý dữ liệu đầu vào từ request
+     *
+     * @param Request $request
+     * @return Request
+     */
+    private function sanitizeRequest(Request $request): Request
+    {
+        // Lấy tất cả tham số từ request
+        $inputs = $request->all();
+
+        // Làm sạch từng tham số
+        $sanitizedInputs = $this->sanitizeInput($inputs);
+
+        // Áp dụng lại các tham số đã làm sạch vào request
+        $request->replace($sanitizedInputs);
+
+        return $request;
     }
 }

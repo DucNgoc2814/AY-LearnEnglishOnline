@@ -1,7 +1,7 @@
 @extends('client.layouts.master')
 
 @section('content')
-    <div class="container py-4">
+    <div id="payment-container" class="container py-4">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-8">
                 <div class="card">
@@ -13,10 +13,22 @@
                     </div>
 
                     <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-12 text-center">
+                                <h4 class="mb-3">Thanh toán khóa học: <span class="text-primary">{{ isset($courseName) ? $courseName : 'Khóa học' }}</span></h4>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-12 col-md-6 text-center mb-4 mb-md-0">
-                                <h4 class="mb-3">Quét mã QR để thanh toán</h4>
-                                <img src="{{ $qrCodeUrl }}" alt="QR Code" class="img-fluid" style="max-width: 200px;">
+                                <h5 class="mb-3">Quét mã QR để thanh toán</h5>
+                                @if(isset($qrCodeUrl) && !empty($qrCodeUrl))
+                                    <img src="{{ $qrCodeUrl }}" alt="QR Code" class="img-fluid" style="max-width: 200px;">
+                                @else
+                                    <div class="alert alert-warning">
+                                        Không thể tạo mã QR. Vui lòng chuyển khoản thủ công.
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="col-12 col-md-6">
@@ -56,6 +68,14 @@
                                 </small>
                             </div>
                         </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12 text-center">
+                                <a href="{{ route('detailCourse', $courseId) }}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-arrow-left"></i> Quay lại khóa học
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -66,12 +86,34 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Kiểm tra QR code
+            const qrImage = document.querySelector('img[alt="QR Code"]');
+            if (qrImage) {
+                // Thêm sự kiện khi tải ảnh
+                qrImage.addEventListener('error', function() {
+                    // Ảnh lỗi - thay bằng thông báo
+                    this.style.display = 'none';
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-warning mt-3';
+                    alertDiv.innerHTML = 'Không thể tải mã QR. Vui lòng chuyển khoản thủ công theo thông tin bên phải.';
+                    this.parentNode.appendChild(alertDiv);
+                });
+
+                // Đảm bảo ảnh hiển thị
+                qrImage.addEventListener('load', function() {
+                    this.style.display = 'inline-block';
+                });
+            }
+
+            // Đánh dấu đang trong quá trình thanh toán để tránh redirect
+            sessionStorage.setItem('in_payment_process', 'true');
+
             const countdownElement = document.getElementById('countdown');
             const courseId = '{{ $courseId }}';
             const transferCode = '{{ $transferCode }}';
             const serverStartTime = {{ $startTime }};
             const serverExpiryTime = {{ $expiryTime }};
-            
+
             // Hàm để lưu trạng thái thanh toán
             function savePaymentState() {
                 const paymentState = {
@@ -79,11 +121,12 @@
                     expiryTime: serverExpiryTime,
                     courseId: courseId,
                     transferCode: transferCode,
-                    previousUrl: document.referrer && !document.referrer.includes(window.location.pathname) 
-                        ? document.referrer 
-                        : localStorage.getItem(`previous_url_${courseId}`) || '/'
+                    previousUrl: document.referrer && !document.referrer.includes(window.location.pathname)
+                        ? document.referrer
+                        : localStorage.getItem(`previous_url_${courseId}`) || '/',
+                    csrfToken: window.Laravel?.csrfToken || document.querySelector('meta[name="csrf-token"]')?.content || ''
                 };
-                
+
                 // Lưu state vào localStorage
                 localStorage.setItem('payment_state', JSON.stringify(paymentState));
                 return paymentState;
@@ -93,12 +136,12 @@
             function getPaymentState() {
                 const stateStr = localStorage.getItem('payment_state');
                 if (!stateStr) return null;
-                
+
                 try {
                     const state = JSON.parse(stateStr);
                     // Kiểm tra xem state có khớp với phiên hiện tại không
-                    if (state.courseId === courseId && 
-                        state.transferCode === transferCode && 
+                    if (state.courseId === courseId &&
+                        state.transferCode === transferCode &&
                         state.startTime === serverStartTime) {
                         return state;
                     }
@@ -114,14 +157,19 @@
             function updateCountdown() {
                 const now = Date.now();
                 const timeLeft = paymentState.expiryTime - now;
-                
+
                 if (timeLeft <= 0) {
                     clearInterval(interval);
                     clearInterval(checkPaymentStatus);
-                    
+
+                    // Lưu CSRF token vào sessionStorage trước khi chuyển hướng
+                    if (paymentState.csrfToken) {
+                        sessionStorage.setItem('saved_csrf_token', paymentState.csrfToken);
+                    }
+
                     // Xóa state khi hết hạn
                     localStorage.removeItem('payment_state');
-                    
+
                     alert('Phiên thanh toán đã hết hạn!');
                     window.location.href = paymentState.previousUrl;
                     return;
@@ -139,40 +187,43 @@
             // Kiểm tra trạng thái thanh toán mỗi 30 giây
             const checkPaymentStatus = setInterval(async () => {
                 try {
-                    const response = await fetch('{{ route('payment.check-expiry') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        },
-                        body: JSON.stringify({
-                            start_time: paymentState.startTime,
-                            course_id: courseId
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.expired) {
+                    // Kiểm tra hết hạn theo thời gian client
+                    const now = Date.now();
+                    if (now > paymentState.expiryTime) {
+                        console.log("Phiên thanh toán hết hạn (kiểm tra theo client)");
                         clearInterval(checkPaymentStatus);
                         clearInterval(interval);
-                        
-                        // Xóa state
+
+                        const savedUrl = sessionStorage.getItem('last_valid_url');
+                        const previousUrl = savedUrl || '/';
+
+                        // Lưu CSRF token
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                        if (csrfToken) {
+                            sessionStorage.setItem('saved_csrf_token', csrfToken);
+                        }
+
+                        // Xóa trạng thái thanh toán
                         localStorage.removeItem('payment_state');
-                        
+                        sessionStorage.removeItem('in_payment_process');
+
                         alert('Phiên thanh toán đã hết hạn!');
-                        window.location.href = paymentState.previousUrl;
+                        window.location.href = previousUrl;
+                        return;
                     }
                 } catch (error) {
-                    console.error('Error checking payment status:', error);
+                    console.error('Error in payment status check:', error);
                 }
             }, 30000);
 
             // Cleanup khi rời trang
             window.addEventListener('beforeunload', (event) => {
+                // Xóa trạng thái đang thanh toán
+                sessionStorage.removeItem('in_payment_process');
+
                 // Chỉ xóa state khi thực sự rời khỏi trang (không phải refresh)
-                if (!event.currentTarget.performance.navigation.back_forward && 
-                    !document.hidden && 
+                if (!event.currentTarget.performance.navigation.back_forward &&
+                    !document.hidden &&
                     !window.location.href.includes(window.location.pathname)) {
                     localStorage.removeItem('payment_state');
                 }
@@ -200,25 +251,25 @@
                     // Tạo element textarea tạm thời
                     const textArea = document.createElement('textarea');
                     textArea.value = text;
-                    
+
                     // Đảm bảo textarea không hiển thị
                     textArea.style.position = 'fixed';
                     textArea.style.left = '-999999px';
                     textArea.style.top = '-999999px';
                     document.body.appendChild(textArea);
-                    
+
                     // Lưu vị trí focus hiện tại
                     const focused = document.activeElement;
-                    
+
                     // Select và copy text
                     textArea.focus();
                     textArea.select();
-                    
+
                     try {
                         document.execCommand('copy');
                         textArea.remove();
                         showNotification('Đã sao chép!', 'success');
-                        
+
                         // Khôi phục focus
                         if (focused && typeof focused.focus === 'function') {
                             focused.focus();
@@ -237,7 +288,7 @@
                 const notification = document.createElement('div');
                 notification.className = `notification ${type}`;
                 notification.textContent = message;
-                
+
                 // Style cho notification
                 Object.assign(notification.style, {
                     position: 'fixed',

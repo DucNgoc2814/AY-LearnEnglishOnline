@@ -108,12 +108,12 @@
                         </div>
                     </form>
                     <div class="navbar-nav main-nav-wrap mb-2 mb-lg-0 ms-2">
-                        @if (Auth::check())
+                        @if (session('jwt_token') && isset($auth_user))
                             <div class="menu_pro_tgl_div ms-2">
                                 <div class="menu_pro_tgl_2div">
                                     <a class="menu_pro_tgl profile-dropdown my-auto" href="#">
-                                        @if (Auth::user()->avatar)
-                                            <img loading="lazy" src="{{ Auth::user()->avatar }}" alt="User Image"
+                                        @if ($auth_user->avatar)
+                                            <img loading="lazy" src="{{ $auth_user->avatar }}" alt="User Image"
                                                 style="margin: auto;">
                                         @else
                                             <i class="fa-solid fa-user-circle fa-3x"></i>
@@ -122,14 +122,14 @@
                                     <div class="menu_pro_tgl_bg">
                                         <div class="">
                                             <div class="text-center p-3">
-                                                @if (Auth::user()->avatar)
+                                                @if ($auth_user->avatar)
                                                     <img loading="lazy" class="profile-image rounded-circle mb-3"
-                                                        src="{{ asset(Auth::user()->avatar) }}" alt="Profile">
+                                                        src="{{ asset($auth_user->avatar) }}" alt="Profile">
                                                 @else
                                                     <i class="fa-solid fa-user-circle fa-7x mb-3"></i>
                                                 @endif
-                                                <h4 class="mb-1">{{ Auth::user()->name }}</h4>
-                                                <span class="text-muted">{{ Auth::user()->email }}</span>
+                                                <h4 class="mb-1">{{ $auth_user->name }}</h4>
+                                                <span class="text-muted">{{ $auth_user->email }}</span>
                                             </div>
                                             <ul class="user-dropdown-menu">
                                                 <li class="user-dropdown-menu-item">
@@ -147,12 +147,9 @@
                                                     </a>
                                                 </li>
                                                 <li class="user-dropdown-menu-item">
-                                                    <form action="{{ route('logout') }}" method="POST"
-                                                        class="d-inline">
+                                                    <form action="{{ route('logout') }}" method="POST" class="d-inline" id="logout-form">
                                                         @csrf
-                                                        <a href="javascript:void(0)"
-                                                            onclick="this.closest('form').submit()"
-                                                            class="d-flex align-items-center">
+                                                        <a href="#" class="logout-link d-flex align-items-center">
                                                             <i class="fas fa-sign-out-alt me-2"></i>
                                                             <span class="text-cat">Đăng xuất</span>
                                                         </a>
@@ -214,11 +211,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
                     <div class="offcanves-btn">
-                        @if (Auth::check())
+                        @if (session('jwt_token') && isset($auth_user))
                             <a href="{{ route('profile.index') }}" class="signUp-btn">Tài khoản</a>
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline" id="mobile-logout-form">
                                 @csrf
-                                <a href="javascript:void(0)" onclick="this.closest('form').submit()" class="logIn-btn">Đăng xuất</a>
+                                <a href="#" class="logout-link-mobile logIn-btn" style="cursor: pointer; background: none; border: none;">Đăng
+                                    xuất</a>
                             </form>
                         @else
                             <a href="{{ route('register') }}" class="signUp-btn">Đăng ký</a>
@@ -247,27 +245,28 @@
                             <div class="collapse" id="category-collapse">
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small bg-white pt-2">
                                     @foreach ($categories as $category)
-                                    <li>
-                                        <button
-                                            class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 collapsed hover-effect"
-                                            data-bs-toggle="collapse" data-bs-target="#subCategory-collapse{{ $category->id }}"
-                                            aria-expanded="false">
-                                            <span class="text-cat">{{ $category->name }}</span>
-                                        </button>
-                                        @if ($category->courses->count() > 0)
-                                        <div class="collapse" id="subCategory-collapse{{ $category->id }}">
-                                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                                @foreach ($category->courses as $course)
-                                                <li>
-                                                    <a class="text-dark text-14px fw-400 w-100 hover-effect"
-                                                        href="{{ route('detailCourse', $course->slug) }}"
-                                                        style="padding-left: 35px;">{{ $course->name }}</a>
-                                                </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                        @endif
-                                    </li>
+                                        <li>
+                                            <button
+                                                class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-15px fw-400 collapsed hover-effect"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#subCategory-collapse{{ $category->id }}"
+                                                aria-expanded="false">
+                                                <span class="text-cat">{{ $category->name }}</span>
+                                            </button>
+                                            @if ($category->courses->count() > 0)
+                                                <div class="collapse" id="subCategory-collapse{{ $category->id }}">
+                                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                                        @foreach ($category->courses as $course)
+                                                            <li>
+                                                                <a class="text-dark text-14px fw-400 w-100 hover-effect"
+                                                                    href="{{ route('detailCourse', $course->slug) }}"
+                                                                    style="padding-left: 35px;">{{ $course->name }}</a>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                        </li>
                                     @endforeach
                                 </ul>
                             </div>
@@ -309,7 +308,8 @@
 
         /* Hiệu ứng hover */
         .navbar-nav .nav-item .nav-link.hover-effect:hover {
-            color: #ff6600 !important; /* Màu cam (phù hợp với logo của bạn) */
+            color: #ff6600 !important;
+            /* Màu cam (phù hợp với logo của bạn) */
         }
 
         /* Hiệu ứng gạch chân khi hover */
@@ -346,7 +346,7 @@
             position: absolute;
             background: white;
             min-width: 220px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             z-index: 1000;
             border-radius: 4px;
             padding: 8px 0;
@@ -359,8 +359,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Style cho các mục trong dropdown */
@@ -395,7 +402,7 @@
             top: 0;
             background: white;
             min-width: 200px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             border-radius: 4px;
             padding: 8px 0;
         }
@@ -404,45 +411,49 @@
             display: block;
             animation: fadeIn 0.3s ease;
         }
-        
+
         /* CSS cho menu mobile */
         @media (max-width: 991.98px) {
+
             /* Style cho các nút trong menu mobile */
-            .btn-toggle-list, .btn-toggle {
+            .btn-toggle-list,
+            .btn-toggle {
                 padding: 10px 15px;
                 width: 100%;
                 text-align: left;
                 transition: all 0.3s ease;
             }
-            
-            .btn-toggle-list:hover, .btn-toggle:hover {
+
+            .btn-toggle-list:hover,
+            .btn-toggle:hover {
                 color: #ff6600 !important;
                 background-color: #f8f9fa;
             }
-            
-            .btn-toggle-list.active, .btn-toggle.active {
+
+            .btn-toggle-list.active,
+            .btn-toggle.active {
                 color: #ff6600 !important;
             }
-            
+
             /* Ẩn các hình ảnh không cần thiết trên mobile */
             .mobile-view-offcanves img,
             .mobile-view-offcanves svg:not(.fa-*) {
                 display: none !important;
             }
-            
+
             /* Cải thiện menu mobile - loại bỏ khoảng cách thừa */
             .offcanvas-body .flex-shrink-0 {
                 margin-top: 0 !important;
             }
-            
+
             .offcanvas-body ul.list-unstyled {
                 padding: 0 !important;
             }
-            
+
             .offcanvas-body .list-unstyled li {
                 margin-bottom: 5px;
             }
-            
+
             /* Cải thiện dropdown trong mobile */
             .offcanvas-body .collapse {
                 padding-left: 15px;
@@ -451,3 +462,34 @@
     </style>
 @endpush
 
+<script nonce="{{ csrf_token() }}">
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle main logout form
+    var logoutLinks = document.querySelectorAll('.logout-link');
+    logoutLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var form = document.getElementById('logout-form');
+            // Clear storage before logout
+            localStorage.clear();
+            sessionStorage.clear();
+            // Submit the form
+            if (form) form.submit();
+        });
+    });
+
+    // Handle mobile logout form
+    var mobileLogoutLinks = document.querySelectorAll('.logout-link-mobile');
+    mobileLogoutLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var form = document.getElementById('mobile-logout-form');
+            // Clear storage before logout
+            localStorage.clear();
+            sessionStorage.clear();
+            // Submit the form
+            if (form) form.submit();
+        });
+    });
+});
+</script>

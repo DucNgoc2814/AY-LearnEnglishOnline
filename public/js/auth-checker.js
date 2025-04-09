@@ -27,12 +27,18 @@ function checkAuthStatus() {
     .then(response => response.json())
     .then(data => {
         if (!data.authenticated) {
-            // Check if someone is trying to login from another device
+            // Check the reason for authentication failure
             if (data.message && data.message.includes('thiết bị khác')) {
                 showLogoutNotification(
                     'Có người đang cố gắng đăng nhập vào tài khoản của bạn từ thiết bị khác.<br>Bạn cần đăng xuất nếu muốn đăng nhập ở thiết bị khác.',
                     'danger',
                     'Cảnh báo bảo mật'
+                );
+            } else if (data.message && data.message.includes('phiên')) {
+                showLogoutNotification(
+                    'Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại.',
+                    'info',
+                    'Phiên đăng nhập hết hạn'
                 );
             } else {
                 showLogoutNotification(
@@ -40,6 +46,14 @@ function checkAuthStatus() {
                     'info',
                     'Phiên đăng nhập hết hạn'
                 );
+            }
+
+            // If there's a script to execute, run it
+            if (data.script) {
+                const scriptContainer = document.createElement('div');
+                scriptContainer.innerHTML = data.script;
+                document.body.appendChild(scriptContainer);
+                return; // Don't show the notification since we're redirecting
             }
         }
     })
@@ -78,8 +92,8 @@ function showLogoutNotification(message, type = 'warning', title = 'Thông báo 
     modalElement.innerHTML = modalHtml;
     document.body.appendChild(modalElement);
 
-    // Clear any session storage
-    sessionStorage.removeItem('temp_password');
+    // Set flag for auto logout
+    sessionStorage.setItem('auto_logout', '1');
 
     // Countdown timer
     let countdown = 5;
