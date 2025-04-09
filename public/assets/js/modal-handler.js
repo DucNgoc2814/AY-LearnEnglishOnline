@@ -1,6 +1,7 @@
 class ModalHandler {
     constructor() {
         this.activeModals = new Set();
+        this.eventListeners = {};
         this.initializeEventListeners();
     }
 
@@ -32,6 +33,9 @@ class ModalHandler {
     close(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
+            // Trigger sự kiện 'hide'
+            this.triggerEvent(modalId, 'hide');
+
             modal.classList.add('hidden');
             this.activeModals.delete(modalId);
 
@@ -46,7 +50,29 @@ class ModalHandler {
         this.activeModals.forEach(modalId => this.close(modalId));
     }
 
-    // Phương thức để set dữ liệu cho modal edit
+    // Thêm phương thức đăng ký event listener
+    addEventListener(modalId, eventType, callback) {
+        if (!this.eventListeners[modalId]) {
+            this.eventListeners[modalId] = {};
+        }
+
+        if (!this.eventListeners[modalId][eventType]) {
+            this.eventListeners[modalId][eventType] = [];
+        }
+
+        this.eventListeners[modalId][eventType].push(callback);
+    }
+
+    // Phương thức kích hoạt sự kiện
+    triggerEvent(modalId, eventType, data = {}) {
+        if (this.eventListeners[modalId] && this.eventListeners[modalId][eventType]) {
+            this.eventListeners[modalId][eventType].forEach(callback => {
+                callback(data);
+            });
+        }
+    }
+
+    // Sửa lại phương thức setEditModalData
     setEditModalData(modalId, data) {
         const form = document.querySelector(`#${modalId} form`);
         if (!form) return;
@@ -55,6 +81,9 @@ class ModalHandler {
         if (data.actionUrl) {
             form.action = data.actionUrl;
         }
+
+        // Trigger sự kiện 'show' với dữ liệu
+        this.triggerEvent(modalId, 'show', data);
 
         // Set các giá trị input
         Object.keys(data).forEach(key => {

@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         font_family_formats: 'Arial=arial,helvetica,sans-serif; Courier New=courier new,courier,monospace; AkrutiKndPadmini=Akpdmi-n',
         font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
         height: 300,
-        language: 'vi',
+        // language: 'vi', // Đã bỏ thiết lập ngôn ngữ tiếng Việt
         // Các tùy chọn khác
         image_title: true,
         automatic_uploads: true,

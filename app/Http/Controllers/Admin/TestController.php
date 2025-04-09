@@ -3,38 +3,37 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Services\Interfaces\LessonTestServiceInterface;
-use App\Http\Requests\Admin\LessonTest\StoreRequest;
-use App\Http\Requests\Admin\LessonTest\UpdateRequest;
+use App\Services\Interfaces\TestServiceInterface;
+use App\Http\Requests\Admin\Test\StoreRequest;
+use App\Http\Requests\Admin\Test\UpdateRequest;
 
 /**
  * @package App\Http\Controllers\Admin
  * @author Your Name
- * @description Controller quản lý bài kiểm tra
+ * @description Controller quản lý bài test
  */
-class LessonTestController extends BaseController
+class TestController extends BaseController
 {
-    protected $lessonTestService;
-    protected const VIEW_PATH = 'admin.components.lesson-tests.';
+    protected $testService;
+    const VIEW_PATH = 'admin.components.tests.';
 
-    public function __construct(LessonTestServiceInterface $lessonTestService)
+    public function __construct(TestServiceInterface $testService)
     {
-        $this->lessonTestService = $lessonTestService;
+        $this->testService = $testService;
     }
 
     /**
-     * Hiển thị danh sách bài kiểm tra
+     * Hiển thị danh sách bài test
      *
      * @return \Illuminate\View\View
      */
     public function index()
     {
         try {
-            $list = $this->lessonTestService->getList();
-            $trashList = $this->lessonTestService->getTrashList();
-
+            $list = $this->testService->getList();
+            $trashList = $this->testService->getTrashList();
             return view(self::VIEW_PATH . 'index', [
-                'lessonTests' => $list['data'],
+                'tests' => $list['data'],
                 'pagination' => $list['pagination'],
                 'trashList' => $trashList['data'],
                 'trashPagination' => $trashList['pagination'],
@@ -45,63 +44,64 @@ class LessonTestController extends BaseController
     }
 
     /**
-     * Lưu bài kiểm tra mới
+     * Lưu bài test mới
      *
      * @param StoreRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreRequest $request)
     {
-        $result = $this->lessonTestService->create($request->validated());
+        $result = $this->testService->create($request->validated());
         return $this->redirectResponse($result);
     }
 
     /**
-     * Hiển thị chi tiết bài kiểm tra
+     * Hiển thị form chỉnh sửa bài test
      *
      * @param int $id
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function show($id)
+    public function edit($id)
     {
-        $result = $this->lessonTestService->findById($id);
-        return response()->json($result);
+        $result = $this->testService->findById($id);
+        return $this->viewResponse(self::VIEW_PATH . 'edit', $result);
     }
 
     /**
-     * Cập nhật bài kiểm tra
+     * Cập nhật bài test
      *
-     * @param UpdateRequest $request
      * @param int $id
+     * @param UpdateRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdateRequest $request, $id)
     {
-        $result = $this->lessonTestService->update($request->validated(), $id);
+        $result = $this->testService->update($request->validated(), $id);
         return $this->redirectResponse($result);
     }
 
     /**
-     * Xóa bài kiểm tra
+     * Xóa bài test
      *
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
+
     public function destroy($id)
     {
-        $result = $this->lessonTestService->delete($id);
+        $result = $this->testService->delete($id);
         return $this->redirectResponse($result);
     }
 
     /**
-     * Khôi phục bài kiểm tra đã xóa
+     * Khôi phục bài test đã xóa
      *
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function restore($id)
     {
-        $result = $this->lessonTestService->restore($id);
+        $result = $this->testService->restore($id);
         return $this->redirectResponse($result);
     }
 }
