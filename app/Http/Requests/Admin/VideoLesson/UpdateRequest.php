@@ -31,8 +31,8 @@ class UpdateRequest extends FormRequest
         return [
             'lesson_id' => 'required|exists:lessons,id',
             'name' => 'required|string|max:255',
-            'video_url' => 'nullable|file|mimetypes:video/mp4,video/quicktime,video/x-ms-wmv,video/x-msvideo,video/x-flv|max:512000',
-            'video_type' => 'required_with:video_url|string',
+            'video_url' => 'nullable|mimes:mp4,mov,wmv,avi,flv|max:512000',
+            'video_type' => 'nullable|string',
             'duration' => 'required|integer|min:1',
             'thumbnail_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_downloadable' => 'boolean',

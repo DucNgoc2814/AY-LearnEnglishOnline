@@ -76,7 +76,7 @@ class VoucherController extends BaseController
      */
     public function update(UpdateRequest $request, $id)
     {
-        $result = $this->voucherService->update($id, $request->validated());
+        $result = $this->voucherService->update($request->validated(), $id);
         return $this->redirectResponse($result);
     }
 

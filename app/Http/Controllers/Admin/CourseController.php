@@ -106,7 +106,7 @@ class CourseController extends BaseController
             }
 
             // Gọi service để cập nhật
-            $result = $this->courseService->update($id, $data);
+            $result = $this->courseService->update($data, $id);
 
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([

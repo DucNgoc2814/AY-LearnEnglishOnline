@@ -124,7 +124,7 @@ class VideoLessonController extends BaseController
             }
 
             // Gọi service để cập nhật
-            $result = $this->videoLessonService->update($id, $data);
+            $result = $this->videoLessonService->update($data, $id);
 
             return response()->json([
                 'success' => true,

@@ -23,7 +23,7 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
     public function getQuery()
     {
         return $this->model
-            ->with('category')
+            ->with('lesson')
             ->whereNull('deleted_at')
             ->latest('id');
     }
@@ -210,11 +210,14 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
                     // Upload new thumbnail
                     $thumbnailPath = $this->handleImage($data['thumbnail_url'], 'video-lessons');
                     if (!$thumbnailPath) {
-                        throw new \Exception('Failed to upload thumbnail');
+                        Log::warning('Failed to upload thumbnail, keeping existing one', [
+                            'file' => $data['thumbnail_url']->getClientOriginalName()
+                        ]);
+                        unset($data['thumbnail_url']);
+                    } else {
+                        $data['thumbnail_url'] = $thumbnailPath;
+                        Log::info('New thumbnail uploaded', ['path' => $thumbnailPath]);
                     }
-                    $data['thumbnail_url'] = $thumbnailPath;
-
-                    Log::info('New thumbnail uploaded', ['path' => $thumbnailPath]);
                 }
             }
 
@@ -240,11 +243,15 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
                     // Upload new video
                     $videoPath = $this->handleVideo($data['video_url'], 'video-lessons');
                     if (!$videoPath) {
-                        throw new \Exception('Failed to upload video');
+                        Log::warning('Failed to upload video, keeping existing one', [
+                            'file' => $data['video_url']->getClientOriginalName()
+                        ]);
+                        // Nếu upload thất bại, giữ nguyên video cũ
+                        unset($data['video_url']);
+                    } else {
+                        $data['video_url'] = $videoPath;
+                        Log::info('New video uploaded', ['path' => $videoPath]);
                     }
-                    $data['video_url'] = $videoPath;
-
-                    Log::info('New video uploaded', ['path' => $videoPath]);
                 }
             }
 
@@ -298,13 +305,13 @@ class VideoLessonRepository extends BaseRepository implements VideoLessonReposit
     public function searchByName($search)
     {
         return $this->getQuery()
-            ->where('title', 'like', "%{$search}%")
+            ->where('name', 'like', "%{$search}%")
             ->paginate(config('crud.pagination.per_page'));
     }
 
     public function getAllWithTrashed()
     {
-        return $this->model::onlyTrashed()->with('category');
+        return $this->model::onlyTrashed()->with('lesson');
     }
 
     public function findOrFail($id)

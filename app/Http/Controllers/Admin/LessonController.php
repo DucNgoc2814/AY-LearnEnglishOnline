@@ -102,7 +102,7 @@ class LessonController extends BaseController
      */
     public function update(UpdateRequest $request, $id)
     {
-        $result = $this->lessonService->update($id, $request->validated());
+        $result = $this->lessonService->update($request->validated(), $id);
         return $this->redirectResponse($result);
     }
 

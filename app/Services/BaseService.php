@@ -94,7 +94,7 @@ abstract class BaseService implements BaseServiceInterface
         }
     }
 
-    public function update($id, $data)
+    public function update($data, $id)
     {
         try {
 
@@ -107,6 +107,7 @@ abstract class BaseService implements BaseServiceInterface
             }
 
             $this->repository->update($id, $data);
+
             return [
                 'status' => true,
                 'message' => 'Cập nhật thành công',
