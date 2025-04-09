@@ -12,4 +12,4 @@ interface BaseServiceInterface
     public function getTrashList();
     public function restore($id);
     public function forceDelete($id);
-} 
+}

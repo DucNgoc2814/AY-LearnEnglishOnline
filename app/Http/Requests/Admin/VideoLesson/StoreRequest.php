@@ -5,9 +5,9 @@ namespace App\Http\Requests\Admin\VideoLesson;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * @package App\Http\Requests\Admin\Lesson
+ * @package App\Http\Requests\Admin\VideoLesson
  * @author Your Name
- * @description Request validation cho tạo mới bài học
+ * @description Request validation cho tạo mới video bài học
  */
 class StoreRequest extends FormRequest
 {
@@ -29,12 +29,14 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'lessonId' => 'required|exists:lessons,id',
+            'lesson_id' => 'required|exists:lessons,id',
             'name' => 'required|string|max:255',
-            'videoUrl' => 'required|file|mimetypes:video/mp4,video/quicktime,video/x-ms-wmv,video/x-msvideo,video/x-flv|max:512000',
-            'videoType' => 'required',
+            'video_url' => 'required|file|mimetypes:video/mp4,video/quicktime,video/x-ms-wmv,video/x-msvideo,video/x-flv|max:512000',
+            'video_type' => 'required|string',
             'duration' => 'required|integer|min:1',
-            'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'thumbnail_url' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_downloadable' => 'boolean',
+            'is_preview' => 'boolean'
         ];
     }
 
@@ -46,22 +48,25 @@ class StoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'lessonId.required' => 'Bài học không được để trống',
-            'lessonId.exists' => 'Bài học không tồn tại',
+            'lesson_id.required' => 'Bài học không được để trống',
+            'lesson_id.exists' => 'Bài học không tồn tại',
             'name.required' => 'Tên video không được để trống',
             'name.max' => 'Tên video không được vượt quá 255 ký tự',
-            'videoUrl.required' => 'File video không được để trống',
-            'videoUrl.file' => 'File video không hợp lệ',
-            'videoUrl.mimetypes' => 'File video phải có định dạng MP4, MOV, WMV, AVI hoặc FLV',
-            'videoUrl.max' => 'File video không được vượt quá 500MB',
-            'videoType.required' => 'Loại video không được để trống',
+            'video_url.required' => 'File video không được để trống',
+            'video_url.file' => 'File video không hợp lệ',
+            'video_url.mimetypes' => 'File video phải có định dạng MP4, MOV, WMV, AVI hoặc FLV',
+            'video_url.max' => 'File video không được vượt quá 500MB',
+            'video_type.required' => 'Loại video không được để trống',
+            'video_type.string' => 'Loại video phải là chuỗi ký tự',
             'duration.required' => 'Thời lượng không được để trống',
             'duration.integer' => 'Thời lượng phải là số nguyên',
             'duration.min' => 'Thời lượng phải lớn hơn 0',
-            'thumbnail.required' => 'Ảnh thumbnail không được để trống',
-            'thumbnail.image' => 'File thumbnail phải là hình ảnh',
-            'thumbnail.mimes' => 'Ảnh thumbnail phải có định dạng JPEG, PNG, JPG hoặc GIF',
-            'thumbnail.max' => 'Ảnh thumbnail không được vượt quá 2MB'
+            'thumbnail_url.required' => 'Ảnh thumbnail không được để trống',
+            'thumbnail_url.image' => 'File thumbnail phải là hình ảnh',
+            'thumbnail_url.mimes' => 'Ảnh thumbnail phải có định dạng JPEG, PNG, JPG hoặc GIF',
+            'thumbnail_url.max' => 'Ảnh thumbnail không được vượt quá 2MB',
+            'is_downloadable.boolean' => 'Cho phép tải xuống phải là giá trị boolean',
+            'is_preview.boolean' => 'Cho phép xem thử phải là giá trị boolean'
         ];
     }
 
@@ -73,22 +78,24 @@ class StoreRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'lessonId' => 'Bài học',
+            'lesson_id' => 'Bài học',
             'name' => 'Tên video',
-            'videoUrl' => 'File video',
-            'videoType' => 'Loại video',
+            'video_url' => 'File video',
+            'video_type' => 'Loại video',
             'duration' => 'Thời lượng',
-            'thumbnail' => 'Ảnh thumbnail'
+            'thumbnail_url' => 'Ảnh thumbnail',
+            'is_downloadable' => 'Cho phép tải xuống',
+            'is_preview' => 'Cho phép xem thử'
         ];
     }
-    // protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
-    // {
-    //     throw new \Illuminate\Http\Exceptions\HttpResponseException(
-    //         response()->json([
-    //             'status' => false,
-    //             'message' => 'Validation errors',
-    //             'errors' => $validator->errors()
-    //         ], 422)
-    //     );
-    // }
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        throw new \Illuminate\Http\Exceptions\HttpResponseException(
+            response()->json([
+                'status' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422)
+        );
+    }
 }

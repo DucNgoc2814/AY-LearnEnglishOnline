@@ -31,11 +31,11 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'courseId' => 'required|exists:courses,id',
+            'course_id' => 'required|exists:courses,id',
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'orderNumber' => 'required|integer|min:1',
-            'isPreview' => 'boolean'
+            'order_number' => 'required|integer|min:1',
+            'is_preview' => 'boolean'
         ];
     }
 
@@ -47,14 +47,14 @@ class UpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'courseId.required' => 'Khóa học không được để trống',
-            'courseId.exists' => 'Khóa học không tồn tại',
+            'course_id.required' => 'Khóa học không được để trống',
+            'course_id.exists' => 'Khóa học không tồn tại',
             'name.required' => 'Tên bài học không được để trống',
             'name.max' => 'Tên bài học không được vượt quá 255 ký tự',
             'description.required' => 'Mô tả không được để trống',
-            'orderNumber.required' => 'Thứ tự không được để trống',
-            'orderNumber.integer' => 'Thứ tự phải là số nguyên',
-            'orderNumber.min' => 'Thứ tự phải lớn hơn hoặc bằng 1'
+            'order_number.required' => 'Thứ tự không được để trống',
+            'order_number.integer' => 'Thứ tự phải là số nguyên',
+            'order_number.min' => 'Thứ tự phải lớn hơn hoặc bằng 1'
         ];
     }
 
@@ -66,11 +66,11 @@ class UpdateRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'courseId' => 'Khóa học',
+            'course_id' => 'Khóa học',
             'name' => 'Tên bài học',
             'description' => 'Mô tả',
-            'orderNumber' => 'Thứ tự',
-            'isPreview' => 'Cho phép xem thử'
+            'order_number' => 'Thứ tự',
+            'is_preview' => 'Cho phép xem thử'
         ];
     }
 }

@@ -77,7 +77,7 @@ class LessonTestController extends BaseController
      */
     public function update(UpdateRequest $request, $id)
     {
-        $result = $this->lessonTestService->update($id, $request->validated());
+        $result = $this->lessonTestService->update($request->validated(), $id);
         return $this->redirectResponse($result);
     }
 

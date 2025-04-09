@@ -19,6 +19,8 @@ use App\Repositories\Interfaces\QuestionLessonTestRepositoryInterface;
 use App\Repositories\QuestionLessonTestRepository;
 use App\Repositories\Interfaces\AnswerLessonTestRepositoryInterface;
 use App\Repositories\AnswerLessonTestRepository;
+use App\Repositories\Interfaces\ZoomSessionRepositoryInterface;
+use App\Repositories\ZoomSessionRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -31,6 +33,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(VideoLessonRepositoryInterface::class, VideoLessonRepository::class);
         $this->app->bind(LessonTestRepositoryInterface::class, LessonTestRepository::class);
         $this->app->bind(QuestionLessonTestRepositoryInterface::class, QuestionLessonTestRepository::class);
-        $this->app->bind(AnswerLessonTestRepositoryInterface::class,AnswerLessonTestRepository::class);
+        $this->app->bind(AnswerLessonTestRepositoryInterface::class, AnswerLessonTestRepository::class);
+        $this->app->bind(ZoomSessionRepositoryInterface::class, ZoomSessionRepository::class);
     }
 }

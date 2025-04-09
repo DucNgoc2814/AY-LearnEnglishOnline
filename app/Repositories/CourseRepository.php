@@ -7,6 +7,7 @@ use App\Repositories\Interfaces\CourseRepositoryInterface;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class CourseRepository extends BaseRepository implements CourseRepositoryInterface
 {
@@ -34,26 +35,26 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
             // Handle thumbnail upload
             if (isset($data['thumbnail'])) {
-                \Log::info("Processing thumbnail upload", ['file' => $data['thumbnail']->getClientOriginalName()]);
+                Log::info("Processing thumbnail upload", ['file' => $data['thumbnail']->getClientOriginalName()]);
 
                 $cloudFrontUrl = $this->handleImage($data['thumbnail'], 'courses');
                 if (!$cloudFrontUrl) {
                     throw new \Exception('Failed to upload thumbnail');
                 }
                 $data['thumbnail'] = $cloudFrontUrl;
-                \Log::info("Thumbnail uploaded successfully", ['url' => $cloudFrontUrl]);
+                Log::info("Thumbnail uploaded successfully", ['url' => $cloudFrontUrl]);
             }
 
             // Handle preview video upload if exists
             if (isset($data['preview_video'])) {
-                \Log::info("Processing preview video upload", ['file' => $data['preview_video']->getClientOriginalName()]);
+                Log::info("Processing preview video upload", ['file' => $data['preview_video']->getClientOriginalName()]);
 
                 $videoUrl = $this->handleVideo($data['preview_video'], 'courses');
                 if (!$videoUrl) {
                     throw new \Exception('Failed to upload preview video');
                 }
                 $data['preview_video'] = $videoUrl;
-                \Log::info("Preview video uploaded successfully", ['url' => $videoUrl]);
+                Log::info("Preview video uploaded successfully", ['url' => $videoUrl]);
             }
 
             // Generate slug from title
@@ -67,7 +68,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Course creation error: ' . $e->getMessage(), [
+            Log::error('Course creation error: ' . $e->getMessage(), [
                 'exception' => $e,
                 'data' => array_merge($data, [
                     'thumbnail_info' => isset($data['thumbnail']) ? [
@@ -104,7 +105,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
             return $path;
         } catch (\Exception $e) {
-            \Log::error('Image upload error: ' . $e->getMessage(), [
+            Log::error('Image upload error: ' . $e->getMessage(), [
                 'file' => $image->getClientOriginalName()
             ]);
             throw $e;
@@ -131,7 +132,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
             return $path;
         } catch (\Exception $e) {
-            \Log::error('Video upload error: ' . $e->getMessage(), [
+            Log::error('Video upload error: ' . $e->getMessage(), [
                 'file' => $video->getClientOriginalName()
             ]);
             throw $e;
@@ -148,7 +149,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
                 throw new \Exception('Course not found');
             }
 
-            \Log::info('Starting course update:', [
+            Log::info('Starting course update:', [
                 'id' => $id,
                 'has_thumbnail' => isset($data['thumbnail']),
                 'has_video' => isset($data['preview_video'])
@@ -157,13 +158,13 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             // Handle thumbnail
             if (isset($data['thumbnail'])) {
                 if ($data['thumbnail'] instanceof \Illuminate\Http\UploadedFile) {
-                    \Log::info('Processing new thumbnail upload', [
+                    Log::info('Processing new thumbnail upload', [
                         'original_name' => $data['thumbnail']->getClientOriginalName()
                     ]);
 
                     // Delete old thumbnail if exists
                     if ($course->thumbnail) {
-                        \Log::info('Deleting old thumbnail', ['path' => $course->thumbnail]);
+                        Log::info('Deleting old thumbnail', ['path' => $course->thumbnail]);
                         $this->deleteFile($course->thumbnail);
                     }
 
@@ -174,20 +175,20 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
                     }
                     $data['thumbnail'] = $thumbnailPath;
 
-                    \Log::info('New thumbnail uploaded', ['path' => $thumbnailPath]);
+                    Log::info('New thumbnail uploaded', ['path' => $thumbnailPath]);
                 }
             }
 
             // Handle preview video
             if (isset($data['preview_video'])) {
                 if ($data['preview_video'] instanceof \Illuminate\Http\UploadedFile) {
-                    \Log::info('Processing new video upload', [
+                    Log::info('Processing new video upload', [
                         'original_name' => $data['preview_video']->getClientOriginalName()
                     ]);
 
                     // Delete old video if exists
                     if ($course->preview_video) {
-                        \Log::info('Deleting old video', ['path' => $course->preview_video]);
+                        Log::info('Deleting old video', ['path' => $course->preview_video]);
                         $this->deleteFile($course->preview_video);
                     }
 
@@ -198,7 +199,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
                     }
                     $data['preview_video'] = $videoPath;
 
-                    \Log::info('New video uploaded', ['path' => $videoPath]);
+                    Log::info('New video uploaded', ['path' => $videoPath]);
                 }
             }
 
@@ -207,7 +208,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
             DB::commit();
 
-            \Log::info('Course updated successfully', [
+            Log::info('Course updated successfully', [
                 'id' => $id,
                 'thumbnail' => $course->thumbnail,
                 'preview_video' => $course->preview_video
@@ -217,7 +218,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Course update error:', [
+            Log::error('Course update error:', [
                 'id' => $id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
@@ -244,7 +245,7 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
             return parent::delete($id);
         } catch (\Exception $e) {
-            \Log::error('Course deletion error: ' . $e->getMessage());
+            Log::error('Course deletion error: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -271,8 +272,8 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         $course = $this->findOrFail($id);
 
         // Add full URLs for image and video
-        $course->full_thumbnail = $this->getFullUrl($course->thumbnail);
-        $course->full_video = $this->getFullUrl($course->preview_video);
+        $course->thumbnail = $this->getFullUrl($course->thumbnail);
+        $course->preview_video = $this->getFullUrl($course->preview_video);
 
         return $course;
     }
@@ -293,18 +294,18 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             // Ensure the path doesn't start with a slash
             $path = ltrim($path, '/');
 
-            \Log::info('Attempting to delete file from S3', ['path' => $path]);
+            Log::info('Attempting to delete file from S3', ['path' => $path]);
 
             if (Storage::disk('s3')->exists($path)) {
                 $result = Storage::disk('s3')->delete($path);
-                \Log::info('File deletion result', ['result' => $result]);
+                Log::info('File deletion result', ['result' => $result]);
                 return $result;
             }
 
-            \Log::warning('File not found for deletion', ['path' => $path]);
+            Log::warning('File not found for deletion', ['path' => $path]);
             return true;
         } catch (\Exception $e) {
-            \Log::error('File deletion error: ' . $e->getMessage(), [
+            Log::error('File deletion error: ' . $e->getMessage(), [
                 'path' => $path
             ]);
             return false;

@@ -7,45 +7,77 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class LessonVideo extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'lesson_videos';
+
     protected $fillable = [
         'lesson_id',
-        'title',
-        'description',
+        'name',
+        'slug',
         'video_url',
         'duration',
+        'video_type',
         'thumbnail_url',
-        'order',
+        'is_downloadable',
         'is_preview',
-        'status',
-        'provider',
-        'provider_video_id',
-        'meta_data'
+        'view_count'
     ];
 
     protected $casts = [
         'duration' => 'integer',
-        'order' => 'integer',
+        'is_downloadable' => 'boolean',
         'is_preview' => 'boolean',
-        'meta_data' => 'json'
+        'view_count' => 'integer'
     ];
 
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($lessonVideo) {
+            if (empty($lessonVideo->slug)) {
+                $lessonVideo->slug = Str::slug($lessonVideo->name);
+            }
+        });
+
+        static::updating(function ($lessonVideo) {
+            if ($lessonVideo->isDirty('name')) {
+                $lessonVideo->slug = Str::slug($lessonVideo->name);
+            }
+        });
+    }
+
     // Relationships
+
+    /**
+     * Bài học mà video thuộc về
+     */
     public function lesson(): BelongsTo
     {
         return $this->belongsTo(Lesson::class);
     }
 
+    /**
+     * Tiến trình xem video của học viên
+     */
     public function progress(): HasMany
     {
-        return $this->hasMany(VideoProgress::class);
+        return $this->hasMany(VideoProgress::class, 'video_id');
     }
 
     // Methods
+
+    /**
+     * Định dạng thời lượng video dưới dạng HH:MM:SS
+     */
     public function getFormattedDuration(): string
     {
         $hours = floor($this->duration / 3600);
@@ -59,38 +91,29 @@ class LessonVideo extends Model
         return sprintf('%02d:%02d', $minutes, $seconds);
     }
 
-    public function isYoutube(): bool
+    /**
+     * Tăng số lượt xem video
+     */
+    public function incrementViewCount(): void
     {
-        return $this->provider === 'youtube';
-    }
-
-    public function isVimeo(): bool
-    {
-        return $this->provider === 'vimeo';
-    }
-
-    public function isSelfHosted(): bool
-    {
-        return $this->provider === 'local';
+        $this->increment('view_count');
     }
 
     // Scopes
-    public function scopeActive($query)
+
+    /**
+     * Lấy các video có thể xem trước
+     */
+    public function scopePreviewable($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('is_preview', true);
     }
 
+    /**
+     * Lấy các video theo thứ tự
+     */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order');
+        return $query->orderBy('created_at', 'asc');
     }
-
-    public function scopeFree($query)
-    {
-        return $query->where('is_free', true);
-    }
-
-    public function totalDuration(){
-        return $this->sum('duration');
-    }
-} 
+}

@@ -76,7 +76,7 @@ class ZoomSessionController extends BaseController
      */
     public function update(UpdateRequest $request, $id)
     {
-        $result = $this->zoomSessionService->update($id, $request->validated());
+        $result = $this->zoomSessionService->update($request->validated(), $id);
         return $this->redirectResponse($result);
     }
 

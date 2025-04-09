@@ -6,6 +6,8 @@ use App\Http\Controllers\Client\CategoryController;
 use App\Http\Controllers\Client\CourseController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\PaymentController;
+use App\Http\Controllers\Admin\VideoLessonController;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,4 +80,38 @@ Route::middleware('web')->group(function () {
                 ->name('course.learning.test');
         });
     });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Maintenance/Cache Routes
+|--------------------------------------------------------------------------
+|
+| Routes for clearing application cache, view cache, and other maintenance tasks
+|
+*/
+Route::middleware(['auth'])->group(function () {
+    // Chỉ admin mới có thể xóa cache
+    Route::get('/clear-cache', function () {
+        Artisan::call('cache:clear');
+        return redirect()->back()->with('success', 'Cache đã được xóa thành công!');
+    })->name('clear.cache');
+
+    Route::get('/clear-view', function () {
+        Artisan::call('view:clear');
+        return redirect()->back()->with('success', 'View cache đã được xóa thành công!');
+    })->name('clear.view');
+
+    Route::get('/clear-config', function () {
+        Artisan::call('config:clear');
+        return redirect()->back()->with('success', 'Config cache đã được xóa thành công!');
+    })->name('clear.config');
+
+    Route::get('/clear-all', function () {
+        Artisan::call('cache:clear');
+        Artisan::call('view:clear');
+        Artisan::call('config:clear');
+        Artisan::call('route:clear');
+        return redirect()->back()->with('success', 'Tất cả cache đã được xóa thành công!');
+    })->name('clear.all');
 });

@@ -34,7 +34,7 @@ class ModalHandler {
         if (modal) {
             modal.classList.add('hidden');
             this.activeModals.delete(modalId);
-            
+
             // Chỉ restore scroll khi không còn modal nào active
             if (this.activeModals.size === 0) {
                 document.body.style.overflow = '';
@@ -79,18 +79,18 @@ class ModalHandler {
         const currentThumbnailDiv = document.getElementById('currentThumbnail');
         if (input.files && input.files[0]) {
             const reader = new FileReader();
-            
+
             reader.onload = function(e) {
                 currentThumbnailDiv.innerHTML = `
                     <div class="mt-2">
                         <p class="text-sm text-gray-600 mb-1">Ảnh đã chọn:</p>
-                        <img src="${e.target.result}" 
-                             alt="Preview thumbnail" 
+                        <img src="${e.target.result}"
+                             alt="Preview thumbnail"
                              class="h-20 w-20 object-cover rounded border border-gray-300">
                     </div>
                 `;
             }
-            
+
             reader.readAsDataURL(input.files[0]);
         }
     }
@@ -101,8 +101,8 @@ class ModalHandler {
             currentThumbnailDiv.innerHTML = `
                 <div class="mt-2">
                     <p class="text-sm text-gray-600 mb-1">Ảnh hiện tại:</p>
-                    <img src="${thumbnailUrl}" 
-                         alt="Current thumbnail" 
+                    <img src="${thumbnailUrl}"
+                         alt="Current thumbnail"
                          class="h-20 w-20 object-cover rounded border border-gray-300">
                 </div>
             `;
@@ -119,7 +119,7 @@ const modalHandler = new ModalHandler();
 document.addEventListener('DOMContentLoaded', function() {
     // Tìm tất cả các modal
     const modals = document.querySelectorAll('.fixed.inset-0.z-50');
-    
+
     // Thêm event listener cho mỗi modal
     modals.forEach(modal => {
         // Đóng modal khi click vào overlay
@@ -129,4 +129,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-}); 
+});
