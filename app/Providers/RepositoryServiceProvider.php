@@ -13,14 +13,12 @@ use App\Repositories\Interfaces\VideoLessonRepositoryInterface;
 use App\Repositories\CourseRepository;
 use App\Repositories\LessonRepository;
 use App\Repositories\VideoLessonRepository;
-use App\Repositories\Interfaces\QuestionLessonTestRepositoryInterface;
-use App\Repositories\QuestionLessonTestRepository;
-use App\Repositories\Interfaces\AnswerLessonTestRepositoryInterface;
-use App\Repositories\AnswerLessonTestRepository;
 use App\Repositories\Interfaces\ZoomSessionRepositoryInterface;
 use App\Repositories\ZoomSessionRepository;
 use App\Repositories\Interfaces\TestRepositoryInterface;
 use App\Repositories\TestRepository;
+use App\Repositories\Interfaces\QuestionRepositoryInterface;
+use App\Repositories\QuestionRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -31,9 +29,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(CourseRepositoryInterface::class, CourseRepository::class);
         $this->app->bind(LessonRepositoryInterface::class, LessonRepository::class);
         $this->app->bind(VideoLessonRepositoryInterface::class, VideoLessonRepository::class);
-        $this->app->bind(QuestionLessonTestRepositoryInterface::class, QuestionLessonTestRepository::class);
-        $this->app->bind(AnswerLessonTestRepositoryInterface::class, AnswerLessonTestRepository::class);
         $this->app->bind(ZoomSessionRepositoryInterface::class, ZoomSessionRepository::class);
         $this->app->bind(TestRepositoryInterface::class, TestRepository::class);
+        $this->app->bind(QuestionRepositoryInterface::class, QuestionRepository::class);
     }
 }

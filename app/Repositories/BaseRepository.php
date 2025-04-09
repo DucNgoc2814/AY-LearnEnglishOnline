@@ -128,11 +128,30 @@ abstract class BaseRepository implements BaseRepositoryInterface
             $extension = $file->getClientOriginalExtension();
             $path = "$folder/$type/$fileName.$extension";
 
+            // Log thông tin trước khi upload
+            Log::info("Attempting to upload file to S3", [
+                'path' => $path,
+                'mime_type' => $file->getMimeType(),
+                'file_size' => $file->getSize(),
+                'extension' => $extension,
+                'type' => $type,
+                'folder' => $folder
+            ]);
+
             // Upload file to S3
-            $result = Storage::disk('s3')->put($path, file_get_contents($file), [
+            $fileContent = file_get_contents($file);
+
+            $options = [
                 'ContentType' => $file->getMimeType(),
                 'ACL' => 'public-read'
+            ];
+
+            // Log chi tiết options
+            Log::info("S3 upload options", [
+                'options' => $options
             ]);
+
+            $result = Storage::disk('s3')->put($path, $fileContent, $options);
 
             if (!$result) {
                 throw new \Exception('Failed to upload file to S3');
@@ -149,8 +168,11 @@ abstract class BaseRepository implements BaseRepositoryInterface
         } catch (\Exception $e) {
             Log::error("File upload error: " . $e->getMessage(), [
                 'file' => $file ? $file->getClientOriginalName() : null,
+                'file_size' => $file ? $file->getSize() : null,
+                'mime_type' => $file ? $file->getMimeType() : null,
                 'folder' => $folder,
-                'type' => $type
+                'type' => $type,
+                'exception' => $e->getTraceAsString()
             ]);
             throw $e;
         }
