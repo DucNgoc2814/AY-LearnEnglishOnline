@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-lg-7 col-md-6 col-sm-12 col-12 text-center">
                     <img loading="lazy" width="65%"
-                        src="{{ asset('themes/client/assets/frontend/default-new/image/login-security.gif') }}">
+                        src="{{ asset('themes/client/assets/frontend/default-new/image/login-security.gif') }}" alt="Login Security Image">
                 </div>
                 <div class="col-lg-5 col-md-6 col-sm-12 col-12 ">
                     <div class="sing-up-right">
@@ -29,7 +29,7 @@
                             <strong>Thông báo:</strong> Bạn đã được tự động đăng xuất do không hoạt động hoặc đóng trình duyệt.
                         </div>
 
-                        <script>
+                        <script nonce="{{ csrf_token() }}">
                             // Check for auto logout notification
                             document.addEventListener('DOMContentLoaded', function() {
                                 // Ngăn chặn việc quay lại trang này sau khi đã đăng nhập
@@ -37,6 +37,25 @@
                                 window.onpopstate = function () {
                                     history.go(1);
                                 };
+
+                                // Kiểm tra và khôi phục CSRF token từ sessionStorage
+                                const savedCsrfToken = sessionStorage.getItem('saved_csrf_token');
+                                if (savedCsrfToken) {
+                                    // Cập nhật token trong meta tag
+                                    const metaTag = document.querySelector('meta[name="csrf-token"]');
+                                    if (metaTag) {
+                                        metaTag.content = savedCsrfToken;
+                                    }
+
+                                    // Cập nhật token trong form nếu có
+                                    const csrfInputs = document.querySelectorAll('input[name="_token"]');
+                                    csrfInputs.forEach(input => {
+                                        input.value = savedCsrfToken;
+                                    });
+
+                                    // Xóa token đã lưu sau khi sử dụng
+                                    sessionStorage.removeItem('saved_csrf_token');
+                                }
 
                                 // Thêm timestamp vào form để đảm bảo mỗi request là duy nhất
                                 const loginForm = document.getElementById('login-form');
@@ -79,8 +98,9 @@
                                     };
                                 }
 
-                                // Check URL parameter
-                                if (window.location.href.indexOf('auto_logout=1') > -1) {
+                                // Check URL parameter - sử dụng DOMPurify để tránh XSS
+                                const urlParams = new URLSearchParams(window.location.search);
+                                if (urlParams.has('auto_logout') && urlParams.get('auto_logout') === '1') {
                                     showAutoLogoutNotification();
 
                                     // Remove the parameter from URL
@@ -108,6 +128,41 @@
                                     showAutoLogoutNotification();
                                     sessionStorage.removeItem('auto_logout');
                                 }
+
+                                // Tự động khôi phục session nếu có thể
+                                (function attemptSessionRecovery() {
+                                    // Kiểm tra xem có lỗi hiển thị trên URL không
+                                    const urlParams = new URLSearchParams(window.location.search);
+                                    if (urlParams.has('error')) {
+                                        console.log('Error detected in URL, attempting recovery');
+
+                                        // Xóa tham số error
+                                        if (window.history.replaceState) {
+                                            const newUrl = window.location.pathname +
+                                                window.location.search.replace(/[\?&]error=[^&]+/, '');
+                                            window.history.replaceState({}, document.title, newUrl);
+                                        }
+
+                                        // Reload trang để có token mới
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 1000);
+                                        return;
+                                    }
+
+                                    // Kiểm tra form có hiển thị không
+                                    const loginForm = document.getElementById('login-form');
+                                    if (loginForm) {
+                                        // Đảm bảo CSRF token được cập nhật
+                                        const tokenInput = loginForm.querySelector('input[name="_token"]');
+                                        const metaToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+                                        if (tokenInput && metaToken && tokenInput.value !== metaToken) {
+                                            console.log('CSRF token mismatch detected, updating form token');
+                                            tokenInput.value = metaToken;
+                                        }
+                                    }
+                                })();
                             });
                         </script>
 
@@ -120,20 +175,12 @@
                                 <input type="hidden" name="email" value="{{ old('email') }}">
                                 <input type="hidden" name="password" value="{{ session('temp_password') }}">
                                 <input type="hidden" name="force_logout_token" value="{{ session('force_logout_token') }}">
+                                <input type="hidden" name="force_logout" value="1">
                                 <button type="submit" class="btn btn-warning">
                                     <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất thiết bị cũ và đăng nhập tại đây
                                 </button>
                             </form>
                         </div>
-                        <script>
-                            // Store password temporarily in session storage
-                            const passwordField = document.getElementById('password');
-                            if (passwordField) {
-                                passwordField.addEventListener('input', function() {
-                                    sessionStorage.setItem('temp_password', this.value);
-                                });
-                            }
-                        </script>
                         @endif
 
                         <form action="{{ route('login.submit') }}" method="post" id="login-form">
@@ -142,9 +189,8 @@
                                 <h5>Email</h5>
                                 <div class="position-relative">
                                     <i class="fa-solid fa-user"></i>
-                                    {{-- <i class="fa-solid fa-shield-halved"></i> --}}
                                     <input class="form-control" id="email" type="email" name="email"
-                                        placeholder="Nhập email" value="{{ old('email') }}">
+                                        placeholder="Nhập email" value="{{ old('email') }}" autocomplete="email">
                                 </div>
                             </div>
                             <div class="">
@@ -155,7 +201,7 @@
                                         onclick="togglePasswordVisibility()"
                                         style="right: 20px; left: unset; position: absolute; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
                                     <input class="form-control" id="password" type="password" name="password"
-                                        placeholder="Nhập mật khẩu">
+                                        placeholder="Nhập mật khẩu" autocomplete="current-password">
                                 </div>
                                 <small class="w-100">
                                     <a class="text-end w-100 text-muted" href="login/forgot_password_request.html">Quên mật
@@ -179,7 +225,7 @@
         </div>
     </section>
 
-    <script>
+    <script nonce="{{ csrf_token() }}">
     function togglePasswordVisibility() {
         const passwordInput = document.getElementById('password');
         const passwordToggle = document.getElementById('password-toggle');

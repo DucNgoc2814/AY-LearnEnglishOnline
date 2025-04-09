@@ -314,10 +314,9 @@ function initSessionManager() {
     }
 
     /**
-     * Check server-side session status
+     * Update the server about session status
      */
     function checkSessionStatus(immediate = false) {
-        // Send heartbeat to server
         fetch('/session-status', {
             method: 'GET',
             headers: {
@@ -329,73 +328,70 @@ function initSessionManager() {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.active) {
-                // Session is active, continue heartbeat
-                recordActivity();
-                startHeartbeat();
-            } else {
-                // Session is not active (logged out from another browser)
-                performLogout(true);
+            if (!data.active) {
+                // Session is invalid
+                console.log('Session is invalid:', data.reason);
+
+                // Refresh the page if requested by the server
+                if (data.reload) {
+                    window.location.reload();
+                    return;
+                }
+
+                // Execute script if provided (for redirects)
+                if (data.script) {
+                    const scriptElement = document.createElement('div');
+                    scriptElement.innerHTML = data.script;
+                    document.body.appendChild(scriptElement);
+                    return;
+                }
+
+                // If device mismatch or other error, force logout
+                performLogout(data.reason === 'device_mismatch');
             }
         })
         .catch(error => {
-            console.error('Error checking session:', error);
-
-            // Continue heartbeat despite error to prevent accidental logouts
-            if (!immediate) {
-                startHeartbeat();
-            }
+            console.error('Error checking session status:', error);
         });
     }
 
     /**
-     * Perform logout
+     * Perform a logout (locally and on server)
      */
     function performLogout(wasLoggedOutFromElsewhere = false) {
-        // Prevent other tabs from also trying to logout
-        if (localStorage.getItem('logout_in_progress') === 'true') {
-            return;
-        }
-
-        localStorage.setItem('logout_in_progress', 'true');
-
-        // Notify other tabs
+        // Notify other tabs we're logging out
         localStorage.setItem('logout_triggered', Date.now().toString());
 
-        // If we were logged out from elsewhere, just redirect
+        // Clear all session state
+        localStorage.removeItem('browser_closed_at');
+        setActiveTabs([]);
+
+        console.log('Logging out');
+
+        // If we were logged out from elsewhere, we don't need to call the server
         if (wasLoggedOutFromElsewhere) {
             redirectToLoginWithAutoLogout();
             return;
         }
 
-        // Get CSRF token
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-        // Send logout request to server
+        // Otherwise do a proper server-side logout
         fetch('/dang-xuat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken,
-                'Accept': 'application/json',
-                'X-Browser-ID': browserId
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Browser-ID': browserId,
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             },
             credentials: 'same-origin'
         })
         .then(response => {
-            // Clear browser identification
-            localStorage.removeItem('browser_id');
-            localStorage.removeItem('active_tabs');
-            localStorage.removeItem('browser_closed_at');
-            localStorage.removeItem('logout_in_progress');
-            localStorage.removeItem('last_activity');
-
-            // Redirect to login page
+            // Always redirect to login page, regardless of response
             redirectToLoginWithAutoLogout();
         })
         .catch(error => {
             console.error('Error during logout:', error);
-            // Redirect anyway
+            // Still redirect to login page
             redirectToLoginWithAutoLogout();
         });
     }
