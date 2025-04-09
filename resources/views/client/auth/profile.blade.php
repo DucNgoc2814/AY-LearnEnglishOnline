@@ -1,6 +1,11 @@
 @extends('client.layouts.master')
 
 @section('content')
+    @if(!session('jwt_token'))
+        <script>
+            window.location.href = '{{ route('login') }}';
+        </script>
+    @else
     <section class="profile-section py-5">
         <div class="container">
             <div class="row">
@@ -10,14 +15,14 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="student-profile-info text-center p-2">
-                                        @if (Auth::user()->avatar)
-                                            <img loading="lazy" class="profile-image rounded-circle mb-3" src="{{ asset(Auth::user()->avatar) }}"
+                                        @if ($auth_user->avatar)
+                                            <img loading="lazy" class="profile-image rounded-circle mb-3" src="{{ asset($auth_user->avatar) }}"
                                                 alt="Profile">
                                         @else
                                             <i class="fa-solid fa-user-circle fa-5x mb-3"></i>
                                         @endif
-                                        <h4 class="mb-1">{{ Auth::user()->name }}</h4>
-                                        <span class="text-muted">{{ Auth::user()->email }}</span>
+                                        <h4 class="mb-1">{{ $auth_user->name }}</h4>
+                                        <span class="text-muted">{{ $auth_user->email }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -57,7 +62,7 @@
                                     <h6 class="mb-0">Họ và tên</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    {{ Auth::user()->name }}
+                                    {{ $auth_user->name }}
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -65,7 +70,7 @@
                                     <h6 class="mb-0">Email</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    {{ Auth::user()->email }}
+                                    {{ $auth_user->email }}
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -73,7 +78,7 @@
                                     <h6 class="mb-0">Số điện thoại</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    {{ Auth::user()->phoneNumber ?? 'Chưa cập nhật' }}
+                                    {{ $auth_user->phoneNumber ?? 'Chưa cập nhật' }}
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -81,7 +86,7 @@
                                     <h6 class="mb-0">Ngày tham gia</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    {{ Auth::user()->created_at->format('d/m/Y') }}
+                                    {{ $auth_user->created_at->format('d/m/Y') }}
                                 </div>
                             </div>
                         </div>
@@ -90,7 +95,7 @@
                     <div class="card mt-4" id="my-courses">
                         <div class="card-body">
                             <h5 class="card-title mb-4">Khóa học của tôi: </h5>
-                            @if (Auth::user()->courses && Auth::user()->courses->count() > 0)
+                            @if ($auth_user->courses && $auth_user->courses->count() > 0)
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead>
@@ -102,7 +107,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (Auth::user()->courses as $course)
+                                            @foreach ($auth_user->courses as $course)
                                                 <tr>
                                                     <td>{{ $course->name }}</td>
                                                     <td>{{ $course->pivot->created_at->format('d/m/Y') }}</td>
@@ -143,16 +148,16 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Họ và tên</label>
                             <input type="text" class="form-control" id="name" name="name"
-                                value="{{ Auth::user()->name }}">
+                                value="{{ $auth_user->name }}">
                         </div>
                         <div class="mb-3">
                             <label for="phone" class="form-label">Số điện thoại</label>
                             <input type="text" class="form-control" id="phone" name="phone"
-                                value="{{ Auth::user()->phone }}">
+                                value="{{ $auth_user->phone }}">
                         </div>
                         <div class="mb-3">
                             <label for="address" class="form-label">Địa chỉ</label>
-                            <textarea class="form-control" id="address" name="address" rows="3">{{ Auth::user()->address }}</textarea>
+                            <textarea class="form-control" id="address" name="address" rows="3">{{ $auth_user->address }}</textarea>
                         </div>
                         <div class="mb-3">
                             <label for="avatar" class="form-label">Ảnh đại diện</label>
@@ -167,6 +172,7 @@
             </div>
         </div>
     </div>
+    @endif
 @endsection
 
 @section('styles')

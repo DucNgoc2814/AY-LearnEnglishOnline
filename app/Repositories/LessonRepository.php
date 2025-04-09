@@ -22,11 +22,11 @@ class LessonRepository extends BaseRepository implements LessonRepositoryInterfa
         $query = $this->model
             ->with('course')
             ->whereNull('deleted_at')
-            ->orderBy('orderNumber', 'asc')
+            ->orderBy('order_number', 'asc')
             ->orderBy('created_at', 'desc');
 
         if (request()->route('courseId')) {
-            $query->where('courseId', request()->route('courseId'));
+            $query->where('course_id', request()->route('courseId'));
         }
 
         return $query;
@@ -35,12 +35,14 @@ class LessonRepository extends BaseRepository implements LessonRepositoryInterfa
     public function create(array $data)
     {
         $data['slug'] = Str::slug($data['name']);
+
         return parent::create($data);
     }
 
     public function update($id, array $data)
     {
         $data['slug'] = Str::slug($data['name']);
+
         return parent::update($id, $data);
     }
 
@@ -56,12 +58,26 @@ class LessonRepository extends BaseRepository implements LessonRepositoryInterfa
         return $this->model::onlyTrashed()->with('course');
     }
 
+    /**
+     * Lấy danh sách bài học theo khóa học
+     *
+     * @param int $courseId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getByCourseId($courseId)
+    {
+        return $this->model
+            ->where('course_id', $courseId)
+            ->orderBy('order_number', 'asc')
+            ->get();
+    }
+
     public function delete($id)
     {
         try {
             $lesson = $this->findById($id);
             if ($lesson) {
-                $courseId = $lesson->courseId; // Lưu courseId trước khi xóa
+                $courseId = $lesson->course_id; // Lưu course_id trước khi xóa
                 $lesson->delete();
                 return [
                     'status' => true,
@@ -88,7 +104,7 @@ class LessonRepository extends BaseRepository implements LessonRepositoryInterfa
         try {
             $lesson = $this->findWithTrashed($id);
             if ($lesson) {
-                $courseId = $lesson->courseId; // Lưu courseId trước khi khôi phục
+                $courseId = $lesson->course_id; // Lưu course_id trước khi khôi phục
                 $lesson->restore();
                 return [
                     'status' => true,
@@ -107,6 +123,39 @@ class LessonRepository extends BaseRepository implements LessonRepositoryInterfa
                 'status' => false,
                 'message' => 'Có lỗi xảy ra khi khôi phục bài học'
             ];
+        }
+    }
+
+    /**
+     * Lấy danh sách video của bài học
+     *
+     * @param int $lessonId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getVideosByLessonId($lessonId)
+    {
+        try {
+            $lesson = $this->findById($lessonId);
+            \Illuminate\Support\Facades\Log::info('LessonRepository: getVideosByLessonId called with ID: ' . $lessonId, [
+                'lesson' => $lesson ? ['id' => $lesson->id, 'name' => $lesson->name] : null
+            ]);
+
+            if (!$lesson) {
+                throw new \Exception('Không tìm thấy bài học');
+            }
+
+            // Sử dụng model trực tiếp thay vì DB query
+            $videos = \App\Models\LessonVideo::where('lesson_id', $lessonId)->get();
+            \Illuminate\Support\Facades\Log::info('LessonRepository: videos count: ' . count($videos));
+
+            return $videos;
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error in LessonRepository getVideosByLessonId: ' . $e->getMessage(), [
+                'lesson_id' => $lessonId,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            throw $e;
         }
     }
 }

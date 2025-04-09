@@ -19,6 +19,11 @@ class CreateUsersTable extends Migration
             $table->enum('role', ['admin', 'user'])->default('user')->comment('Vai trò người dùng');
             $table->string('role_token')->nullable();
             $table->string('refresh_token')->nullable();
+            $table->string('device_id')->nullable();
+            $table->text('active_token')->nullable();
+            $table->timestamp('last_login_at')->nullable();
+            $table->string('login_lock')->nullable();
+            $table->timestamp('login_lock_expires_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -150,7 +150,7 @@
                                     <button class="text-blue-500 hover:text-blue-700" onclick="toggleVideoList({{ $item->id }})" title="Xem danh sách video">
                                         <i class="fas fa-list"></i>
                                     </button>
-                                    <button class="text-blue-500 hover:text-blue-700" onclick="populateEditModal({{ json_encode($item) }}); modalHandler.open('editLessonModal')" title="Chỉnh sửa">
+                                    <button class="text-blue-500 hover:text-blue-700" onclick="editLesson({{ $item->id }})" title="Chỉnh sửa">
                                         <i class="far fa-edit"></i>
                                     </button>
                                     <form action="{{ route('admin.lessons.destroy', $item->id) }}" method="POST" class="inline">
@@ -395,7 +395,7 @@
                 // Gửi request xóa hàng loạt
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = '{{ route('admin.lessons.bulk-delete') }}';
+                form.action = '';
 
                 const csrfToken = document.createElement('input');
                 csrfToken.type = 'hidden';

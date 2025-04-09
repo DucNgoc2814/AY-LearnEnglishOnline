@@ -97,7 +97,9 @@ abstract class BaseRepository implements BaseRepositoryInterface
         }
 
         // Fallback to S3 URL if CloudFront is not configured
-        return Storage::disk('s3')->url($path);
+        $bucket = config('filesystems.disks.s3.bucket');
+        $region = config('filesystems.disks.s3.region');
+        return "https://{$bucket}.s3.{$region}.amazonaws.com/" . ltrim($path, '/');
     }
 
     /**
@@ -136,7 +138,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
                 throw new \Exception('Failed to upload file to S3');
             }
 
-            \Log::info("File uploaded successfully", [
+            Log::info("File uploaded successfully", [
                 'path' => $path,
                 'type' => $type,
                 'size' => $file->getSize(),
@@ -145,7 +147,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
             return $path;
         } catch (\Exception $e) {
-            \Log::error("File upload error: " . $e->getMessage(), [
+            Log::error("File upload error: " . $e->getMessage(), [
                 'file' => $file ? $file->getClientOriginalName() : null,
                 'folder' => $folder,
                 'type' => $type
@@ -196,7 +198,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
             }
             return $paths;
         } catch (\Exception $e) {
-            \Log::error("Multiple files upload error ({$type}): " . $e->getMessage());
+            Log::error("Multiple files upload error ({$type}): " . $e->getMessage());
             return false;
         }
     }
@@ -239,7 +241,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
             // Upload new file
             return $this->handleFileUpload($newFile, $folder, $type);
         } catch (\Exception $e) {
-            \Log::error("File update error ({$type}): " . $e->getMessage());
+            Log::error("File update error ({$type}): " . $e->getMessage());
             return false;
         }
     }
@@ -283,19 +285,19 @@ abstract class BaseRepository implements BaseRepositoryInterface
             // Ensure the path doesn't start with a slash
             $path = ltrim($path, '/');
 
-            \Log::info('Attempting to delete file', ['path' => $path]);
+            Log::info('Attempting to delete file', ['path' => $path]);
 
             if (Storage::disk('s3')->exists($path)) {
                 $result = Storage::disk('s3')->delete($path);
-                \Log::info('File deletion result', ['result' => $result]);
+                Log::info('File deletion result', ['result' => $result]);
                 return $result;
             }
 
-            \Log::warning('File not found for deletion', ['path' => $path]);
+            Log::warning('File not found for deletion', ['path' => $path]);
             return false;
 
         } catch (\Exception $e) {
-            \Log::error('File deletion error: ' . $e->getMessage(), [
+            Log::error('File deletion error: ' . $e->getMessage(), [
                 'path' => $path,
                 'exception' => $e
             ]);
@@ -316,10 +318,17 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
         // Use CloudFront URL if configured, otherwise fallback to S3
         $cloudFrontUrl = config('filesystems.disks.cloudfront.url');
+        $cloudFrontDomain = config('filesystems.disks.cloudfront.domain');
+
         if ($cloudFrontUrl) {
             return rtrim($cloudFrontUrl, '/') . '/' . ltrim($path, '/');
+        } else if ($cloudFrontDomain) {
+            return 'https://' . $cloudFrontDomain . '/' . ltrim($path, '/');
         }
 
-        return Storage::disk('s3')->url($path);
+        // Fallback to S3 bucket URL
+        $bucket = config('filesystems.disks.s3.bucket');
+        $region = config('filesystems.disks.s3.region');
+        return "https://{$bucket}.s3.{$region}.amazonaws.com/" . ltrim($path, '/');
     }
 }

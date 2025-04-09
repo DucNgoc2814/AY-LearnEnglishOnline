@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\BaseController;
 use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Session;
 
 /**
  * @package App\Http\Controllers\Client
@@ -13,6 +15,20 @@ use Illuminate\Support\Facades\Auth;
  */
 class CourseController extends BaseController
 {
+    protected function getAuthenticatedUser()
+    {
+        try {
+            $token = session('jwt_token');
+            if (!$token) {
+                return null;
+            }
+            
+            return JWTAuth::setToken($token)->authenticate();
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
     /**
      * Display the homepage
      *
@@ -45,8 +61,11 @@ class CourseController extends BaseController
             ->get();
 
         $isEnrolled = false;
-        if (Auth::check()) {
-            $isEnrolled = $course->isEnrolledByUser(Auth::id());
+        $user = $this->getAuthenticatedUser();
+        
+        if ($user) {
+            // Kiểm tra nếu user là admin hoặc đã đăng ký khóa học
+            $isEnrolled = $user->role === 'admin' || $course->isEnrolledByUser($user->id);
         }
 
         $courseStats = [

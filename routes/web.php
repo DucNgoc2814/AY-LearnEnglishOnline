@@ -6,9 +6,11 @@ use App\Http\Controllers\Client\CategoryController;
 use App\Http\Controllers\Client\CourseController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\PaymentController;
+use App\Http\Controllers\Admin\VideoLessonController;
+use App\Http\Controllers\Client\PracticeTestController;
 use App\Http\Controllers\Client\CommentController;
 use App\Http\Controllers\Client\TestResultController;
-use App\Http\Controllers\Client\PracticeTestController;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +36,7 @@ Route::get('/thi-thu-toeic', [PracticeTestController::class, 'index'])->name('pr
 // Đặt tất cả routes auth trong middleware web
 Route::middleware('web')->group(function () {
     // Routes cho khách
-    Route::middleware('guest')->group(function () {
+    Route::middleware(['guest', 'prevent-back-history'])->group(function () {
         Route::get('/dang-ky', [AuthController::class, 'showRegisterForm'])->name('register');
         Route::post('/dang-ky', [AuthController::class, 'register'])->name('register.submit');
 
@@ -42,16 +44,27 @@ Route::middleware('web')->group(function () {
         Route::post('/dang-nhap', [AuthController::class, 'login'])->name('login.submit');
     });
 
+    // Route để kiểm tra trạng thái đăng nhập
+    Route::get('/check-auth', [AuthController::class, 'checkAuth'])->name('check.auth');
+    Route::get('/session-status', [AuthController::class, 'sessionStatus'])->name('session.status');
+    Route::get('/schedule-logout', [AuthController::class, 'scheduleLogout'])->name('schedule.logout');
+    Route::match(['get', 'post'], '/cancel-logout', [AuthController::class, 'cancelLogout'])->name('cancel.logout');
+    Route::get('/debug-schedule', [AuthController::class, 'checkScheduledLogout'])->name('debug.schedule');
+
     Route::get('/khoa-hoc/{slug}', [CourseController::class, 'detailCourse'])->name('detailCourse');
     Route::get('/danh-muc/{slug?}', [CategoryController::class, 'index'])->name('category.index');
 
     // Routes cho user đã đăng nhập
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['jwt', 'prevent-back-history'])->group(function () {
         Route::post('/dang-xuat', [AuthController::class, 'logout'])->name('logout');
         Route::get('/thanh-toan', [PaymentController::class, 'showQrPayment'])->name('checkout');
         Route::get('/thanh-toan/{slug}', [PaymentController::class, 'showQrPayment'])->name('payment.qr');
         Route::get('/thanh-toan/expired', [PaymentController::class, 'expired'])->name('payment.expired');
-        Route::get('/thanh-toan/check-expiry', [PaymentController::class, 'checkPaymentExpiry'])->name('payment.check-expiry');
+
+        // Tạo route riêng cho API kiểm tra thanh toán
+        Route::post('/thanh-toan/check-expiry', [PaymentController::class, 'checkPaymentExpiry'])
+            ->withoutMiddleware(['csrf'])
+            ->name('payment.check-expiry');
 
         Route::group(['prefix' => 'tai-khoan', 'as' => 'profile.'], function () {
             Route::get('/', [AuthController::class, 'profile'])->name('index');
@@ -59,7 +72,7 @@ Route::middleware('web')->group(function () {
         });
 
         Route::prefix('hoc-khoa-hoc')->group(function () {
-            
+
             // Route mặc định
             Route::get('/{courseSlug}', [CourseController::class, 'learning'])
                 ->name('course.learning');
@@ -92,4 +105,38 @@ Route::middleware('web')->group(function () {
             return view('lessons.view', compact('lessonId', 'enrollmentId'));
         })->name('lessons.view');
     });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Maintenance/Cache Routes
+|--------------------------------------------------------------------------
+|
+| Routes for clearing application cache, view cache, and other maintenance tasks
+|
+*/
+Route::middleware(['auth'])->group(function () {
+    // Chỉ admin mới có thể xóa cache
+    Route::get('/clear-cache', function () {
+        Artisan::call('cache:clear');
+        return redirect()->back()->with('success', 'Cache đã được xóa thành công!');
+    })->name('clear.cache');
+
+    Route::get('/clear-view', function () {
+        Artisan::call('view:clear');
+        return redirect()->back()->with('success', 'View cache đã được xóa thành công!');
+    })->name('clear.view');
+
+    Route::get('/clear-config', function () {
+        Artisan::call('config:clear');
+        return redirect()->back()->with('success', 'Config cache đã được xóa thành công!');
+    })->name('clear.config');
+
+    Route::get('/clear-all', function () {
+        Artisan::call('cache:clear');
+        Artisan::call('view:clear');
+        Artisan::call('config:clear');
+        Artisan::call('route:clear');
+        return redirect()->back()->with('success', 'Tất cả cache đã được xóa thành công!');
+    })->name('clear.all');
 });

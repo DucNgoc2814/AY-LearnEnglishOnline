@@ -23,6 +23,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/apply-coupon', [VoucherController::class, 'applyCoupon']);
 
+// Payment API endpoints
+Route::post('/payment/check-expiry', [\App\Http\Controllers\Client\PaymentController::class, 'checkPaymentExpiry'])->name('api.payment.check-expiry');
+
 Route::get('/table-columns/{tableId}', function ($tableId) {
     $columns = config("table-columns.{$tableId}", []);
     return response()->json($columns);

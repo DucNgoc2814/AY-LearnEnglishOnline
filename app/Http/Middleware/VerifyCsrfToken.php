@@ -13,5 +13,11 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         //
+        'thanh-toan/check-expiry',
+        'api/payment/check-expiry',
+        'api/*',
+        'dang-nhap',
+        'dang-ky',
+        'thanh-toan/*'
     ];
 }

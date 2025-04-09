@@ -79,6 +79,21 @@ class LessonController extends BaseController
     }
 
     /**
+     * Hiển thị chi tiết bài học để chỉnh sửa
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function edit($id)
+    {
+        $lesson = $this->lessonService->findWithFullUrls($id);
+        return response()->json([
+            'status' => true,
+            'data' => $lesson
+        ]);
+    }
+
+    /**
      * Cập nhật bài học
      *
      * @param UpdateRequest $request
@@ -87,7 +102,7 @@ class LessonController extends BaseController
      */
     public function update(UpdateRequest $request, $id)
     {
-        $result = $this->lessonService->update($id, $request->validated());
+        $result = $this->lessonService->update($request->validated(), $id);
         return $this->redirectResponse($result);
     }
 
@@ -113,5 +128,29 @@ class LessonController extends BaseController
     {
         $result = $this->lessonService->restore($id);
         return $this->redirectResponse($result);
+    }
+
+    /**
+     * Lấy danh sách bài học theo khóa học
+     *
+     * @param int $courseId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getLessonsByCourse($courseId)
+    {
+        $result = $this->lessonService->getLessonsByCourse($courseId);
+        return response()->json($result);
+    }
+
+    /**
+     * Lấy danh sách video của bài học
+     *
+     * @param int $lessonId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getVideosByLesson($lessonId)
+    {
+        $result = $this->lessonService->getVideosByLesson($lessonId);
+        return response()->json($result);
     }
 }

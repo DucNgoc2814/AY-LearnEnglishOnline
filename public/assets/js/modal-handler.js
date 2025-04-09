@@ -1,6 +1,7 @@
 class ModalHandler {
     constructor() {
         this.activeModals = new Set();
+        this.eventListeners = {};
         this.initializeEventListeners();
     }
 
@@ -32,9 +33,12 @@ class ModalHandler {
     close(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
+            // Trigger sự kiện 'hide'
+            this.triggerEvent(modalId, 'hide');
+
             modal.classList.add('hidden');
             this.activeModals.delete(modalId);
-            
+
             // Chỉ restore scroll khi không còn modal nào active
             if (this.activeModals.size === 0) {
                 document.body.style.overflow = '';
@@ -46,7 +50,29 @@ class ModalHandler {
         this.activeModals.forEach(modalId => this.close(modalId));
     }
 
-    // Phương thức để set dữ liệu cho modal edit
+    // Thêm phương thức đăng ký event listener
+    addEventListener(modalId, eventType, callback) {
+        if (!this.eventListeners[modalId]) {
+            this.eventListeners[modalId] = {};
+        }
+
+        if (!this.eventListeners[modalId][eventType]) {
+            this.eventListeners[modalId][eventType] = [];
+        }
+
+        this.eventListeners[modalId][eventType].push(callback);
+    }
+
+    // Phương thức kích hoạt sự kiện
+    triggerEvent(modalId, eventType, data = {}) {
+        if (this.eventListeners[modalId] && this.eventListeners[modalId][eventType]) {
+            this.eventListeners[modalId][eventType].forEach(callback => {
+                callback(data);
+            });
+        }
+    }
+
+    // Sửa lại phương thức setEditModalData
     setEditModalData(modalId, data) {
         const form = document.querySelector(`#${modalId} form`);
         if (!form) return;
@@ -55,6 +81,9 @@ class ModalHandler {
         if (data.actionUrl) {
             form.action = data.actionUrl;
         }
+
+        // Trigger sự kiện 'show' với dữ liệu
+        this.triggerEvent(modalId, 'show', data);
 
         // Set các giá trị input
         Object.keys(data).forEach(key => {
@@ -79,18 +108,18 @@ class ModalHandler {
         const currentThumbnailDiv = document.getElementById('currentThumbnail');
         if (input.files && input.files[0]) {
             const reader = new FileReader();
-            
+
             reader.onload = function(e) {
                 currentThumbnailDiv.innerHTML = `
                     <div class="mt-2">
                         <p class="text-sm text-gray-600 mb-1">Ảnh đã chọn:</p>
-                        <img src="${e.target.result}" 
-                             alt="Preview thumbnail" 
+                        <img src="${e.target.result}"
+                             alt="Preview thumbnail"
                              class="h-20 w-20 object-cover rounded border border-gray-300">
                     </div>
                 `;
             }
-            
+
             reader.readAsDataURL(input.files[0]);
         }
     }
@@ -101,8 +130,8 @@ class ModalHandler {
             currentThumbnailDiv.innerHTML = `
                 <div class="mt-2">
                     <p class="text-sm text-gray-600 mb-1">Ảnh hiện tại:</p>
-                    <img src="${thumbnailUrl}" 
-                         alt="Current thumbnail" 
+                    <img src="${thumbnailUrl}"
+                         alt="Current thumbnail"
                          class="h-20 w-20 object-cover rounded border border-gray-300">
                 </div>
             `;
@@ -119,7 +148,7 @@ const modalHandler = new ModalHandler();
 document.addEventListener('DOMContentLoaded', function() {
     // Tìm tất cả các modal
     const modals = document.querySelectorAll('.fixed.inset-0.z-50');
-    
+
     // Thêm event listener cho mỗi modal
     modals.forEach(modal => {
         // Đóng modal khi click vào overlay
@@ -129,4 +158,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-}); 
+});

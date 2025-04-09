@@ -29,11 +29,11 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'courseId' => 'required|exists:courses,id',
+            'course_id' => 'required|exists:courses,id',
             'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'orderNumber' => 'required|integer|min:1',
-            'isPreview' => 'boolean'
+            'description' => 'nullable|string',
+            'order_number' => 'required|integer|min:1',
+            'is_preview' => 'nullable|boolean',
         ];
     }
 
@@ -45,14 +45,14 @@ class StoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'courseId.required' => 'Khóa học không được để trống',
-            'courseId.exists' => 'Khóa học không tồn tại',
-            'name.required' => 'Tên bài học không được để trống',
+            'course_id.required' => 'Vui lòng chọn khóa học',
+            'course_id.exists' => 'Khóa học không tồn tại',
+            'name.required' => 'Vui lòng nhập tên bài học',
             'name.max' => 'Tên bài học không được vượt quá 255 ký tự',
             'description.required' => 'Mô tả không được để trống',
-            'orderNumber.required' => 'Thứ tự không được để trống',
-            'orderNumber.integer' => 'Thứ tự phải là số nguyên',
-            'orderNumber.min' => 'Thứ tự phải lớn hơn hoặc bằng 1'
+            'order_number.required' => 'Vui lòng nhập thứ tự bài học',
+            'order_number.integer' => 'Thứ tự bài học phải là số nguyên',
+            'order_number.min' => 'Thứ tự bài học phải lớn hơn 0',
         ];
     }
 
@@ -64,11 +64,21 @@ class StoreRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'courseId' => 'Khóa học',
+            'course_id' => 'Khóa học',
             'name' => 'Tên bài học',
             'description' => 'Mô tả',
-            'orderNumber' => 'Thứ tự',
-            'isPreview' => 'Cho phép xem thử'
+            'order_number' => 'Thứ tự',
+            'is_preview' => 'Cho phép xem thử',
         ];
+    }
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        throw new \Illuminate\Http\Exceptions\HttpResponseException(
+            response()->json([
+                'status' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422)
+        );
     }
 }

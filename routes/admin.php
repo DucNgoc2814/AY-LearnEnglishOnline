@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\LessonTestController;
 use App\Http\Controllers\Admin\FinalExamController;
 use App\Http\Controllers\Admin\QuestionLessonTestController;
 use App\Http\Controllers\Admin\QuestionFinalExamController;
+use App\Http\Controllers\Admin\TestController;
 use App\Http\Controllers\Admin\VideoLessonController;
 use App\Http\Controllers\Admin\ZoomSessionController;
 
@@ -55,7 +56,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
             Route::get('/{id}/edit', 'edit')->name('edit');
-            Route::get('/{courseId}', [LessonController::class, 'index'])->name('by.course');
+            Route::get('/{courseId}/lessons', [LessonController::class, 'getLessonsByCourse'])->name('lessons');
             Route::put('/{id}', 'update')->name('update');
             Route::delete('/{id}', 'destroy')->name('destroy');
             Route::post('/{id}/restore', 'restore')->name('restore');
@@ -84,19 +85,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/', 'store')->name('store');
             Route::get('/{id}/edit', 'edit')->name('edit');
             // Route::get('/{courseId}', [LessonController::class, 'index'])->name('by.course');
-            Route::put('/{id}', 'update')->name('update');
-            Route::delete('/{id}', 'destroy')->name('destroy');
-            Route::post('/{id}/restore', 'restore')->name('restore');
-        });
-    // Lesson Tests Management
-    Route::controller(LessonTestController::class)
-        ->prefix('lesson-tests')
-        ->name('lesson-tests.')
-        ->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{id}', 'show')->name('show');
-            Route::get('/{id}/edit', 'edit')->name('edit');
             Route::put('/{id}', 'update')->name('update');
             Route::delete('/{id}', 'destroy')->name('destroy');
             Route::post('/{id}/restore', 'restore')->name('restore');
@@ -137,6 +125,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{id}', 'destroy')->name('destroy');
             Route::post('/{id}/restore', 'restore')->name('restore');
         });
+    // Tests Management
+    Route::controller(TestController::class)
+        ->prefix('tests')
+        ->name('tests.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
+        });
 
     // Lessons Management
     Route::controller(LessonController::class)
@@ -146,6 +146,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
             Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::get('/{lessonId}/videos', 'getVideosByLesson')->name('videos');
             Route::put('/{id}', 'update')->name('update');
             Route::delete('/{id}', 'destroy')->name('destroy');
             Route::post('/{id}/restore', 'restore')->name('restore');
@@ -201,7 +202,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('employees', EmployeeController::class);
 
     // Tests & Exams Management
-    Route::resource('lesson-tests', LessonTestController::class);
     Route::resource('final-exams', FinalExamController::class);
     Route::resource('question-lesson-tests', QuestionLessonTestController::class);
     Route::resource('question-final-exams', QuestionFinalExamController::class);
