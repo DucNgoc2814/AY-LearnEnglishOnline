@@ -13,3 +13,15 @@
 .custom-toast.info {
   background: linear-gradient(to right, #3498db, #2980b9) !important;
 }
+
+/* Đảm bảo tất cả các thông báo Toastify có thể click */
+.toastify {
+  cursor: pointer !important;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
+
+/* Sửa lỗi các phần tử có thể chặn sự kiện click */
+.toastify * {
+  pointer-events: auto !important;
+}

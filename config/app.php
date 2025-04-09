@@ -171,6 +171,7 @@ return [
         App\Providers\ViewServiceProvider::class,
         App\Providers\RepositoryServiceProvider::class,
         App\Providers\ServiceServiceProvider::class,
+        App\Providers\DeviceServiceProvider::class,
     ])->toArray(),
 
     /*

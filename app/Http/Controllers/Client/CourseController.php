@@ -32,17 +32,34 @@ class CourseController extends BaseController
      */
     public function detailCourse($slug)
     {
-        $course = Course::where('slug', $slug)->first();
-        $relatedCourses = Course::where('category_id', $course->categoryId)
-            ->where('id', '!=', $course->id)
-            ->get();
+        try {
+            $course = Course::where('slug', $slug)->first();
 
-        $isEnrolled = false;
-        if (Auth::check()) {
-            $isEnrolled = $course->isEnrolledByUser(Auth::id());
+            if (!$course) {
+                return redirect()->route('home')
+                    ->with('notification', [
+                        'message' => 'Không tìm thấy khóa học.',
+                        'type' => 'error'
+                    ]);
+            }
+
+            $relatedCourses = Course::where('category_id', $course->categoryId)
+                ->where('id', '!=', $course->id)
+                ->get();
+
+            $isEnrolled = false;
+            if (Auth::check()) {
+                $isEnrolled = $course->isEnrolledByUser(Auth::id());
+            }
+
+            return view('client.detailCourse.index', compact('course', 'relatedCourses', 'isEnrolled'));
+        } catch (\Exception $e) {
+            return redirect()->route('home')
+                ->with('notification', [
+                    'message' => 'Đã xảy ra lỗi khi tải thông tin khóa học.',
+                    'type' => 'error'
+                ]);
         }
-
-        return view('client.detailCourse.index', compact('course', 'relatedCourses', 'isEnrolled'));
     }
 
     /**

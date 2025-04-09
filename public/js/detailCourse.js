@@ -1,11 +1,20 @@
 (function() {
     document.addEventListener("DOMContentLoaded", function() {
+        console.log("detailCourse.js loaded");
+
         // Modal elements
         const modal = document.getElementById("buyNowModal");
         const openModalBtn = document.getElementById("openBuyNowModal");
         const closeModalBtn = document.getElementById("closeModal");
         const modalOverlay = document.querySelector(".custom-modal-overlay");
         const checkoutBtn = document.querySelector(".custom-modal-checkout-btn");
+
+        console.log("Modal elements:", {
+            modal: modal ? 'found' : 'not found',
+            openModalBtn: openModalBtn ? 'found' : 'not found',
+            closeModalBtn: closeModalBtn ? 'found' : 'not found',
+            modalOverlay: modalOverlay ? 'found' : 'not found'
+        });
 
         // Coupon elements
         const couponInput = document.querySelector(".custom-modal-coupon-input");
@@ -94,11 +103,11 @@
         // Reset prices function
         function resetPrices() {
             const originalPrice = parseFloat(salePriceElement?.textContent.replace(/[^\d]/g, '') || 0);
-            
+
             voucherDiscountElement.style.display = 'none';
             voucherDiscountAmountElement.textContent = '-0đ';
             totalPriceElement.textContent = `${formatCurrency(originalPrice)}đ`;
-            
+
             document.querySelector('input[name="amount"]').value = originalPrice;
             document.querySelector('input[name="discount_amount"]').value = 0;
             couponInput.value = '';
@@ -106,46 +115,70 @@
 
         // Modal functions
         function openModal(e) {
+            console.log("Opening modal");
             e.preventDefault();
             modal.classList.add("active");
             document.body.style.overflow = "hidden";
+            console.log("Modal opened, classes:", modal.className);
         }
 
         function closeModal() {
+            console.log("Closing modal");
             modal.classList.remove("active");
             document.body.style.overflow = "";
             // Reset coupon input and price when closing modal
             couponInput.value = '';
             resetPrices();
+            console.log("Modal closed, classes:", modal.className);
         }
 
         // Event listeners
-        openModalBtn.addEventListener("click", openModal);
-        closeModalBtn.addEventListener("click", closeModal);
-        modalOverlay.addEventListener("click", closeModal);
-        
-        document.querySelector(".custom-modal-content").addEventListener("click", function(e) {
-            e.stopPropagation();
-        });
+        if (openModalBtn) {
+            console.log("Adding click event to open button");
+            openModalBtn.addEventListener("click", openModal);
+        }
+
+        if (closeModalBtn) {
+            console.log("Adding click event to close button");
+            closeModalBtn.addEventListener("click", closeModal);
+        }
+
+        if (modalOverlay) {
+            console.log("Adding click event to overlay");
+            modalOverlay.addEventListener("click", closeModal);
+        }
+
+        if (document.querySelector(".custom-modal-content")) {
+            console.log("Adding click event to modal content");
+            document.querySelector(".custom-modal-content").addEventListener("click", function(e) {
+                e.stopPropagation();
+            });
+        }
 
         // Apply coupon when clicking button
-        applyCouponBtn.addEventListener("click", applyCoupon);
+        if (applyCouponBtn) {
+            applyCouponBtn.addEventListener("click", applyCoupon);
+        }
 
         // Apply coupon when pressing Enter in input
-        couponInput.addEventListener("keypress", function(e) {
-            if (e.key === "Enter") {
-                applyCoupon();
-            }
-        });
+        if (couponInput) {
+            couponInput.addEventListener("keypress", function(e) {
+                if (e.key === "Enter") {
+                    applyCoupon();
+                }
+            });
+        }
 
         // Checkout button
-        checkoutBtn.addEventListener("click", function() {
-            window.location.href = checkoutBtn.dataset.checkoutUrl;
-        });
+        if (checkoutBtn) {
+            checkoutBtn.addEventListener("click", function() {
+                window.location.href = checkoutBtn.dataset.checkoutUrl;
+            });
+        }
 
         // Close with ESC key
         document.addEventListener("keydown", function(e) {
-            if (e.key === "Escape" && modal.classList.contains("active")) {
+            if (e.key === "Escape" && modal && modal.classList.contains("active")) {
                 closeModal();
             }
         });

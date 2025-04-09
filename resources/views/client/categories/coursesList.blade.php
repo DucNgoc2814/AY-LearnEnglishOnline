@@ -3,8 +3,8 @@
         @foreach ($data as $category)
             @foreach ($category->courses as $course)
                 <div class="single-popup-course col-lg-4 col-md-6 col-sm-12">
-                    <a href="{{ route('detailCourse', $course->slug) }}" id="top_course_12"
-                        class="checkPropagation courses-card-body">
+                    <a href="{{ route('detailCourse', $course->slug) }}"
+                        class="courses-card-body">
                         <div class="courses-card-image">
                             @if ($course->thumbnail)
                                 <img loading="lazy" src="{{ asset($course->thumbnail) }}" alt="{{ $course->title }}">

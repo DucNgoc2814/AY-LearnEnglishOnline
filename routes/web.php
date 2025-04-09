@@ -30,7 +30,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Đặt tất cả routes auth trong middleware web
 Route::middleware('web')->group(function () {
     // Routes cho khách
-    Route::middleware('guest')->group(function () {
+    Route::middleware(['guest', 'prevent-back-history'])->group(function () {
         Route::get('/dang-ky', [AuthController::class, 'showRegisterForm'])->name('register');
         Route::post('/dang-ky', [AuthController::class, 'register'])->name('register.submit');
 
@@ -38,16 +38,27 @@ Route::middleware('web')->group(function () {
         Route::post('/dang-nhap', [AuthController::class, 'login'])->name('login.submit');
     });
 
+    // Route để kiểm tra trạng thái đăng nhập
+    Route::get('/check-auth', [AuthController::class, 'checkAuth'])->name('check.auth');
+    Route::get('/session-status', [AuthController::class, 'sessionStatus'])->name('session.status');
+    Route::get('/schedule-logout', [AuthController::class, 'scheduleLogout'])->name('schedule.logout');
+    Route::match(['get', 'post'], '/cancel-logout', [AuthController::class, 'cancelLogout'])->name('cancel.logout');
+    Route::get('/debug-schedule', [AuthController::class, 'checkScheduledLogout'])->name('debug.schedule');
+
     Route::get('/khoa-hoc/{slug}', [CourseController::class, 'detailCourse'])->name('detailCourse');
     Route::get('/danh-muc/{slug?}', [CategoryController::class, 'index'])->name('category.index');
 
     // Routes cho user đã đăng nhập
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['jwt', 'prevent-back-history'])->group(function () {
         Route::post('/dang-xuat', [AuthController::class, 'logout'])->name('logout');
         Route::get('/thanh-toan', [PaymentController::class, 'showQrPayment'])->name('checkout');
         Route::get('/thanh-toan/{slug}', [PaymentController::class, 'showQrPayment'])->name('payment.qr');
         Route::get('/thanh-toan/expired', [PaymentController::class, 'expired'])->name('payment.expired');
-        Route::get('/thanh-toan/check-expiry', [PaymentController::class, 'checkPaymentExpiry'])->name('payment.check-expiry');
+
+        // Tạo route riêng cho API kiểm tra thanh toán
+        Route::post('/thanh-toan/check-expiry', [PaymentController::class, 'checkPaymentExpiry'])
+            ->withoutMiddleware(['csrf'])
+            ->name('payment.check-expiry');
 
         Route::group(['prefix' => 'tai-khoan', 'as' => 'profile.'], function () {
             Route::get('/', [AuthController::class, 'profile'])->name('index');
