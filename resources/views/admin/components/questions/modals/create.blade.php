@@ -23,6 +23,7 @@
                 <form action="{{ route('admin.questions.store') }}" method="POST" enctype="multipart/form-data"
                     id="createQuestionForm">
                     @csrf
+                    <input type="hidden" id="questionTestId" name="test_id" value="">
                     <div class="grid grid-cols-2 gap-6 mt-4">
                         <!-- Thông tin cơ bản -->
                         <div>
@@ -30,18 +31,10 @@
 
                             <!-- Bài kiểm tra -->
                             <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="test_id">
-                                    Bài kiểm tra <span class="text-red-500">*</span>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    Bài kiểm tra:
                                 </label>
-                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="test_id" name="test_id" required>
-                                    <option value="">Chọn bài kiểm tra</option>
-                                    @foreach (\App\Models\Test::all() as $test)
-                                        <option value="{{ $test->id }}" {{ old('test_id') == $test->id ? 'selected' : '' }}>
-                                            {{ $test->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <div class="py-2 px-3 bg-gray-100 rounded font-medium" id="testNameDisplay">Chọn bài kiểm tra</div>
                             </div>
 
                             <!-- Nội dung câu hỏi -->
@@ -55,12 +48,12 @@
 
                             <!-- Thứ tự -->
                             <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="order_number">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="question_order_number">
                                     Thứ tự <span class="text-red-500">*</span>
                                 </label>
                                 <input type="number"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="order_number" name="order_number" value="{{ old('order_number', 1) }}" min="0" required>
+                                    id="question_order_number" name="order_number" value="{{ old('order_number', 1) }}" min="0" required>
                             </div>
 
                             <!-- Loại câu hỏi -->
@@ -69,7 +62,7 @@
                                     Loại câu hỏi <span class="text-red-500">*</span>
                                 </label>
                                 <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="type" name="type" required>
+                                    id="type" name="type" required onchange="showUploadContainer(this.value)">
                                     <option value="text" {{ old('type', 'text') == 'text' ? 'selected' : '' }}>Văn bản</option>
                                     <option value="image" {{ old('type') == 'image' ? 'selected' : '' }}>Hình ảnh</option>
                                     <option value="video" {{ old('type') == 'video' ? 'selected' : '' }}>Video</option>
@@ -459,6 +452,32 @@
             closeMediaModal();
         }
     });
+
+    function showUploadContainer(type, prefix = '') {
+        // Prefix là để sử dụng cho cả create và edit modal
+        prefix = prefix || '';
+
+        // Ẩn tất cả các container trước
+        document.querySelectorAll('.media-upload-container').forEach(el => {
+            el.classList.add('hidden');
+        });
+
+        // Hiển thị container tương ứng
+        switch (type) {
+            case 'image':
+                document.getElementById(prefix + 'imageUploadContainer').classList.remove('hidden');
+                break;
+            case 'video':
+                document.getElementById(prefix + 'videoUploadContainer').classList.remove('hidden');
+                break;
+            case 'audio':
+                document.getElementById(prefix + 'audioUploadContainer').classList.remove('hidden');
+                break;
+            default:
+                // Không hiển thị container nào cho loại text
+                break;
+        }
+    }
 </script>
 
 <style>

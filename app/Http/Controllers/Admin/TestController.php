@@ -6,6 +6,8 @@ use App\Http\Controllers\BaseController;
 use App\Services\Interfaces\TestServiceInterface;
 use App\Http\Requests\Admin\Test\StoreRequest;
 use App\Http\Requests\Admin\Test\UpdateRequest;
+use App\Models\Question;
+use Illuminate\Http\Request;
 
 /**
  * @package App\Http\Controllers\Admin
@@ -103,5 +105,17 @@ class TestController extends BaseController
     {
         $result = $this->testService->restore($id);
         return $this->redirectResponse($result);
+    }
+
+    /**
+     * Lấy danh sách câu hỏi của bài test
+     *
+     * @param int $testId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getQuestionsByTest($testId)
+    {
+        $result = $this->testService->getQuestionsByTest($testId);
+        return response()->json($result);
     }
 }

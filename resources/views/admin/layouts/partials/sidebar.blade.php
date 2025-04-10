@@ -33,9 +33,9 @@
     <li><a class="text-white hover:text-gray-300" href="{{ route('admin.tests.index') }}"><i class="fas fa-clipboard-check"></i>
             Bài kiểm tra</a>
     </li>
-    <li><a class="text-white hover:text-gray-300" href="{{ route('admin.questions.index') }}"><i class="fas fa-question-circle"></i>
+    {{-- <li><a class="text-white hover:text-gray-300" href="{{ route('admin.questions.index') }}"><i class="fas fa-question-circle"></i>
             Câu hỏi và đáp án</a>
-    </li>
+    </li> --}}
     <li><a class="text-white hover:text-gray-300" href="#"><i class="fas fa-tasks"></i> Công
             việc</a>
     </li>
