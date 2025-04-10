@@ -98,7 +98,7 @@
                         <!-- Phần hình ảnh - ẩn trên mobile -->
                         <div class="col-md-5 d-none d-md-flex p-4 align-items-center justify-content-center position-relative overflow-hidden promotion-image-container">
                             <div class="position-relative" style="z-index: 1;">
-                                <img src="{{ asset('images/promotion.jpg') }}" alt="Promotion" class="img-fluid rounded-3 promotion-image">
+                                <img src="#" alt="Promotion" class="img-fluid rounded-3 promotion-image">
                             </div>
                             <div class="position-absolute top-0 start-0 w-100 h-100 bg-overlay"></div>
                         </div>
