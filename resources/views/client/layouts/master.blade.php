@@ -14,7 +14,7 @@
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="same-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'nonce-{{ csrf_token() }}' https://cdn.jsdelivr.net https://code.jquery.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https://api.vietqr.io; font-src 'self'; connect-src 'self' https://api.vietqr.io; frame-src 'self'; object-src 'none'">
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' data: 'unsafe-inline' 'unsafe-eval'; script-src * 'self' data: 'unsafe-inline' 'unsafe-eval'; style-src * 'self' data: 'unsafe-inline'; img-src * 'self' data: blob:; font-src * 'self' data:; connect-src * 'self' data:; frame-src * 'self' data:; object-src 'none';">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @if (session('notification'))
         <meta name="notification" content="{{ json_encode(session('notification')) }}">
@@ -23,7 +23,7 @@
     @include('client.layouts.partials.style')
     <script nonce="{{ csrf_token() }}" src="{{ asset('themes/client/assets/global/js/jquery-3.6.1.min.js') }}"></script>
     <script nonce="{{ csrf_token() }}" src="{{ asset('js/csrf-manager.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/plugins/toastify-js/toastify.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/notification.css') }}">
     @yield('styles')
     @stack('css')
@@ -79,7 +79,7 @@
         <div class="py-4 w-100"></div>
         @include('client.layouts.partials.footer')
         @include('client.layouts.partials.script')
-        <script nonce="{{ csrf_token() }}" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+        <script nonce="{{ csrf_token() }}" src="{{ asset('assets/plugins/toastify-js/toastify.min.js') }}"></script>
         <script nonce="{{ csrf_token() }}" src="{{ asset('js/notification.js') }}"></script>
     @endif
 

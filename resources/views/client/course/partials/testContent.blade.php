@@ -191,7 +191,7 @@
 </div>
 
 <!-- Thêm SweetAlert2 library từ CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script nonce="{{ csrf_token() }}" src="{{ asset('assets/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
 <style>
     .test-container {
@@ -657,7 +657,7 @@
     }
 </style>
 
-<script>
+<script nonce="{{ csrf_token() }}">
 // Biến lưu trữ chỉ mục câu hỏi hiện tại
 let currentQuestionIndex = 0;
 const totalQuestions = {{ $currentTest->questions->count() }};

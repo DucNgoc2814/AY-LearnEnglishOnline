@@ -32,16 +32,15 @@ class SecureHeaders
         // Tạo CSP nonce
         $nonce = $request->session()->token();
 
-        // Thiết lập Content Security Policy với nonce và cho phép cdn.jsdelivr.net
-        $cspHeader = "default-src 'self'; " .
-                     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com; " .
-                     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; " .
-                     "img-src 'self' data: https: blob:; " .
-                     "font-src 'self' https: data:; " .
-                     "connect-src 'self' https://cdn.jsdelivr.net wss: ws:; " .
-                     "frame-src 'self' https://dxud4suchjyje.cloudfront.net; " .
-                     "object-src 'none'; " . 
-                     "media-src 'self' https://dxud4suchjyje.cloudfront.net blob: data:;";
+        // Thiết lập Content Security Policy với các domain cần thiết và chính sách cực kỳ cho phép
+        $cspHeader = "default-src * 'self' data: 'unsafe-inline' 'unsafe-eval'; " .
+                     "script-src * 'self' data: 'unsafe-inline' 'unsafe-eval'; " .
+                     "style-src * 'self' data: 'unsafe-inline'; " .
+                     "img-src * 'self' data: blob:; " .
+                     "font-src * 'self' data:; " .
+                     "connect-src * 'self' data:; " .
+                     "frame-src * 'self' data:; " .
+                     "object-src 'none';";
 
         // Re-enable CSP with permissive settings
         $this->secureHeaders['Content-Security-Policy'] = $cspHeader;
