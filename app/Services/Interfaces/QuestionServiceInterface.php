@@ -21,4 +21,21 @@ interface QuestionServiceInterface extends BaseServiceInterface
      * @return array|object
      */
     public function findWithFullUrls($id);
+
+    /**
+     * Xử lý việc upload file media và chuyển đến thư mục tương ứng
+     *
+     * @param \Illuminate\Http\UploadedFile $file
+     * @param string $mediaType (images, videos, sounds)
+     * @return string|null Path của file đã upload
+     */
+    public function handleMediaUpload($file, $mediaType);
+
+    /**
+     * Xóa file media từ hệ thống lưu trữ
+     *
+     * @param string $path Đường dẫn file cần xóa
+     * @return bool Kết quả xóa file
+     */
+    public function deleteMedia($path);
 }

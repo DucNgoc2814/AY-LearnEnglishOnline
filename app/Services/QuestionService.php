@@ -153,21 +153,14 @@ class QuestionService extends BaseService implements QuestionServiceInterface
                 case 'sounds':
                     // Ghi đè MIME type cho file audio nếu cần
                     if ($mediaType === 'sounds' && !in_array($file->getMimeType(), $validMimeTypes)) {
-                        // Tạo file tạm thời để thay đổi MIME type
-                        $tempFilePath = tempnam(sys_get_temp_dir(), 'audio_');
-                        file_put_contents($tempFilePath, file_get_contents($file));
+                        Log::info('Audio file with non-standard mime type', [
+                            'original_mime' => $file->getMimeType(),
+                            'extension' => $extension
+                        ]);
 
-                        $tempFile = new \Illuminate\Http\UploadedFile(
-                            $tempFilePath,
-                            $file->getClientOriginalName(),
-                            $mimeType,
-                            null,
-                            true
-                        );
-
-                        $result = $this->repository->handleAudio($tempFile, $folder);
-                        @unlink($tempFilePath); // Xóa file tạm
-                        return $result;
+                        // Cách xử lý mới: Sử dụng file gốc với MIME type phù hợp
+                        // Việc ghi đè MIME type sẽ được thực hiện trong BaseRepository->handleFileUpload
+                        return $this->repository->handleAudio($file, $folder);
                     }
 
                     return $this->repository->handleAudio($file, $folder);

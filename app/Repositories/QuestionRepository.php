@@ -116,6 +116,38 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
         }
     }
 
+    public function handleAudio($audio, string $folder)
+    {
+        try {
+            if (!$audio) {
+                return null;
+            }
+
+            $filename = uniqid() . '_' . time();
+            $extension = strtolower($audio->getClientOriginalExtension());
+            $path = $folder . '/sounds/' . $filename . '.' . $extension;
+
+            // Upload to S3 giống như cách xử lý ảnh và video
+            $result = Storage::disk('s3')->put($path, file_get_contents($audio));
+
+            if (!$result) {
+                throw new \Exception('Failed to upload audio to S3');
+            }
+
+            Log::info('Audio file uploaded successfully', [
+                'path' => $path,
+                'file_name' => $audio->getClientOriginalName()
+            ]);
+
+            return $path;
+        } catch (\Exception $e) {
+            Log::error('Audio upload error: ' . $e->getMessage(), [
+                'file' => $audio->getClientOriginalName()
+            ]);
+            throw $e;
+        }
+    }
+
     public function update($id, array $data)
     {
         try {

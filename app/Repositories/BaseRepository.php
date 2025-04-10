@@ -140,11 +140,29 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
             // Upload file to S3
             $fileContent = file_get_contents($file);
+            if ($fileContent === false) {
+                throw new \Exception('Could not read file content');
+            }
 
             $options = [
                 'ContentType' => $file->getMimeType(),
                 'ACL' => 'public-read'
             ];
+
+            // Xử lý đặc biệt cho file audio
+            if ($type === 'sounds') {
+                // Đảm bảo MIME type hợp lệ cho audio
+                $extension = strtolower($extension);
+                if ($extension === 'mp3') {
+                    $options['ContentType'] = 'audio/mpeg';
+                } elseif ($extension === 'wav') {
+                    $options['ContentType'] = 'audio/wav';
+                } elseif ($extension === 'ogg') {
+                    $options['ContentType'] = 'audio/ogg';
+                } elseif ($extension === 'm4a') {
+                    $options['ContentType'] = 'audio/mp4';
+                }
+            }
 
             // Log chi tiết options
             Log::info("S3 upload options", [
@@ -170,6 +188,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
                 'file' => $file ? $file->getClientOriginalName() : null,
                 'file_size' => $file ? $file->getSize() : null,
                 'mime_type' => $file ? $file->getMimeType() : null,
+                'extension' => $file ? $file->getClientOriginalExtension() : null,
                 'folder' => $folder,
                 'type' => $type,
                 'exception' => $e->getTraceAsString()
@@ -202,6 +221,9 @@ abstract class BaseRepository implements BaseRepositoryInterface
      */
     public function handleAudio($audio, string $folder)
     {
+        if (!$audio || !$audio->isValid()) {
+            return null;
+        }
         return $this->handleFileUpload($audio, $folder, 'sounds');
     }
 
