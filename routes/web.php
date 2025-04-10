@@ -99,7 +99,7 @@ Route::middleware('web')->group(function () {
         Route::middleware(['auth'])->group(function () {
             Route::post('/comments', [App\Http\Controllers\Client\CommentController::class, 'store'])->name('client.comments.store');
             Route::post('/comments/{comment}/reply', [App\Http\Controllers\Client\CommentController::class, 'reply'])->name('client.comments.reply');
-            
+
             // Rating routes
             Route::post('/ratings', [App\Http\Controllers\Client\CommentController::class, 'storeRating'])->name('client.ratings.store');
         });

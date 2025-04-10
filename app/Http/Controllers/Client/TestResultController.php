@@ -9,6 +9,7 @@ use App\Models\TestResultDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class TestResultController extends Controller
@@ -19,6 +20,16 @@ class TestResultController extends Controller
     public function submit(Request $request, Test $test)
     {
         try {
+            // Log request data for debugging
+            Log::info('Test submission request data', [
+                'request' => $request->all(),
+                'test_id' => $test->id,
+                'has_token' => $request->has('_token'),
+                'token' => $request->input('_token'),
+                'method' => $request->method(),
+                'user_id' => Auth::id()
+            ]);
+            
             DB::beginTransaction();
 
             // Tính toán số câu hỏi và câu trả lời đúng
@@ -29,6 +40,11 @@ class TestResultController extends Controller
 
             // Khởi tạo mảng answers nếu không có câu trả lời nào
             $answers = $request->answers ?? [];
+            
+            // Đảm bảo $answers là một array
+            if (!is_array($answers)) {
+                $answers = [];
+            }
 
             // Xử lý từng câu trả lời
             foreach ($answers as $questionId => $answerId) {
@@ -73,7 +89,7 @@ class TestResultController extends Controller
 
             // Lưu chi tiết từng câu trả lời
             foreach ($test->questions as $question) {
-                $answerId = $answers[$question->id] ?? null;
+                $answerId = isset($answers[$question->id]) ? $answers[$question->id] : null;
                 $answer = null;
                 $isCorrect = false;
 
@@ -89,17 +105,32 @@ class TestResultController extends Controller
                     'is_correct' => $isCorrect,
                     'score' => $isCorrect ? $pointsPerQuestion : 0,
                     'time_spent' => null,
-                    'order_number' => $question->order_number
+                    'order_number' => $question->order_number ?? 0
                 ]);
             }
 
             DB::commit();
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Nộp bài thành công',
-                'data' => [
-                    'test_result_id' => $testResult->id,
+            // Nếu yêu cầu là AJAX, trả về JSON
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Nộp bài thành công',
+                    'data' => [
+                        'test_result_id' => $testResult->id,
+                        'score' => round($totalScore),
+                        'correct_answers' => $correctAnswers,
+                        'total_questions' => $totalQuestions,
+                        'passed' => $totalScore >= $test->min_score
+                    ]
+                ]);
+            }
+
+            // Nếu là form thông thường, chuyển hướng với thông báo
+            return redirect()->back()->with([
+                'success' => 'Nộp bài thành công',
+                'test_result' => [
+                    'id' => $testResult->id,
                     'score' => round($totalScore),
                     'correct_answers' => $correctAnswers,
                     'total_questions' => $totalQuestions,
@@ -109,10 +140,24 @@ class TestResultController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json([
-                'status' => false,
-                'message' => 'Có lỗi xảy ra khi nộp bài: ' . $e->getMessage()
-            ], 500);
+            
+            // Log lỗi để theo dõi
+            Log::error('Test submission error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Nếu yêu cầu là AJAX, trả về JSON
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Có lỗi xảy ra khi nộp bài: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            // Nếu là form thông thường, chuyển hướng với thông báo lỗi
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi nộp bài: ' . $e->getMessage());
         }
     }
 

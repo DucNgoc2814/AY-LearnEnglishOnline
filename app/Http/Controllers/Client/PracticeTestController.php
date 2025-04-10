@@ -18,7 +18,6 @@ class PracticeTestController extends Controller
 
         // Logic để lấy danh sách các bài thi thử
         $practiceTests = []; // TODO: Thêm logic lấy bài thi thử từ database
-        
         return view('client.practice-tests.index', compact('practiceTests'));
     }
 } 

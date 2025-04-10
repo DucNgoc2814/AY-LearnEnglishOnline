@@ -18,6 +18,7 @@ class VerifyCsrfToken extends Middleware
         'api/*',
         'dang-nhap',
         'dang-ky',
-        'thanh-toan/*'
+        'thanh-toan/*',
+        'test/*/submit'
     ];
 }

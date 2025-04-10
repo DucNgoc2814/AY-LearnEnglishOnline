@@ -1,4 +1,42 @@
 <div class="test-container">
+    @if (session('error'))
+        <script nonce="{{ csrf_token() }}">
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Lỗi!',
+                    text: "{{ session('error') }}",
+                    icon: 'error',
+                    confirmButtonText: 'Đóng'
+                });
+            });
+        </script>
+    @endif
+
+    @if (session('success') && session('test_result'))
+        <script nonce="{{ csrf_token() }}">
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Nộp bài thành công!',
+                    html: `
+                        <div class="test-result">
+                            <p>Điểm số: <strong>{{ session('test_result.score') }}/{{ session('test_result.total_questions') * 100 }}</strong></p>
+                            <p>Số câu đúng: <strong>{{ session('test_result.correct_answers') }}/{{ session('test_result.total_questions') }}</strong></p>
+                            <p>Kết quả: <strong>{{ session('test_result.passed') ? 'Đạt' : 'Chưa đạt' }}</strong></p>
+                        </div>
+                    `,
+                    icon: 'success',
+                    confirmButtonText: 'Xem chi tiết',
+                    showCancelButton: true,
+                    cancelButtonText: 'Đóng',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/test-results/{{ session('test_result.id') }}';
+                    }
+                });
+            });
+        </script>
+    @endif
+
     @if ($currentTest)
         @php
             $latestResult = Auth::user()->testResults()
@@ -80,6 +118,10 @@
         @else
             <form id="testForm" action="{{ route('test.submit', $currentTest->id) }}" method="POST">
                 @csrf
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="started_at" id="started_at_input">
+                <input type="hidden" name="timeout" id="timeout_input" value="0">
+                
                 <div class="row mx-0 px-0">
                     <!-- Phần nội dung câu hỏi và câu trả lời bên trái -->
                     <div class="col-md-9">
@@ -192,6 +234,7 @@
 
 <!-- Thêm SweetAlert2 library từ CDN -->
 <script nonce="{{ csrf_token() }}" src="{{ asset('assets/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <style>
     .test-container {
@@ -740,10 +783,22 @@ function confirmSubmitTest() {
     });
 }
 
-// Thay thế hàm submitTest cũ bằng hàm mới
+// Thay thế hàm submitTest cũ
 function submitTest(isTimeout = false) {
-    // Nếu là hết thời gian, hiển thị thông báo khác
+    // Cập nhật trường ẩn trước khi submit
+    document.getElementById('started_at_input').value = window.testStartTime;
+    
+    // Đảm bảo token CSRF được cập nhật
+    const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+    if (tokenMeta) {
+        const tokenInput = document.querySelector('input[name="_token"]');
+        if (tokenInput) {
+            tokenInput.value = tokenMeta.content;
+        }
+    }
+    
     if (isTimeout) {
+        document.getElementById('timeout_input').value = '1';
         Swal.fire({
             title: 'Hết thời gian!',
             text: 'Thời gian làm bài đã hết. Bài làm của bạn sẽ được nộp tự động.',
@@ -752,7 +807,7 @@ function submitTest(isTimeout = false) {
             timer: 2000,
             timerProgressBar: true
         }).then(() => {
-            submitTestAjax(true);
+            document.getElementById('testForm').submit();
         });
     } else {
         // Hiển thị thông báo đang xử lý
@@ -764,74 +819,13 @@ function submitTest(isTimeout = false) {
             showConfirmButton: false,
             willOpen: () => {
                 Swal.showLoading();
+                // Submit form sau một khoảng thời gian ngắn để đảm bảo Sweet Alert hiển thị
+                setTimeout(function() {
+                    document.getElementById('testForm').submit();
+                }, 500);
             }
         });
-        
-        submitTestAjax(false);
     }
-}
-
-function submitTestAjax(isTimeout) {
-    const form = document.getElementById('testForm');
-    const formData = new FormData(form);
-    
-    // Thêm thông tin thời gian bắt đầu và timeout
-    formData.append('started_at', window.testStartTime);
-    if (isTimeout) {
-        formData.append('timeout', '1');
-    }
-
-    fetch(form.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status) {
-            // Hiển thị kết quả
-            Swal.fire({
-                title: 'Nộp bài thành công!',
-                html: `
-                    <div class="test-result">
-                        <p>Điểm số: <strong>${data.data.score}/${data.data.total_questions * 100}</strong></p>
-                        <p>Số câu đúng: <strong>${data.data.correct_answers}/${data.data.total_questions}</strong></p>
-                        <p>Kết quả: <strong>${data.data.passed ? 'Đạt' : 'Chưa đạt'}</strong></p>
-                    </div>
-                `,
-                icon: 'success',
-                confirmButtonText: 'Xem chi tiết',
-                showCancelButton: true,
-                cancelButtonText: 'Đóng',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Chuyển đến trang xem chi tiết kết quả
-                    window.location.href = '/test-results/' + data.data.test_result_id;
-                } else {
-                    // Quay lại trang trước
-                    window.history.back();
-                }
-            });
-        } else {
-            Swal.fire({
-                title: 'Lỗi!',
-                text: data.message,
-                icon: 'error',
-                confirmButtonText: 'Đóng'
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        Swal.fire({
-            title: 'Lỗi!',
-            text: 'Có lỗi xảy ra khi nộp bài. Vui lòng thử lại.',
-            icon: 'error',
-            confirmButtonText: 'Đóng'
-        });
-    });
 }
 
 // Thêm biến lưu thời gian bắt đầu làm bài
