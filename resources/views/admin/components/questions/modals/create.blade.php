@@ -23,161 +23,284 @@
                 <form action="{{ route('admin.questions.store') }}" method="POST" enctype="multipart/form-data"
                     id="createQuestionForm">
                     @csrf
-                    <input type="hidden" id="questionTestId" name="test_id" value="">
-                    <div class="grid grid-cols-2 gap-6 mt-4">
-                        <!-- Thông tin cơ bản -->
-                        <div>
-                            <h4 class="font-medium text-gray-900 mb-4">Thông tin cơ bản</h4>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
+                        <!-- Phần thông tin cơ bản -->
+                        <div class="space-y-8">
+                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                                <h4 class="font-medium text-gray-900 mb-4 flex items-center">
+                                    <span class="mr-2">1. Thông tin cơ bản</span>
+                                    <span class="text-xs text-gray-500">(Các trường bắt buộc có dấu *)</span>
+                                </h4>
 
-                            <!-- Bài kiểm tra -->
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2">
-                                    Bài kiểm tra:
-                                </label>
-                                <div class="py-2 px-3 bg-gray-100 rounded font-medium" id="testNameDisplay">Chọn bài kiểm tra</div>
+                                <!-- Bài kiểm tra -->
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="test_id">
+                                        Bài kiểm tra <span class="text-red-500">*</span>
+                                        <span class="ml-1 text-xs text-gray-500">(Chọn bài kiểm tra để thêm câu hỏi
+                                            vào)</span>
+                                    </label>
+                                    <select
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="test_id" name="test_id" required>
+                                        <option value="">Chọn bài kiểm tra</option>
+                                        @foreach (\App\Models\Test::all() as $test)
+                                            <option value="{{ $test->id }}"
+                                                {{ old('test_id') == $test->id ? 'selected' : '' }}>
+                                                {{ $test->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <!-- Loại câu hỏi -->
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="type">
+                                        Loại câu hỏi <span class="text-red-500">*</span>
+                                        <span class="ml-1 text-xs text-gray-500">(Chọn định dạng nội dung câu
+                                            hỏi)</span>
+                                    </label>
+                                    <select
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="type" name="type" required>
+                                        <option value="text" {{ old('type', 'text') == 'text' ? 'selected' : '' }}>Văn
+                                            bản (Chỉ chữ)</option>
+                                        <option value="image" {{ old('type') == 'image' ? 'selected' : '' }}>Hình ảnh
+                                            (Câu hỏi kèm hình)</option>
+                                        <option value="video" {{ old('type') == 'video' ? 'selected' : '' }}>Video (Câu
+                                            hỏi kèm video)</option>
+                                        <option value="audio" {{ old('type') == 'audio' ? 'selected' : '' }}>Âm thanh
+                                            (Câu hỏi kèm audio)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Nội dung câu hỏi -->
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="question">
+                                        Nội dung câu hỏi <span class="text-red-500">*</span>
+                                        <span class="ml-1 text-xs text-gray-500">(Nhập câu hỏi chi tiết)</span>
+                                    </label>
+                                    <textarea
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="question" name="question" rows="3" required placeholder="VD: What is the capital of Vietnam?">{{ old('question') }}</textarea>
+                                </div>
+
+                                <!-- Thứ tự -->
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="order_number">
+                                        Thứ tự <span class="text-red-500">*</span>
+                                        <span class="ml-1 text-xs text-gray-500">(Vị trí hiển thị trong bài kiểm
+                                            tra)</span>
+                                    </label>
+                                    <input type="number"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="order_number" name="order_number" value="{{ old('order_number', 1) }}"
+                                        min="1" required>
+                                </div>
+                            </div>
+                            <!-- Phần media -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mt-6">
+                                <h4 class="font-medium text-gray-900 mb-6">2. Tệp đính kèm</h4>
+
+                                <!-- Media upload cho Image -->
+                                <div class="mb-8 media-upload-container" id="imageUploadContainer">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="image_file">
+                                        Tệp Hình ảnh
+                                        <span class="ml-1 text-xs text-gray-500">(JPG, PNG, GIF - Tối đa 5MB)</span>
+                                    </label>
+                                    <div class="preview-container mb-2">
+                                        <div id="imagePreviewContainer" class="hidden">
+                                            <img id="imagePreview" src=""
+                                                class="max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
+                                                style="max-height: 200px; object-fit: contain;"
+                                                onclick="openMediaModal(this.src)">
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button type="button" id="chooseImageBtn"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                            Chọn tệp
+                                        </button>
+                                        <button type="button" onclick="clearMedia('image')"
+                                            class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                            Xóa tệp
+                                        </button>
+                                    </div>
+                                    <input type="file" class="hidden" id="image_file" name="media_file"
+                                        accept="image/*">
+                                </div>
+
+                                <!-- Media upload cho Video -->
+                                <div class="mb-8 media-upload-container" id="videoUploadContainer">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="video_file">
+                                        Tệp Video
+                                        <span class="ml-1 text-xs text-gray-500">(MP4, WebM - Tối đa 50MB)</span>
+                                    </label>
+                                    <div class="preview-container mb-2">
+                                        <div id="videoPreviewContainer" class="hidden">
+                                            <video id="videoPreview"
+                                                class="max-w-xs rounded-lg shadow-md cursor-pointer"
+                                                style="max-height: 200px; width: 100%;" controls>
+                                                <source src="" type="video/mp4">
+                                            </video>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button type="button" id="chooseVideoBtn"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                            Chọn tệp
+                                        </button>
+                                        <button type="button" onclick="clearMedia('video')"
+                                            class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                            Xóa tệp
+                                        </button>
+                                    </div>
+                                    <input type="file" class="hidden" id="video_file" name="media_file"
+                                        accept="video/*">
+                                </div>
+
+                                <!-- Media upload cho Audio -->
+                                <div class="mb-8 media-upload-container" id="audioUploadContainer">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="audio_file">
+                                        Tệp Âm thanh
+                                        <span class="ml-1 text-xs text-gray-500">(MP3, WAV - Tối đa 10MB)</span>
+                                    </label>
+                                    <div class="preview-container mb-2">
+                                        <div id="audioPreviewContainer" class="hidden">
+                                            <audio id="audioPreview" class="w-full" controls>
+                                                <source src="" type="audio/mpeg">
+                                            </audio>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button type="button" id="chooseAudioBtn"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                            Chọn tệp
+                                        </button>
+                                        <button type="button" onclick="clearMedia('audio')"
+                                            class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                            Xóa tệp
+                                        </button>
+                                    </div>
+                                    <input type="file" class="hidden" id="audio_file" name="media_file"
+                                        accept="audio/*">
+                                </div>
                             </div>
 
-                            <!-- Nội dung câu hỏi -->
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="question">
-                                    Nội dung câu hỏi <span class="text-red-500">*</span>
-                                </label>
-                                <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="question" name="question" rows="3" required>{{ old('question') }}</textarea>
-                            </div>
-
-                            <!-- Thứ tự -->
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="question_order_number">
-                                    Thứ tự <span class="text-red-500">*</span>
-                                </label>
-                                <input type="number"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="question_order_number" name="order_number" value="{{ old('order_number', 1) }}" min="0" required>
-                            </div>
-
-                            <!-- Loại câu hỏi -->
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="type">
-                                    Loại câu hỏi <span class="text-red-500">*</span>
-                                </label>
-                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="type" name="type" required onchange="showUploadContainer(this.value)">
-                                    <option value="text" {{ old('type', 'text') == 'text' ? 'selected' : '' }}>Văn bản</option>
-                                    <option value="image" {{ old('type') == 'image' ? 'selected' : '' }}>Hình ảnh</option>
-                                    <option value="video" {{ old('type') == 'video' ? 'selected' : '' }}>Video</option>
-                                    <option value="audio" {{ old('type') == 'audio' ? 'selected' : '' }}>Âm thanh</option>
-                                </select>
-                            </div>
                         </div>
 
-                        <!-- Media và thông tin bổ sung -->
-                        <div>
-                            <h4 class="font-medium text-gray-900 mb-4">Media</h4>
+                        <!-- Phần bên phải -->
+                        <div class="space-y-8">
 
-                            <!-- Media upload cho Image -->
-                            <div class="mb-6 media-upload-container" id="imageUploadContainer">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="image_file">
-                                    Tệp Hình ảnh
-                                </label>
-                                <div class="preview-container mb-2">
-                                    <div id="imagePreviewContainer" class="hidden">
-                                        <img id="imagePreview" src="" class="max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
-                                            style="max-height: 200px; object-fit: contain;" onclick="openMediaModal(this.src)">
+
+                            <!-- Phần câu trả lời -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mt-6">
+                                <h4 class="font-medium text-gray-900 mb-6">3. Thiết lập câu trả lời</h4>
+
+                                <!-- Loại câu trả lời -->
+                                <div class="mb-6">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2 mt-4" for="answer_type">
+                                        Loại câu trả lời <span class="text-red-500">*</span>
+                                        <span class="ml-1 text-xs text-gray-500">(Chọn một hoặc nhiều đáp án
+                                            đúng)</span>
+                                    </label>
+                                    <select
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
+                                        id="answer_type" name="answer_type" required>
+                                        <option value="single">Chọn một đáp án</option>
+                                        <option value="multiple">Chọn nhiều đáp án</option>
+                                    </select>
+                                </div>
+
+                                <!-- Danh sách câu trả lời -->
+                                <div id="answers_container" class="space-y-4">
+                                    <div class="answer-item p-4 border rounded-lg bg-gray-50">
+                                        <div class="grid grid-cols-12 gap-4">
+                                            <div class="col-span-6">
+                                                <label class="block text-gray-700 text-sm font-bold mb-2">
+                                                    Nội dung <span class="text-red-500">*</span>
+                                                    <span class="ml-1 text-xs text-gray-500">(Đáp án cho câu
+                                                        hỏi)</span>
+                                                </label>
+                                                <input type="text" name="answers[0][answer]"
+                                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                    placeholder="VD: Hà Nội" required>
+                                            </div>
+                                            <div class="col-span-2">
+                                                <label class="block text-gray-700 text-sm font-bold mb-2">
+                                                    Thứ tự
+                                                    <span class="ml-1 text-xs text-gray-500">(Vị trí)</span>
+                                                </label>
+                                                <input type="number" name="answers[0][order_number]"
+                                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                    value="1" min="1" required>
+                                            </div>
+                                            <div class="col-span-4">
+                                                <label class="block text-gray-700 text-sm font-bold mb-2">
+                                                    Tùy chọn
+                                                </label>
+                                                <div class="flex items-center mt-2">
+                                                    <input type="checkbox" name="answers[0][is_correct]"
+                                                        value="1" class="form-checkbox h-4 w-4 text-blue-600">
+                                                    <span class="ml-2 text-sm text-gray-700">Đáp án đúng</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="flex space-x-2">
-                                    <button type="button" id="chooseImageBtn"
-                                        class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
-                                        Chọn tệp
-                                    </button>
-                                    <button type="button" onclick="clearMedia('image')"
-                                        class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded">
-                                        Xóa tệp
-                                    </button>
-                                </div>
-                                <input type="file" class="hidden" id="image_file" name="media_file" accept="image/*">
-                                <div class="mt-2 text-sm text-gray-500">
-                                    <p>Hỗ trợ các định dạng sau: JPG, PNG, GIF (tối đa 5MB)</p>
+
+                                <!-- Nút thêm câu trả lời -->
+                                <button type="button" id="add_answer"
+                                    class="mt-6 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded inline-flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                    Thêm câu trả lời
+                                </button>
+                            </div>
+
+                            <!-- Phần giải thích đáp án -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mt-6">
+                                <h4 class="font-medium text-gray-900 mb-4">4. Giải thích đáp án</h4>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                                        for="correct_answer_explanation">
+                                        Giải thích chi tiết
+                                        <span class="ml-1 text-xs text-gray-500">(Sẽ hiển thị sau khi học viên làm
+                                            xong)</span>
+                                    </label>
+                                    <textarea
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="correct_answer_explanation" name="correct_answer_explanation" rows="3"
+                                        placeholder="VD: Hà Nội là thủ đô của Việt Nam từ năm 1010...">{{ old('correct_answer_explanation') }}</textarea>
+                                    <p class="text-xs text-gray-500 mt-1">Giải thích này giúp học viên hiểu rõ hơn về
+                                        đáp án đúng</p>
                                 </div>
                             </div>
 
-                            <!-- Media upload cho Video -->
-                            <div class="mb-6 media-upload-container" id="videoUploadContainer">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="video_file">
-                                    Tệp Video
-                                </label>
-                                <div class="preview-container mb-2">
-                                    <div id="videoPreviewContainer" class="hidden">
-                                        <video id="videoPreview" class="max-w-xs rounded-lg shadow-md cursor-pointer"
-                                            style="max-height: 200px; width: 100%;" controls>
-                                            <source src="" type="video/mp4">
-                                        </video>
-                                    </div>
-                                </div>
-                                <div class="flex space-x-2">
-                                    <button type="button" id="chooseVideoBtn"
-                                        class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
-                                        Chọn tệp
-                                    </button>
-                                    <button type="button" onclick="clearMedia('video')"
-                                        class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded">
-                                        Xóa tệp
-                                    </button>
-                                </div>
-                                <input type="file" class="hidden" id="video_file" name="media_file" accept="video/*">
-                                <div class="mt-2 text-sm text-gray-500">
-                                    <p>Hỗ trợ các định dạng sau: MP4, WebM (tối đa 50MB)</p>
-                                </div>
-                            </div>
-
-                            <!-- Media upload cho Audio -->
-                            <div class="mb-6 media-upload-container" id="audioUploadContainer">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="audio_file">
-                                    Tệp Âm thanh
-                                </label>
-                                <div class="preview-container mb-2">
-                                    <div id="audioPreviewContainer" class="hidden">
-                                        <audio id="audioPreview" class="w-full" controls>
-                                            <source src="" type="audio/mpeg">
-                                        </audio>
-                                    </div>
-                                </div>
-                                <div class="flex space-x-2">
-                                    <button type="button" id="chooseAudioBtn"
-                                        class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
-                                        Chọn tệp
-                                    </button>
-                                    <button type="button" onclick="clearMedia('audio')"
-                                        class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded">
-                                        Xóa tệp
-                                    </button>
-                                </div>
-                                <input type="file" class="hidden" id="audio_file" name="media_file" accept="audio/*">
-                                <div class="mt-2 text-sm text-gray-500">
-                                    <p>Hỗ trợ các định dạng sau: MP3, WAV (tối đa 10MB)</p>
-                                </div>
-                            </div>
-
-                            <h4 class="font-medium text-gray-900 mb-4 mt-6">Hướng dẫn</h4>
-                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <!-- Phần hướng dẫn -->
+                            <div class="bg-blue-50 p-6 rounded-lg border border-blue-200 mt-6">
                                 <h5 class="text-blue-800 font-medium mb-2">Lưu ý khi tạo câu hỏi:</h5>
-                                <ul class="list-disc pl-5 text-blue-700 text-sm">
-                                    <li>Nội dung câu hỏi nên rõ ràng, dễ hiểu</li>
-                                    <li>Chọn loại câu hỏi phù hợp với nội dung</li>
-                                    <li>Đối với câu hỏi có media, hãy đảm bảo chất lượng media tốt</li>
+                                <ul class="list-disc pl-5 text-blue-700 text-sm space-y-1">
+                                    <li>Nội dung câu hỏi cần rõ ràng, dễ hiểu</li>
+                                    <li>Chọn loại câu hỏi phù hợp với nội dung bài kiểm tra</li>
+                                    <li>Đối với câu hỏi có media, đảm bảo chất lượng tệp tốt</li>
                                     <li>Thứ tự câu hỏi nên sắp xếp theo độ khó tăng dần</li>
+                                    <li>Cần có ít nhất một đáp án đúng cho mỗi câu hỏi</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex justify-end pt-4 border-t mt-6">
-                        <button type="button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
+                    <div class="flex justify-end pt-6 border-t mt-6 mb-6">
+                        <button type="button"
+                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2 mt-2"
                             onclick="modalHandler.close('createQuestionModal')">
                             Hủy
                         </button>
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <button type="submit"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2">
                             Thêm mới
                         </button>
                     </div>
@@ -285,7 +408,8 @@
                     // Kiểm tra kích thước file
                     const maxSize = getMaxFileSize(type);
                     if (file.size > maxSize) {
-                        alert(`File quá lớn. Kích thước tối đa cho ${getFileTypeLabel(type)} là ${formatFileSize(maxSize)}.`);
+                        alert(
+                            `File quá lớn. Kích thước tối đa cho ${getFileTypeLabel(type)} là ${formatFileSize(maxSize)}.`);
                         this.value = '';
                         return;
                     }
@@ -334,32 +458,32 @@
 
             // Gửi request bằng fetch API
             fetch(this.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Đóng modal
-                    modalHandler.close('createQuestionModal');
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Đóng modal
+                        modalHandler.close('createQuestionModal');
 
-                    // Hiển thị thông báo thành công
-                    alert('Tạo câu hỏi mới thành công!');
+                        // Hiển thị thông báo thành công
+                        alert('Tạo câu hỏi mới thành công!');
 
-                    // Tải lại trang để cập nhật danh sách
-                    window.location.reload();
-                } else {
-                    // Hiển thị lỗi
-                    alert('Có lỗi xảy ra: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra khi gửi form');
-            });
+                        // Tải lại trang để cập nhật danh sách
+                        window.location.reload();
+                    } else {
+                        // Hiển thị lỗi
+                        alert('Có lỗi xảy ra: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi gửi form');
+                });
         });
 
         // Lấy kích thước tối đa cho từng loại file
@@ -392,6 +516,70 @@
             else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
             else return (bytes / 1048576).toFixed(1) + ' MB';
         }
+
+        // Xử lý thêm câu trả lời
+        document.getElementById('add_answer').addEventListener('click', function() {
+            const container = document.getElementById('answers_container');
+            const answerCount = container.getElementsByClassName('answer-item').length;
+            const answerType = document.getElementById('answer_type').value;
+
+            const template = `
+                <div class="answer-item mb-4 p-4 border rounded-lg bg-gray-50">
+                    <div class="grid grid-cols-12 gap-4">
+                        <div class="col-span-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Nội dung <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="answers[${answerCount}][answer]"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                placeholder="Nhập câu trả lời" required>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Thứ tự
+                            </label>
+                            <input type="number" name="answers[${answerCount}][order_number]"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                value="${answerCount + 1}" min="1" required>
+                        </div>
+                        <div class="col-span-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Tùy chọn
+                            </label>
+                            <div class="flex items-center mt-2">
+                                <input type="${answerType === 'single' ? 'radio' : 'checkbox'}"
+                                    name="${answerType === 'single' ? 'correct_answer' : `answers[${answerCount}][is_correct]`}"
+                                    value="${answerType === 'single' ? answerCount : '1'}"
+                                    class="form-checkbox h-4 w-4 text-blue-600">
+                                <span class="ml-2 text-sm text-gray-700">Đáp án đúng</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', template);
+        });
+
+        // Xử lý thay đổi loại câu trả lời
+        document.getElementById('answer_type').addEventListener('change', function() {
+            const container = document.getElementById('answers_container');
+            const answerType = this.value;
+            const correctInputs = container.querySelectorAll(
+                'input[type="radio"], input[type="checkbox"]');
+
+            correctInputs.forEach((input, index) => {
+                if (answerType === 'single') {
+                    input.type = 'radio';
+                    input.name = 'correct_answer';
+                    input.value = index;
+                } else {
+                    input.type = 'checkbox';
+                    input.name = `answers[${index}][is_correct]`;
+                    input.value = '1';
+                }
+            });
+        });
     });
 
     // Mở modal xem media
@@ -452,32 +640,6 @@
             closeMediaModal();
         }
     });
-
-    function showUploadContainer(type, prefix = '') {
-        // Prefix là để sử dụng cho cả create và edit modal
-        prefix = prefix || '';
-
-        // Ẩn tất cả các container trước
-        document.querySelectorAll('.media-upload-container').forEach(el => {
-            el.classList.add('hidden');
-        });
-
-        // Hiển thị container tương ứng
-        switch (type) {
-            case 'image':
-                document.getElementById(prefix + 'imageUploadContainer').classList.remove('hidden');
-                break;
-            case 'video':
-                document.getElementById(prefix + 'videoUploadContainer').classList.remove('hidden');
-                break;
-            case 'audio':
-                document.getElementById(prefix + 'audioUploadContainer').classList.remove('hidden');
-                break;
-            default:
-                // Không hiển thị container nào cho loại text
-                break;
-        }
-    }
 </script>
 
 <style>

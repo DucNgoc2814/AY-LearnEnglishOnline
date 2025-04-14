@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
 use App\Services\Interfaces\QuestionServiceInterface;
+use App\Services\Interfaces\AnswerServiceInterface;
 use App\Http\Requests\Admin\Question\StoreRequest;
 use App\Http\Requests\Admin\Question\UpdateRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @package App\Http\Controllers\Admin
@@ -16,11 +18,15 @@ use Illuminate\Support\Facades\Log;
 class QuestionController extends BaseController
 {
     protected $questionService;
+    protected $answerService;
     protected const VIEW_PATH = 'admin.components.questions.';
 
-    public function __construct(QuestionServiceInterface $questionService)
-    {
+    public function __construct(
+        QuestionServiceInterface $questionService,
+        AnswerServiceInterface $answerService
+    ) {
         $this->questionService = $questionService;
+        $this->answerService = $answerService;
     }
 
     /**
@@ -55,6 +61,7 @@ class QuestionController extends BaseController
     {
         try {
             $data = $request->validated();
+            DB::beginTransaction();
 
             // Xử lý file media dựa vào loại câu hỏi
             if ($request->hasFile('media_file')) {
@@ -124,18 +131,48 @@ class QuestionController extends BaseController
                 }
             }
 
-            $result = $this->questionService->create($data);
+            // Tạo câu hỏi
+            $question = $this->questionService->create($data);
+
+            // Kiểm tra xem $question có phải là mảng không
+            if (is_array($question) && isset($question['data'])) {
+                $question = $question['data'];
+            }
+
+            // Xử lý câu trả lời
+            if ($request->has('answers')) {
+                $answers = $request->input('answers');
+                $answerType = $request->input('answer_type', 'single');
+
+                // Nếu là single choice, chỉ cho phép một đáp án đúng
+                if ($answerType === 'single' && $request->has('correct_answer')) {
+                    $correctAnswerIndex = $request->input('correct_answer');
+                    foreach ($answers as $index => &$answer) {
+                        $answer['is_correct'] = ($index == $correctAnswerIndex);
+                    }
+                }
+
+                // Lưu các câu trả lời
+                foreach ($answers as $answer) {
+                    $answer['question_id'] = $question->id;
+                    $answer['type'] = $answerType;
+                    $this->answerService->create($answer);
+                }
+            }
+
+            DB::commit();
 
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Tạo mới thành công',
-                    'data' => $result
+                    'data' => $question
                 ]);
             }
 
             return redirect()->route('admin.questions.index')->with('success', 'Tạo mới thành công');
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Question creation error:', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()

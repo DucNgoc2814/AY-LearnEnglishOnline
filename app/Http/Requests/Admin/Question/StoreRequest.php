@@ -23,6 +23,7 @@ class StoreRequest extends FormRequest
             'type' => 'required|in:text,image,video,audio',
             'question' => 'required|string|max:255',
             'media_url' => 'nullable|string|max:255',
+            'correct_answer_explanation' => 'nullable|string',
             'order_number' => 'required|integer|min:0',
             'media_file' => 'nullable|file|max:102400',
         ];
@@ -38,6 +39,7 @@ class StoreRequest extends FormRequest
             'question.required' => 'Nội dung câu hỏi không được để trống',
             'question.max' => 'Nội dung câu hỏi không được vượt quá 255 ký tự',
             'media_url.max' => 'Đường dẫn tệp media không được vượt quá 255 ký tự',
+            'correct_answer_explanation.string' => 'Giải thích đáp án đúng phải là chuỗi ký tự',
             'order_number.required' => 'Thứ tự câu hỏi không được để trống',
             'order_number.integer' => 'Thứ tự câu hỏi phải là số nguyên',
             'order_number.min' => 'Thứ tự câu hỏi phải lớn hơn hoặc bằng 0',
@@ -53,6 +55,7 @@ class StoreRequest extends FormRequest
             'type' => 'Loại câu hỏi',
             'question' => 'Nội dung câu hỏi',
             'media_url' => 'Đường dẫn tệp media',
+            'correct_answer_explanation' => 'Giải thích đáp án đúng',
             'order_number' => 'Thứ tự câu hỏi',
             'media_file' => 'Tệp media',
         ];

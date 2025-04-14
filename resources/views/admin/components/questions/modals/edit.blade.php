@@ -10,8 +10,8 @@
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div class="flex justify-between items-center pb-3 border-b">
                     <h3 class="text-lg font-medium text-gray-900" id="editQuestionModalLabel">Chỉnh sửa câu hỏi</h3>
-                    <button type="button" class="text-gray-400 hover:text-gray-500"
-                        onclick="closeEditQuestionModal()" aria-label="Close">
+                    <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeEditQuestionModal()"
+                        aria-label="Close">
                         <span class="sr-only">Đóng</span>
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
@@ -32,7 +32,8 @@
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_test_id">
                                 Bài kiểm tra <span class="text-red-500">*</span>
                             </label>
-                            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            <select
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="edit_test_id" name="test_id" required>
                                 <option value="">Chọn bài kiểm tra</option>
                                 @foreach (\App\Models\Test::all() as $test)
@@ -48,7 +49,8 @@
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_type">
                                 Loại câu hỏi <span class="text-red-500">*</span>
                             </label>
-                            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            <select
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="edit_type" name="type" required>
                                 <option value="text">Văn bản</option>
                                 <option value="image">Hình ảnh</option>
@@ -62,7 +64,8 @@
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_question">
                                 Nội dung câu hỏi <span class="text-red-500">*</span>
                             </label>
-                            <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            <input type="text"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="edit_question" name="question" required>
                         </div>
 
@@ -71,8 +74,23 @@
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_order_number">
                                 Thứ tự <span class="text-red-500">*</span>
                             </label>
-                            <input type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            <input type="number"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="edit_order_number" name="order_number" min="0" required>
+                        </div>
+
+                        <!-- Giải thích đáp án đúng -->
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2"
+                                for="edit_correct_answer_explanation">
+                                Giải thích đáp án đúng
+                            </label>
+                            <textarea
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="edit_correct_answer_explanation" name="correct_answer_explanation" rows="3"
+                                placeholder="Nhập giải thích cho đáp án đúng"></textarea>
+                            <p class="text-xs text-gray-500 mt-1">Giải thích này sẽ được hiển thị cho học viên sau khi
+                                họ hoàn thành câu hỏi</p>
                         </div>
 
                         <!-- Media upload -->
@@ -82,9 +100,12 @@
                             </label>
                             <div class="preview-container mb-2">
                                 <div id="edit_mediaPreviewContainer" class="hidden">
-                                    <img id="edit_imagePreview" src="" class="hidden max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
-                                        style="max-height: 200px; object-fit: contain;" onclick="openEditMediaModal(this.src)">
-                                    <video id="edit_videoPreview" class="hidden max-w-xs rounded-lg shadow-md cursor-pointer"
+                                    <img id="edit_imagePreview" src=""
+                                        class="hidden max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
+                                        style="max-height: 200px; object-fit: contain;"
+                                        onclick="openEditMediaModal(this.src)">
+                                    <video id="edit_videoPreview"
+                                        class="hidden max-w-xs rounded-lg shadow-md cursor-pointer"
                                         style="max-height: 200px; width: 100%;" controls>
                                         <source src="" type="video/mp4">
                                     </video>
@@ -103,8 +124,25 @@
                                     Xóa tệp
                                 </button>
                             </div>
-                            <input type="file" class="hidden" id="edit_media_file" name="media_file" accept="image/*,video/*,audio/*">
+                            <input type="file" class="hidden" id="edit_media_file" name="media_file"
+                                accept="image/*,video/*,audio/*">
                         </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2"
+                            for="edit_correct_answer_explanation">
+                            Giải thích đáp án đúng
+                        </label>
+                        <textarea
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline {{ session('errors') && session('errors')->has('correct_answer_explanation') ? 'border-red-500' : '' }}"
+                            id="edit_correct_answer_explanation" name="correct_answer_explanation" rows="3"
+                            placeholder="Nhập giải thích cho đáp án đúng"></textarea>
+                        @if (session('errors') && session('errors')->has('correct_answer_explanation'))
+                            <p class="text-red-500 text-xs italic mt-1">
+                                {{ session('errors')->first('correct_answer_explanation') }}</p>
+                        @endif
+                        <p class="text-xs text-gray-500 mt-1">Giải thích này sẽ được hiển thị cho học viên sau khi họ
+                            hoàn thành bài test</p>
                     </div>
 
                     <div class="flex justify-end pt-4 border-t mt-6">

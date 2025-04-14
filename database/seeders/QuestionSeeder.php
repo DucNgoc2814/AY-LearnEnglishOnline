@@ -15,6 +15,7 @@ class QuestionSeeder extends Seeder
                 'type' => 'text',
                 'question' => 'Artisan command để tạo một migration mới là gì?',
                 'media_url' => null,
+                'correct_answer_explanation' => 'Lệnh php artisan make:migration là cách chính thức để tạo migration mới trong Laravel. Nó sẽ tạo ra một file migration trong thư mục database/migrations.',
                 'order_number' => 1
             ],
             [
@@ -22,6 +23,7 @@ class QuestionSeeder extends Seeder
                 'type' => 'text',
                 'question' => 'Trong Laravel, Model được lưu trữ ở thư mục nào?',
                 'media_url' => null,
+                'correct_answer_explanation' => 'Từ Laravel 8 trở đi, các Model mặc định được lưu trữ trong thư mục app/Models để tổ chức code tốt hơn và tách biệt với các thành phần khác.',
                 'order_number' => 2
             ],
             [

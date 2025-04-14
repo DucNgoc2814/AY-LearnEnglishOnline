@@ -13,7 +13,7 @@ class CreateAnswersTable extends Migration
             $table->foreignId('question_id')->constrained('questions');
             $table->string('answer');
             $table->boolean('is_correct')->default(false);
-            $table->text('explanation')->nullable();
+            $table->enum('type', ['single', 'multiple'])->default('single');
             $table->integer('order_number');
             $table->softDeletes();
             $table->timestamps();
@@ -24,4 +24,4 @@ class CreateAnswersTable extends Migration
     {
         Schema::dropIfExists('answers');
     }
-} 
+}
