@@ -38,4 +38,12 @@ interface QuestionServiceInterface extends BaseServiceInterface
      * @return bool Kết quả xóa file
      */
     public function deleteMedia($path);
+
+    /**
+     * Lấy danh sách answers của một câu hỏi
+     *
+     * @param int $questionId ID của câu hỏi
+     * @return array
+     */
+    public function getAnswersByQuestion($questionId);
 }

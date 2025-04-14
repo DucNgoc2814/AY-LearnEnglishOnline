@@ -199,4 +199,35 @@ class QuestionService extends BaseService implements QuestionServiceInterface
             return false;
         }
     }
+
+    /**
+     * Lấy danh sách câu trả lời của một câu hỏi
+     *
+     * @param int $questionId
+     * @return array
+     */
+    public function getAnswersByQuestion($questionId)
+    {
+        try {
+            $answers = $this->repository->getAnswersByQuestionId($questionId);
+            $question = $this->repository->findById($questionId);
+
+            return [
+                'success' => true,
+                'question' => $question->question,
+                'answers' => $answers,
+                'explanation' => $question->correct_answer_explanation
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error in QuestionService getAnswersByQuestion: ' . $e->getMessage(), [
+                'question_id' => $questionId,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi lấy danh sách câu trả lời: ' . $e->getMessage()
+            ];
+        }
+    }
 }

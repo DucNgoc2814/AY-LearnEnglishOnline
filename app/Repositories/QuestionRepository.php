@@ -38,7 +38,8 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
                 'type' => $data['type'],
                 'question' => $data['question'],
                 'order_number' => $data['order_number'],
-                'media_url' => $data['media_url'] ?? null
+                'media_url' => $data['media_url'] ?? null,
+                'correct_answer_explanation' => $data['correct_answer_explanation'] ?? null
             ];
 
             Log::info('Creating question with data', [
@@ -318,6 +319,37 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
                 'path' => $path
             ]);
             return false;
+        }
+    }
+
+    /**
+     * Lấy danh sách câu trả lời của một câu hỏi
+     *
+     * @param int $questionId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAnswersByQuestionId($questionId)
+    {
+        try {
+            Log::info('QuestionRepository: getAnswersByQuestionId called with ID: ' . $questionId);
+
+            $question = $this->findById($questionId);
+            if (!$question) {
+                throw new \Exception('Question not found');
+            }
+
+            $answers = $question->answers()
+                ->orderBy('order_number', 'asc')
+                ->get();
+
+            Log::info('QuestionRepository: answers count: ' . count($answers));
+            return $answers;
+        } catch (\Exception $e) {
+            Log::error('Error in QuestionRepository getAnswersByQuestionId: ' . $e->getMessage(), [
+                'question_id' => $questionId,
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
         }
     }
 }

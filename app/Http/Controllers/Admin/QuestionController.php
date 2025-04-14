@@ -331,4 +331,28 @@ class QuestionController extends BaseController
             'data' => $question
         ]);
     }
+
+    /**
+     * Lấy danh sách câu trả lời của một câu hỏi
+     *
+     * @param int $questionId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAnswersByQuestion($questionId)
+    {
+        try {
+            $result = $this->questionService->getAnswersByQuestion($questionId);
+            return response()->json($result);
+        } catch (\Exception $e) {
+            Log::error('Error in QuestionController getAnswersByQuestion: ' . $e->getMessage(), [
+                'question_id' => $questionId,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi lấy danh sách câu trả lời'
+            ], 500);
+        }
+    }
 }

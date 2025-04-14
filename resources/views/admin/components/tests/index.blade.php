@@ -266,6 +266,7 @@
     @include('admin.components.tests.modals.trash')
     @include('admin.components.questions.modals.create')
     @include('admin.components.questions.modals.edit')
+    @include('admin.components.questions.modals.answers')
 
     <div class="flex items-center space-x-2 mt-2 hidden" id="bulkActionButtons">
         <button class="bg-red-500 text-white px-2 py-1 rounded" onclick="confirmBulkDelete()">
@@ -403,6 +404,62 @@
                 });
         }
 
+        function viewAnswers(questionId, questionText) {
+            // Hiển thị modal
+            modalHandler.open('answersModal');
+
+            // Cập nhật nội dung câu hỏi
+            document.getElementById('questionText').textContent = questionText;
+
+            // Lấy dữ liệu answers từ API
+            fetch(`/admin/questions/${questionId}/answers`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Cập nhật phần giải thích
+                        document.getElementById('explanationText').textContent = data.explanation || 'Không có giải thích cho câu hỏi này';
+
+                        if (data.answers) {
+                            let html = '';
+                            data.answers.forEach((answer, index) => {
+                                const typeLabels = {
+                                    'single': 'Một đáp án',
+                                    'multiple': 'Nhiều đáp án'
+                                };
+
+                                html += `
+                                <tr>
+                                    <td class="border ps-1 py-1 text-center">${index + 1}</td>
+                                    <td class="border ps-1 py-1">${answer.answer}</td>
+                                    <td class="border ps-1 py-1 text-center">
+                                        <span class="${answer.is_correct ? 'text-green-500' : 'text-red-500'}">
+                                            <i class="fas ${answer.is_correct ? 'fa-check' : 'fa-times'}"></i>
+                                        </span>
+                                    </td>
+                                    <td class="border ps-1 py-1 text-center">
+                                        <span class="px-2 py-1 rounded-full text-sm ${answer.type === 'single' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">
+                                            ${typeLabels[answer.type]}
+                                        </span>
+                                    </td>
+                                    <td class="border ps-1 py-1 text-center">${answer.order_number}</td>
+                                </tr>
+                                `;
+                            });
+                            document.getElementById('answersTableBody').innerHTML = html;
+                        } else {
+                            document.getElementById('answersTableBody').innerHTML = '<tr><td colspan="5" class="text-center py-4">Không có câu trả lời nào</td></tr>';
+                        }
+                    } else {
+                        console.error('Error fetching answers:', error);
+                        document.getElementById('answersTableBody').innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Lỗi khi tải dữ liệu</td></tr>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching answers:', error);
+                    document.getElementById('answersTableBody').innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Lỗi khi tải dữ liệu</td></tr>';
+                });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Xử lý đóng/mở danh sách câu hỏi
             const toggleButtons = document.querySelectorAll('.toggle-questions');
@@ -517,6 +574,10 @@
                                     <td class="border ps-1 py-1 text-center">${question.order_number}</td>
                                     <td class="border ps-1 py-1 text-center">
                                         <div class="flex justify-center space-x-2">
+                                            <button class="text-yellow-500 hover:text-yellow-700"
+                                                onclick="viewAnswers(${question.id}, question.question)" title="Xem câu trả lời">
+                                                <i class="fas fa-list-ul"></i>
+                                            </button>
                                             <button class="text-blue-500 hover:text-blue-700"
                                                 onclick="editQuestion(${question.id})" title="Chỉnh sửa">
                                                 <i class="far fa-edit"></i>
