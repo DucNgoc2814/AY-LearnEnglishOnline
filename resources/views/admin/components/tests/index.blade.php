@@ -320,7 +320,47 @@
             color: #7e22ce !important;
             text-decoration: underline;
         }
+
+        #mediaContainer {
+            min-height: 200px;
+        }
+
+        #mediaContainer video,
+        #mediaContainer audio {
+            max-width: 100%;
+        }
+
+        #mediaContainer img {
+            max-height: 80vh;
+            object-fit: contain;
+        }
     </style>
+
+    <!-- Modal xem media -->
+    <div id="mediaPreviewModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="mediaPreviewModalLabel" aria-hidden="true">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeMediaPreviewModal()"></div>
+
+            <div class="relative bg-white rounded-lg max-w-4xl w-full mx-auto">
+                <!-- Header -->
+                <div class="flex items-center justify-between p-4 border-b">
+                    <h3 class="text-xl font-semibold text-gray-900" id="mediaPreviewModalLabel">Xem media</h3>
+                    <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeMediaPreviewModal()">
+                        <span class="sr-only">Đóng</span>
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <!-- Body -->
+                <div class="p-4">
+                    <div id="mediaContainer" class="flex justify-center items-center">
+                        <!-- Media content will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -450,7 +490,6 @@
                             document.getElementById('answersTableBody').innerHTML = '<tr><td colspan="5" class="text-center py-4">Không có câu trả lời nào</td></tr>';
                         }
                     } else {
-                        console.error('Error fetching answers:', error);
                         document.getElementById('answersTableBody').innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Lỗi khi tải dữ liệu</td></tr>';
                     }
                 })
@@ -548,12 +587,13 @@
 
                                 let mediaHtml = '';
                                 if (question.media_url) {
+                                    const mediaUrl = question.full_media_url;
                                     if (question.type === 'image') {
-                                        mediaHtml = `<img src="/${question.media_url}" alt="Media" class="h-10 w-10 object-cover rounded mx-auto">`;
+                                        mediaHtml = `<img src="${mediaUrl}" alt="Media" class="h-10 w-10 object-cover rounded mx-auto cursor-pointer hover:opacity-75 transition-opacity" onclick="openMediaPreviewModal('${mediaUrl}', 'image')">`;
                                     } else if (question.type === 'video') {
-                                        mediaHtml = `<i class="fas fa-video text-blue-500 text-xl"></i>`;
+                                        mediaHtml = `<button class="text-blue-500 hover:text-blue-700 transition-colors" onclick="openMediaPreviewModal('${mediaUrl}', 'video')"><i class="fas fa-video text-xl"></i></button>`;
                                     } else if (question.type === 'audio') {
-                                        mediaHtml = `<i class="fas fa-volume-up text-green-500 text-xl"></i>`;
+                                        mediaHtml = `<button class="text-green-500 hover:text-green-700 transition-colors" onclick="openMediaPreviewModal('${mediaUrl}', 'audio')"><i class="fas fa-volume-up text-xl"></i></button>`;
                                     } else {
                                         mediaHtml = `<i class="fas fa-file-alt text-gray-500 text-xl"></i>`;
                                     }
@@ -616,6 +656,64 @@
                             '<tr><td colspan="6" class="text-center py-4 text-red-500">Lỗi khi tải dữ liệu câu hỏi</td></tr>';
                         questionRow.setAttribute('data-loaded', 'error');
                     });
+            }
+        });
+
+        // Thêm các hàm xử lý modal xem media
+        function openMediaPreviewModal(mediaUrl, type) {
+            const modal = document.getElementById('mediaPreviewModal');
+            const container = document.getElementById('mediaContainer');
+            const modalLabel = document.getElementById('mediaPreviewModalLabel');
+
+            // Xóa nội dung cũ
+            container.innerHTML = '';
+
+            // Tạo nội dung mới dựa trên loại media
+            switch(type) {
+                case 'image':
+                    modalLabel.textContent = 'Xem hình ảnh';
+                    container.innerHTML = `<img src="${mediaUrl}" alt="Preview" class="max-w-full h-auto">`;
+                    break;
+                case 'video':
+                    modalLabel.textContent = 'Xem video';
+                    container.innerHTML = `
+                        <video controls class="max-w-full h-auto">
+                            <source src="${mediaUrl}" type="video/mp4">
+                            Trình duyệt của bạn không hỗ trợ xem video.
+                        </video>`;
+                    break;
+                case 'audio':
+                    modalLabel.textContent = 'Nghe audio';
+                    container.innerHTML = `
+                        <audio controls class="w-full">
+                            <source src="${mediaUrl}" type="audio/mpeg">
+                            Trình duyệt của bạn không hỗ trợ nghe audio.
+                        </audio>`;
+                    break;
+            }
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMediaPreviewModal() {
+            const modal = document.getElementById('mediaPreviewModal');
+            const container = document.getElementById('mediaContainer');
+
+            // Dừng phát media nếu đang phát
+            const video = container.querySelector('video');
+            const audio = container.querySelector('audio');
+            if (video) video.pause();
+            if (audio) audio.pause();
+
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Đóng modal khi nhấn phím Esc
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeMediaPreviewModal();
             }
         });
     </script>

@@ -277,13 +277,39 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
         return $this->model->findOrFail($id);
     }
 
+    public function getFullUrl($path = null)
+    {
+        if (empty($path)) {
+            return null;
+        }
+
+        // Nếu đã là URL đầy đủ, trả về luôn
+        if (filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        // Xây dựng URL đầy đủ từ cấu hình
+        $diskConfig = config('filesystems.disks.s3');
+        $cloudFrontDomain = config('filesystems.disks.cloudfront.domain', null);
+
+        if ($cloudFrontDomain) {
+            return "https://{$cloudFrontDomain}/{$path}";
+        }
+
+        return "{$diskConfig['url']}/{$path}";
+    }
+
     public function findWithFullUrls($id)
     {
         $question = $this->findOrFail($id);
+        if (!$question) {
+            return null;
+        }
 
-        // Add full URLs for image and video
-        $question->thumbnail = $this->getFullUrl($question->thumbnail);
-        $question->preview_video = $this->getFullUrl($question->preview_video);
+        // Thêm full URL cho media
+        if ($question->media_url) {
+            $question->full_media_url = $this->getFullUrl($question->media_url);
+        }
 
         return $question;
     }

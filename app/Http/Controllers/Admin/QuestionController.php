@@ -325,11 +325,18 @@ class QuestionController extends BaseController
      */
     public function edit($id)
     {
-        $question = $this->questionService->findWithFullUrls($id);
-        return response()->json([
-            'status' => true,
-            'data' => $question
-        ]);
+        try {
+            $question = $this->questionService->findWithFullUrls($id);
+            return response()->json([
+                'status' => true,
+                'data' => $question
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

@@ -26,6 +26,8 @@ class Question extends Model
         'order_number' => 'integer'
     ];
 
+    protected $appends = ['full_media_url'];
+
     public function questionable()
     {
         return $this->morphTo();
@@ -190,5 +192,27 @@ class Question extends Model
     public function resultDetails()
     {
         return $this->hasMany(TestResultDetail::class);
+    }
+
+    public function getFullMediaUrlAttribute()
+    {
+        if (empty($this->media_url)) {
+            return null;
+        }
+
+        // Nếu đã là URL đầy đủ, trả về luôn
+        if (filter_var($this->media_url, FILTER_VALIDATE_URL)) {
+            return $this->media_url;
+        }
+
+        // Xây dựng URL đầy đủ từ cấu hình
+        $diskConfig = config('filesystems.disks.s3');
+        $cloudFrontDomain = config('filesystems.disks.cloudfront.domain', null);
+
+        if ($cloudFrontDomain) {
+            return "https://{$cloudFrontDomain}/{$this->media_url}";
+        }
+
+        return "{$diskConfig['url']}/{$this->media_url}";
     }
 }

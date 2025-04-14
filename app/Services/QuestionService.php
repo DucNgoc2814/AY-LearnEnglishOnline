@@ -209,12 +209,16 @@ class QuestionService extends BaseService implements QuestionServiceInterface
     public function getAnswersByQuestion($questionId)
     {
         try {
+            $question = $this->repository->findWithFullUrls($questionId);
+            if (!$question) {
+                throw new \Exception('Không tìm thấy câu hỏi');
+            }
+
             $answers = $this->repository->getAnswersByQuestionId($questionId);
-            $question = $this->repository->findById($questionId);
 
             return [
                 'success' => true,
-                'question' => $question->question,
+                'question' => $question,
                 'answers' => $answers,
                 'explanation' => $question->correct_answer_explanation
             ];
