@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Course extends Model
 {
@@ -119,34 +120,10 @@ class Course extends Model
     {
         return $this->morphMany(Test::class, 'testable')->where('type', 'exam');
     }
-
-    /**
-     * Lấy danh sách bài kiểm tra
-     */
-    public function tests(): MorphMany
-    {
-        return $this->morphMany(Test::class, 'testable')->where('type', 'test');
-    }
-
-    /**
-     * Lấy danh sách bài kiểm tra bài học
-     */
-    public function lessonTests(): MorphMany
-    {
-        return $this->morphMany(Test::class, 'testable')->where('type', 'lesson_test');
-    }
-
-    /**
-     * Lấy danh sách bài thi cuối khóa
-     */
-    public function finalExams(): MorphMany
-    {
-        return $this->morphMany(Test::class, 'testable')->where('type', 'final_exam');
-    }
-
     /**
      * Lấy giá hiển thị (giá sale nếu có, ngược lại là giá gốc)
      */
+
     public function getCurrentPrice()
     {
         return $this->sale_price ?? $this->price;
@@ -323,9 +300,23 @@ class Course extends Model
 
     public function totalDuration()
     {
-        return $this->lessons()
-            ->join('lesson_videos', 'lessons.id', '=', 'lesson_videos.lesson_id')
-            ->sum('lesson_videos.duration');
+        $totalSeconds = 0;
+        
+        $lessonsWithVideos = $this->lessons()->with('videoLessons')->get();
+        
+        foreach ($lessonsWithVideos as $lesson) {
+            $totalSeconds += $lesson->videoLessons->sum('duration');
+        }
+        
+        $hours = floor($totalSeconds / 3600);
+        $minutes = floor(($totalSeconds % 3600) / 60);
+        $seconds = $totalSeconds % 60;
+        
+        if ($hours > 0) {
+            return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+        }
+        
+        return sprintf('%02d:%02d', $minutes, $seconds);
     }
 
     public function totalLessons()
@@ -335,13 +326,40 @@ class Course extends Model
 
     public function totalTests()
     {
-        return $this->lessonTests()->count()
-            + $this->finalExams()->count();
+        // Count lesson tests from lessons
+        $lessonTestsCount = $this->lessons()
+            ->withCount(['lessonTests' => function ($query) {
+                $query->where('testable_type', 'App\Models\Lesson')
+                    ->where('type', 'lesson_test')
+                    ->whereNull('deleted_at');
+            }])
+            ->get()
+            ->sum('lesson_tests_count');
 
+        // Count final exams
+        $finalExamsCount = Test::where('testable_type', 'App\Models\Course')
+            ->where('testable_id', $this->id)
+            ->where('type', 'final_exam')
+            ->whereNull('deleted_at')
+            ->count();
+
+        // Return total of both types
+        return $lessonTestsCount + $finalExamsCount;
     }
 
-    public function isEnrolledByUser($userId){
+    public function totalVideos()
+    {
+        return $this->lessons()
+            ->withCount('videoLessons')
+            ->get()
+            ->sum('video_lessons_count');
+    }
+
+
+    public function isEnrolledByUser($userId)
+    {
         $user = User::find($userId);
+
 
         if (!$user) {
             return false;
@@ -354,5 +372,38 @@ class Course extends Model
         return $this->enrollments()
             ->where('user_id', $userId)
             ->exists();
+    }
+
+    public function tests()
+    {
+        return $this->morphMany(Test::class, 'testable')
+            ->where(function ($query) {
+                $query->where('type', 'final_exam')
+                    ->orWhereHas('lesson', function ($q) {
+                        $q->where('course_id', $this->id);
+                    });
+            })
+            ->whereNull('deleted_at');
+    }
+
+    // Add this separate method for lesson tests
+    public function lessonTests()
+    {
+        return $this->hasManyThrough(
+            Test::class,
+            Lesson::class,
+            'course_id',
+            'testable_id'
+        )->where('testable_type', 'App\Models\Lesson')
+            ->where('type', 'lesson_test')
+            ->whereNull('deleted_at');
+    }
+
+    // Add this for final exams specifically
+    public function finalExams()
+    {
+        return $this->morphMany(Test::class, 'testable')
+            ->where('type', 'final_exam')
+            ->whereNull('deleted_at');
     }
 }

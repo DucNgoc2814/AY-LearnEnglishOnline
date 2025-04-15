@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->unique();
-            $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
-            $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade');
-            $table->enum('class_type', ['online', 'offline', 'hybrid'])->default('online');
+            $table->foreignId('course_id')->constrained('courses')->onDelete('cascade')->nullable();
+            $table->foreignId('teacher_id')->constrained('employees')->onDelete('cascade')->nullable();
+            $table->string('class_type')->default('offline');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->date('enrollment_deadline')->nullable();

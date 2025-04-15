@@ -25,6 +25,13 @@
                             Vui lòng đăng xuất khỏi phiên hiện tại trước khi đăng nhập ở thiết bị mới.
                         </div>
 
+                        @if(session('notification'))
+                        <div class="alert alert-{{ session('notification.type') }} mb-3">
+                            <strong>{{ session('notification.type') == 'success' ? 'Thành công:' : (session('notification.type') == 'warning' ? 'Chú ý:' : 'Lỗi:') }}</strong>
+                            {{ session('notification.message') }}
+                        </div>
+                        @endif
+
                         <div class="alert alert-warning mb-3" id="auto-logout-alert" style="display: none;">
                             <strong>Thông báo:</strong> Bạn đã được tự động đăng xuất do không hoạt động hoặc đóng trình duyệt.
                         </div>
@@ -192,6 +199,9 @@
                                     <input class="form-control" id="email" type="email" name="email"
                                         placeholder="Nhập email" value="{{ old('email') }}" autocomplete="email">
                                 </div>
+                                @error('email')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="">
                                 <h5>Mật khẩu</h5>
@@ -203,6 +213,9 @@
                                     <input class="form-control" id="password" type="password" name="password"
                                         placeholder="Nhập mật khẩu" autocomplete="current-password">
                                 </div>
+                                @error('password')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
                                 <small class="w-100">
                                     <a class="text-end w-100 text-muted" href="login/forgot_password_request.html">Quên mật
                                         khẩu?</a>

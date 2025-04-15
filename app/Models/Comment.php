@@ -29,7 +29,7 @@ class Comment extends Model
     ];
 
     /**
-     * Lấy đối tượng được bình luận
+     * Get the parent commentable model (course, lesson etc)
      */
     public function commentable(): MorphTo
     {
@@ -37,7 +37,7 @@ class Comment extends Model
     }
 
     /**
-     * Lấy người dùng đã bình luận
+     * Get the user that wrote the comment
      */
     public function user(): BelongsTo
     {
@@ -45,7 +45,7 @@ class Comment extends Model
     }
 
     /**
-     * Lấy bình luận cha
+     * Get parent comment if this is a reply
      */
     public function parent(): BelongsTo
     {
@@ -53,11 +53,11 @@ class Comment extends Model
     }
 
     /**
-     * Lấy các bình luận con
+     * Get replies to this comment
      */
     public function replies(): HasMany
     {
-        return $this->hasMany(Comment::class, 'parent_id');
+        return $this->hasMany(Comment::class, 'parent_id')->where('is_published', true);
     }
 
     /**
@@ -74,15 +74,6 @@ class Comment extends Model
     public function hasReplies(): bool
     {
         return $this->replies()->count() > 0;
-    }
-
-    /**
-     * Tăng lượt thích
-     */
-    public function incrementLikes(): self
-    {
-        $this->increment('likes');
-        return $this;
     }
 
     /**
@@ -116,7 +107,7 @@ class Comment extends Model
      */
     public function scopePopular($query)
     {
-        return $query->orderBy('likes', 'desc');
+        return $query->orderBy('created_at', 'desc');
     }
 
     /**

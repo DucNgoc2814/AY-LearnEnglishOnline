@@ -1,37 +1,47 @@
-const showNotification = (message, type = 'success') => {
+// Show notification using Toastify
+function showNotification(message, type = 'success') {
+    // Định nghĩa màu sắc cho các loại thông báo
+    const colors = {
+        'success': '#22c55e', // Green
+        'error': '#ef4444',   // Red
+        'warning': '#f59e0b', // Yellow/Amber
+        'info': '#3b82f6'     // Blue
+    };
+
+    // Định nghĩa icon cho các loại thông báo
+    const icons = {
+        'success': '<i class="fas fa-check-circle me-2"></i>',
+        'error': '<i class="fas fa-exclamation-circle me-2"></i>',
+        'warning': '<i class="fas fa-exclamation-triangle me-2"></i>',
+        'info': '<i class="fas fa-info-circle me-2"></i>'
+    };
+
+    // Cấu hình và hiển thị thông báo
     Toastify({
         text: message,
         duration: 3000,
-        gravity: "top",
-        position: "right",
+        close: true,
+        gravity: "top", // Hiển thị ở trên cùng
+        position: "right", // Hiển thị bên phải
+        backgroundColor: colors[type] || colors.success,
         stopOnFocus: true,
-        className: `custom-toast ${type}`,
-        style: {
-            background: type === 'success' 
-                ? "linear-gradient(to right, #28a745, #218838)"
-                : "linear-gradient(to right, #dc3545, #c82333)",
-            borderRadius: "8px",
-            padding: "12px 24px",
-            fontSize: "14px",
-            fontWeight: "500",
-            boxShadow: "0 3px 10px rgba(0,0,0,0.1)"
-        }
+        className: "toastify-custom",
+        onClick: function(){} // Callback khi click vào thông báo
     }).showToast();
-};
+}
 
-// Expose to window object to use globally
-window.showNotification = showNotification;
-
+// Check for notification in meta tag
 document.addEventListener('DOMContentLoaded', function() {
-    const notification = document.querySelector('meta[name="notification"]');
-    if (notification) {
+    const notificationMeta = document.querySelector('meta[name="notification"]');
+    if (notificationMeta) {
         try {
-            const data = JSON.parse(notification.getAttribute('content'));
-            if (data && data.message) {
-                showNotification(data.message, data.type || 'success');
-            }
-        } catch (error) {
-            console.error('Error parsing notification:', error);
+            const notification = JSON.parse(notificationMeta.content);
+            showNotification(notification.message, notification.type);
+        } catch (e) {
+            console.error('Error parsing notification:', e);
         }
     }
 });
+
+// Expose function globally
+window.showNotification = showNotification;
