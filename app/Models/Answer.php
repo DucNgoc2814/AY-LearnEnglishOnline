@@ -15,12 +15,13 @@ class Answer extends Model
         'question_id',
         'answer',
         'is_correct',
-        'explanation',
+        'type',
         'order_number'
     ];
 
     protected $casts = [
-        'is_correct' => 'boolean'
+        'is_correct' => 'boolean',
+        'type' => 'string'
     ];
 
     // Relationships
@@ -49,4 +50,4 @@ class Answer extends Model
     {
         return $query->where('is_correct', false);
     }
-} 
+}
