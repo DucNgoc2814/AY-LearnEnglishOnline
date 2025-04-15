@@ -25,17 +25,13 @@
                             <h4 class="font-medium text-gray-900 mb-4">Thông tin cơ bản</h4>
 
                             <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_user_id">
-                                    Tài khoản người dùng <span class="text-red-500">*</span>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    Tài khoản người dùng
                                 </label>
-                                <select
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="edit_user_id" name="user_id" required>
-                                    <option value="">-- Chọn tài khoản --</option>
-                                    @foreach($users as $user)
-                                        <option value="{{ $user->id }}">{{ $user->email }}</option>
-                                    @endforeach
-                                </select>
+                                <div class="flex">
+                                    <span class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100" id="edit_user_email_display"></span>
+                                </div>
+                                <input type="hidden" id="edit_user_id" name="user_id">
                             </div>
 
                             <div class="mb-4">
@@ -48,60 +44,12 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_email">
-                                    Email <span class="text-red-500">*</span>
+                                <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    Email
                                 </label>
                                 <div class="flex">
-                                    <input type="text"
-                                        class="shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="edit_email" name="email" required>
-                                    <span class="inline-flex items-center px-3 text-gray-500 bg-gray-100 border border-l-0 border-gray-300 rounded-r">
-                                        @ay.learning.english
-                                    </span>
+                                    <span class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100" id="edit_email_display"></span>
                                 </div>
-                                <p class="text-xs text-gray-500 mt-1">Chỉ cần nhập phần tên, phần domain sẽ tự động thêm vào</p>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_password">
-                                    Mật khẩu
-                                </label>
-                                <input type="password"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="edit_password" name="password" minlength="6" maxlength="20">
-                                <p class="text-xs text-gray-500 mt-1">Để trống nếu không muốn thay đổi mật khẩu</p>
-                                <ul class="text-xs mt-1 space-y-1" id="edit-password-requirements">
-                                    <li id="edit-length-check" class="flex items-center text-red-500">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                        <span>Độ dài từ 6-20 ký tự</span>
-                                    </li>
-                                    <li id="edit-uppercase-check" class="flex items-center text-red-500">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                        <span>Phải bắt đầu bằng chữ hoa</span>
-                                    </li>
-                                    <li id="edit-lowercase-check" class="flex items-center text-red-500">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                        <span>Phải có ít nhất một chữ thường</span>
-                                    </li>
-                                    <li id="edit-number-check" class="flex items-center text-red-500">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                        <span>Phải có ít nhất một số</span>
-                                    </li>
-                                    <li id="edit-special-check" class="flex items-center text-red-500">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                        <span>Phải có ít nhất một ký tự đặc biệt (@$!%*#?&)</span>
-                                    </li>
-                                </ul>
                             </div>
 
                             <div class="mb-4">
@@ -337,129 +285,187 @@
 </div>
 
 @push('scripts')
-<script>
-    document.getElementById('edit_avatar').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const previewImage = document.getElementById('edit-preview-image');
-                const placeholder = document.getElementById('edit-placeholder');
-                previewImage.src = e.target.result;
-                previewImage.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-            }
-            reader.readAsDataURL(file);
-        }
-    });
+    <script>
+        function populateEditModal(item) {
+            console.log('Populating modal with:', item);
+            modalHandler.open('editStudentModal');
 
-    function removeEditImage() {
-        const input = document.getElementById('edit_avatar');
-        const previewImage = document.getElementById('edit-preview-image');
-        const placeholder = document.getElementById('edit-placeholder');
+            const form = document.getElementById('editStudentForm');
+            form.action = `{{ url('admin/students') }}/${item.id}`;
 
-        input.value = '';
-        previewImage.src = '#';
-        previewImage.classList.add('hidden');
-        placeholder.classList.remove('hidden');
-    }
+            // Điền dữ liệu vào form
+            // Hiển thị tài khoản người dùng
+            document.getElementById('edit_user_id').value = item.user_id || '';
+            document.getElementById('edit_user_email_display').textContent = item.user ? item.user.email : 'Chưa có tài khoản';
 
-    // Password validation for edit form
-    document.getElementById('edit_password').addEventListener('input', function(e) {
-        const password = e.target.value;
+            document.getElementById('edit_full_name').value = item.full_name || '';
+            document.getElementById('edit_email_display').textContent = item.email || '';
 
-        // Skip validation if password field is empty (no password change)
-        if (!password) {
-            document.querySelectorAll('#edit-password-requirements li').forEach(item => {
-                item.classList.remove('text-red-500', 'text-emerald-500');
-                item.classList.add('text-gray-500');
-                item.querySelector('svg').innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                `;
-            });
-            e.target.setCustomValidity('');
-            return;
-        }
-
-        const requirements = {
-            'edit-length-check': password.length >= 6 && password.length <= 20,
-            'edit-uppercase-check': /^[A-Z]/.test(password),
-            'edit-lowercase-check': /[a-z]/.test(password),
-            'edit-number-check': /[0-9]/.test(password),
-            'edit-special-check': /[@$!%*#?&]/.test(password)
-        };
-
-        // Update each requirement's status
-        Object.entries(requirements).forEach(([id, valid]) => {
-            const element = document.getElementById(id);
-            if (valid) {
-                element.classList.remove('text-red-500');
-                element.classList.add('text-emerald-500');
-                element.querySelector('svg').innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                `;
+            // Format ngày sinh từ YYYY-MM-DD sang định dạng của input date
+            if (item.date_of_birth) {
+                const date = new Date(item.date_of_birth);
+                const formattedDate = date.toISOString().split('T')[0];
+                document.getElementById('edit_date_of_birth').value = formattedDate;
             } else {
-                element.classList.remove('text-emerald-500');
-                element.classList.add('text-red-500');
-                element.querySelector('svg').innerHTML = `
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                `;
+                document.getElementById('edit_date_of_birth').value = '';
             }
-        });
 
-        // Check if all requirements are met
-        const allValid = Object.values(requirements).every(valid => valid);
-        if (!allValid) {
-            e.target.setCustomValidity('Vui lòng đáp ứng tất cả các yêu cầu về mật khẩu');
-        } else {
-            e.target.setCustomValidity('');
-        }
-    });
+            document.getElementById('edit_gender').value = item.gender || '';
+            document.getElementById('edit_phone').value = item.phone || '';
+            document.getElementById('edit_address').value = item.address || '';
+            document.getElementById('edit_bio').value = item.bio || '';
 
-    // Handle edit modal data
-    document.addEventListener('DOMContentLoaded', function() {
-        modalHandler.addEventListener('editStudentModal', 'show', function(data) {
-            // Set form action
-            document.getElementById('editStudentForm').action = data.actionUrl;
-
-            // Fill form data
-            document.getElementById('edit_user_id').value = data.user_id || '';
-            document.getElementById('edit_full_name').value = data.full_name || '';
-            document.getElementById('edit_email').value = data.email ? data.email.replace('@ay.learning.english', '') : '';
-            document.getElementById('edit_date_of_birth').value = data.date_of_birth || '';
-            document.getElementById('edit_gender').value = data.gender || '';
-            document.getElementById('edit_phone').value = data.phone || '';
-            document.getElementById('edit_address').value = data.address || '';
-            document.getElementById('edit_bio').value = data.bio || '';
-
-            // Handle avatar preview
-            if (data.avatar) {
-                const previewImage = document.getElementById('edit-preview-image');
-                const placeholder = document.getElementById('edit-placeholder');
-                previewImage.src = data.avatar;
-                previewImage.classList.remove('hidden');
+            // Hiển thị avatar
+            const avatarPreview = document.getElementById('edit-preview-image');
+            const placeholder = document.getElementById('edit-placeholder');
+            if (item.avatar) {
+                console.log('Setting avatar:', item.avatar);
+                avatarPreview.src = item.avatar;
+                avatarPreview.classList.remove('hidden');
                 placeholder.classList.add('hidden');
+            } else {
+                avatarPreview.src = '#';
+                avatarPreview.classList.add('hidden');
+                placeholder.classList.remove('hidden');
             }
 
-            // Parent 1 information
-            document.getElementById('edit_parent1_name').value = data.parent1_name || '';
-            document.getElementById('edit_parent1_relationship').value = data.parent1_relationship || '';
-            document.getElementById('edit_parent1_phone').value = data.parent1_phone || '';
-            document.getElementById('edit_parent1_email').value = data.parent1_email || '';
-            document.getElementById('edit_parent1_occupation').value = data.parent1_occupation || '';
-            document.getElementById('edit_parent1_is_emergency_contact').checked = data.parent1_is_emergency_contact || false;
+            // Thông tin phụ huynh 1
+            document.getElementById('edit_parent1_name').value = item.parent1_name || '';
+            document.getElementById('edit_parent1_relationship').value = item.parent1_relationship || '';
+            document.getElementById('edit_parent1_phone').value = item.parent1_phone || '';
+            document.getElementById('edit_parent1_email').value = item.parent1_email || '';
+            document.getElementById('edit_parent1_occupation').value = item.parent1_occupation || '';
+            document.getElementById('edit_parent1_is_emergency_contact').checked = Boolean(item.parent1_is_emergency_contact);
 
-            // Parent 2 information
-            document.getElementById('edit_parent2_name').value = data.parent2_name || '';
-            document.getElementById('edit_parent2_relationship').value = data.parent2_relationship || '';
-            document.getElementById('edit_parent2_phone').value = data.parent2_phone || '';
-            document.getElementById('edit_parent2_email').value = data.parent2_email || '';
-            document.getElementById('edit_parent2_occupation').value = data.parent2_occupation || '';
-            document.getElementById('edit_parent2_is_emergency_contact').checked = data.parent2_is_emergency_contact || false;
+            // Thông tin phụ huynh 2
+            document.getElementById('edit_parent2_name').value = item.parent2_name || '';
+            document.getElementById('edit_parent2_relationship').value = item.parent2_relationship || '';
+            document.getElementById('edit_parent2_phone').value = item.parent2_phone || '';
+            document.getElementById('edit_parent2_email').value = item.parent2_email || '';
+            document.getElementById('edit_parent2_occupation').value = item.parent2_occupation || '';
+            document.getElementById('edit_parent2_is_emergency_contact').checked = Boolean(item.parent2_is_emergency_contact);
 
-            // Account status
-            document.getElementById('edit_is_active').checked = data.is_active || false;
+            // Trạng thái tài khoản
+            document.getElementById('edit_is_active').checked = Boolean(item.is_active);
+
+            // Xóa input hidden nếu có
+            const removeAvatarInput = form.querySelector('input[name="remove_avatar"]');
+            if (removeAvatarInput) removeAvatarInput.remove();
+        }
+
+        // Xử lý upload avatar
+        function handleEditAvatarUpload(input) {
+            const preview = document.getElementById('edit-preview-image');
+            const placeholder = document.getElementById('edit-placeholder');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Xóa avatar
+        function clearEditAvatar() {
+            const input = document.getElementById('edit_avatar');
+            const preview = document.getElementById('edit-preview-image');
+            const placeholder = document.getElementById('edit-placeholder');
+
+            input.value = '';
+            preview.src = '#';
+            preview.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+
+            // Thêm input hidden để đánh dấu xóa avatar
+            let removeInput = document.querySelector('input[name="remove_avatar"]');
+            if (!removeInput) {
+                removeInput = document.createElement('input');
+                removeInput.type = 'hidden';
+                removeInput.name = 'remove_avatar';
+                removeInput.value = '1';
+                input.parentNode.appendChild(removeInput);
+            }
+            removeInput.value = '1';
+        }
+
+        // Xử lý đóng modal
+        function closeEditStudentModal() {
+            modalHandler.close('editStudentModal');
+            document.getElementById('editStudentForm').reset();
+
+            // Xóa input hidden nếu có
+            const form = document.getElementById('editStudentForm');
+            const removeAvatarInput = form.querySelector('input[name="remove_avatar"]');
+            if (removeAvatarInput) removeAvatarInput.remove();
+        }
+
+        // Thêm event listeners khi tài liệu đã sẵn sàng
+        document.addEventListener('DOMContentLoaded', function() {
+            // Đăng ký sự kiện cho form edit
+            const editForm = document.getElementById('editStudentForm');
+            if (editForm) {
+                editForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const studentId = document.querySelector('input[name="student_id"]').value;
+                    const formData = new FormData(this);
+
+                    // Gửi form bằng AJAX
+                    fetch(`/admin/students/${studentId}`, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            alert('Cập nhật thành công!');
+                            closeEditStudentModal();
+                            // Reload trang để cập nhật dữ liệu
+                            window.location.reload();
+                        } else {
+                            alert('Lỗi: ' + result.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Đã xảy ra lỗi khi cập nhật');
+                    });
+                });
+            }
+
+            // Xử lý sự kiện upload avatar
+            const avatarInput = document.getElementById('edit_avatar');
+            if (avatarInput) {
+                avatarInput.addEventListener('change', function() {
+                    handleEditAvatarUpload(this);
+
+                    // Xóa input hidden remove_avatar nếu chọn file mới
+                    const removeInput = document.querySelector('input[name="remove_avatar"]');
+                    if (removeInput) removeInput.remove();
+                });
+            }
+
+            // Đóng modal khi nhấn ESC
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeEditStudentModal();
+                }
+            });
+
+            // Đóng modal khi click bên ngoài
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('editStudentModal');
+                if (event.target === modal) {
+                    closeEditStudentModal();
+                }
+            });
         });
-    });
-</script>
+    </script>
 @endpush

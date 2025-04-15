@@ -19,17 +19,6 @@ class UpdateRequest extends FormRequest
             'user_id' => 'exists:users,id',
             'student_code' => 'string|unique:students,student_code,' . $studentId,
             'full_name' => 'string|max:255',
-            'email' => 'string|unique:students,email,' . $studentId,
-            'password' => [
-                'nullable',
-                'string',
-                'min:6',
-                'max:20',
-                'regex:/^[A-Z]/',    // Bắt đầu bằng chữ hoa
-                'regex:/[a-z]/',     // Có ít nhất một chữ thường
-                'regex:/[0-9]/',     // Có ít nhất một số
-                'regex:/[@$!%*#?&]/' // Có ít nhất một ký tự đặc biệt
-            ],
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|in:male,female,other',
             'phone' => 'nullable|string|max:20',
@@ -62,10 +51,6 @@ class UpdateRequest extends FormRequest
         return [
             'user_id.exists' => 'ID người dùng không tồn tại',
             'student_code.unique' => 'Mã học viên đã tồn tại',
-            'email.unique' => 'Email đã tồn tại',
-            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự',
-            'password.max' => 'Mật khẩu không được vượt quá 20 ký tự',
-            'password.regex' => 'Mật khẩu phải bắt đầu bằng chữ hoa, có ít nhất một chữ thường, một số và một ký tự đặc biệt (@$!%*#?&)',
             'full_name.max' => 'Họ tên không được quá 255 ký tự',
             'date_of_birth.date' => 'Ngày sinh không hợp lệ',
             'gender.in' => 'Giới tính không hợp lệ',

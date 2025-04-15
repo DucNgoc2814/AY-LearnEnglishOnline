@@ -194,12 +194,12 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 
     public function findWithFullUrls($id)
     {
-        $course = $this->findOrFail($id);
+        $student = $this->model->with('user')->findOrFail($id);
 
         // Add full URLs for image and video
-        $course->avatar = $this->getFullUrl($course->avatar);
+        $student->avatar = $this->getFullUrl($student->avatar);
 
-        return $course;
+        return $student;
     }
 
     public function deleteFile($path)

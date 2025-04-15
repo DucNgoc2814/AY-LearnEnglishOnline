@@ -99,15 +99,6 @@
                                         onclick="populateEditModal({{ json_encode($item) }})" title="Chỉnh sửa">
                                         <i class="far fa-edit"></i>
                                     </button>
-                                    <form action="{{ route('admin.students.destroy', $item->id) }}" method="POST"
-                                        class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-500 hover:text-red-700" title="Xóa"
-                                            onclick="return confirm('Bạn có chắc chắn muốn xóa học viên này?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -205,34 +196,4 @@
 
 @endsection
 
-@push('scripts')
-    <script>
-        function populateEditModal(item) {
-            modalHandler.open('editStudentModal');
 
-            modalHandler.setEditModalData('editStudentModal', {
-                student_code: item.student_code,
-                full_name: item.full_name,
-                date_of_birth: item.date_of_birth,
-                gender: item.gender,
-                phone: item.phone,
-                address: item.address,
-                bio: item.bio,
-                parent1_name: item.parent1_name,
-                parent1_relationship: item.parent1_relationship,
-                parent1_phone: item.parent1_phone,
-                parent1_email: item.parent1_email,
-                parent1_occupation: item.parent1_occupation,
-                parent1_is_emergency_contact: item.parent1_is_emergency_contact,
-                parent2_name: item.parent2_name,
-                parent2_relationship: item.parent2_relationship,
-                parent2_phone: item.parent2_phone,
-                parent2_email: item.parent2_email,
-                parent2_occupation: item.parent2_occupation,
-                parent2_is_emergency_contact: item.parent2_is_emergency_contact,
-                is_active: item.is_active,
-                actionUrl: '{{ url('admin/students') }}/' + item.id
-            });
-        }
-    </script>
-@endpush
