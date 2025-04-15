@@ -275,16 +275,15 @@
                 <div class="comments mt-1">
                     @auth
                         <div class="comment-form mb-2">
-                            <form action="{{ route('client.comments.store') }}" method="POST" class="ajaxForm"
-                                id="commentForm">
+                            <form action="{{ route('client.comments.store') }}" method="POST" id="commentForm">
                                 @csrf
                                 <input type="hidden" name="commentable_type" value="App\Models\Course">
                                 <input type="hidden" name="commentable_id" value="{{ $course->id }}">
                                 <div class="form-group position-relative">
-                                    <textarea name="content" class="form-control pr-5" placeholder="Viết bình luận của bạn..." rows="2"
-                                        id="commentContent"></textarea>
-                                    <button type="submit" class="btn btn-link position-absolute send-icon"
-                                        id="submitComment">
+                                    <textarea name="content" class="form-control" placeholder="Viết bình luận của bạn..." rows="2"
+                                        id="commentContent" style="padding-right: 40px;"></textarea>
+                                    <button type="submit" class="btn btn-link position-absolute" 
+                                        id="submitComment" style="bottom: 8px; right: 8px;">
                                         <i class="fas fa-paper-plane text-primary"></i>
                                     </button>
                                 </div>
@@ -542,249 +541,68 @@
 
 @push('scripts')
     <script>
-        $(function() {
-            // Flag để theo dõi việc đang submit form
-            var isSubmitting = false;
-
+        $(document).ready(function() {
+            // Đảm bảo CSRF token được cập nhật từ meta tag mới nhất
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            
+            // Cập nhật token trong form comment
+            $('#commentForm input[name="_token"]').val(csrfToken);
+            
             // Xử lý nhấn Enter để gửi bình luận
             $('#commentContent').on('keydown', function(e) {
                 if (e.keyCode === 13 && !e.shiftKey) { // Enter không kèm Shift
                     e.preventDefault(); // Ngăn xuống dòng
-                    if (!isSubmitting) { // Chỉ submit nếu chưa đang submit
-                        submitCommentForm();
-                    }
+                    $('#commentForm').submit(); // Submit form
                 }
             });
-
-            // Function để submit form comment
-            function submitCommentForm() {
-                var form = $('#commentForm');
-                var submitBtn = form.find('button[type="submit"]');
-                var content = form.find('textarea[name="content"]').val().trim();
-
-                if (!content) {
-                    return false; // Không gửi nếu trống
-                }
-
-                // Đánh dấu đang submit và disable nút submit
-                isSubmitting = true;
-                submitBtn.prop('disabled', true);
-
-                $.ajax({
-                    url: form.attr('action'),
-                    method: 'POST',
-                    data: form.serialize(),
-                    success: function(response) {
-                        if (response.success) {
-                            // Reload page to show new comment
-                            window.location.reload();
-                        } else {
-                            alert(response.message || 'Có lỗi xảy ra');
-                            // Reset trạng thái khi có lỗi
-                            isSubmitting = false;
-                            submitBtn.prop('disabled', false);
-                        }
-                    },
-                    error: function(xhr) {
-                        alert(xhr.responseJSON?.message || 'Có lỗi xảy ra');
-                        // Reset trạng thái khi có lỗi
-                        isSubmitting = false;
-                        submitBtn.prop('disabled', false);
-                    }
-                });
-
-                return false;
-            }
-
-            // Gắn sự kiện submit form thông thường
-            $('#commentForm').on('submit', function(e) {
-                e.preventDefault();
-                if (!isSubmitting) { // Chỉ submit nếu chưa đang submit
-                    submitCommentForm();
-                }
-            });
-
-            // Handle reply button click
+            
+            // Tạo form element mới cho reply comment
             $('.reply-btn').on('click', function() {
                 var commentId = $(this).data('comment-id');
-
-                // Remove any existing reply form
+                
+                // Xóa tất cả form reply hiện tại
                 $('.reply-form').remove();
-
-                // Add reply form to designated area
+                
+                // Lấy lại token mới nhất
+                csrfToken = $('meta[name="csrf-token"]').attr('content');
+                
+                // Tạo form HTML thủ công với token chính xác
                 var replyForm = `
-            <div class="reply-form">
-                <form action="/comments/${commentId}/reply" method="POST" class="ajaxForm reply-form-inner">
-                    @csrf
-                    <div class="form-group position-relative">
-                        <textarea name="content" class="form-control reply-content pr-5" placeholder="Viết trả lời của bạn..." rows="1"></textarea>
-                        <button type="submit" class="btn btn-link position-absolute send-icon">
-                            <i class="fas fa-paper-plane text-primary"></i>
-                        </button>
+                    <div class="reply-form mt-2">
+                        <form action="/comments/${commentId}/reply" method="POST" class="reply-form-inner">
+                            <input type="hidden" name="_token" value="${csrfToken}">
+                            <div class="form-group position-relative">
+                                <textarea name="content" class="form-control reply-content" placeholder="Viết trả lời của bạn..." rows="1" style="padding-right: 40px;"></textarea>
+                                <button type="submit" class="btn btn-link position-absolute" style="bottom: 8px; right: 8px;">
+                                    <i class="fas fa-paper-plane text-primary"></i>
+                                </button>
+                            </div>
+                            <div class="mt-1 text-end">
+                                <button type="button" class="btn btn-sm btn-link text-muted cancel-reply">Hủy</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="mt-1 text-end">
-                        <a href="javascript:void(0)" class="cancel-reply text-muted">Hủy</a>
-                    </div>
-                </form>
-            </div>
-        `;
-
-                // Add form to the designated reply area
+                `;
+                
+                // Thêm form vào khu vực reply
                 $('#reply-area-' + commentId).html(replyForm);
-
-                // Xử lý submit form reply
-                var replySubmitting = false;
-
-                // Xử lý nhấn Enter để gửi trả lời
-                $('.reply-content').on('keydown', function(e) {
-                    if (e.keyCode === 13 && !e.shiftKey) { // Enter không kèm Shift
-                        e.preventDefault(); // Ngăn xuống dòng
-
-                        if (!replySubmitting) {
-                            submitReplyForm($(this).closest('form'));
-                        }
-                    }
-                });
-
-                // Gắn sự kiện submit form reply
-                $('.reply-form-inner').on('submit', function(e) {
-                    e.preventDefault();
-                    if (!replySubmitting) {
-                        submitReplyForm($(this));
-                    }
-                });
-
-                // Focus vào textarea
-                $('.reply-content').focus();
-            });
-
-            // Function để submit form reply
-            function submitReplyForm(form) {
-                var submitBtn = form.find('button[type="submit"]');
-                var content = form.find('textarea[name="content"]').val().trim();
-
-                if (!content) {
-                    return false;
-                }
-
-                // Đánh dấu đang submit và disable nút
-                replySubmitting = true;
-                submitBtn.prop('disabled', true);
-
-                $.ajax({
-                    url: form.attr('action'),
-                    method: 'POST',
-                    data: form.serialize(),
-                    success: function(response) {
-                        if (response.success) {
-                            window.location.reload();
-                        } else {
-                            alert(response.message || 'Có lỗi xảy ra');
-                            replySubmitting = false;
-                            submitBtn.prop('disabled', false);
-                        }
-                    },
-                    error: function(xhr) {
-                        alert(xhr.responseJSON?.message || 'Có lỗi xảy ra');
-                        replySubmitting = false;
-                        submitBtn.prop('disabled', false);
-                    }
-                });
-
-                return false;
-            }
-
-            // Handle cancel reply
-            $(document).on('click', '.cancel-reply', function(e) {
-                e.preventDefault();
-                $(this).closest('.reply-form').fadeOut('fast', function() {
-                    $(this).remove();
-                });
-            });
-
-            // Xử lý form đánh giá
-            var ratingSubmitting = false;
-
-            $('#ratingForm').on('submit', function(e) {
-                e.preventDefault();
-
-                if (ratingSubmitting) {
-                    return false;
-                }
-
-                var form = $(this);
-                var submitBtn = form.find('button[type="submit"]');
-
-                // Kiểm tra đã chọn rating chưa
-                if (!form.find('input[name="rating"]:checked').val()) {
-                    alert('Vui lòng chọn số sao đánh giá');
-                    return false;
-                }
-
-                // Kiểm tra nội dung đánh giá
-                var review = form.find('textarea[name="review"]').val().trim();
-                if (!review || review.length < 10) {
-                    alert('Vui lòng nhập nội dung đánh giá (tối thiểu 10 ký tự)');
-                    return false;
-                }
-
-                // Đánh dấu đang submit
-                ratingSubmitting = true;
-                submitBtn.prop('disabled', true).html(
-                    '<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
-
-                $.ajax({
-                    url: form.attr('action'),
-                    method: 'POST',
-                    data: form.serialize(),
-                    success: function(response) {
-                        if (response.success) {
-                            window.location.reload();
-                        } else {
-                            alert(response.message || 'Có lỗi xảy ra');
-                            ratingSubmitting = false;
-                            submitBtn.prop('disabled', false).text(form.find('.rating-exists')
-                                .length ? 'Cập nhật đánh giá' : 'Gửi đánh giá');
-                        }
-                    },
-                    error: function(xhr) {
-                        alert(xhr.responseJSON?.message || 'Có lỗi xảy ra');
-                        ratingSubmitting = false;
-                        submitBtn.prop('disabled', false).text(form.find('.rating-exists')
-                            .length ? 'Cập nhật đánh giá' : 'Gửi đánh giá');
-                    }
-                });
-            });
-
-            // Xử lý phân trang AJAX cho comments - Đơn giản và dễ hiểu
-            $(document).on('click', '.comments-list .pagination a', function(e) {
-                e.preventDefault();
                 
-                // Lấy URL từ link pagination
-                var url = $(this).attr('href');
+                // Focus vào textarea và thêm xử lý Enter
+                var replyTextarea = $('#reply-area-' + commentId).find('textarea');
+                replyTextarea.focus();
                 
-                // Thực hiện AJAX request
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    success: function(response) {
-                        // Parse HTML response
-                        var tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = response;
-                        
-                        // Lấy phần comments-list từ response
-                        var newContent = $(tempDiv).find('.comments-list').html();
-                        
-                        // Cập nhật phần comments-list trong trang hiện tại
-                        $('.comments-list').html(newContent);
-                        
-                        // Cập nhật URL không reload trang
-                        history.pushState(null, '', url);
-                    },
-                    error: function() {
-                        alert('Không thể tải trang comments');
+                // Xử lý nhấn Enter để gửi reply
+                replyTextarea.on('keydown', function(e) {
+                    if (e.keyCode === 13 && !e.shiftKey) {
+                        e.preventDefault();
+                        $(this).closest('form').submit();
                     }
                 });
+            });
+            
+            // Xử lý hủy reply
+            $(document).on('click', '.cancel-reply', function() {
+                $(this).closest('.reply-form').remove();
             });
         });
     </script>
@@ -839,6 +657,9 @@
             font-size: 1.1rem;
             padding: 0;
             transition: all 0.3s ease;
+            position: absolute;
+            z-index: 2;
+            pointer-events: auto;
         }
 
         .send-icon:hover {
@@ -851,13 +672,26 @@
         }
 
         /* Style cho form bình luận */
-        .comment-form textarea,
-        .reply-form textarea {
+        .comment-form textarea {
             border-radius: 15px;
             padding: 10px;
+            padding-right: 40px;
             transition: all 0.3s ease;
             resize: none;
             font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .reply-form textarea {
+            border-radius: 15px;
+            padding: 10px;
+            padding-right: 40px;
+            transition: all 0.3s ease;
+            resize: none;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
         }
 
         .comment-form textarea:focus,
@@ -1015,73 +849,6 @@
         }
 
         /* CSS bổ sung cho giao diện đánh giá mới */
-        .reviews-list .card {
-            transition: all 0.2s ease-in-out;
-            border-color: #e9ecef;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-            margin-bottom: 0.4rem;
-        }
-
-        .reviews-list .card:hover {
-            border-color: #dee2e6;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .reviews-list .card .card-body {
-            padding: 0.4rem 0.6rem;
-        }
-
-        .reviews-list .row {
-            margin-right: -5px;
-            margin-left: -5px;
-        }
-
-        .reviews-list .row>* {
-            padding-right: 5px;
-            padding-left: 5px;
-        }
-
-        .reviews h4,
-        .reviews h5 {
-            color: #333;
-            margin-top: 8px;
-        }
-
-        .reviews .progress {
-            background-color: #f0f0f0;
-        }
-
-        .reviews .form-control:focus {
-            border-color: #ffc107;
-            box-shadow: 0 0 0 0.15rem rgba(255, 193, 7, 0.25);
-        }
-
-        .reviews .form-text {
-            font-size: 0.75rem;
-            margin-top: 0.1rem;
-        }
-
-        .reviews .btn-primary {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-            padding: 0.375rem 0.75rem;
-        }
-
-        .reviews .btn-outline-primary:hover {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-        }
-
-        /* Giảm khoảng cách cho toàn bộ tab */
-        .tab-content>.tab-pane {
-            padding: 8px 4px;
-        }
-
-        .alert {
-            margin-bottom: 0.5rem;
-        }
-
-        /* CSS cho layout đánh giá mới */
         .reviews-list .card {
             transition: all 0.2s ease-in-out;
             border-color: #e9ecef;

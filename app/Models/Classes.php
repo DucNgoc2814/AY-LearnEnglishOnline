@@ -14,25 +14,61 @@ class Classes extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'course_id',
-        'teacher_id',
         'name',
         'code',
-        'description',
+        'course_id',
+        'teacher_id',
+        'class_type',
         'start_date',
         'end_date',
-        'capacity',
-        'enrolled_count',
+        'enrollment_deadline',
+        'max_students',
+        'min_students',
+        'fee',
+        'current_students',
         'status',
-        'meta_data'
+        'description',
+        'schedule',
+        'is_active'
     ];
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'capacity' => 'integer',
-        'enrolled_count' => 'integer',
-        'meta_data' => 'array'
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+        'enrollment_deadline' => 'date',
+        'max_students' => 'integer',
+        'min_students' => 'integer',
+        'fee' => 'decimal:2',
+        'current_students' => 'integer',
+        'schedule' => 'json',
+        'is_active' => 'boolean',
+        'class_type' => 'string'
+    ];
+
+    // Định nghĩa các giá trị cho class_type
+    const TYPE_ONLINE = 'online';
+    const TYPE_OFFLINE = 'offline';
+    const TYPE_HYBRID = 'hybrid';
+
+    // Các class_type có thể có
+    public static $types = [
+        self::TYPE_ONLINE,
+        self::TYPE_OFFLINE,
+        self::TYPE_HYBRID
+    ];
+
+    // Định nghĩa các giá trị enum cho status
+    const STATUS_PENDING = 'pending';
+    const STATUS_ACTIVE = 'active';
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_CANCELLED = 'cancelled';
+
+    // Các status có thể có
+    public static $statuses = [
+        self::STATUS_PENDING,
+        self::STATUS_ACTIVE,
+        self::STATUS_COMPLETED,
+        self::STATUS_CANCELLED
     ];
 
     /**
@@ -48,7 +84,7 @@ class Classes extends Model
      */
     public function teacher(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'teacher_id');
+        return $this->belongsTo(Employee::class, 'teacher_id');
     }
 
     /**
@@ -56,13 +92,21 @@ class Classes extends Model
      */
     public function students(): BelongsToMany
     {
-        return $this->belongsToMany(Student::class, 'class_student')
-            ->withPivot(['status', 'enrolled_at'])
+        return $this->belongsToMany(Student::class, 'class_student', 'class_id', 'student_id')
+            ->withPivot(['status', 'enrollment_date'])
             ->withTimestamps();
     }
 
     /**
      * Lấy lịch học
+     */
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(ClassSchedule::class, 'class_id');
+    }
+
+    /**
+     * Lấy các buổi học
      */
     public function sessions(): HasMany
     {
@@ -83,7 +127,7 @@ class Classes extends Model
      */
     public function hasMinimumStudents(): bool
     {
-        return $this->enrolled_count >= $this->capacity;
+        return $this->current_students >= $this->max_students;
     }
 
     /**
@@ -91,7 +135,7 @@ class Classes extends Model
      */
     public function hasAvailableSlots(): bool
     {
-        return $this->enrolled_count < $this->capacity;
+        return $this->current_students < $this->max_students;
     }
 
     /**
@@ -107,7 +151,7 @@ class Classes extends Model
      */
     public function updateCurrentStudents(): self
     {
-        $this->enrolled_count = $this->students()->wherePivot('status', 'active')->count();
+        $this->current_students = $this->students()->wherePivot('status', 'active')->count();
         $this->save();
         return $this;
     }
@@ -150,7 +194,7 @@ class Classes extends Model
      */
     public function getAvailableSeats(): int
     {
-        return max(0, $this->capacity - $this->enrolled_count);
+        return max(0, $this->max_students - $this->current_students);
     }
 
     /**
@@ -184,7 +228,7 @@ class Classes extends Model
 
     public function start()
     {
-        $this->status = 'in_progress';
+        $this->status = 'active';
         $this->save();
     }
 
@@ -196,12 +240,12 @@ class Classes extends Model
 
     public function incrementEnrolledCount()
     {
-        $this->increment('enrolled_count');
+        $this->increment('current_students');
     }
 
     public function decrementEnrolledCount()
     {
-        $this->decrement('enrolled_count');
+        $this->decrement('current_students');
     }
 
     public function getCompletionRate(): float

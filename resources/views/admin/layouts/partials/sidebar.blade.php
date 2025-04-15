@@ -33,9 +33,6 @@
     <li><a class="text-white hover:text-gray-300" href="#"><i class="fas fa-tasks"></i> Công
             việc</a>
     </li>
-    <li><a class="text-white hover:text-gray-300" href="#"><i class="fas fa-phone"></i> Cuộc
-            gọi</a>
-    </li>
     <li><a class="text-white hover:text-gray-300" href="#"><i class="fas fa-calendar-alt"></i>
             Thời khóa biểu</a>
     </li>

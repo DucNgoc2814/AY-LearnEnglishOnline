@@ -19,7 +19,7 @@ class SecureHeaders
         'X-Frame-Options' => 'SAMEORIGIN',
         'Referrer-Policy' => 'same-origin',
         'Strict-Transport-Security' => 'max-age=31536000; includeSubDomains',
-        'Permissions-Policy' => 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+        'Permissions-Policy' => 'camera=(), microphone=(), geolocation=()'
     ];
 
     /**
@@ -29,20 +29,16 @@ class SecureHeaders
     {
         $response = $next($request);
 
-        // Tạo CSP nonce
-        $nonce = $request->session()->token();
+        // Thiết lập Content Security Policy với các domain cần thiết
+        $cspHeader = "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *; " .
+                     "script-src 'self' 'unsafe-inline' 'unsafe-eval' data: *; " .
+                     "style-src 'self' 'unsafe-inline' data: *; " .
+                     "img-src 'self' data: blob: *; " .
+                     "font-src 'self' data: *; " .
+                     "connect-src 'self' *; " .
+                     "media-src 'self' *; " .
+                     "object-src 'none'";
 
-        // Thiết lập Content Security Policy với các domain cần thiết và chính sách cực kỳ cho phép
-        $cspHeader = "default-src * 'self' data: 'unsafe-inline' 'unsafe-eval'; " .
-                     "script-src * 'self' data: 'unsafe-inline' 'unsafe-eval'; " .
-                     "style-src * 'self' data: 'unsafe-inline'; " .
-                     "img-src * 'self' data: blob:; " .
-                     "font-src * 'self' data:; " .
-                     "connect-src * 'self' data:; " .
-                     "frame-src * 'self' data:; " .
-                     "object-src 'none';";
-
-        // Re-enable CSP with permissive settings
         $this->secureHeaders['Content-Security-Policy'] = $cspHeader;
 
         // Áp dụng các header bảo mật cho response

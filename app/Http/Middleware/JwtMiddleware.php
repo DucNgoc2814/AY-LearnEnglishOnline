@@ -2,122 +2,117 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
-use App\Services\DeviceService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Support\Facades\Log;
 
-class JwtMiddleware
+class JwtMiddleware extends BaseMiddleware
 {
-    protected $deviceService;
-
-    public function __construct(DeviceService $deviceService)
-    {
-        $this->deviceService = $deviceService;
-    }
-
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         try {
+            // Skip authentication for login routes
+            if ($request->routeIs('online.login') || $request->routeIs('online.auth.login')) {
+                return $next($request);
+            }
+
             // Check if token exists in session
             $token = session('jwt_token');
             if (!$token) {
-                session()->flush();
-                return redirect()->route('login')
-                    ->with('notification', [
-                        'message' => 'Vui lòng đăng nhập để tiếp tục.',
-                        'type' => 'error'
-                    ]);
+                Log::warning('No JWT token found in session');
+                return $this->handleUnauthenticated('Không tìm thấy token xác thực.');
             }
 
-            // Set and validate the token
-            JWTAuth::setToken($token);
-            $user = JWTAuth::authenticate();
+            try {
+                // Set token and authenticate
+                JWTAuth::setToken($token);
+                $user = JWTAuth::authenticate();
 
-            if (!$user) {
-                throw new JWTException('User not found for token');
-            }
-
-            // Device check
-            $deviceId = $this->deviceService->getDeviceIdentifier($request);
-
-            // Check if user is trying to access from a different browser
-            if ($user->device_id && $user->device_id !== $deviceId) {
-                // User is trying to access from a different browser - force logout
-                session()->flush();
-
-                try {
-                    JWTAuth::invalidate();
-                } catch (\Exception $e) {
-                    // Token might already be invalid
+                if (!$user) {
+                    Log::warning('JWT authentication failed - no user found');
+                    return $this->handleUnauthenticated('Không tìm thấy thông tin người dùng.');
                 }
 
-                // Log this event
-                \Illuminate\Support\Facades\Log::warning('Session hijacking attempt detected', [
-                    'user_id' => $user->id,
-                    'expected_device' => $user->device_id,
-                    'current_device' => $deviceId,
-                    'ip' => $request->ip()
+                // Try to refresh token if it's close to expiring
+                $payload = JWTAuth::getPayload();
+                $exp = $payload->get('exp');
+                
+                // If token will expire in the next 30 minutes, refresh it
+                if ($exp - time() < 1800) {
+                    try {
+                        $newToken = JWTAuth::refresh();
+                        session(['jwt_token' => $newToken]);
+                    } catch (\Exception $e) {
+                        Log::warning('Failed to refresh token', ['error' => $e->getMessage()]);
+                    }
+                }
+
+                // Get user type from token claims
+                $userType = $payload->get('user_type');
+
+                // Add user info to request
+                $request->attributes->add([
+                    'user' => $user,
+                    'user_type' => $userType
                 ]);
 
-                return redirect()->route('login')
-                    ->with('notification', [
-                        'message' => 'Tài khoản của bạn đang được đăng nhập từ một thiết bị khác. Vui lòng đăng xuất ở thiết bị đó trước khi đăng nhập ở đây.',
-                        'type' => 'error'
-                    ]);
+                return $next($request);
+
+            } catch (TokenExpiredException $e) {
+                Log::info('Token expired, attempting refresh');
+                try {
+                    $newToken = JWTAuth::refresh();
+                    session(['jwt_token' => $newToken]);
+                    
+                    // Retry authentication with new token
+                    JWTAuth::setToken($newToken);
+                    $user = JWTAuth::authenticate();
+                    
+                    if ($user) {
+                        $payload = JWTAuth::getPayload();
+                        $request->attributes->add([
+                            'user' => $user,
+                            'user_type' => $payload->get('user_type')
+                        ]);
+                        return $next($request);
+                    }
+                } catch (\Exception $refreshError) {
+                    Log::error('Token refresh failed', ['error' => $refreshError->getMessage()]);
+                    return $this->handleUnauthenticated('Phiên đăng nhập đã hết hạn.');
+                }
             }
-
-            // Ensure device ID is always up to date
-            if ($user->device_id !== $deviceId) {
-                User::where('id', $user->id)->update([
-                    'device_id' => $deviceId
-                ]);
-            }
-
-            // Set user in request for easy access
-            $request->attributes->add(['user' => $user]);
-
-            return $next($request);
-
-        } catch (TokenExpiredException $e) {
-            // Token expired
-            session()->flush();
-
-            return redirect()->route('login')
-                ->with('notification', [
-                    'message' => 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
-                    'type' => 'warning'
-                ]);
 
         } catch (TokenInvalidException $e) {
-            // Invalid token
-            session()->flush();
-
-            return redirect()->route('login')
-                ->with('notification', [
-                    'message' => 'Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.',
-                    'type' => 'warning'
-                ]);
-
+            Log::error('Invalid token', ['error' => $e->getMessage()]);
+            return $this->handleUnauthenticated('Token không hợp lệ.');
         } catch (JWTException $e) {
-            // Token could not be parsed
-            session()->flush();
-
-            return redirect()->route('login')
-                ->with('notification', [
-                    'message' => 'Có lỗi xảy ra với phiên đăng nhập. Vui lòng đăng nhập lại.',
-                    'type' => 'error'
-                ]);
+            Log::error('JWT error', ['error' => $e->getMessage()]);
+            return $this->handleUnauthenticated('Lỗi xác thực.');
+        } catch (\Exception $e) {
+            Log::error('Unexpected error in JWT middleware', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return $this->handleUnauthenticated();
         }
+
+        return $this->handleUnauthenticated('Không thể xác thực người dùng.');
+    }
+
+    protected function handleUnauthenticated($message = null)
+    {
+        session()->forget('jwt_token');
+        
+        return redirect()->route('online.login')
+            ->with('notification', [
+                'message' => 'Vui lòng đăng nhập để tiếp tục.',
+                'type' => 'error'
+            ]);
     }
 }

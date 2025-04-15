@@ -18,10 +18,10 @@ return new class extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->string('room_number')->nullable();
-            $table->boolean('is_online')->default(false);  // Thêm cột is_online
             $table->string('meeting_url')->nullable();
             $table->boolean('is_repeating')->default(true);
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_online')->default(false);
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->text('notes')->nullable();

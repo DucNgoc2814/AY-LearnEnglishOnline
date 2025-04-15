@@ -6,11 +6,11 @@ use App\Http\Controllers\Client\CategoryController;
 use App\Http\Controllers\Client\CourseController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\PaymentController;
-use App\Http\Controllers\Admin\VideoLessonController;
 use App\Http\Controllers\Client\PracticeTestController;
 use App\Http\Controllers\Client\CommentController;
 use App\Http\Controllers\Client\TestResultController;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\Client\AttendanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,9 +38,6 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Video proxy route - completely public, outside of all middleware groups
 Route::get('/video-proxy/{videoId}', [CourseController::class, 'videoProxy'])->name('video.proxy');
-
-// Route cho trang thi thử
-Route::get('/thi-thu-toeic', [PracticeTestController::class, 'index'])->name('practice-tests.index');
 
 // Đặt tất cả routes auth trong middleware web
 Route::middleware('web')->group(function () {
@@ -104,8 +101,14 @@ Route::middleware('web')->group(function () {
             Route::post('/ratings', [App\Http\Controllers\Client\CommentController::class, 'storeRating'])->name('client.ratings.store');
         });
 
+        // Route lấy comments của khóa học
+        Route::get('/courses/{courseId}/comments', [App\Http\Controllers\Client\CommentController::class, 'getCourseComments'])->name('client.courses.comments');
+
         Route::post('/test/{test}/submit', [TestResultController::class, 'submit'])->name('test.submit');
         Route::get('/test/{test}/retry', [TestResultController::class, 'retry'])->name('test.retry');
+
+        // Route cho trang thi thử
+        Route::get('/thi-thu-toeic', [PracticeTestController::class, 'index'])->name('practice-tests.index');
     });
 
     // Lesson routes
@@ -149,3 +152,4 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->back()->with('success', 'Tất cả cache đã được xóa thành công!');
     })->name('clear.all');
 });
+

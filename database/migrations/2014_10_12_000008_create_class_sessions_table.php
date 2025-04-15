@@ -20,7 +20,6 @@ return new class extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->string('room_number')->nullable();
-            $table->enum('session_type', ['in_person', 'online', 'hybrid'])->default('online');
             $table->text('topic')->nullable();
             $table->text('content')->nullable();
             $table->text('homework')->nullable();

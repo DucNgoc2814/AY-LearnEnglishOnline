@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,40 +11,55 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Student extends Model
+class Student extends Authenticatable implements JWTSubject
 {
-    use HasFactory, SoftDeletes;
+    use Notifiable, HasFactory, SoftDeletes;
+
+    protected $table = 'students';
 
     protected $fillable = [
         'user_id',
         'student_code',
+        'password',
         'full_name',
         'date_of_birth',
         'gender',
         'phone',
         'address',
-        'school',
-        'grade',
         'parent1_name',
+        'parent1_relationship',
         'parent1_phone',
         'parent1_email',
-        'parent1_occupation',
-        'parent1_is_emergency_contact',
-        'parent2_name',
-        'parent2_phone',
-        'parent2_email',
-        'parent2_occupation',
-        'parent2_is_emergency_contact',
         'is_active'
     ];
 
-    protected $casts = [
-        'date_of_birth' => 'date',
-        'parent1_is_emergency_contact' => 'boolean',
-        'parent2_is_emergency_contact' => 'boolean',
-        'is_active' => 'boolean'
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'date_of_birth' => 'date',
+    ];
+
+    /**
+     * Automatically hash passwords when they are set
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
+
+    /**
+     * Get the username field for authentication
+     */
+    public function username()
+    {
+        return 'student_code';
+    }
 
     /**
      * Lấy user liên kết với học viên
@@ -57,7 +74,7 @@ class Student extends Model
      */
     public function classes(): BelongsToMany
     {
-        return $this->belongsToMany(ClassRoom::class, 'class_student')
+        return $this->belongsToMany(Classes::class, 'class_student', 'student_id', 'class_id')
             ->withPivot(['status', 'payment_date', 'invoice_number', 'enrollment_date', 'completion_date', 'notes'])
             ->withTimestamps();
     }
@@ -270,5 +287,28 @@ class Student extends Model
     public function testResults()
     {
         return $this->hasMany(TestResult::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [
+            'user_type' => 'student',
+            'student_code' => $this->student_code
+        ];
     }
 } 

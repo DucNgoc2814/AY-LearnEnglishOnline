@@ -16,69 +16,89 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'content' => 'required|string|min:1',
-            'commentable_type' => 'required|string',
-            'commentable_id' => 'required|integer',
-            'parent_id' => 'nullable|integer|exists:comments,id'
-        ]);
+        try {
+            $request->validate([
+                'content' => 'required|string|min:1|max:1000',
+                'commentable_type' => 'required|string',
+                'commentable_id' => 'required|integer',
+                'parent_id' => 'nullable|integer|exists:comments,id'
+            ]);
 
-        // Check if commentable exists
-        $commentableType = $request->commentable_type;
-        $commentableId = $request->commentable_id;
-        
-        if ($commentableType === 'App\Models\Course') {
-            $commentable = Course::find($commentableId);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Không tìm thấy đối tượng để bình luận'
-            ], 404);
-        }
-        
-        if (!$commentable) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Không tìm thấy đối tượng để bình luận'
-            ], 404);
-        }
-
-        // Kiểm tra nếu người dùng đã gửi comment này trong khoảng thời gian ngắn (30 giây)
-        $recentComment = Comment::where('user_id', Auth::id())
-            ->where('commentable_type', $request->commentable_type)
-            ->where('commentable_id', $request->commentable_id)
-            ->where('content', $request->content)
-            ->where('created_at', '>=', now()->subSeconds(30))
-            ->first();
+            // Check if commentable exists
+            $commentableType = $request->commentable_type;
+            $commentableId = $request->commentable_id;
             
-        if ($recentComment) {
+            if ($commentableType === 'App\Models\Course') {
+                $commentable = Course::find($commentableId);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy đối tượng để bình luận'
+                ], 404);
+            }
+            
+            if (!$commentable) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy đối tượng để bình luận'
+                ], 404);
+            }
+
+            // Kiểm tra nếu người dùng đã gửi comment này trong khoảng thời gian ngắn (30 giây)
+            $recentComment = Comment::where('user_id', Auth::id())
+                ->where('commentable_type', $request->commentable_type)
+                ->where('commentable_id', $request->commentable_id)
+                ->where('content', $request->content)
+                ->where('created_at', '>=', now()->subSeconds(30))
+                ->first();
+            
+            if ($recentComment) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Vui lòng đợi trước khi gửi lại bình luận tương tự'
+                    ]);
+                }
+                return redirect()->back()->with('error', 'Vui lòng đợi trước khi gửi lại bình luận tương tự');
+            }
+
+            // Create the comment
+            $comment = Comment::create([
+                'user_id' => Auth::id(),
+                'commentable_type' => $commentableType,
+                'commentable_id' => $commentableId,
+                'content' => $request->content,
+                'parent_id' => $request->parent_id,
+                'is_published' => true,
+            ]);
+
+            // Load the user relationship
+            $comment->load('user');
+
+            if ($request->ajax()) {
+                // Trả về response với token CSRF mới
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Bình luận đã được thêm thành công',
+                    'comment' => $comment,
+                    'csrf_token' => csrf_token()
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Bình luận đã được thêm thành công');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error creating comment: ' . $e->getMessage());
+            
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Vui lòng đợi trước khi gửi lại bình luận tương tự'
-                ]);
+                    'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
+                    'csrf_token' => csrf_token()
+                ], 500);
             }
-            return redirect()->back()->with('error', 'Vui lòng đợi trước khi gửi lại bình luận tương tự');
+            
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm bình luận');
         }
-
-        $comment = Comment::create([
-            'user_id' => Auth::id(),
-            'commentable_type' => $request->commentable_type,
-            'commentable_id' => $request->commentable_id,
-            'content' => $request->content,
-            'parent_id' => $request->parent_id,
-            'is_published' => true
-        ]);
-
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Bình luận đã được thêm thành công',
-                'comment' => $comment->load('user')
-            ]);
-        }
-
-        return redirect()->back()->with('success', 'Bình luận đã được thêm thành công');
     }
 
     /**
@@ -106,47 +126,75 @@ class CommentController extends Controller
      */
     public function reply(Request $request, Comment $comment)
     {
-        $request->validate([
-            'content' => 'required|string|min:1'
-        ]);
+        try {
+            $request->validate([
+                'content' => 'required|string|min:1|max:500'
+            ]);
 
-        // Kiểm tra nếu người dùng đã gửi trả lời này trong khoảng thời gian ngắn (30 giây)
-        $recentReply = Comment::where('user_id', Auth::id())
-            ->where('commentable_type', $comment->commentable_type)
-            ->where('commentable_id', $comment->commentable_id)
-            ->where('content', $request->content)
-            ->where('parent_id', $comment->id)
-            ->where('created_at', '>=', now()->subSeconds(30))
-            ->first();
+            // Check if the user can reply to this comment
+            if (!$comment->is_published) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không thể trả lời bình luận này',
+                    'csrf_token' => csrf_token()
+                ], 403);
+            }
+
+            // Kiểm tra nếu người dùng đã gửi trả lời này trong khoảng thời gian ngắn (30 giây)
+            $recentReply = Comment::where('user_id', Auth::id())
+                ->where('commentable_type', $comment->commentable_type)
+                ->where('commentable_id', $comment->commentable_id)
+                ->where('content', $request->content)
+                ->where('parent_id', $comment->id)
+                ->where('created_at', '>=', now()->subSeconds(30))
+                ->first();
             
-        if ($recentReply) {
+            if ($recentReply) {
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Vui lòng đợi trước khi gửi lại trả lời tương tự'
+                    ]);
+                }
+                return redirect()->back()->with('error', 'Vui lòng đợi trước khi gửi lại trả lời tương tự');
+            }
+
+            // Create the reply
+            $reply = Comment::create([
+                'user_id' => Auth::id(),
+                'commentable_type' => $comment->commentable_type,
+                'commentable_id' => $comment->commentable_id,
+                'content' => $request->content,
+                'parent_id' => $comment->id,
+                'is_published' => true,
+            ]);
+
+            // Load the user relationship
+            $reply->load('user');
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Trả lời đã được thêm thành công',
+                    'reply' => $reply,
+                    'csrf_token' => csrf_token()
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Trả lời đã được thêm thành công');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error creating reply: ' . $e->getMessage());
+            
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Vui lòng đợi trước khi gửi lại trả lời tương tự'
-                ]);
+                    'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
+                    'csrf_token' => csrf_token()
+                ], 500);
             }
-            return redirect()->back()->with('error', 'Vui lòng đợi trước khi gửi lại trả lời tương tự');
+            
+            return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm trả lời');
         }
-
-        $reply = Comment::create([
-            'user_id' => Auth::id(),
-            'commentable_type' => $comment->commentable_type,
-            'commentable_id' => $comment->commentable_id,
-            'content' => $request->content,
-            'parent_id' => $comment->id,
-            'is_published' => true
-        ]);
-
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Trả lời đã được thêm thành công',
-                'reply' => $reply->load('user')
-            ]);
-        }
-
-        return redirect()->back()->with('success', 'Trả lời đã được thêm thành công');
     }
     
     /**
@@ -279,15 +327,24 @@ class CommentController extends Controller
 
             $html = view('client.detailCourse.partials.comments', compact('comments'))->render();
             
+            // Kiểm tra nếu còn trang tiếp theo
+            $hasMore = $comments->hasMorePages();
+            $nextPage = $comments->currentPage() + 1;
+
             return response()->json([
                 'success' => true,
-                'html' => $html
+                'html' => $html,
+                'comments' => $comments,
+                'hasMore' => $hasMore,
+                'nextPage' => $nextPage,
+                'csrf_token' => csrf_token()
             ]);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Error loading comments: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Có lỗi xảy ra khi tải bình luận: ' . $e->getMessage()
+                'message' => 'Có lỗi xảy ra khi tải bình luận: ' . $e->getMessage(),
+                'csrf_token' => csrf_token()
             ], 500);
         }
     }

@@ -8,12 +8,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Carbon\Carbon;
 
 class ClassSession extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'class_id',
         'schedule_id',
@@ -33,6 +39,11 @@ class ClassSession extends Model
         'status'
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'session_date' => 'date',
         'start_time' => 'datetime',
@@ -42,43 +53,51 @@ class ClassSession extends Model
     ];
 
     /**
-     * Lấy lớp học của buổi học
+     * Get the class that this session belongs to.
      */
     public function class(): BelongsTo
     {
-        return $this->belongsTo(ClassRoom::class, 'class_id');
+        return $this->belongsTo(Classes::class, 'class_id');
     }
 
     /**
-     * Lấy lịch học của buổi học
+     * Get the schedule that this session belongs to.
      */
     public function schedule(): BelongsTo
     {
-        return $this->belongsTo(ClassSchedule::class);
+        return $this->belongsTo(ClassSchedule::class, 'schedule_id');
     }
 
     /**
-     * Lấy tài nguyên của buổi học
+     * Get the resource used in this session.
      */
     public function resource(): BelongsTo
     {
-        return $this->belongsTo(Resource::class);
+        return $this->belongsTo(Resource::class, 'resource_id');
     }
 
     /**
-     * Lấy danh sách điểm danh của buổi học
+     * Get the attendance records for this session.
      */
     public function attendances(): HasMany
     {
-        return $this->hasMany(Attendance::class, 'session_id');
+        return $this->hasMany(Attendance::class, 'class_session_id');
+    }
+
+    /**
+     * Get the students who are enrolled in this class.
+     */
+    public function students()
+    {
+        return $this->class->students();
     }
 
     /**
      * Lấy phòng học online của buổi học
      */
-    public function onlineRoom(): HasOne
+    public function onlineRoom(): MorphOne
     {
-        return $this->hasOne(OnlineRoom::class);
+        return $this->morphOne(OnlineRoom::class, 'roomable');
     }
 
     /**
@@ -213,46 +232,51 @@ class ClassSession extends Model
     }
 
     /**
-     * Scope lấy các buổi học sắp diễn ra
+     * Scope a query to only include future sessions.
      */
-    public function scopeUpcoming($query)
+    public function scopeFuture($query)
     {
-        return $query->where('session_date', '>=', now()->toDateString())
-            ->orderBy('session_date')
-            ->orderBy('start_time');
+        return $query->where('session_date', '>=', now()->toDateString());
     }
 
     /**
-     * Scope lấy các buổi học đã hoàn thành
+     * Scope a query to only include past sessions.
      */
-    public function scopeCompleted($query)
+    public function scopePast($query)
     {
-        return $query->where('status', 'completed');
+        return $query->where('session_date', '<', now()->toDateString());
     }
 
     /**
-     * Scope lấy các buổi học đang diễn ra
+     * Scope a query to only include sessions for a specific date.
      */
-    public function scopeInProgress($query)
+    public function scopeByDate($query, $date)
     {
-        return $query->whereDate('session_date', today())
-            ->where('status', 'in_progress');
+        return $query->whereDate('session_date', $date);
     }
 
     /**
-     * Scope lấy các buổi học đã bị hủy
+     * Scope a query to only include sessions for a specific class.
      */
-    public function scopeCancelled($query)
+    public function scopeForClass($query, $classId)
     {
-        return $query->where('status', 'cancelled');
+        return $query->where('class_id', $classId);
     }
 
     /**
-     * Scope lấy các buổi học theo loại phiên
+     * Scope a query to filter by status.
      */
-    public function scopeOfType($query, string $type)
+    public function scopeByStatus($query, $status)
     {
-        return $query->where('session_type', $type);
+        return $query->where('status', $status);
+    }
+
+    /**
+     * Scope a query to only include sessions where attendance is required.
+     */
+    public function scopeAttendanceRequired($query)
+    {
+        return $query->where('attendance_required', true);
     }
 
     /**
