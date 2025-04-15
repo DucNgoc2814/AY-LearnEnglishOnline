@@ -38,6 +38,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .class-info i {
@@ -118,119 +119,14 @@
             color: #d97706;
         }
 
-        .sessions-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .session-card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            transition: var(--transition);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .session-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .session-card.completed {
-            border-left: 4px solid #22c55e;
-        }
-
-        .session-card.in-progress {
-            border-left: 4px solid #eab308;
-        }
-
-        .session-card.upcoming {
-            border-left: 4px solid #ef4444;
-        }
-
-        .session-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            background: var(--bg-color);
-        }
-
-        .session-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--text-color);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .session-title i {
-            color: var(--primary-color);
-        }
-
-        .session-date {
-            color: var(--text-muted);
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .session-date i {
-            color: var(--primary-color);
-        }
-
-        .session-body {
-            padding: 1.5rem;
-        }
-
-        .session-info {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .info-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            color: var(--text-color);
-            font-size: 0.875rem;
-        }
-
-        .info-item i {
-            width: 1.5rem;
-            height: 1.5rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: var(--primary-light);
-            color: var(--primary-color);
-            font-size: 0.75rem;
-        }
-
-        .session-footer {
-            padding: 1rem 1.5rem;
-            background: var(--bg-color);
-            border-top: 1px solid var(--border-color);
-            margin-top: auto;
-        }
-
-        .session-status {
+        .table-status {
             display: inline-flex;
             align-items: center;
             padding: 0.5rem 1rem;
             border-radius: 9999px;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 500;
-            gap: 0.5rem;
-            width: 100%;
+            gap: 0.25rem;
             justify-content: center;
         }
 
@@ -249,32 +145,6 @@
             color: #dc2626;
         }
 
-        .session-action {
-            display: block;
-            width: 100%;
-            text-align: center;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.75rem;
-            border-radius: var(--border-radius-sm);
-            font-weight: 500;
-            text-decoration: none;
-            transition: var(--transition);
-            margin-top: 0.75rem;
-        }
-
-        .session-action:hover {
-            background: var(--primary-dark);
-            color: white;
-        }
-
-        .session-action.disabled {
-            background: var(--border-color);
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
         @media (max-width: 768px) {
             .sessions-header {
                 padding: 1.5rem;
@@ -287,183 +157,140 @@
             .sessions-stats {
                 grid-template-columns: 1fr;
             }
-
-            .sessions-list {
-                grid-template-columns: 1fr;
-            }
-
-            .session-header {
-                padding: 1rem;
-            }
-
-            .session-body {
-                padding: 1rem;
-            }
-
-            .session-footer {
-                padding: 1rem;
-                flex-direction: column;
-                gap: 1rem;
-                align-items: stretch;
-            }
         }
     </style>
 @endpush
 
 @section('content')
     <div class="content-section">
-        <!-- Header -->
-        <div class="sessions-header">
-            <h4 class="class-title">Tiếng Anh cơ bản A1</h4>
-            <div class="class-info">
-                <span><i class="fas fa-users me-2"></i>20 học viên</span>
-                <span><i class="fas fa-calendar me-2"></i>Thứ 2, 4, 6</span>
-                <span><i class="fas fa-clock me-2"></i>18:00 - 20:00</span>
-            </div>
-        </div>
-
-        <!-- Stats -->
-        <div class="sessions-stats">
-            <div class="stat-card total">
-                <div class="stat-value">30</div>
-                <div class="stat-label">
-                    <i class="fas fa-book"></i>
-                    <span>Tổng số buổi</span>
-                </div>
-            </div>
-            <div class="stat-card completed">
-                <div class="stat-value">16</div>
-                <div class="stat-label">
-                    <i class="fas fa-check"></i>
-                    <span>Đã học</span>
-                </div>
-            </div>
-            <div class="stat-card remaining">
-                <div class="stat-value">14</div>
-                <div class="stat-label">
-                    <i class="fas fa-hourglass-half"></i>
-                    <span>Còn lại</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sessions List -->
-        <div class="sessions-list">
-            <!-- Session Card 1 -->
-            <div class="session-card completed">
-                <div class="session-header">
-                    <div class="session-title">
-                        <i class="fas fa-book-open"></i>
-                        <span>Buổi 16 - Unit 8: Daily Activities</span>
-                    </div>
-                    <div class="session-date">
-                        <i class="fas fa-calendar"></i>
-                        <span>15/03/2024</span>
-                        <i class="fas fa-clock ms-2"></i>
-                        <span>18:00 - 20:00</span>
-                    </div>
-                </div>
-                <div class="session-body">
-                    <div class="session-info">
-                        <div class="info-item">
-                            <i class="fas fa-users"></i>
-                            <span>Sĩ số: 20/20 học viên</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-user-check"></i>
-                            <span>Có mặt: 15 học viên</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-user-times"></i>
-                            <span>Vắng mặt: 5 học viên</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="session-footer">
-                    <span class="session-status status-completed">
-                        <i class="fas fa-check"></i>
-                        <span>Đã học</span>
-                    </span>
-                    <a href="{{ route('online.attendance.detail', ['id' => 1]) }}" class="session-action">
-                        <i class="fas fa-eye"></i>
-                        <span>Xem chi tiết</span>
+        <div class="row mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0 text-primary">
+                        <i class="fas fa-calendar-alt me-2"></i>Buổi học lớp Tiếng Anh cơ bản A1
+                    </h5>
+                    <a href="{{ route('online.attendance.index') }}" class="btn btn-sm btn-outline-primary back-btn">
+                        <i class="fas fa-arrow-left me-2"></i>Quay lại
                     </a>
                 </div>
-            </div>
+                <div class="card-body">
+                    <!-- Class Info Section -->
+                    <div class="sessions-header">
+                        <div class="class-info">
+                            <span><i class="fas fa-graduation-cap me-2"></i><strong>Mã lớp:</strong> TA-CB-A1-01</span>
+                            <span><i class="fas fa-users me-2"></i><strong>Sĩ số:</strong> 20 học viên</span>
+                            <span><i class="fas fa-calendar me-2"></i><strong>Lịch học:</strong> Thứ 2, 4, 6</span>
+                            <span><i class="fas fa-clock me-2"></i><strong>Giờ học:</strong> 18:00 - 20:00</span>
+                        </div>
 
-            <!-- Session Card 2 -->
-            <div class="session-card in-progress">
-                <div class="session-header">
-                    <div class="session-title">
-                        <i class="fas fa-book-open"></i>
-                        <span>Buổi 17 - Unit 9: Hobbies</span>
-                    </div>
-                    <div class="session-date">
-                        <i class="fas fa-calendar"></i>
-                        <span>18/03/2024</span>
-                        <i class="fas fa-clock ms-2"></i>
-                        <span>18:00 - 20:00</span>
-                    </div>
-                </div>
-                <div class="session-body">
-                    <div class="session-info">
-                        <div class="info-item">
-                            <i class="fas fa-users"></i>
-                            <span>Sĩ số: 20/20 học viên</span>
+                        <!-- Stats -->
+                        <div class="sessions-stats">
+                            <div class="stat-card total">
+                                <div class="stat-value">30</div>
+                                <div class="stat-label">
+                                    <i class="fas fa-book"></i>
+                                    <span>Tổng số buổi</span>
+                                </div>
+                            </div>
+                            <div class="stat-card completed">
+                                <div class="stat-value">16</div>
+                                <div class="stat-label">
+                                    <i class="fas fa-check"></i>
+                                    <span>Đã học</span>
+                                </div>
+                            </div>
+                            <div class="stat-card remaining">
+                                <div class="stat-value">14</div>
+                                <div class="stat-label">
+                                    <i class="fas fa-hourglass-half"></i>
+                                    <span>Còn lại</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="info-item">
-                            <i class="fas fa-user-check"></i>
-                            <span>Chưa điểm danh</span>
-                        </div>
                     </div>
-                </div>
-                <div class="session-footer">
-                    <span class="session-status status-in-progress">
-                        <i class="fas fa-clock"></i>
-                        <span>Đang học</span>
-                    </span>
-                    <a href="#" class="session-action">
-                        <i class="fas fa-eye"></i>
-                        <span>Xem chi tiết</span>
-                    </a>
-                </div>
-            </div>
 
-            <!-- Session Card 3 -->
-            <div class="session-card upcoming">
-                <div class="session-header">
-                    <div class="session-title">
-                        <i class="fas fa-book-open"></i>
-                        <span>Buổi 18 - Unit 10: Weather</span>
+                    <!-- Sessions Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Buổi học</th>
+                                    <th>Nội dung</th>
+                                    <th>Ngày học</th>
+                                    <th>Giờ học</th>
+                                    <th>Sĩ số</th>
+                                    <th>Có mặt</th>
+                                    <th>Vắng mặt</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Buổi 16 -->
+                                <tr>
+                                    <td class="fw-medium">Buổi 16</td>
+                                    <td>Unit 8: Daily Activities</td>
+                                    <td><i class="fas fa-calendar-day text-primary me-1"></i>15/03/2024</td>
+                                    <td><i class="fas fa-clock text-primary me-1"></i>18:00 - 20:00</td>
+                                    <td>20/20</td>
+                                    <td class="text-success">15</td>
+                                    <td class="text-danger">5</td>
+                                    <td>
+                                        <span class="table-status status-completed">
+                                            <i class="fas fa-check me-1"></i>Đã học
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('online.attendance.detail', ['id' => 1]) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye me-1"></i>Chi tiết
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <!-- Buổi 17 -->
+                                <tr>
+                                    <td class="fw-medium">Buổi 17</td>
+                                    <td>Unit 9: Hobbies</td>
+                                    <td><i class="fas fa-calendar-day text-primary me-1"></i>18/03/2024</td>
+                                    <td><i class="fas fa-clock text-primary me-1"></i>18:00 - 20:00</td>
+                                    <td>20/20</td>
+                                    <td class="text-muted">-</td>
+                                    <td class="text-muted">-</td>
+                                    <td>
+                                        <span class="table-status status-in-progress">
+                                            <i class="fas fa-clock me-1"></i>Đang học
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye me-1"></i>Chi tiết
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <!-- Buổi 18 -->
+                                <tr>
+                                    <td class="fw-medium">Buổi 18</td>
+                                    <td>Unit 10: Weather</td>
+                                    <td><i class="fas fa-calendar-day text-primary me-1"></i>20/03/2024</td>
+                                    <td><i class="fas fa-clock text-primary me-1"></i>18:00 - 20:00</td>
+                                    <td>20/20</td>
+                                    <td class="text-muted">-</td>
+                                    <td class="text-muted">-</td>
+                                    <td>
+                                        <span class="table-status status-upcoming">
+                                            <i class="fas fa-hourglass me-1"></i>Chưa học
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye me-1"></i>Chi tiết
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="session-date">
-                        <i class="fas fa-calendar"></i>
-                        <span>20/03/2024</span>
-                        <i class="fas fa-clock ms-2"></i>
-                        <span>18:00 - 20:00</span>
-                    </div>
-                </div>
-                <div class="session-body">
-                    <div class="session-info">
-                        <div class="info-item">
-                            <i class="fas fa-users"></i>
-                            <span>Sĩ số: 20/20 học viên</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-user-check"></i>
-                            <span>Chưa điểm danh</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="session-footer">
-                    <span class="session-status status-upcoming">
-                        <i class="fas fa-clock"></i>
-                        <span>Chưa học</span>
-                    </span>
-                    <a href="#" class="session-action">
-                        <i class="fas fa-eye"></i>
-                        <span>Xem chi tiết</span>
-                    </a>
                 </div>
             </div>
         </div>

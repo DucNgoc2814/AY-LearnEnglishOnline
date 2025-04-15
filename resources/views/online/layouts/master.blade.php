@@ -26,6 +26,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @yield('styles')
     @stack('styles')
+    <link rel="stylesheet" href="{{ asset('themes/client/assets/font-awesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('themes/client/assets/frontend/default-new/css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('themes/client/assets/frontend/default-new/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('themes/online/css/style.css') }}">
     <style>
         :root {
             --sidebar-width: 250px;
@@ -342,6 +346,30 @@
                 padding: 0 1rem;
             }
         }
+
+        /* Custom styles */
+        .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Standardize "Back" buttons */
+        .back-btn {
+            font-size: 0.875rem !important;
+            padding: 0.25rem 0.5rem !important;
+            border-radius: var(--border-radius-sm) !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+            font-weight: 500 !important;
+        }
+        
+        /* Add any other global custom styles here */
     </style>
 
     <script>

@@ -11,6 +11,7 @@ use App\Http\Controllers\Client\CommentController;
 use App\Http\Controllers\Client\TestResultController;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Client\AttendanceController;
+use App\Http\Controllers\Online\NewsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -117,6 +118,12 @@ Route::middleware('web')->group(function () {
             return view('lessons.view', compact('lessonId', 'enrollmentId'));
         })->name('lessons.view');
     });
+});
+
+Route::prefix('online')->name('online.')->middleware(['auth'])->group(function () {
+    // News & Announcements Routes
+    Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+    Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
 });
 
 /*

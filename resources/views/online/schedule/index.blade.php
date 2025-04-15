@@ -287,157 +287,172 @@
 
 @section('content')
     <div class="content-section">
-        <h2 class="mb-4">Lịch học</h2>
+        <div class="row mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title mb-0 text-primary">
+                        <i class="fas fa-calendar-alt me-2"></i>Lịch học
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs" id="scheduleTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="current-tab" data-bs-toggle="tab" data-bs-target="#current"
+                                type="button" role="tab" aria-controls="current" aria-selected="true">Lịch học hiện tại</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past"
+                                type="button" role="tab" aria-controls="past" aria-selected="false">Lịch học đã qua</button>
+                        </li>
+                    </ul>
 
-        <!-- Sample content for when schedule exists -->
-        <div id="schedule-content">
-            <div class="time-filter">
-                <label class="filter-label">Thời gian</label>
-                <select class="filter-select">
-                    <option>90 ngày trước</option>
-                    <option>60 ngày trước</option>
-                    <option>30 ngày trước</option>
-                    <option>7 ngày trước</option>
-                </select>
-                <p class="filter-hint">Lựa chọn thời gian để hiển thị chi tiết lịch học</p>
-            </div>
+                    <div class="tab-content mt-4" id="scheduleTabContent">
+                        <!-- Current Schedule Tab -->
+                        <div class="tab-pane fade show active" id="current" role="tabpanel" aria-labelledby="current-tab">
+                            <div class="time-filter">
+                                <label class="filter-label">Thời gian</label>
+                                <select class="filter-select">
+                                    <option>90 ngày trước</option>
+                                    <option>60 ngày trước</option>
+                                    <option>30 ngày trước</option>
+                                    <option>7 ngày trước</option>
+                                </select>
+                                <p class="filter-hint">Lựa chọn thời gian để hiển thị chi tiết lịch học</p>
+                            </div>
 
+                            <div class="schedule-header">
+                                <span class="schedule-icon">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#0066cc"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM5 7V6h14v1H5z" />
+                                        <path d="M7 11h5v5H7z" />
+                                    </svg>
+                                </span>
+                                <h3 class="schedule-title">Lịch học</h3>
+                            </div>
 
-            <div class="schedule-header">
-                <span class="schedule-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#0066cc"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM5 7V6h14v1H5z" />
-                        <path d="M7 11h5v5H7z" />
-                    </svg>
-                </span>
-                <h3 class="schedule-title">Lịch học</h3>
-            </div>
+                            <div class="schedule-table-wrapper">
+                                <table class="schedule-table">
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Ngày</th>
+                                            <th>Mã môn</th>
+                                            <th>Môn</th>
+                                            <th>Lớp</th>
+                                            <th>Giảng viên</th>
+                                            <th>Thời gian</th>
+                                            <th>Link học trực tuyến</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>05/05/2024</td>
+                                            <td>WEB2033</td>
+                                            <td>Xây dựng trang Web 2</td>
+                                            <td>WD18304</td>
+                                            <td>Nguyễn Văn A</td>
+                                            <td>07:30 - 11:30</td>
+                                            <td><a href="#" class="text-primary">Link</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>07/05/2024</td>
+                                            <td>ENG2022</td>
+                                            <td>Tiếng Anh giao tiếp</td>
+                                            <td>ED18305</td>
+                                            <td>Trần Thị B</td>
+                                            <td>13:30 - 17:30</td>
+                                            <td><a href="#" class="text-primary">Link</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>09/05/2024</td>
+                                            <td>MOB1023</td>
+                                            <td>Lập trình di động</td>
+                                            <td>MD18301</td>
+                                            <td>Lê Văn C</td>
+                                            <td>18:00 - 21:00</td>
+                                            <td><a href="#" class="text-primary">Link</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>4</td>
+                                            <td>11/05/2024</td>
+                                            <td>WEB2033</td>
+                                            <td>Xây dựng trang Web 2</td>
+                                            <td>WD18304</td>
+                                            <td>Nguyễn Văn A</td>
+                                            <td>07:30 - 11:30</td>
+                                            <td><button class="btn btn-primary btn-sm">Vào học</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>5</td>
+                                            <td>14/05/2024</td>
+                                            <td>ENG2022</td>
+                                            <td>Tiếng Anh giao tiếp</td>
+                                            <td>ED18305</td>
+                                            <td>Trần Thị B</td>
+                                            <td>13:30 - 17:30</td>
+                                            <td><a href="#" class="text-primary">Link</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
-            <div class="schedule-table-wrapper">
-                <table class="schedule-table">
-                    <thead>
-                        <tr>
-                            <th>STT</th>
-                            <th>Ngày</th>
-                            <th>Mã môn</th>
-                            <th>Môn</th>
-                            <th>Lớp</th>
-                            <th>Giảng viên</th>
-                            <th>Thời gian</th>
-                            <th>Link học trực tuyến</th>
-                            <th>Chi tiết</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>05/05/2024</td>
-                            <td>WEB2033</td>
-                            <td>Xây dựng trang Web 2</td>
-                            <td>WD18304</td>
-                            <td>Nguyễn Văn A</td>
-                            <td>07:30 - 11:30</td>
-                            <td><a href="#" class="text-primary">Link</a></td>
-                            <td><a href="#" class="text-primary">Xem</a></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>07/05/2024</td>
-                            <td>ENG2022</td>
-                            <td>Tiếng Anh giao tiếp</td>
-                            <td>ED18305</td>
-                            <td>Trần Thị B</td>
-                            <td>13:30 - 17:30</td>
-                            <td><a href="#" class="text-primary">Link</a></td>
-                            <td><a href="#" class="text-primary">Xem</a></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>09/05/2024</td>
-                            <td>MOB1023</td>
-                            <td>Lập trình di động</td>
-                            <td>MD18301</td>
-                            <td>Lê Văn C</td>
-                            <td>18:00 - 21:00</td>
-                            <td><a href="#" class="text-primary">Link</a></td>
-                            <td><a href="#" class="text-primary">Xem</a></td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>11/05/2024</td>
-                            <td>WEB2033</td>
-                            <td>Xây dựng trang Web 2</td>
-                            <td>WD18304</td>
-                            <td>Nguyễn Văn A</td>
-                            <td>07:30 - 11:30</td>
-                            <td><a href="#" class="text-primary">Link</a></td>
-                            <td><a href="#" class="text-primary">Xem</a></td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>14/05/2024</td>
-                            <td>ENG2022</td>
-                            <td>Tiếng Anh giao tiếp</td>
-                            <td>ED18305</td>
-                            <td>Trần Thị B</td>
-                            <td>13:30 - 17:30</td>
-                            <td><a href="#" class="text-primary">Link</a></td>
-                            <td><a href="#" class="text-primary">Xem</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                            <div class="pagination-container">
+                                <div class="pagination-info">
+                                    <div class="pagination-text">Đang xem <strong>1</strong> đến <strong>5</strong> trong tổng số
+                                        <strong>10</strong> mục
+                                    </div>
+                                    <div class="pagination-per-page">
+                                        <span>Hiển thị</span>
+                                        <select class="pagination-select">
+                                            <option>10</option>
+                                            <option>25</option>
+                                            <option>50</option>
+                                            <option>100</option>
+                                        </select>
+                                        <span>mục trên trang</span>
+                                    </div>
+                                </div>
 
-            <div class="pagination-container">
-                <div class="pagination-info">
-                    <div class="pagination-text">Đang xem <strong>1</strong> đến <strong>5</strong> trong tổng số
-                        <strong>10</strong> mục
+                                <div class="pagination-nav">
+                                    <button class="pagination-btn disabled" aria-label="Trang đầu">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </button>
+                                    <button class="pagination-btn disabled" aria-label="Trang trước">
+                                        <i class="fas fa-angle-left"></i>
+                                    </button>
+                                    <button class="pagination-btn active">1</button>
+                                    <button class="pagination-btn">2</button>
+                                    <button class="pagination-btn" aria-label="Trang sau">
+                                        <i class="fas fa-angle-right"></i>
+                                    </button>
+                                    <button class="pagination-btn" aria-label="Trang cuối">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Past Schedule Tab -->
+                        <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <svg viewBox="0 0 24 24" fill="#adb5bd" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM5 7V6h14v1H5z" />
+                                        <path d="M7 11h5v5H7z" />
+                                    </svg>
+                                </div>
+                                <h4 class="empty-title">Lịch học đã qua hiện chưa có dữ liệu</h4>
+                                <p class="empty-message">Lịch học đã qua sẽ được hiển thị ở đây khi có sẵn.</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="pagination-per-page">
-                        <span>Hiển thị</span>
-                        <select class="pagination-select">
-                            <option>10</option>
-                            <option>25</option>
-                            <option>50</option>
-                            <option>100</option>
-                        </select>
-                        <span>mục trên trang</span>
-                    </div>
                 </div>
-
-                <div class="pagination-nav">
-                    <button class="pagination-btn disabled" aria-label="Trang đầu">
-                        <i class="fas fa-angle-double-left"></i>
-                    </button>
-                    <button class="pagination-btn disabled" aria-label="Trang trước">
-                        <i class="fas fa-angle-left"></i>
-                    </button>
-                    <button class="pagination-btn active">1</button>
-                    <button class="pagination-btn">2</button>
-                    <button class="pagination-btn" aria-label="Trang sau">
-                        <i class="fas fa-angle-right"></i>
-                    </button>
-                    <button class="pagination-btn" aria-label="Trang cuối">
-                        <i class="fas fa-angle-double-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Empty state - will be shown if no schedule -->
-        <div id="empty-state" style="display: none;">
-            <div class="empty-state">
-                <div class="empty-icon">
-                    <svg viewBox="0 0 24 24" fill="#adb5bd" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM5 7V6h14v1H5z" />
-                        <path d="M7 11h5v5H7z" />
-                    </svg>
-                </div>
-                <h4 class="empty-title">Bạn chưa có lịch học</h4>
-                <p class="empty-message">Lịch học sẽ hiển thị khi bạn tham gia lớp học.</p>
             </div>
         </div>
     </div>
@@ -446,17 +461,6 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Toggle between empty state and content based on data availability
-            const hasSchedule = true; // Change to false to show empty state
-
-            if (hasSchedule) {
-                document.getElementById('schedule-content').style.display = 'block';
-                document.getElementById('empty-state').style.display = 'none';
-            } else {
-                document.getElementById('schedule-content').style.display = 'none';
-                document.getElementById('empty-state').style.display = 'block';
-            }
-
             // Handle filter change
             const filterSelect = document.querySelector('.filter-select');
             if (filterSelect) {
@@ -465,15 +469,6 @@
                     // Logic to fetch data based on selected time period would go here
                 });
             }
-
-            // Handle export buttons
-            const exportButtons = document.querySelectorAll('.export-btn');
-            exportButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    console.log('Export format:', this.textContent.trim());
-                    // Export logic would go here
-                });
-            });
 
             // Handle pagination
             const paginationButtons = document.querySelectorAll('.pagination-btn:not(.disabled)');

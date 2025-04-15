@@ -10,6 +10,9 @@ use App\Http\Controllers\Online\AwardController;
 use App\Http\Controllers\Online\GuideController;
 use App\Http\Controllers\Online\SupportController;
 use App\Http\Controllers\Online\EbookController;
+use App\Http\Controllers\Online\GradeController;
+use App\Http\Controllers\Online\NewsController;
+use App\Http\Controllers\Online\TestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +39,7 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
         ->name('online.logout');
 
     // Dashboard Route
-    Route::get('/', [ClassController::class, 'index'])
+    Route::get('/', [NewsController::class, 'index'])
         ->name('online.dashboard');
 
     // Student Routes
@@ -45,6 +48,7 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
         Route::prefix('classes')->name('online.classes.')->group(function () {
             Route::get('/', [ClassController::class, 'index'])->name('index');
             Route::get('/{class}', [ClassController::class, 'show'])->name('show');
+            Route::get('/{class_id}/tests', [TestController::class, 'index'])->name('tests');
         });
 
         // Sessions
@@ -57,6 +61,21 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
         // Student Schedule
         Route::get('/schedule', [ScheduleController::class, 'index'])
             ->name('online.schedule');
+            
+        // Tests
+        Route::prefix('tests')->name('online.tests.')->group(function () {
+            Route::get('/', [TestController::class, 'index'])->name('index');
+            Route::get('/{test_id}', [TestController::class, 'show'])->name('show');
+            Route::post('/{test_id}/submit', [TestController::class, 'submit'])->name('submit');
+            Route::get('/{test_id}/result', [TestController::class, 'result'])->name('result');
+        });
+
+        // Student Grades
+        Route::prefix('grades')->name('online.grades.')->group(function () {
+            Route::get('/', [GradeController::class, 'index'])->name('index');
+            Route::get('/{class_id}', [GradeController::class, 'show'])->name('show');
+            Route::get('/detail/{assessment_id}', [GradeController::class, 'detail'])->name('detail');
+        });
     });
 
     // Teacher Routes
@@ -74,11 +93,29 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
         // Teacher Schedule
         Route::get('/teacher/schedule', [ScheduleController::class, 'teacherSchedule'])
             ->name('online.teacher.schedule');
+            
+        // Teacher Grades Management
+        Route::prefix('teacher/grades')->name('online.teacher.grades.')->group(function () {
+            Route::get('/', [GradeController::class, 'teacherIndex'])->name('index');
+            Route::get('/class/{class_id}', [GradeController::class, 'classGrades'])->name('class');
+            Route::get('/student/{student_id}', [GradeController::class, 'studentGrades'])->name('student');
+            Route::get('/assessment/{assessment_id}', [GradeController::class, 'assessmentGrades'])->name('assessment');
+            Route::post('/update', [GradeController::class, 'updateGrades'])->name('update');
+            Route::get('/export/{class_id}', [GradeController::class, 'exportGrades'])->name('export');
+        });
     });
 
     // Shared Routes - Accessible by both Students and Teachers
     Route::middleware(['jwt.role:student,teacher'])->group(function () {
         // Awards
+        Route::prefix('attendance')->name('online.attendance.')->group(function () {
+            Route::get('/', [AttendanceController::class, 'index'])->name('index');
+            Route::get('/{class}', [AttendanceController::class, 'show'])->name('show');
+            Route::get('/sessions/{class}', [AttendanceController::class, 'sessions'])->name('sessions');
+            Route::get('/detail/{id}', [AttendanceController::class, 'detail'])->name('detail');
+            Route::post('/save/{id}', [AttendanceController::class, 'saveAttendance'])->name('save');
+            Route::get('/students', [AttendanceController::class, 'students'])->name('students');
+        });
         Route::prefix('awards')->name('online.awards.')->group(function () {
             Route::get('/', [AwardController::class, 'index'])->name('index');
             Route::get('/{award}', [AwardController::class, 'show'])->name('show');

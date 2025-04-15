@@ -81,7 +81,7 @@ class ClassSession extends Model
      */
     public function attendances(): HasMany
     {
-        return $this->hasMany(Attendance::class, 'class_session_id');
+        return $this->hasMany(Attendance::class, 'session_id');
     }
 
     /**

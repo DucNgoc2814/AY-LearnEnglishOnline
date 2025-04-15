@@ -16,6 +16,10 @@
         <i class="fas fa-calendar-alt"></i>
         <span>Lịch học</span>
     </a>
+    <a href="{{ route('online.grades.index') }}" class="menu-item" data-route="online.grades">
+        <i class="fas fa-chart-line"></i>
+        <span>Bảng điểm</span>
+    </a>
     <a href="{{ route('online.awards.index') }}" class="menu-item" data-route="online.awards">
         <i class="fas fa-award"></i>
         <span>Khen thưởng/Kỷ luật</span>

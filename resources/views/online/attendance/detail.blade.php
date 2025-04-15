@@ -411,84 +411,117 @@
 
 @section('content')
     <div class="content-section">
-        <div class="session-info">
-            <div class="session-info-header">
-                <h4 class="session-info-title">Buổi 16 - Unit 8: Daily Activities</h4>
-            </div>
-            <div class="session-info-meta">
-                <div class="meta-item">
-                    <i class="fas fa-calendar"></i>
-                    <span>15/03/2024</span>
+        <div class="row mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0 text-primary">
+                        <i class="fas fa-clipboard-check me-2"></i>Chi tiết điểm danh
+                    </h5>
+                    <a href="{{ route('online.attendance.sessions', ['class' => 1]) }}" class="btn btn-sm btn-outline-primary back-btn">
+                        <i class="fas fa-arrow-left me-2"></i>Quay lại
+                    </a>
                 </div>
-                <div class="meta-item">
-                    <i class="fas fa-clock"></i>
-                    <span>18:00 - 20:00</span>
-                </div>
-                <div class="meta-item">
-                    <i class="fas fa-users"></i>
-                    <span>Sĩ số: 20/20 học viên</span>
-                </div>
-                <div class="meta-item">
-                    <i class="fas fa-user-check"></i>
-                    <span>Có mặt: 15 học viên</span>
-                </div>
-                <div class="meta-item">
-                    <i class="fas fa-user-times"></i>
-                    <span>Vắng mặt: 5 học viên</span>
-                </div>
-            </div>
-        </div>
+                <div class="card-body">
+                    <!-- Session Info -->
+                    <div class="session-info">
+                        <div class="session-info-header">
+                            <h4 class="session-info-title">Buổi 16 - Unit 8: Daily Activities</h4>
+                        </div>
+                        <div class="session-info-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>15/03/2024</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span>18:00 - 20:00</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-users"></i>
+                                <span>Sĩ số: 20/20 học viên</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-user-check"></i>
+                                <span>Có mặt: 15 học viên</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-user-times"></i>
+                                <span>Vắng mặt: 5 học viên</span>
+                            </div>
+                        </div>
+                    </div>
 
-        <div class="attendance-form">
-            <div class="attendance-list">
-                <div class="attendance-header d-flex justify-content-between align-items-center">
-                    <h5 class="attendance-title">Danh sách điểm danh</h5>
-                    <button type="button" class="save-btn" id="saveAttendance">
-                        <i class="fas fa-save me-2"></i>Lưu điểm danh
-                    </button>
-                </div>
+                    <!-- Attendance List -->
+                    <div class="attendance-form">
+                        <div class="attendance-list">
+                            <div class="attendance-header d-flex justify-content-between align-items-center">
+                                <h5 class="attendance-title">Danh sách điểm danh</h5>
+                                <button type="button" class="save-btn" id="saveAttendance">
+                                    <i class="fas fa-save me-2"></i>Lưu điểm danh
+                                </button>
+                            </div>
 
-                <table class="attendance-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px">STT</th>
-                            <th>Mã học viên</th>
-                            <th>Học viên</th>
-                            <th style="width: 200px">Trạng thái</th>
-                            <th>Ghi chú</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for ($i = 1; $i <= 20; $i++)
-                            <tr>
-                                <td>{{ $i }}</td>
-                                <td>
-                                    <div class="student-id">PH{{ str_pad($i, 5, '0', STR_PAD_LEFT) }}</div>
-                                </td>
-                                <td>
-                                    <div class="student-info">
-                                        <div class="student-avatar">
-                                            {{ chr(64 + $i) }}
-                                        </div>
-                                        <div class="student-name">Học viên {{ chr(64 + $i) }}</div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="attendance-status">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" role="switch"
-                                                name="attendance[{{ $i }}][status]"
-                                                id="attendance{{ $i }}" {{ $i <= 15 ? 'checked' : '' }}>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <textarea class="note-input" rows="1" placeholder="Nhập ghi chú..."></textarea>
-                                </td>
-                            </tr>
-                        @endfor
-                    </tbody>
-                </table>
+                            <table class="attendance-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40px">STT</th>
+                                        <th>Mã học viên</th>
+                                        <th>Học viên</th>
+                                        <th style="width: 200px">Trạng thái</th>
+                                        <th>Ghi chú</th>
+                                        <th>Tiến độ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for ($i = 1; $i <= 20; $i++)
+                                        <tr>
+                                            <td>{{ $i }}</td>
+                                            <td>
+                                                <div class="student-id">PH{{ str_pad($i, 5, '0', STR_PAD_LEFT) }}</div>
+                                            </td>
+                                            <td>
+                                                <div class="student-info">
+                                                    <div class="student-avatar">
+                                                        {{ chr(64 + $i) }}
+                                                    </div>
+                                                    <div class="student-name">Học viên {{ chr(64 + $i) }}</div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="attendance-status">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" role="switch"
+                                                            name="attendance[{{ $i }}][status]"
+                                                            id="attendance{{ $i }}" {{ $i <= 15 ? 'checked' : '' }}>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <textarea class="note-input" rows="1" placeholder="Nhập ghi chú..."></textarea>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                                                        <div class="progress-bar bg-primary" role="progressbar" 
+                                                            style="width: {{ min(100, 50 + $i) }}%;" 
+                                                            aria-valuenow="{{ min(30, 15 + (int)($i/2)) }}" 
+                                                            aria-valuemin="0" 
+                                                            aria-valuemax="30">
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-column align-items-end">
+                                                        <span class="small">{{ min(30, 15 + (int)($i/2)) }}/30</span>
+                                                        <span class="small text-danger fw-medium">(Nghỉ: {{ min(5, (int)($i/4)) }} buổi)</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endfor
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
