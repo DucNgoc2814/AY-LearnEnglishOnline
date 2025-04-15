@@ -20,17 +20,21 @@ class Student extends Authenticatable implements JWTSubject
     protected $table = 'students';
 
     protected $fillable = [
-        'user_id',
         'student_code',
         'password',
         'full_name',
+        'email',
+        'password',
         'date_of_birth',
         'gender',
         'phone',
         'address',
         'avatar',
         'bio',
+        'avatar',
+        'bio',
         'parent1_name',
+        'parent1_relationship',
         'parent1_relationship',
         'parent1_phone',
         'parent1_email',
@@ -38,11 +42,16 @@ class Student extends Authenticatable implements JWTSubject
         'parent1_is_emergency_contact',
         'parent2_name',
         'parent2_relationship',
+        'parent2_relationship',
         'parent2_phone',
         'parent2_email',
         'parent2_occupation',
         'parent2_is_emergency_contact',
         'is_active'
+    ];
+
+    protected $hidden = [
+        'password',
     ];
 
     protected $hidden = [
@@ -129,18 +138,18 @@ class Student extends Authenticatable implements JWTSubject
     public function getAttendanceRate($classId): float
     {
         $classSessionsCount = ClassSession::where('class_id', $classId)->count();
-        
+
         if ($classSessionsCount === 0) {
             return 0;
         }
-        
+
         $attendedCount = $this->attendances()
             ->whereHas('session', function ($query) use ($classId) {
                 $query->where('class_id', $classId);
             })
             ->whereIn('status', ['present', 'late'])
             ->count();
-        
+
         return ($attendedCount / $classSessionsCount) * 100;
     }
 
@@ -174,7 +183,13 @@ class Student extends Authenticatable implements JWTSubject
     public function getAvatarUrl(): string
     {
         if ($this->avatar) {
-            return asset('storage/' . $this->avatar);
+            if (config('filesystems.disks.cloudfront.domain')) {
+                return 'https://' . config('filesystems.disks.cloudfront.domain') . '/' . $this->avatar;
+            }
+            // Fallback to S3 URL if CloudFront is not configured
+            $bucket = config('filesystems.disks.s3.bucket');
+            $region = config('filesystems.disks.s3.region');
+            return "https://{$bucket}.s3.{$region}.amazonaws.com/" . ltrim($this->avatar, '/');
         }
         return asset('images/default-avatar.png');
     }
@@ -300,6 +315,48 @@ class Student extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(TestResult::class, 'user_id', 'user_id');
     }
+
+    // Tự động hash password khi set
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
+
+    // Tự động thêm domain vào email nếu chưa có
+    public function setEmailAttribute($value)
+    {
+        if (!str_ends_with($value, '@ay.learning.english')) {
+            $value = $value . '@ay.learning.english';
+        }
+        $this->attributes['email'] = strtolower($value);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($student) {
+            if (!$student->student_code) {
+                $student->student_code = static::generateStudentCode();
+            }
+        });
+    }
+
+    public static function generateStudentCode(): string
+    {
+        $prefix = 'STU';
+        $year = date('y');
+
+        $latestStudent = static::whereYear('created_at', date('Y'))
+            ->latest('id')
+            ->first();
+
+        $sequence = $latestStudent ? (intval(substr($latestStudent->student_code, -3)) + 1) : 1;
+
+        return $prefix . $year . str_pad($sequence, 3, '0', STR_PAD_LEFT);
+    }
+}
+
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

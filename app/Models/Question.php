@@ -18,15 +18,15 @@ class Question extends Model
         'type',
         'question',
         'media_url',
+        'correct_answer_explanation',
         'order_number'
     ];
 
     protected $casts = [
-        'points' => 'float',
-        'order' => 'integer',
-        'is_required' => 'boolean',
-        'meta_data' => 'array'
+        'order_number' => 'integer'
     ];
+
+    protected $appends = ['full_media_url'];
 
     public function questionable()
     {
@@ -50,51 +50,35 @@ class Question extends Model
     }
 
     /**
-     * Kiểm tra câu hỏi có phải là dạng trắc nghiệm nhiều lựa chọn không
+     * Kiểm tra câu hỏi có phải là dạng Text không
      */
-    public function isMultipleChoice(): bool
+    public function isText(): bool
     {
-        return $this->question_type === 'multiple_choice';
+        return $this->type === 'text';
     }
 
     /**
-     * Kiểm tra câu hỏi có phải là dạng trắc nghiệm một lựa chọn không
+     * Kiểm tra câu hỏi có phải là dạng Image không
      */
-    public function isSingleChoice(): bool
+    public function isImage(): bool
     {
-        return $this->question_type === 'single_choice';
+        return $this->type === 'image';
     }
 
     /**
-     * Kiểm tra câu hỏi có phải là dạng trả lời ngắn không
+     * Kiểm tra câu hỏi có phải là dạng Video không
      */
-    public function isShortAnswer(): bool
+    public function isVideo(): bool
     {
-        return $this->question_type === 'short_answer';
+        return $this->type === 'video';
     }
 
     /**
-     * Kiểm tra câu hỏi có phải là dạng trả lời dài không
+     * Kiểm tra câu hỏi có phải là dạng Audio không
      */
-    public function isLongAnswer(): bool
+    public function isAudio(): bool
     {
-        return $this->question_type === 'long_answer';
-    }
-
-    /**
-     * Kiểm tra câu hỏi có phải là dạng đúng/sai không
-     */
-    public function isTrueFalse(): bool
-    {
-        return $this->question_type === 'true_false';
-    }
-
-    /**
-     * Kiểm tra câu hỏi có phải là dạng ghép đôi không
-     */
-    public function isMatching(): bool
-    {
-        return $this->question_type === 'matching';
+        return $this->type === 'audio';
     }
 
     /**
@@ -102,11 +86,7 @@ class Question extends Model
      */
     public function getCorrectOption()
     {
-        if ($this->question_type === 'single_choice' || $this->question_type === 'multiple_choice') {
-            return $this->options()->where('is_correct', true)->first();
-        }
-
-        return null;
+        return $this->answers()->where('is_correct', true)->first();
     }
 
     /**
@@ -114,11 +94,7 @@ class Question extends Model
      */
     public function getCorrectOptions()
     {
-        if ($this->question_type === 'multiple_choice') {
-            return $this->options()->where('is_correct', true)->get();
-        }
-
-        return collect();
+        return $this->answers()->where('is_correct', true)->get();
     }
 
     /**
@@ -126,46 +102,13 @@ class Question extends Model
      */
     public function checkAnswer($answer): bool
     {
-        switch ($this->question_type) {
-            case 'multiple_choice':
-                return $this->checkMultipleChoiceAnswer($answer);
-            case 'true_false':
-                return $this->checkTrueFalseAnswer($answer);
-            case 'multiple_answers':
-                return $this->checkMultipleAnswersAnswer($answer);
-            case 'short_answer':
-                return $this->checkShortAnswer($answer);
-            default:
-                return false;
-        }
-    }
+        $correctAnswer = $this->getCorrectOption();
 
-    protected function checkMultipleChoiceAnswer($answer): bool
-    {
-        return $answer === $this->correct_answer[0];
-    }
-
-    protected function checkTrueFalseAnswer($answer): bool
-    {
-        return $answer === $this->correct_answer[0];
-    }
-
-    protected function checkMultipleAnswersAnswer($answers): bool
-    {
-        if (!is_array($answers)) {
+        if (!$correctAnswer) {
             return false;
         }
 
-        sort($answers);
-        $correctAnswers = $this->correct_answer;
-        sort($correctAnswers);
-
-        return $answers == $correctAnswers;
-    }
-
-    protected function checkShortAnswer($answer): bool
-    {
-        return strtolower(trim($answer)) === strtolower(trim($this->correct_answer[0]));
+        return $answer === $correctAnswer->answer;
     }
 
     /**
@@ -173,23 +116,7 @@ class Question extends Model
      */
     public function scopeOfType($query, $type)
     {
-        return $query->where('question_type', $type);
-    }
-
-    /**
-     * Scope lấy các câu hỏi theo độ khó
-     */
-    public function scopeOfDifficulty($query, $level)
-    {
-        return $query->where('difficulty_level', $level);
-    }
-
-    /**
-     * Scope lấy các câu hỏi đang hoạt động
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('status', 'active');
+        return $query->where('type', $type);
     }
 
     /**
@@ -197,12 +124,7 @@ class Question extends Model
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order');
-    }
-
-    public function scopeRequired($query)
-    {
-        return $query->where('is_required', true);
+        return $query->orderBy('order_number');
     }
 
     public function getAnswersByAttempt($attemptId)
@@ -257,9 +179,9 @@ class Question extends Model
 
     public function shuffleOptions(): array
     {
-        $options = $this->options;
-        shuffle($options);
-        return $options;
+        $options = $this->answers;
+        $shuffled = $options->shuffle();
+        return $shuffled->values()->all();
     }
 
     public function getCorrectAnswers()
@@ -267,28 +189,30 @@ class Question extends Model
         return $this->answers()->where('is_correct', true)->get();
     }
 
-    public function isTextAnswer(): bool
-    {
-        return $this->question_type === 'text';
-    }
-
-    public function isEssayAnswer(): bool
-    {
-        return $this->question_type === 'essay';
-    }
-
-    public function requiresManualGrading(): bool
-    {
-        return in_array($this->question_type, ['essay', 'file_upload']);
-    }
-
-    public function scopeByType($query, $type)
-    {
-        return $query->where('question_type', $type);
-    }
-
     public function resultDetails()
     {
         return $this->hasMany(TestResultDetail::class);
     }
-} 
+
+    public function getFullMediaUrlAttribute()
+    {
+        if (empty($this->media_url)) {
+            return null;
+        }
+
+        // Nếu đã là URL đầy đủ, trả về luôn
+        if (filter_var($this->media_url, FILTER_VALIDATE_URL)) {
+            return $this->media_url;
+        }
+
+        // Xây dựng URL đầy đủ từ cấu hình
+        $diskConfig = config('filesystems.disks.s3');
+        $cloudFrontDomain = config('filesystems.disks.cloudfront.domain', null);
+
+        if ($cloudFrontDomain) {
+            return "https://{$cloudFrontDomain}/{$this->media_url}";
+        }
+
+        return "{$diskConfig['url']}/{$this->media_url}";
+    }
+}

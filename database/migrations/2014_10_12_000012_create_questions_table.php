@@ -14,6 +14,7 @@ class CreateQuestionsTable extends Migration
             $table->enum('type', ['text', 'image', 'video', 'audio']);
             $table->string('question');
             $table->string('media_url')->nullable();
+            $table->text('correct_answer_explanation')->nullable();
             $table->integer('order_number');
             $table->softDeletes();
             $table->timestamps();
@@ -24,4 +25,4 @@ class CreateQuestionsTable extends Migration
     {
         Schema::dropIfExists('questions');
     }
-} 
+}

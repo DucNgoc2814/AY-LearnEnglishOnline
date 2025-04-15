@@ -6,16 +6,16 @@ class ModalHandler {
     }
 
     initializeEventListeners() {
-        // Đóng modal khi click ra ngoài
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('fixed') && e.target.classList.contains('inset-0')) {
+        // Đóng modal khi nhấn nút ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
                 this.closeActiveModals();
             }
         });
 
-        // Đóng modal khi nhấn ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
+        // Đóng modal khi click bên ngoài
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('fixed') && e.target.classList.contains('inset-0')) {
                 this.closeActiveModals();
             }
         });
@@ -141,7 +141,7 @@ class ModalHandler {
     }
 }
 
-// Khởi tạo instance và export
+// Tạo instance toàn cục
 const modalHandler = new ModalHandler();
 
 // Thêm event listener cho tất cả các modal khi DOM đã load

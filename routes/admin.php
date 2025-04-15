@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AnswerLessonTestController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
@@ -11,10 +10,8 @@ use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\EmployeeController;
-use App\Http\Controllers\Admin\LessonTestController;
-use App\Http\Controllers\Admin\FinalExamController;
-use App\Http\Controllers\Admin\QuestionLessonTestController;
-use App\Http\Controllers\Admin\QuestionFinalExamController;
+use App\Http\Controllers\Admin\QuestionController;
+use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\TestController;
 use App\Http\Controllers\Admin\VideoLessonController;
 use App\Http\Controllers\Admin\ZoomSessionController;
@@ -89,30 +86,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{id}', 'destroy')->name('destroy');
             Route::post('/{id}/restore', 'restore')->name('restore');
         });
-    // Question Lesson Tests Management
-    Route::controller(QuestionLessonTestController::class)
-        ->prefix('question-lesson-tests')
-        ->name('question-lesson-tests.')
-        ->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{id}/edit', 'edit')->name('edit');
-            Route::put('/{id}', 'update')->name('update');
-            Route::delete('/{id}', 'destroy')->name('destroy');
-            Route::post('/{id}/restore', 'restore')->name('restore');
-        });
-    // Answer Lesson Tests Management
-    Route::controller(AnswerLessonTestController::class)
-        ->prefix('answer-lesson-tests')
-        ->name('answer-lesson-tests.')
-        ->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{id}/edit', 'edit')->name('edit');
-            Route::put('/{id}', 'update')->name('update');
-            Route::delete('/{id}', 'destroy')->name('destroy');
-            Route::post('/{id}/restore', 'restore')->name('restore');
-        });
     // Categories Management
     Route::controller(CategoryController::class)
         ->prefix('categories')
@@ -133,6 +106,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
             Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::get('/{testId}/questions', 'getQuestionsByTest')->name('questions');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
+        });
+    // Questions Management
+    Route::controller(QuestionController::class)
+        ->prefix('questions')
+        ->name('questions.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::get('/{questionId}/answers', 'getAnswersByQuestion')->name('answers');
             Route::put('/{id}', 'update')->name('update');
             Route::delete('/{id}', 'destroy')->name('destroy');
             Route::post('/{id}/restore', 'restore')->name('restore');
@@ -197,12 +184,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/{id}', 'destroy')->name('destroy');
             Route::post('/{id}/restore', 'restore')->name('restore');
         });
+    // Students Management
+    Route::controller(StudentController::class)
+        ->prefix('students')
+        ->name('students.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
+        });
 
     // Employees Management
     Route::resource('employees', EmployeeController::class);
-
-    // Tests & Exams Management
-    Route::resource('final-exams', FinalExamController::class);
-    Route::resource('question-lesson-tests', QuestionLessonTestController::class);
-    Route::resource('question-final-exams', QuestionFinalExamController::class);
 });

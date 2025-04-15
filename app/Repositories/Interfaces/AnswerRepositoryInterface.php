@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Interfaces;
 
-interface QuestionLessonTestRepositoryInterface extends BaseRepositoryInterface
+interface AnswerRepositoryInterface extends BaseRepositoryInterface
 {
     public function searchByName($search);
 }

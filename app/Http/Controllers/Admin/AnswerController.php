@@ -3,23 +3,23 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Services\Interfaces\AnswerLessonTestServiceInterface;
-use App\Http\Requests\Admin\AnswerLessonTest\StoreRequest;
-use App\Http\Requests\Admin\Category\UpdateRequest;
+use App\Services\Interfaces\AnswerServiceInterface;
+use App\Http\Requests\Admin\Answer\StoreRequest;
+use App\Http\Requests\Admin\Answer\UpdateRequest;
 
 /**
  * @package App\Http\Controllers\Admin
  * @author Your Name
- * @description Controller quản lý danh mục
+ * @description Controller quản lý câu trả lời
  */
-class AnswerLessonTestController extends BaseController
+class AnswerController extends BaseController
 {
-    protected $answerLessonTestService;
-    const VIEW_PATH = 'admin.components.answer-lesson-tests.';
+    protected $answerService;
+    const VIEW_PATH = 'admin.components.answers.';
 
-    public function __construct(AnswerLessonTestServiceInterface $answerLessonTestService)
+    public function __construct(AnswerServiceInterface $answerService)
     {
-        $this->answerLessonTestService = $answerLessonTestService;
+        $this->answerService = $answerService;
     }
 
     /**
@@ -30,10 +30,10 @@ class AnswerLessonTestController extends BaseController
     public function index()
     {
         try {
-            $list = $this->answerLessonTestService->getList();
-            $trashList = $this->answerLessonTestService->getTrashList();
+            $list = $this->answerService->getList();
+            $trashList = $this->answerService->getTrashList();
             return view(self::VIEW_PATH . 'index', [
-                'answerLessonTests' => $list['data'],
+                'answers' => $list['data'],
                 'pagination' => $list['pagination'],
                 'trashList' => $trashList['data'],
                 'trashPagination' => $trashList['pagination'],
@@ -51,7 +51,7 @@ class AnswerLessonTestController extends BaseController
      */
     public function store(StoreRequest $request)
     {
-        $result = $this->answerLessonTestService->create($request->validated());
+        $result = $this->answerService->create($request->validated());
         return $this->redirectResponse($result);
     }
 
@@ -63,7 +63,7 @@ class AnswerLessonTestController extends BaseController
      */
     public function edit($id)
     {
-        $result = $this->answerLessonTestService->findById($id);
+        $result = $this->answerService->findById($id);
         return $this->viewResponse(self::VIEW_PATH . 'edit', $result);
     }
 
@@ -76,7 +76,7 @@ class AnswerLessonTestController extends BaseController
      */
     public function update(UpdateRequest $request, $id)
     {
-        $result = $this->answerLessonTestService->update($request->validated(), $id);
+        $result = $this->answerService->update($request->validated(), $id);
         return $this->redirectResponse($result);
     }
 
@@ -89,7 +89,7 @@ class AnswerLessonTestController extends BaseController
 
     public function destroy($id)
     {
-        $result = $this->answerLessonTestService->delete($id);
+        $result = $this->answerService->delete($id);
         return $this->redirectResponse($result);
     }
 
@@ -101,7 +101,7 @@ class AnswerLessonTestController extends BaseController
      */
     public function restore($id)
     {
-        $result = $this->answerLessonTestService->restore($id);
+        $result = $this->answerService->restore($id);
         return $this->redirectResponse($result);
     }
 }

@@ -97,10 +97,11 @@ class StudentSeeder extends Seeder
         
         $students = [
             [
-                'user_id' => 3,
                 'student_code' => 'STU001',
                 'password' => $defaultPassword,
                 'full_name' => 'Alex Thompson',
+                'email' => 'alex',
+                'password' => 'password123',
                 'date_of_birth' => '2000-01-15',
                 'gender' => 'male',
                 'phone' => '0912345678',
@@ -112,10 +113,11 @@ class StudentSeeder extends Seeder
                 'is_active' => true
             ],
             [
-                'user_id' => 4,
                 'student_code' => 'STU002',
                 'password' => $defaultPassword,
                 'full_name' => 'Emily Parker',
+                'email' => 'emily',
+                'password' => 'password123',
                 'date_of_birth' => '2001-03-20',
                 'gender' => 'female',
                 'phone' => '0912345679',
@@ -127,10 +129,11 @@ class StudentSeeder extends Seeder
                 'is_active' => true
             ],
             [
-                'user_id' => 5,
                 'student_code' => 'STU003',
                 'password' => $defaultPassword,
                 'full_name' => 'William Chen',
+                'email' => 'william',
+                'password' => 'password123',
                 'date_of_birth' => '1999-07-10',
                 'gender' => 'male',
                 'phone' => '0912345680',
