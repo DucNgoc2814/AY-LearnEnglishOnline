@@ -61,6 +61,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | CloudFront Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This URL is used for accessing files stored in AWS S3 via CloudFront CDN.
+    | CloudFront provides faster delivery of your S3 assets with edge caching.
+    |
+    */
+
+    'cloudfront_url' => env('CLOUDFRONT_URL', 'https://dxud4suchjyje.cloudfront.net'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

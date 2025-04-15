@@ -17,6 +17,9 @@ class VerifyCsrfToken extends Middleware
         'api/payment/check-expiry',
         'api/*',
         'dang-nhap',
-        'thanh-toan/*'
+        'dang-ky',
+        'thanh-toan/*',
+        'test/*/submit',
+        'online/login'
     ];
 }

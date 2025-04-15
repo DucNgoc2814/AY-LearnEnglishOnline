@@ -120,6 +120,11 @@ class Employee extends Model
         return $this->join_date->diffInDays($endDate);
     }
 
+    
+    public function classes()
+    {
+        return $this->hasMany(Classes::class);
+    }
     // Scopes
     public function scopeActive($query)
     {

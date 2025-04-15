@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('lesson_videos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lesson_id')->constrained('lessons');
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('slug')->unique();
             $table->string('video_url');
             $table->integer('duration')->nullable()->comment('Độ dài video (giây)');

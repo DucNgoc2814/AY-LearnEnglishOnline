@@ -13,92 +13,103 @@ class LessonProgress extends Model
 
     protected $table = 'lesson_progress';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'enrollment_id',
         'lesson_id',
+        'watched_time',
+        'total_time',
         'status',
-        'progress',
-        'time_spent',
-        'last_accessed_at',
+        'last_watched_at',
         'completed_at',
-        'meta_data'
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
     protected $casts = [
-        'progress' => 'float',
-        'time_spent' => 'integer',
-        'last_accessed_at' => 'datetime',
+        'last_watched_at' => 'datetime',
         'completed_at' => 'datetime',
-        'meta_data' => 'array'
     ];
 
-    // Relationships
+    /**
+     * Get the enrollment that owns the lesson progress.
+     */
     public function enrollment(): BelongsTo
     {
         return $this->belongsTo(Enrollment::class);
     }
 
+    /**
+     * Get the lesson that the progress belongs to.
+     */
     public function lesson(): BelongsTo
     {
         return $this->belongsTo(Lesson::class);
     }
 
-    // Scopes
+    /**
+     * Scope a query to only include completed lessons.
+     */
     public function scopeCompleted($query)
     {
         return $query->where('status', 'completed');
     }
 
+    /**
+     * Scope a query to only include in-progress lessons.
+     */
     public function scopeInProgress($query)
     {
         return $query->where('status', 'in_progress');
     }
 
-    // Methods
-    public function markAsCompleted()
+    /**
+     * Mark the lesson as completed.
+     */
+    public function markAsCompleted(): self
     {
         $this->status = 'completed';
-        $this->progress = 100;
         $this->completed_at = now();
         $this->save();
-
-        // Update enrollment progress
-        $this->enrollment->updateProgress();
-    }
-
-    public function updateTimeSpent($minutes)
-    {
-        $this->time_spent += $minutes;
-        $this->last_accessed_at = now();
-        $this->save();
-    }
-
-    public function updateProgress($progress)
-    {
-        $this->progress = min(100, $progress);
-        $this->last_accessed_at = now();
         
-        if ($this->progress >= 100) {
+        return $this;
+    }
+
+    /**
+     * Update the progress of the lesson.
+     */
+    public function updateProgress($watchedTime, $totalTime): self
+    {
+        $this->watched_time = $watchedTime;
+        $this->total_time = $totalTime;
+        $this->last_watched_at = now();
+        
+        // If watched more than 90% of the total time, mark as completed
+        if ($totalTime > 0 && ($watchedTime / $totalTime) >= 0.9) {
             $this->markAsCompleted();
         } else {
             $this->save();
         }
+        
+        return $this;
     }
 
-    public function isCompleted(): bool
+    /**
+     * Get the progress percentage.
+     */
+    public function getProgressPercentage(): int
     {
-        return $this->status === 'completed';
-    }
-
-    public function getFormattedTimeSpent(): string
-    {
-        $hours = floor($this->time_spent / 60);
-        $minutes = $this->time_spent % 60;
-
-        if ($hours > 0) {
-            return sprintf('%d giờ %d phút', $hours, $minutes);
+        if ($this->total_time <= 0) {
+            return 0;
         }
-
-        return sprintf('%d phút', $minutes);
+        
+        return min(100, round(($this->watched_time / $this->total_time) * 100));
     }
 } 

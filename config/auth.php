@@ -41,6 +41,16 @@ return [
             'provider' => 'users',
         ],
 
+        'online' => [
+            'driver' => 'jwt',
+            'provider' => 'students',
+        ],
+
+        'employee' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
+
         'api' => [
             'driver' => 'jwt',
             'provider' => 'users',
@@ -68,6 +78,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'students' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Student::class,
         ],
 
         // 'users' => [

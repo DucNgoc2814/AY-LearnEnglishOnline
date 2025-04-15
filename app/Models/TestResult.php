@@ -4,22 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TestResult extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'test_id',
         'user_id',
         'class_session_id',
-        'start_time',
-        'end_time',
         'score',
+        'total_questions',
+        'correct_answers',
         'attempt_number',
+        'started_at',
+        'completed_at',
         'status',
         'meta_data'
     ];
@@ -95,31 +96,26 @@ class TestResult extends Model
     // Scopes
     public function scopeCompleted($query)
     {
-        return $query->whereNotNull('submitted_at');
+        return $query->whereNotNull('completed_at');
     }
 
     public function scopePending($query)
     {
-        return $query->whereNull('submitted_at')
+        return $query->whereNull('completed_at')
             ->whereNotNull('started_at');
-    }
-
-    public function scopeGraded($query)
-    {
-        return $query->whereNotNull('graded_at');
     }
 
     public function scopePassed($query)
     {
         return $query->whereHas('test', function ($q) {
-            $q->whereRaw('test_results.score >= tests.passing_score');
+            $q->whereRaw('test_results.score >= tests.min_score');
         });
     }
 
     public function scopeFailed($query)
     {
         return $query->whereHas('test', function ($q) {
-            $q->whereRaw('test_results.score < tests.passing_score');
+            $q->whereRaw('test_results.score < tests.min_score');
         });
     }
 } 

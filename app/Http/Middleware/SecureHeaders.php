@@ -19,7 +19,7 @@ class SecureHeaders
         'X-Frame-Options' => 'SAMEORIGIN',
         'Referrer-Policy' => 'same-origin',
         'Strict-Transport-Security' => 'max-age=31536000; includeSubDomains',
-        'Permissions-Policy' => 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+        'Permissions-Policy' => 'camera=(), microphone=(), geolocation=()'
     ];
 
     /**
@@ -29,19 +29,15 @@ class SecureHeaders
     {
         $response = $next($request);
 
-        // Tạo CSP nonce
-        $nonce = $request->session()->token();
-
-        // Thiết lập Content Security Policy với nonce và cho phép cdn.jsdelivr.net
-        $cspHeader = "default-src 'self'; " .
-                     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com; " .
-                     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " .
-                     "img-src 'self' data: https: blob:; " .
-                     "font-src 'self' https: data:; " .
-                     "connect-src 'self' https://cdn.jsdelivr.net wss: ws:; " .
-                     "frame-src 'self'; " .
-                     "object-src 'none'; " .
-                     "media-src 'self' blob:;";
+        // Thiết lập Content Security Policy với các domain cần thiết
+        $cspHeader = "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *; " .
+                     "script-src 'self' 'unsafe-inline' 'unsafe-eval' data: *; " .
+                     "style-src 'self' 'unsafe-inline' data: *; " .
+                     "img-src 'self' data: blob: *; " .
+                     "font-src 'self' data: *; " .
+                     "connect-src 'self' *; " .
+                     "media-src 'self' *; " .
+                     "object-src 'none'";
 
         $this->secureHeaders['Content-Security-Policy'] = $cspHeader;
 

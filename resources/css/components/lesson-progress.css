@@ -1,0 +1,94 @@
+.lesson-progress-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.progress-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.in_progress {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-badge.completed {
+    background-color: #e8f5e9;
+    color: #4caf50;
+}
+
+.progress-bar {
+    height: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #4CAF50;
+    transition: width 0.3s ease;
+}
+
+.progress-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.time-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.percentage {
+    font-size: 16px;
+    font-weight: 600;
+    color: #4CAF50;
+}
+
+.last-watched,
+.completed-at {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 10px;
+}
+
+.lesson-progress-loading,
+.lesson-progress-error {
+    padding: 20px;
+    text-align: center;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.lesson-progress-error {
+    color: #dc3545;
+    border: 1px solid #dc3545;
+} 

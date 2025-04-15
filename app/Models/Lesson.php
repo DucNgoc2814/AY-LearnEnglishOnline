@@ -205,25 +205,38 @@ class Lesson extends Model
 
     public function videoLessons()
     {
-        return $this->hasMany(LessonVideo::class);
+        return $this->hasMany(LessonVideo::class, 'lesson_id');
     }
 
     public function totalVideo()
     {
-        return $this->videoLessons()->count();
+        return $this->videoLessons->count();
     }
 
     public function totalVideoDuration()
     {
-        return $this->videoLessons()->sum('duration');
+        $totalSeconds = $this->videoLessons->sum('duration');
+        
+        // Properly convert to HH:MM:SS
+        $hours = floor($totalSeconds / 3600);
+        $minutes = floor(($totalSeconds % 3600) / 60);
+        $seconds = $totalSeconds % 60;
+        
+        return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
     }
 
     /**
      * Lấy danh sách bài kiểm tra của bài học
      */
-    public function lessonTests(): MorphMany
+    public function lessonTests()
     {
         return $this->morphMany(Test::class, 'testable')
-            ->where('type', 'lesson_test');
+                    ->where('type', 'lesson_test')
+                    ->whereNull('deleted_at');
+    }
+
+    public function totalTests()
+    {
+        return $this->lessonTests()->count();
     }
 }
