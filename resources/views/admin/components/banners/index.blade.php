@@ -81,11 +81,13 @@
                                     <img src="{{ $item->image_url }}"
                                         alt="{{ $item->title }}"
                                         data-column="image"
-                                        class="h-10 w-20 object-cover rounded cursor-pointer"
+                                        class="h-10 w-20 object-cover rounded cursor-pointer hover:opacity-75 transition-opacity"
                                         onclick="openImageModal('{{ $item->image_url }}')"
-                                        onerror="this.onerror=null;">
+                                        onerror="handleImageError(this)">
                                 @else
-                                    <span class="text-gray-400">Không có ảnh</span>
+                                    <div class="h-10 w-20 bg-gray-100 rounded flex items-center justify-center">
+                                        <span class="text-gray-400 text-xs">Không có ảnh</span>
+                                    </div>
                                 @endif
                             </td>
                             <td class="ps-1 pt-1" data-column="position">
@@ -232,7 +234,7 @@
     <div id="imageModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="imageModalLabel"
         aria-hidden="true">
         <div class="flex items-center justify-center min-h-screen px-4">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeImageModal()"></div>
 
             <div class="relative bg-white rounded-lg max-w-3xl w-full mx-auto">
                 <!-- Header -->
@@ -253,64 +255,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function openImageModal(src) {
-            const modalImage = document.getElementById('modalImage');
-
-            // Thêm sự kiện xử lý lỗi cho ảnh
-            modalImage.onerror = function() {
-                // Nếu ảnh gốc lỗi, thử tải lại với domain S3
-                const s3Url = src.replace(/^https?:\/\/[^\/]+/, 'https://ay-learn-english-online.s3.ap-southeast-2.amazonaws.com');
-                this.src = s3Url;
-
-                // Nếu vẫn lỗi sau khi thử với S3
-                this.onerror = function() {
-                    this.src = '/path/to/default/image.jpg'; // Thay thế bằng ảnh mặc định
-                    console.error('Không thể tải ảnh:', src);
-                }
-            };
-
-            modalImage.src = src;
-            modalHandler.open('imageModal');
-        }
-
-        // Thêm xử lý lỗi cho tất cả ảnh banner trong bảng
-        document.addEventListener('DOMContentLoaded', function() {
-            const bannerImages = document.querySelectorAll('img[data-column="image"]');
-            bannerImages.forEach(img => {
-                img.onerror = function() {
-                    const originalSrc = this.src;
-                    // Thử tải lại với domain S3
-                    const s3Url = originalSrc.replace(/^https?:\/\/[^\/]+/, 'https://ay-learn-english-online.s3.ap-southeast-2.amazonaws.com');
-                    this.src = s3Url;
-
-                    // Nếu vẫn lỗi sau khi thử với S3
-                    this.onerror = function() {
-                        this.src = '/path/to/default/image.jpg'; // Thay thế bằng ảnh mặc định
-                        console.error('Không thể tải ảnh:', originalSrc);
-                    }
-                };
-            });
-        });
-
-        function closeImageModal() {
-            modalHandler.close('imageModal');
-        }
-
-        // Đóng modal khi click bên ngoài
-        window.onclick = function(event) {
-            const imageModal = document.getElementById('imageModal');
-            if (event.target === imageModal) {
-                closeImageModal();
-            }
-        }
-
-        // Đóng modal với phím Escape
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeImageModal();
-            }
-        });
-    </script>
 @endsection

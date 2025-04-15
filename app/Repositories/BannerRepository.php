@@ -23,8 +23,8 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
     public function getQuery()
     {
         return $this->model
-                ->whereNull('deleted_at')
-                ->latest('id');
+            ->whereNull('deleted_at')
+            ->latest('id');
     }
 
     public function create(array $data)
@@ -50,7 +50,6 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
 
             DB::commit();
             return $banner;
-
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Banner creation error: ' . $e->getMessage(), [
@@ -143,7 +142,6 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
             ]);
 
             return $banner;
-
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Banner update error:', [
@@ -195,36 +193,10 @@ class BannerRepository extends BaseRepository implements BannerRepositoryInterfa
     public function findWithFullUrls($id)
     {
         $banner = $this->findOrFail($id);
-
-        // Add full URLs for image
         $banner->image_url = $this->getFullUrl($banner->image_url);
 
         return $banner;
     }
-
-    public function getFullUrl($path)
-    {
-        if (empty($path)) {
-            return null;
-        }
-
-        // Nếu đã là URL đầy đủ, trả về nguyên vẹn
-        if (filter_var($path, FILTER_VALIDATE_URL)) {
-            return $path;
-        }
-
-        // Kiểm tra xem có sử dụng CloudFront không
-        $cloudFrontDomain = config('filesystems.disks.s3.cloudfront_domain');
-        if ($cloudFrontDomain) {
-            return "https://{$cloudFrontDomain}/" . ltrim($path, '/');
-        }
-
-        // Nếu không có CloudFront, sử dụng URL S3 trực tiếp
-        $s3Bucket = config('filesystems.disks.s3.bucket');
-        $s3Region = config('filesystems.disks.s3.region');
-        return "https://{$s3Bucket}.s3.{$s3Region}.amazonaws.com/" . ltrim($path, '/');
-    }
-
     public function deleteFile($path)
     {
         try {
