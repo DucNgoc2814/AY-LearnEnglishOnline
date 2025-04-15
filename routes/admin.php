@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BannerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
@@ -188,6 +189,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::controller(StudentController::class)
         ->prefix('students')
         ->name('students.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
+        });
+    // Banners Management
+
+        Route::controller(BannerController::class)
+        ->prefix('banners')
+        ->name('banners.')
         ->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
