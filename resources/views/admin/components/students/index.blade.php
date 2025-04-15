@@ -69,7 +69,7 @@
                             <td class="ps-1 pt-1">
                                 <div class="flex items-center">
                                     @if($item->avatar)
-                                        <img src="{{ $item->avatar }}" alt="Avatar" class="w-8 h-8 rounded-full mr-2">
+                                        <img src="{{ $item->getAvatarUrl() }}" alt="Avatar" class="w-8 h-8 rounded-full mr-2">
                                     @else
                                         <div class="w-8 h-8 rounded-full bg-gray-200 mr-2 flex items-center justify-center">
                                             <i class="fas fa-user text-gray-500"></i>

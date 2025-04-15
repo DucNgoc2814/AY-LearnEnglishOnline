@@ -153,7 +153,13 @@ class Student extends Model
     public function getAvatarUrl(): string
     {
         if ($this->avatar) {
-            return asset('storage/' . $this->avatar);
+            if (config('filesystems.disks.cloudfront.domain')) {
+                return 'https://' . config('filesystems.disks.cloudfront.domain') . '/' . $this->avatar;
+            }
+            // Fallback to S3 URL if CloudFront is not configured
+            $bucket = config('filesystems.disks.s3.bucket');
+            $region = config('filesystems.disks.s3.region');
+            return "https://{$bucket}.s3.{$region}.amazonaws.com/" . ltrim($this->avatar, '/');
         }
         return asset('images/default-avatar.png');
     }

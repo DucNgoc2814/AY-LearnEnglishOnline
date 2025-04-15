@@ -63,7 +63,7 @@ class StudentService extends BaseService implements StudentServiceInterface
             $students = $this->repository->getQuery()->get();
             return $students->map(function ($student) {
                 if ($student->avatar) {
-                    $student->avatar_url = Storage::url($student->avatar);
+                    $student->avatar = $student->getAvatarUrl();
                 }
                 return $student;
             });

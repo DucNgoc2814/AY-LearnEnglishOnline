@@ -320,11 +320,23 @@
             const placeholder = document.getElementById('edit-placeholder');
             if (item.avatar) {
                 console.log('Setting avatar:', item.avatar);
-                avatarPreview.src = item.avatar;
+                // Sử dụng CloudFront URL nếu có, nếu không sử dụng S3 URL
+                const cloudFrontDomain = '{{ config('filesystems.disks.cloudfront.domain') }}';
+                const s3Bucket = '{{ config('filesystems.disks.s3.bucket') }}';
+                const s3Region = '{{ config('filesystems.disks.s3.region') }}';
+
+                let avatarUrl;
+                if (cloudFrontDomain) {
+                    avatarUrl = `https://${cloudFrontDomain}/${item.avatar}`;
+                } else {
+                    avatarUrl = `https://${s3Bucket}.s3.${s3Region}.amazonaws.com/${item.avatar}`;
+                }
+
+                avatarPreview.src = avatarUrl;
                 avatarPreview.classList.remove('hidden');
                 placeholder.classList.add('hidden');
             } else {
-                avatarPreview.src = '#';
+                avatarPreview.src = '{{ asset('images/default-avatar.png') }}';
                 avatarPreview.classList.add('hidden');
                 placeholder.classList.remove('hidden');
             }
