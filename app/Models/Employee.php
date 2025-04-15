@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EmployeeRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,6 +18,8 @@ class Employee extends Model
         'name',
         'position',
         'department',
+        'employee_role',
+        'role_permissions',
         'email',
         'password',
         'phone',
@@ -30,9 +33,39 @@ class Employee extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'join_date' => 'date',
-        'resignation_date' => 'date'
+        'resignation_date' => 'date',
+        'role_permissions' => 'json',
+        'employee_role' => EmployeeRole::class
     ];
 
+    protected $appends = ['display_name'];
+
+    /**
+     * Các giá trị enum cho employee_role
+     */
+    const ROLE_ADMIN = 'admin';
+    const ROLE_MANAGER = 'manager';
+    const ROLE_TEACHER = 'teacher';
+    const ROLE_SUPPORT = 'support';
+    const ROLE_CONTENT_CREATOR = 'content_creator';
+    const ROLE_MARKETING = 'marketing';
+    const ROLE_SALES = 'sales';
+
+    /**
+     * Danh sách các role có thể có
+     */
+    public static function getAvailableRoles(): array
+    {
+        return [
+            self::ROLE_ADMIN,
+            self::ROLE_MANAGER,
+            self::ROLE_TEACHER,
+            self::ROLE_SUPPORT,
+            self::ROLE_CONTENT_CREATOR,
+            self::ROLE_MARKETING,
+            self::ROLE_SALES
+        ];
+    }
 
     /**
      * Lấy danh sách vai trò của nhân viên
@@ -103,6 +136,24 @@ class Employee extends Model
         return $query->where('position', $position);
     }
 
+    /**
+     * Scope để lấy danh sách giảng viên đang hoạt động
+     */
+    public function scopeActiveTeachers($query)
+    {
+        return $query->where('employee_role', 'teacher')
+                    ->where('is_active', true)
+                    ->whereNull('resignation_date');
+    }
+
+    /**
+     * Scope để lấy nhân viên theo role
+     */
+    public function scopeByRole($query, string $role)
+    {
+        return $query->where('employee_role', $role);
+    }
+
     // Methods
     public function assignRole($role)
     {
@@ -139,4 +190,23 @@ class Employee extends Model
         }
         $this->permissions()->detach($permission->id);
     }
-} 
+
+    /**
+     * Accessor để lấy tên hiển thị của nhân viên
+     */
+    public function getDisplayNameAttribute()
+    {
+        return "{$this->name} ({$this->employee_code}) - {$this->position}";
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($employee) {
+            if (!in_array($employee->employee_role->value, EmployeeRole::values())) {
+                throw new \InvalidArgumentException('Invalid employee role specified');
+            }
+        });
+    }
+}

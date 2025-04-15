@@ -14,41 +14,46 @@ class Classes extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'course_id',
-        'teacher_id',
         'name',
         'code',
-        'description',
+        'teacher_id',
         'start_date',
         'end_date',
-        'capacity',
-        'enrolled_count',
+        'enrollment_deadline',
+        'max_students',
+        'min_students',
+        'current_students',
         'status',
-        'meta_data'
+        'description',
+        'schedule',
+        'is_active'
     ];
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'capacity' => 'integer',
-        'enrolled_count' => 'integer',
-        'meta_data' => 'array'
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+        'enrollment_deadline' => 'date',
+        'max_students' => 'integer',
+        'min_students' => 'integer',
+        'current_students' => 'integer',
+        'schedule' => 'json',
+        'is_active' => 'boolean'
     ];
 
     /**
-     * Lấy khóa học của lớp
+     * Các giá trị enum cho status
      */
-    public function course(): BelongsTo
-    {
-        return $this->belongsTo(Course::class);
-    }
+    const STATUS_PENDING = 'pending';
+    const STATUS_ACTIVE = 'active';
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_CANCELLED = 'cancelled';
 
     /**
      * Lấy giáo viên của lớp
      */
     public function teacher(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'teacher_id');
+        return $this->belongsTo(Employee::class, 'teacher_id');
     }
 
     /**
@@ -70,20 +75,11 @@ class Classes extends Model
     }
 
     /**
-     * Lấy danh sách online room của lớp
-     */
-    public function onlineRooms(): HasMany
-    {
-        return $this->hasMany(OnlineRoom::class, 'roomable_id')
-            ->where('roomable_type', Classes::class);
-    }
-
-    /**
      * Kiểm tra xem lớp có đủ học sinh chưa
      */
     public function hasMinimumStudents(): bool
     {
-        return $this->enrolled_count >= $this->capacity;
+        return $this->current_students >= $this->min_students;
     }
 
     /**
@@ -91,7 +87,7 @@ class Classes extends Model
      */
     public function hasAvailableSlots(): bool
     {
-        return $this->enrolled_count < $this->capacity;
+        return $this->current_students < $this->max_students;
     }
 
     /**
@@ -107,7 +103,7 @@ class Classes extends Model
      */
     public function updateCurrentStudents(): self
     {
-        $this->enrolled_count = $this->students()->wherePivot('status', 'active')->count();
+        $this->current_students = $this->students()->wherePivot('status', 'active')->count();
         $this->save();
         return $this;
     }
@@ -117,7 +113,7 @@ class Classes extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('status', self::STATUS_ACTIVE);
     }
 
     /**
@@ -150,7 +146,7 @@ class Classes extends Model
      */
     public function getAvailableSeats(): int
     {
-        return max(0, $this->capacity - $this->enrolled_count);
+        return max(0, $this->max_students - $this->current_students);
     }
 
     /**
@@ -158,10 +154,7 @@ class Classes extends Model
      */
     public function isEnrollmentOpen(): bool
     {
-        if (!$this->start_date || !$this->end_date) {
-            return true;
-        }
-        return now()->lessThanOrEqualTo($this->end_date);
+        return now()->lessThanOrEqualTo($this->enrollment_deadline);
     }
 
     /**
@@ -184,59 +177,30 @@ class Classes extends Model
 
     public function start()
     {
-        $this->status = 'in_progress';
+        $this->status = self::STATUS_ACTIVE;
         $this->save();
     }
 
     public function complete()
     {
-        $this->status = 'completed';
+        $this->status = self::STATUS_COMPLETED;
+        $this->save();
+    }
+
+    public function cancel()
+    {
+        $this->status = self::STATUS_CANCELLED;
         $this->save();
     }
 
     public function incrementEnrolledCount()
     {
-        $this->increment('enrolled_count');
+        $this->increment('current_students');
     }
 
     public function decrementEnrolledCount()
     {
-        $this->decrement('enrolled_count');
-    }
-
-    public function getCompletionRate(): float
-    {
-        $totalSessions = $this->sessions()->count();
-        if ($totalSessions === 0) {
-            return 0;
-        }
-
-        $completedSessions = $this->sessions()
-            ->where('status', 'completed')
-            ->count();
-
-        return round(($completedSessions / $totalSessions) * 100, 2);
-    }
-
-    public function getAttendanceRate(): float
-    {
-        $sessions = $this->sessions;
-        if ($sessions->isEmpty()) {
-            return 0;
-        }
-
-        $rates = $sessions->map(function ($session) {
-            return $session->getAttendanceRate();
-        });
-
-        return round($rates->avg(), 2);
-    }
-
-    public function isStudentEnrolled($studentId): bool
-    {
-        return $this->students()
-            ->where('student_id', $studentId)
-            ->exists();
+        $this->decrement('current_students');
     }
 
     public function getNextSession()
@@ -247,4 +211,4 @@ class Classes extends Model
             ->orderBy('start_time')
             ->first();
     }
-} 
+}

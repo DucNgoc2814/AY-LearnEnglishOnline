@@ -15,15 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->unique();
-            $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
-            $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade');
-            $table->enum('class_type', ['online', 'offline', 'hybrid'])->default('online');
+            $table->foreignId('teacher_id')->constrained('employees')->onDelete('cascade');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->date('enrollment_deadline')->nullable();
             $table->integer('max_students')->default(30);
             $table->integer('min_students')->default(5);
-            $table->decimal('fee', 10, 2)->nullable();
             $table->integer('current_students')->default(0);
             $table->enum('status', ['pending', 'active', 'completed', 'cancelled'])->default('pending');
             $table->text('description')->nullable();
@@ -41,4 +38,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('classes');
     }
-}; 
+};

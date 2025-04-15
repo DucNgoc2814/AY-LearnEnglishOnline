@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\LessonController;
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\ClassController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\EmployeeController;
@@ -188,6 +189,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::controller(StudentController::class)
         ->prefix('students')
         ->name('students.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
+        });
+    // Class Management
+    Route::controller(ClassController::class)
+        ->prefix('classes')
+        ->name('classes.')
         ->group(function () {
             Route::get('/', 'index')->name('index');
             Route::post('/', 'store')->name('store');
