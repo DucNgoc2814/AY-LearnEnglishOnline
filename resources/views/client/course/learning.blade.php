@@ -1,6 +1,6 @@
 @extends('client.layouts.master')
 
-@section('title', $course->name . ' - Learning')
+@section('title', $course->title . ' - Learning')
 
 @section('content')
     <div class="learning-container">
@@ -8,7 +8,7 @@
         <div class="course-sidebar d-none d-lg-flex flex-column"> <!-- Ẩn trên mobile/tablet, hiện từ lg trở lên -->
             <div class="sidebar-header d-flex justify-content-between">
                 <div class="">
-                    <h4 class="course-title">{{ $course->name ?? 'Không tìm thấy tên khóa học' }}</h4>
+                    <h4 class="course-title">{{ $course->title ?? 'Không tìm thấy tên khóa học' }}</h4>
                     <p class="course-stats">
                         <i class="fas fa-book-open me-1"></i>
                         <span>{{ $course->totalLessons() }} bài học</span>
@@ -36,7 +36,19 @@
                             </div>
                             <div class="lesson-meta d-flex align-items-center">
                                 <span class="lesson-duration">
-                                    <i class="fa-regular fa-clock me-1"></i><span>{{ $lesson->totalVideoDuration() }}</span>
+                                    <i class="far fa-clock me-1"></i>
+                                    @php
+                                        // Calculate total seconds for this lesson
+                                        $totalSeconds = $lesson->videoLessons->sum('duration');
+                                        $hours = floor($totalSeconds / 3600);
+                                        $minutes = floor(($totalSeconds % 3600) / 60);
+                                        $seconds = $totalSeconds % 60;
+
+                                        if ($hours > 0) {
+                                            echo sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+                                        } else {
+                                            echo sprintf('%02d:%02d', $minutes, $seconds);
+                                    } @endphp
                                 </span>
                             </div>
                         </div>
@@ -49,13 +61,26 @@
                                         <a href="{{ route('course.learning.video', ['courseSlug' => $course->slug, 'lessonSlug' => $lesson->slug, 'videoSlug' => $videoLesson->slug]) }}"
                                             class="content-item {{ (isset($currentVideo) && $currentVideo->id === $videoLesson->id) || (request()->route()->getName() === 'course.learning.video' && request()->route('videoSlug') === $videoLesson->slug) ? 'active' : '' }}"
                                             onclick="activateItem(this)">
-                                            <div class="d-flex align-items-center video-info">
+                                            <div class="d-flex align-items-center">
                                                 <i
                                                     class="fa-regular fa-circle-play me-2 {{ isset($completedVideos) && in_array($videoLesson->id, $completedVideos) ? 'text-success' : '' }}"></i>
-                                                <span class="video-title">
-                                                    {{ $videoLesson->name ?? 'Không tìm thấy tên video' }}</span>
+                                                <span class="video-title text-truncate" title="{{ $videoLesson->name ?? 'Không tìm thấy tên video' }}">
+                                                    {{ $videoLesson->name ?? 'Không tìm thấy tên video' }}
+                                                </span>
                                             </div>
-                                            <span class="video-duration">{{ $videoLesson->totalDuration() }}</span>
+                                            <span class="duration">
+                                                @php
+                                                    $time = $videoLesson->duration;
+                                                    $hours = floor($time / 3600);
+                                                    $minutes = floor(($time % 3600) / 60);
+                                                    $seconds = $time % 60;
+
+                                                    if ($hours > 0) {
+                                                        echo sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+                                                    } else {
+                                                        echo sprintf('%02d:%02d', $minutes, $seconds);
+                                                } @endphp
+                                            </span>
                                         </a>
                                     @endforeach
                                 @endif
@@ -89,13 +114,12 @@
                     </div>
                 @endforeach
             </div>
+
+          
         </div>
 
         <!-- Main Content -->
         <div class="main-content flex-grow-1">
-
-
-            <!-- Nội dung chính -->
             <div class="content-wrapper h-100">
                 @if (request()->route()->getName() === 'course.learning.test')
                     @include('client.course.partials.testContent')
@@ -104,6 +128,7 @@
                 @else
                     @include('client.course.partials.videoContent')
                 @endif
+
             </div>
         </div>
     </div>
@@ -220,14 +245,14 @@
         }
 
         /* .video-info {
-                        flex: 1;
-                        min-width: 0;
-                    }
+                                    flex: 1;
+                                    min-width: 0;
+                                }
 
-                    .video-info:hover {
-                        color: var(--color-4);
+                                .video-info:hover {
+                                    color: var(--color-4);
 
-                    } */
+                                } */
 
         .test-title {
             font-size: 0.75rem;
@@ -349,13 +374,34 @@
 
         /* Active state improvements */
         .content-item.active {
-            background: #e3f2fd;
-            border-left: 3px solid #0d6efd;
-            font-weight: 500;
+            background-color: rgba(186, 230, 253, 0.4) !important;
         }
 
         .content-item.active:hover {
             background: #d4e5ff;
+        }
+
+
+        .content-item .fa-file-pen {
+            color: #198754 !important; /* Màu xanh lá giống với Bootstrap */
+        }
+
+        .content-item .test-title {
+            color: #2c3e50 !important; /* Màu giống với video-title */
+        }
+
+        .content-item.active .test-title {
+            color: #000 !important;
+        }
+
+        /* Style cho icon trong mục active */
+        .content-item.active i.fa-file-pen {
+            color: #22c55e !important; /* Màu xanh lá cho icon */
+        }
+        
+        /* Style cho title trong mục active */
+        .content-item.active .test-title {
+            color: #000 !important;
         }
 
         /* Add visual feedback for clickable items */
@@ -411,6 +457,19 @@
         /* Làm nhỏ icon */
         .content-item i {
             font-size: 0.75rem;
+        }
+
+        /* Add this to your CSS styles */
+        .video-info {
+            max-width: 200px; /* Adjust this value based on your sidebar width */
+            overflow: hidden;
+        }
+
+        .video-title {
+            max-width: 170px; /* Adjust based on your layout */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 @endpush
@@ -494,3 +553,6 @@
         });
     </script>
 @endpush
+
+
+

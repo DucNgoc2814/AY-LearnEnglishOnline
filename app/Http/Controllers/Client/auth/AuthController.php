@@ -54,13 +54,16 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request): RedirectResponse
     {
+        // Regenerate session ID for security
+        $request->session()->regenerate();
+        
         $request = $this->sanitizeRequest($request);
 
         try {
             DB::table('users')->insert([
                 'name' => $request->name,
                 'email' => $request->email,
-                'phoneNumber' => $request->phoneNumber,
+                'phone_number' => $request->phone_number,
                 'password' => Hash::make($request->password),
                 'created_at' => now(),
                 'updated_at' => now()

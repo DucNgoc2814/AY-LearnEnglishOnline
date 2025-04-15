@@ -27,6 +27,7 @@
 <link rel="stylesheet" href="{{ asset('themes/client/assets/frontend/default-new/css/style.css') }}">
 <link rel="stylesheet" href="{{ asset('themes/client/assets/frontend/default-new/css/new-style.css') }}">
 <link rel="stylesheet" href="{{ asset('themes/client/assets/frontend/default-new/css/responsive.css') }}">
+<link rel="stylesheet" href="{{ asset('themes/client/assets/frontend/default-new/css/banner.css') }}">
 <link rel="stylesheet"
     href="{{ asset('themes/client/assets/frontend/default-new/summernote-0.8.20-dist/summernote-lite.min.css') }}">
 <link rel="stylesheet" href="{{ asset('themes/client/assets/global/tagify/tagify.css') }}">

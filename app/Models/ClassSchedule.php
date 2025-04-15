@@ -21,11 +21,11 @@ class ClassSchedule extends Model
         'start_date',
         'end_date',
         'room_number',
-        'is_online',
         'meeting_url',
         'notes',
         'is_repeating',
-        'is_active'
+        'is_active',
+        'is_online'
     ];
 
     protected $casts = [
@@ -43,7 +43,7 @@ class ClassSchedule extends Model
      */
     public function class(): BelongsTo
     {
-        return $this->belongsTo(ClassRoom::class, 'class_id');
+        return $this->belongsTo(Classes::class, 'class_id');
     }
 
     /**

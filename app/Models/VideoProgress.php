@@ -13,22 +13,32 @@ class VideoProgress extends Model
 
     protected $table = 'video_progress';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'user_id',
         'video_id',
-        'current_time',
+        'watched_seconds',
+        'percentage',
         'completed',
+        'last_position',
         'last_watched_at',
         'watch_count',
-        'meta_data'
+        'meta_data',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
     protected $casts = [
-        'current_time' => 'integer',
         'completed' => 'boolean',
         'last_watched_at' => 'datetime',
-        'watch_count' => 'integer',
-        'meta_data' => 'json'
+        'meta_data' => 'array',
     ];
 
     // Relationships

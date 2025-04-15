@@ -37,6 +37,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\SecureHeaders::class,
+            \App\Http\Middleware\SetActiveMenu::class,
         ],
 
         'api' => [
@@ -67,6 +68,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'jwt' => \App\Http\Middleware\JwtMiddleware::class,
+        'jwt.role' => \App\Http\Middleware\JwtRoleMiddleware::class,
     ];
 
     /**
@@ -90,5 +92,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
         'jwt' => \App\Http\Middleware\JwtMiddleware::class,
+        'auth.online' => \App\Http\Middleware\RedirectIfNotOnline::class,
     ];
 }

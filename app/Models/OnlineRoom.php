@@ -46,7 +46,9 @@ class OnlineRoom extends Model
      */
     public function session(): BelongsTo
     {
-        return $this->belongsTo(ClassSession::class, 'session_id');
+        // Truy vấn qua mối quan hệ roomable nếu loại là ClassSession
+        return $this->belongsTo(ClassSession::class, 'roomable_id')
+            ->where('roomable_type', ClassSession::class);
     }
 
     /**
@@ -260,6 +262,9 @@ class OnlineRoom extends Model
         return $this->hasMany(OnlineAttendanceDetail::class);
     }
 
+    /**
+     * Mối quan hệ roomable đa hình
+     */
     public function roomable()
     {
         return $this->morphTo();
