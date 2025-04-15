@@ -286,7 +286,7 @@
 @endpush
 
 @section('content')
-    <div class="content-section">
+    {{-- <div class="content-section"> --}}
         <div class="row mb-4">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white py-3">
@@ -455,7 +455,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    {{-- </div>  --}}
 @endsection
 
 @push('scripts')

@@ -264,7 +264,8 @@
 @endpush
 
 @section('content')
-    <div class="content-section">
+    <div class="row mb-4">
+
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-white py-3">
                 <h5 class="card-title mb-0 text-primary">
@@ -275,11 +276,13 @@
                 <ul class="nav nav-tabs" id="gradesTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="current-tab" data-bs-toggle="tab" data-bs-target="#current"
-                            type="button" role="tab" aria-controls="current" aria-selected="true">Học kỳ: Spring 2024</button>
+                            type="button" role="tab" aria-controls="current" aria-selected="true">Học kỳ: Spring
+                            2024</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="previous-tab" data-bs-toggle="tab" data-bs-target="#previous"
-                            type="button" role="tab" aria-controls="previous" aria-selected="false">Học kỳ: Fall 2023</button>
+                            type="button" role="tab" aria-controls="previous" aria-selected="false">Học kỳ: Fall
+                            2023</button>
                     </li>
                 </ul>
 
@@ -292,10 +295,12 @@
                                     <div class="class-header">
                                         <div class="class-info-container">
                                             <h3 class="class-title">Xây dựng trang Web 2 (WEB2033) - WD18304</h3>
-                                            <p class="class-info"><span class="teacher-name">Giảng viên: Nguyễn Văn A</span></p>
+                                            <p class="class-info"><span class="teacher-name">Giảng viên: Nguyễn Văn A</span>
+                                            </p>
                                             <p class="class-info">
                                                 <span class="status-badge status-active">Đang học</span>
-                                                <span class="ms-2">Điểm trung bình: <span class="average-score">9.8</span></span>
+                                                <span class="ms-2">Điểm trung bình: <span
+                                                        class="average-score">9.8</span></span>
                                             </p>
                                         </div>
                                         <button class="toggle-btn">Xem điểm</button>
@@ -355,10 +360,12 @@
                                     <div class="class-header">
                                         <div class="class-info-container">
                                             <h3 class="class-title">Lập trình Javascript (MOB1023) - FE18301</h3>
-                                            <p class="class-info"><span class="teacher-name">Giảng viên: Trần Thị B</span></p>
+                                            <p class="class-info"><span class="teacher-name">Giảng viên: Trần Thị B</span>
+                                            </p>
                                             <p class="class-info">
                                                 <span class="status-badge status-active">Đang học</span>
-                                                <span class="ms-2">Điểm trung bình: <span class="average-score">8.5</span></span>
+                                                <span class="ms-2">Điểm trung bình: <span
+                                                        class="average-score">8.5</span></span>
                                             </p>
                                         </div>
                                         <button class="toggle-btn">Xem điểm</button>
@@ -418,10 +425,12 @@
                                     <div class="class-header">
                                         <div class="class-info-container">
                                             <h3 class="class-title">Cơ sở dữ liệu (COM1024) - IT18202</h3>
-                                            <p class="class-info"><span class="teacher-name">Giảng viên: Phạm Văn C</span></p>
+                                            <p class="class-info"><span class="teacher-name">Giảng viên: Phạm Văn C</span>
+                                            </p>
                                             <p class="class-info">
                                                 <span class="status-badge status-active">Đang học</span>
-                                                <span class="ms-2">Điểm trung bình: <span class="average-score">7.2</span></span>
+                                                <span class="ms-2">Điểm trung bình: <span
+                                                        class="average-score">7.2</span></span>
                                             </p>
                                         </div>
                                         <button class="toggle-btn">Xem điểm</button>
@@ -486,10 +495,12 @@
                                     <div class="class-header">
                                         <div class="class-info-container">
                                             <h3 class="class-title">Lập trình Java (PRO1014) - IT17302</h3>
-                                            <p class="class-info"><span class="teacher-name">Giảng viên: Lê Thị D</span></p>
+                                            <p class="class-info"><span class="teacher-name">Giảng viên: Lê Thị D</span>
+                                            </p>
                                             <p class="class-info">
                                                 <span class="status-badge status-active">Đã hoàn thành</span>
-                                                <span class="ms-2">Điểm trung bình: <span class="average-score">8.7</span></span>
+                                                <span class="ms-2">Điểm trung bình: <span
+                                                        class="average-score">8.7</span></span>
                                             </p>
                                         </div>
                                         <button class="toggle-btn">Xem điểm</button>
@@ -555,10 +566,12 @@
                                     <div class="class-header">
                                         <div class="class-info-container">
                                             <h3 class="class-title">Thiết kế UI/UX (DES1024) - GD17308</h3>
-                                            <p class="class-info"><span class="teacher-name">Giảng viên: Trần Văn E</span></p>
+                                            <p class="class-info"><span class="teacher-name">Giảng viên: Trần Văn E</span>
+                                            </p>
                                             <p class="class-info">
                                                 <span class="status-badge status-active">Đã hoàn thành</span>
-                                                <span class="ms-2">Điểm trung bình: <span class="average-score">9.2</span></span>
+                                                <span class="ms-2">Điểm trung bình: <span
+                                                        class="average-score">9.2</span></span>
                                             </p>
                                         </div>
                                         <button class="toggle-btn">Xem điểm</button>
@@ -654,4 +667,4 @@
             });
         });
     </script>
-@endpush 
+@endpush

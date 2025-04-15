@@ -3,7 +3,7 @@
 @section('title', isset($record->is_discipline) ? 'Chi tiết Kỷ luật' : 'Chi tiết Khen thưởng')
 
 @section('content')
-<div class="content-section">
+{{-- <div class="content-section"> --}}
     <div class="row mb-4">
         <div class="col-12">
             <nav aria-label="breadcrumb">
@@ -135,5 +135,5 @@
             </div>
         </div>
     </div>
-</div>
+{{-- </div> --}}
 @endsection 

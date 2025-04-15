@@ -13,13 +13,13 @@
             height: 100%;
             position: relative;
         }
-        
+
         .class-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow-md);
             border-color: var(--primary-color);
         }
-        
+
         .class-header {
             background: var(--bg-color);
             padding: 1.5rem;
@@ -36,12 +36,12 @@
             height: 4px;
             background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
         }
-        
+
         .class-body {
             padding: 1.5rem;
             background: var(--card-bg);
         }
-        
+
         .class-title {
             font-size: 1.125rem;
             font-weight: 600;
@@ -51,7 +51,7 @@
             align-items: center;
             justify-content: space-between;
         }
-        
+
         .class-info {
             color: var(--text-muted);
             margin-bottom: 0.75rem;
@@ -65,7 +65,7 @@
             color: var(--primary-color);
             width: 1.25rem;
         }
-        
+
         .class-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -74,11 +74,11 @@
             padding-top: 1.25rem;
             border-top: 1px solid var(--border-color);
         }
-        
+
         .stat-item {
             text-align: center;
         }
-        
+
         .stat-value {
             font-size: 1.5rem;
             font-weight: 700;
@@ -88,7 +88,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        
+
         .stat-label {
             font-size: 0.75rem;
             color: var(--text-muted);
@@ -184,7 +184,9 @@
         }
 
         @media (max-width: 768px) {
-            .class-header, .class-body {
+
+            .class-header,
+            .class-body {
                 padding: 1rem;
             }
 
@@ -206,167 +208,174 @@
 @endpush
 
 @section('content')
-    <div class="content-section">
-        <div class="row mb-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0 text-primary">
-                        <i class="fas fa-user-check me-2"></i>Quản lý điểm danh
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <ul class="nav nav-tabs" id="attendanceTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="classes-tab" data-bs-toggle="tab" data-bs-target="#classes"
-                                type="button" role="tab" aria-controls="classes" aria-selected="true">Lớp học</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="filter-tab" data-bs-toggle="tab" data-bs-target="#filter"
-                                type="button" role="tab" aria-controls="filter" aria-selected="false">Bộ lọc</button>
-                        </li>
-                    </ul>
+    <div class="row mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 text-primary">
+                    <i class="fas fa-user-check me-2"></i>Quản lý điểm danh
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="attendanceTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="classes-tab" data-bs-toggle="tab" data-bs-target="#classes"
+                            type="button" role="tab" aria-controls="classes" aria-selected="true">Lớp học</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="filter-tab" data-bs-toggle="tab" data-bs-target="#filter"
+                            type="button" role="tab" aria-controls="filter" aria-selected="false">Bộ lọc</button>
+                    </li>
+                </ul>
 
-                    <div class="tab-content mt-4" id="attendanceTabContent">
-                        <!-- Classes Tab -->
-                        <div class="tab-pane fade show active" id="classes" role="tabpanel" aria-labelledby="classes-tab">
-                            <div class="table-responsive">
-                                <table class="table table-hover table-bordered">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Mã lớp</th>
-                                            <th>Tên lớp</th>
-                                            <th>Trạng thái</th>
-                                            <th>Học viên</th>
-                                            <th>Lịch học</th>
-                                            <th>Giờ học</th>
-                                            <th>Tiến độ</th>
-                                            <th>Thao tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Lớp 1: Đang học -->
-                                        <tr>
-                                            <td><span class="badge bg-light text-dark">TA-CB-A1-01</span></td>
-                                            <td class="fw-medium">Tiếng Anh cơ bản A1</td>
-                                            <td>
-                                                <span class="badge bg-success rounded-pill">
-                                                    <i class="fas fa-play me-1"></i>Đang học
-                                                </span>
-                                            </td>
-                                            <td><i class="fas fa-users text-primary me-1"></i>25 học viên</td>
-                                            <td><i class="fas fa-calendar-alt text-primary me-1"></i>T2 - T4 - T6</td>
-                                            <td><i class="fas fa-clock text-primary me-1"></i>18:00 - 20:00</td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="progress flex-grow-1 me-2" style="height: 8px;">
-                                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 66.7%;" aria-valuenow="16" aria-valuemin="0" aria-valuemax="24"></div>
-                                                    </div>
-                                                    <span class="small text-muted">16/24 buổi</span>
+                <div class="tab-content mt-4" id="attendanceTabContent">
+                    <!-- Classes Tab -->
+                    <div class="tab-pane fade show active" id="classes" role="tabpanel" aria-labelledby="classes-tab">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Mã lớp</th>
+                                        <th>Tên lớp</th>
+                                        <th>Trạng thái</th>
+                                        <th>Học viên</th>
+                                        <th>Lịch học</th>
+                                        <th>Giờ học</th>
+                                        <th>Tiến độ</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Lớp 1: Đang học -->
+                                    <tr>
+                                        <td><span class="badge bg-light text-dark">TA-CB-A1-01</span></td>
+                                        <td class="fw-medium">Tiếng Anh cơ bản A1</td>
+                                        <td>
+                                            <span class="badge bg-success rounded-pill">
+                                                <i class="fas fa-play me-1"></i>Đang học
+                                            </span>
+                                        </td>
+                                        <td><i class="fas fa-users text-primary me-1"></i>25 học viên</td>
+                                        <td><i class="fas fa-calendar-alt text-primary me-1"></i>T2 - T4 - T6</td>
+                                        <td><i class="fas fa-clock text-primary me-1"></i>18:00 - 20:00</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-primary" role="progressbar"
+                                                        style="width: 66.7%;" aria-valuenow="16" aria-valuemin="0"
+                                                        aria-valuemax="24"></div>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('online.attendance.sessions', ['class' => 1]) }}" class="btn btn-sm btn-primary">
-                                                    <i class="fas fa-calendar-check me-1"></i>Xem buổi học
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        
-                                        <!-- Lớp 2: Sắp khai giảng -->
-                                        <tr>
-                                            <td><span class="badge bg-light text-dark">TA-GT-B1-01</span></td>
-                                            <td class="fw-medium">Tiếng Anh giao tiếp B1</td>
-                                            <td>
-                                                <span class="badge bg-info rounded-pill">
-                                                    <i class="fas fa-hourglass-start me-1"></i>Sắp khai giảng
-                                                </span>
-                                            </td>
-                                            <td><i class="fas fa-users text-primary me-1"></i>20 học viên</td>
-                                            <td><i class="fas fa-calendar-alt text-primary me-1"></i>T3 - T5 - T7</td>
-                                            <td><i class="fas fa-clock text-primary me-1"></i>18:30 - 20:30</td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="progress flex-grow-1 me-2" style="height: 8px;">
-                                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="30"></div>
-                                                    </div>
-                                                    <span class="small text-muted">0/30 buổi</span>
+                                                <span class="small text-muted">16/24 buổi</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('online.attendance.sessions', ['class' => 1]) }}"
+                                                class="btn btn-sm btn-primary">
+                                                <i class="fas fa-calendar-check me-1"></i>Xem buổi học
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Lớp 2: Sắp khai giảng -->
+                                    <tr>
+                                        <td><span class="badge bg-light text-dark">TA-GT-B1-01</span></td>
+                                        <td class="fw-medium">Tiếng Anh giao tiếp B1</td>
+                                        <td>
+                                            <span class="badge bg-info rounded-pill">
+                                                <i class="fas fa-hourglass-start me-1"></i>Sắp khai giảng
+                                            </span>
+                                        </td>
+                                        <td><i class="fas fa-users text-primary me-1"></i>20 học viên</td>
+                                        <td><i class="fas fa-calendar-alt text-primary me-1"></i>T3 - T5 - T7</td>
+                                        <td><i class="fas fa-clock text-primary me-1"></i>18:30 - 20:30</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-primary" role="progressbar"
+                                                        style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
+                                                        aria-valuemax="30"></div>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('online.attendance.sessions', ['class' => 2]) }}" class="btn btn-sm btn-primary">
-                                                    <i class="fas fa-calendar-check me-1"></i>Xem buổi học
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        
-                                        <!-- Lớp 3: Đã kết thúc -->
-                                        <tr>
-                                            <td><span class="badge bg-light text-dark">TA-TM-B2-01</span></td>
-                                            <td class="fw-medium">Tiếng Anh thương mại B2</td>
-                                            <td>
-                                                <span class="badge bg-secondary rounded-pill">
-                                                    <i class="fas fa-check me-1"></i>Đã kết thúc
-                                                </span>
-                                            </td>
-                                            <td><i class="fas fa-users text-primary me-1"></i>15 học viên</td>
-                                            <td><i class="fas fa-calendar-alt text-primary me-1"></i>T2 - T4 - T6</td>
-                                            <td><i class="fas fa-clock text-primary me-1"></i>19:00 - 21:00</td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="progress flex-grow-1 me-2" style="height: 8px;">
-                                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 100%;" aria-valuenow="36" aria-valuemin="0" aria-valuemax="36"></div>
-                                                    </div>
-                                                    <span class="small text-muted">36/36 buổi</span>
+                                                <span class="small text-muted">0/30 buổi</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('online.attendance.sessions', ['class' => 2]) }}"
+                                                class="btn btn-sm btn-primary">
+                                                <i class="fas fa-calendar-check me-1"></i>Xem buổi học
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Lớp 3: Đã kết thúc -->
+                                    <tr>
+                                        <td><span class="badge bg-light text-dark">TA-TM-B2-01</span></td>
+                                        <td class="fw-medium">Tiếng Anh thương mại B2</td>
+                                        <td>
+                                            <span class="badge bg-secondary rounded-pill">
+                                                <i class="fas fa-check me-1"></i>Đã kết thúc
+                                            </span>
+                                        </td>
+                                        <td><i class="fas fa-users text-primary me-1"></i>15 học viên</td>
+                                        <td><i class="fas fa-calendar-alt text-primary me-1"></i>T2 - T4 - T6</td>
+                                        <td><i class="fas fa-clock text-primary me-1"></i>19:00 - 21:00</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-primary" role="progressbar"
+                                                        style="width: 100%;" aria-valuenow="36" aria-valuemin="0"
+                                                        aria-valuemax="36"></div>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('online.attendance.sessions', ['class' => 3]) }}" class="btn btn-sm btn-primary">
-                                                    <i class="fas fa-calendar-check me-1"></i>Xem buổi học
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                                <span class="small text-muted">36/36 buổi</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('online.attendance.sessions', ['class' => 3]) }}"
+                                                class="btn btn-sm btn-primary">
+                                                <i class="fas fa-calendar-check me-1"></i>Xem buổi học
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Filter Tab -->
+                    <div class="tab-pane fade" id="filter" role="tabpanel" aria-labelledby="filter-tab">
+                        <form action="" method="GET" class="row g-3">
+                            <div class="col-md-3">
+                                <label for="course_type" class="form-label">Loại khóa học</label>
+                                <select name="course_type" id="course_type" class="form-select">
+                                    <option value="">Tất cả loại</option>
+                                    <option value="basic">Tiếng Anh cơ bản</option>
+                                    <option value="communication">Tiếng Anh giao tiếp</option>
+                                    <option value="business">Tiếng Anh thương mại</option>
+                                </select>
                             </div>
-                        </div>
-
-                        <!-- Filter Tab -->
-                        <div class="tab-pane fade" id="filter" role="tabpanel" aria-labelledby="filter-tab">
-                            <form action="" method="GET" class="row g-3">
-                                <div class="col-md-3">
-                                    <label for="course_type" class="form-label">Loại khóa học</label>
-                                    <select name="course_type" id="course_type" class="form-select">
-                                        <option value="">Tất cả loại</option>
-                                        <option value="basic">Tiếng Anh cơ bản</option>
-                                        <option value="communication">Tiếng Anh giao tiếp</option>
-                                        <option value="business">Tiếng Anh thương mại</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="level" class="form-label">Cấp độ</label>
-                                    <select name="level" id="level" class="form-select">
-                                        <option value="">Tất cả cấp độ</option>
-                                        <option value="a1">A1</option>
-                                        <option value="a2">A2</option>
-                                        <option value="b1">B1</option>
-                                        <option value="b2">B2</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="status" class="form-label">Trạng thái</label>
-                                    <select name="status" id="status" class="form-select">
-                                        <option value="">Tất cả trạng thái</option>
-                                        <option value="active">Đang học</option>
-                                        <option value="completed">Đã kết thúc</option>
-                                        <option value="upcoming">Sắp khai giảng</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3 d-flex align-items-end">
-                                    <button type="submit" class="btn btn-primary w-100">
-                                        <i class="fas fa-search me-2"></i>Áp dụng
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                            <div class="col-md-3">
+                                <label for="level" class="form-label">Cấp độ</label>
+                                <select name="level" id="level" class="form-select">
+                                    <option value="">Tất cả cấp độ</option>
+                                    <option value="a1">A1</option>
+                                    <option value="a2">A2</option>
+                                    <option value="b1">B1</option>
+                                    <option value="b2">B2</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="status" class="form-label">Trạng thái</label>
+                                <select name="status" id="status" class="form-select">
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="active">Đang học</option>
+                                    <option value="completed">Đã kết thúc</option>
+                                    <option value="upcoming">Sắp khai giảng</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search me-2"></i>Áp dụng
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

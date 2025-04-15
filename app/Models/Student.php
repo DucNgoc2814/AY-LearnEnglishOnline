@@ -28,10 +28,20 @@ class Student extends Authenticatable implements JWTSubject
         'gender',
         'phone',
         'address',
+        'avatar',
+        'bio',
         'parent1_name',
         'parent1_relationship',
         'parent1_phone',
         'parent1_email',
+        'parent1_occupation',
+        'parent1_is_emergency_contact',
+        'parent2_name',
+        'parent2_relationship',
+        'parent2_phone',
+        'parent2_email',
+        'parent2_occupation',
+        'parent2_is_emergency_contact',
         'is_active'
     ];
 
@@ -41,8 +51,10 @@ class Student extends Authenticatable implements JWTSubject
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
         'date_of_birth' => 'date',
+        'parent1_is_emergency_contact' => 'boolean',
+        'parent2_is_emergency_contact' => 'boolean',
+        'is_active' => 'boolean'
     ];
 
     /**
@@ -62,7 +74,7 @@ class Student extends Authenticatable implements JWTSubject
     }
 
     /**
-     * Lấy user liên kết với học viên
+     * Get the user that owns the student profile.
      */
     public function user(): BelongsTo
     {
@@ -70,17 +82,17 @@ class Student extends Authenticatable implements JWTSubject
     }
 
     /**
-     * Lấy các lớp học của học viên
+     * Get the classes the student is enrolled in.
      */
     public function classes(): BelongsToMany
     {
-        return $this->belongsToMany(Classes::class, 'class_student', 'student_id', 'class_id')
-            ->withPivot(['status', 'payment_date', 'invoice_number', 'enrollment_date', 'completion_date', 'notes'])
-            ->withTimestamps();
+        return $this->belongsToMany(Classes::class, 'course_registrations', 'student_id', 'class_id')
+                    ->withPivot(['status', 'fee_amount', 'payment_status', 'payment_method', 'payment_date', 'invoice_number', 'enrollment_date', 'completion_date', 'notes'])
+                    ->withTimestamps();
     }
 
     /**
-     * Lấy danh sách điểm danh của học viên
+     * Get the attendances for the student.
      */
     public function attendances(): HasMany
     {

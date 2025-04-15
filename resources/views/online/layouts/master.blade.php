@@ -85,7 +85,7 @@
 
         .main-content {
             margin-left: var(--sidebar-width);
-            padding: calc(var(--header-height) + 1.5rem) 1.5rem 1.5rem;
+                padding: calc(var(--header-height) + 1rem) 1.5rem 1.5rem;
             min-height: calc(100vh - var(--header-height));
             transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }

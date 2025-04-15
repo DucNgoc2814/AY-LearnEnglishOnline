@@ -92,8 +92,8 @@ class Classes extends Model
      */
     public function students(): BelongsToMany
     {
-        return $this->belongsToMany(Student::class, 'class_student', 'class_id', 'student_id')
-            ->withPivot(['status', 'enrollment_date'])
+        return $this->belongsToMany(Student::class, 'course_registrations', 'class_id', 'student_id')
+            ->withPivot(['status', 'fee_amount', 'payment_status', 'payment_method', 'payment_date', 'invoice_number', 'enrollment_date', 'completion_date', 'notes'])
             ->withTimestamps();
     }
 
@@ -290,5 +290,13 @@ class Classes extends Model
             ->orderBy('session_date')
             ->orderBy('start_time')
             ->first();
+    }
+
+    /**
+     * Get the assistant teacher associated with the class.
+     */
+    public function assistant()
+    {
+        return $this->belongsTo(Employee::class, 'assistant_id');
     }
 } 
