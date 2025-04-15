@@ -212,27 +212,3 @@
         </button>
     </div>
 @endsection
-
-@push('scripts')
-    <script>
-        function populateEditModal(item) {
-            modalHandler.open('editClassModal');
-
-            modalHandler.setEditModalData('editClassModal', {
-                name: item.name,
-                code: item.code,
-                teacher_id: item.teacher_id,
-                start_date: item.start_date,
-                end_date: item.end_date,
-                enrollment_deadline: item.enrollment_deadline,
-                max_students: item.max_students,
-                min_students: item.min_students,
-                status: item.status,
-                description: item.description,
-                schedule: item.schedule,
-                is_active: item.is_active,
-                actionUrl: '{{ url('admin/classes') }}/' + item.id
-            });
-        }
-    </script>
-@endpush

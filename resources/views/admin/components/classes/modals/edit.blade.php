@@ -18,7 +18,7 @@
                         </svg>
                     </button>
                 </div>
-                <form id="editClassForm" method="POST" class="mt-4">
+                <form id="edit_classForm" method="POST" class="mt-4">
                     @csrf
                     @method('PUT')
                     <div class="grid grid-cols-3 gap-6">
@@ -26,25 +26,25 @@
                             <h4 class="text-lg font-medium text-gray-900 mb-4">Thông tin cơ bản</h4>
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="col-span-2">
-                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_name">
                                         Tên lớp học <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="text" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
+                                    <input type="text" id="edit_name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
                                 </div>
 
                                 <div>
-                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_code">
                                         Mã lớp <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="text" name="code" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
+                                    <input type="text" id="edit_code" name="code" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
                                     <p class="text-sm text-gray-500 mt-1">Mã lớp phải là duy nhất</p>
                                 </div>
 
                                 <div>
-                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_teacher_id">
                                         Giáo viên <span class="text-red-500">*</span>
                                     </label>
-                                    <select name="teacher_id" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
+                                    <select id="edit_teacher_id" name="teacher_id" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
                                         <option value="">Chọn giáo viên</option>
                                         @if(isset($teachers) && count($teachers) > 0)
                                             @foreach($teachers as $teacher)
@@ -62,50 +62,43 @@
                             <h4 class="text-lg font-medium text-gray-900 mb-4">Thời gian</h4>
                             <div class="grid grid-cols-3 gap-4">
                                 <div>
-                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_start_date">
                                         Ngày bắt đầu <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="datetime-local" name="start_date" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
+                                    <input type="datetime-local" id="edit_start_date" name="start_date" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
                                 </div>
 
                                 <div>
-                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_end_date">
                                         Ngày kết thúc <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="datetime-local" name="end_date" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
+                                    <input type="datetime-local" id="edit_end_date" name="end_date" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
                                 </div>
 
                                 <div>
-                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_enrollment_deadline">
                                         Hạn đăng ký
                                     </label>
-                                    <input type="date" name="enrollment_deadline" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500">
+                                    <input type="date" id="edit_enrollment_deadline" name="enrollment_deadline" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500">
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-span-3">
                             <h4 class="text-lg font-medium text-gray-900 mb-4">Số lượng học viên</h4>
-                            <div class="grid grid-cols-3 gap-4">
+                            <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_min_students">
                                         Số học viên tối thiểu <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="number" name="min_students" min="1" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
+                                    <input type="number" id="edit_min_students" name="min_students" min="1" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
                                 </div>
 
                                 <div>
-                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_max_students">
                                         Số học viên tối đa <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="number" name="max_students" min="1" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
-                                </div>
-
-                                <div>
-                                    <label class="block text-gray-700 text-sm font-bold mb-2">
-                                        Số học viên hiện tại
-                                    </label>
-                                    <input type="number" name="current_students" min="0" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" readonly>
+                                    <input type="number" id="edit_max_students" name="max_students" min="1" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
                                 </div>
                             </div>
                         </div>
@@ -115,19 +108,19 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="space-y-4">
                                     <div>
-                                        <label class="block text-gray-700 text-sm font-bold mb-2">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_schedule">
                                             Lịch học
                                         </label>
-                                        <textarea name="schedule" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" placeholder="Định dạng JSON"></textarea>
+                                        <textarea id="edit_schedule" name="schedule" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" placeholder="Định dạng JSON"></textarea>
                                         <p class="text-sm text-gray-500 mt-1">Ví dụ: {"monday":["08:00 - 10:00"],"wednesday":["08:00 - 10:00"]}</p>
                                     </div>
 
                                     <div class="space-y-3">
                                         <div>
-                                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_status">
                                                 Trạng thái <span class="text-red-500">*</span>
                                             </label>
-                                            <select name="status" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
+                                            <select id="edit_status" name="status" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500" required>
                                                 <option value="pending">Chờ</option>
                                                 <option value="active">Đang học</option>
                                                 <option value="completed">Hoàn thành</option>
@@ -137,7 +130,7 @@
 
                                         <div>
                                             <label class="flex items-center space-x-2 cursor-pointer">
-                                                <input type="checkbox" name="is_active" value="1"
+                                                <input type="checkbox" id="edit_is_active" name="is_active" value="1"
                                                     class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 cursor-pointer">
                                                 <span class="text-gray-700 font-medium">Kích hoạt lớp học</span>
                                             </label>
@@ -149,7 +142,7 @@
                                     <label class="block text-gray-700 text-sm font-bold mb-2">
                                         Mô tả
                                     </label>
-                                    <textarea name="description" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"></textarea>
+                                    <textarea id="edit_description" name="description" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -171,25 +164,69 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    window.populateEditModal = function(data) {
-        const form = document.getElementById('editClassForm');
-        form.action = `/admin/classes/${data.id}`;
+    function populateEditModal(item) {
+        console.log('Editing class:', item);
+        modalHandler.open('editClassModal');
+
+        const form = document.getElementById('edit_classForm');
+        form.action = `/admin/classes/${item.id}`;
 
         // Điền dữ liệu vào form
-        form.querySelector('[name="name"]').value = data.name;
-        form.querySelector('[name="code"]').value = data.code;
-        form.querySelector('[name="teacher_id"]').value = data.teacher_id;
-        form.querySelector('[name="start_date"]').value = data.start_date ? new Date(data.start_date).toISOString().slice(0, 16) : '';
-        form.querySelector('[name="end_date"]').value = data.end_date ? new Date(data.end_date).toISOString().slice(0, 16) : '';
-        form.querySelector('[name="enrollment_deadline"]').value = data.enrollment_deadline ? new Date(data.enrollment_deadline).toISOString().slice(0, 10) : '';
-        form.querySelector('[name="min_students"]').value = data.min_students;
-        form.querySelector('[name="max_students"]').value = data.max_students;
-        form.querySelector('[name="current_students"]').value = data.current_students;
-        form.querySelector('[name="status"]').value = data.status;
-        form.querySelector('[name="description"]').value = data.description || '';
-        form.querySelector('[name="schedule"]').value = data.schedule ? JSON.stringify(data.schedule) : '';
-        form.querySelector('[name="is_active"]').checked = data.is_active;
-    };
-});
+        document.getElementById('edit_name').value = item.name || '';
+        document.getElementById('edit_code').value = item.code || '';
+        document.getElementById('edit_teacher_id').value = item.teacher_id || '';
+
+        // Xử lý các trường datetime
+        if (item.start_date) {
+            document.getElementById('edit_start_date').value = new Date(item.start_date).toISOString().slice(0, 16);
+        }
+        if (item.end_date) {
+            document.getElementById('edit_end_date').value = new Date(item.end_date).toISOString().slice(0, 16);
+        }
+        if (item.enrollment_deadline) {
+            document.getElementById('edit_enrollment_deadline').value = new Date(item.enrollment_deadline).toISOString().slice(0, 10);
+        }
+
+        // Điền các trường số
+        document.getElementById('edit_min_students').value = item.min_students || '';
+        document.getElementById('edit_max_students').value = item.max_students || '';
+
+        // Điền các trường text và select
+        document.getElementById('edit_status').value = item.status || 'pending';
+        document.getElementById('edit_description').value = item.description || '';
+
+        // Xử lý trường JSON schedule
+        if (item.schedule) {
+            try {
+                const scheduleStr = typeof item.schedule === 'string' ? item.schedule : JSON.stringify(item.schedule);
+                document.getElementById('edit_schedule').value = scheduleStr;
+            } catch (e) {
+                console.error('Error parsing schedule:', e);
+                document.getElementById('edit_schedule').value = '';
+            }
+        }
+
+        // Xử lý checkbox
+        document.getElementById('edit_is_active').checked = Boolean(item.is_active);
+
+        // Khởi tạo TinyMCE cho trường mô tả chi tiết nếu cần
+        if (tinymce.get('edit_description')) {
+            tinymce.get('edit_description').setContent(item.description || '');
+        } else {
+            setTimeout(function() {
+                tinymce.init({
+                    selector: '#edit_description',
+                    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                    height: 300,
+                    language: 'vi',
+                    image_title: true,
+                    automatic_uploads: true,
+                    file_picker_types: 'image',
+                    entity_encoding: 'raw',
+                    encoding: 'UTF-8'
+                });
+            }, 100);
+        }
+    }
 </script>
