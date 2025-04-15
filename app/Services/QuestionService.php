@@ -38,7 +38,7 @@ class QuestionService extends BaseService implements QuestionServiceInterface
     public function findWithFullUrls($id)
     {
         try {
-            $question = $this->repository->findById($id);
+            $question = $this->repository->findWithFullUrls($id);
             if (!$question) {
                 throw new \Exception('Không tìm thấy câu hỏi');
             }
@@ -48,11 +48,18 @@ class QuestionService extends BaseService implements QuestionServiceInterface
                 $question->full_media_url = $this->getFullUrl($question->media_url);
             }
 
+            // Xác định loại câu trả lời (single/multiple)
+            if ($question->answers && $question->answers->count() > 0) {
+                $correctAnswers = $question->answers->where('is_correct', true)->count();
+                $question->answer_type = $correctAnswers > 1 ? 'multiple' : 'single';
+            }
+
             return $question;
         } catch (\Exception $e) {
             Log::error('Error in QuestionService findWithFullUrls:', [
                 'id' => $id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
             throw $e;
         }

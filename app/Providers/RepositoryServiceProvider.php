@@ -21,6 +21,8 @@ use App\Repositories\Interfaces\QuestionRepositoryInterface;
 use App\Repositories\QuestionRepository;
 use App\Repositories\Interfaces\AnswerRepositoryInterface;
 use App\Repositories\AnswerRepository;
+use App\Repositories\Interfaces\StudentRepositoryInterface;
+use App\Repositories\StudentRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -35,5 +37,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(TestRepositoryInterface::class, TestRepository::class);
         $this->app->bind(QuestionRepositoryInterface::class, QuestionRepository::class);
         $this->app->bind(AnswerRepositoryInterface::class, AnswerRepository::class);
+        $this->app->bind(StudentRepositoryInterface::class, StudentRepository::class);
     }
 }

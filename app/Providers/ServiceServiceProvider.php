@@ -23,6 +23,8 @@ use App\Services\Interfaces\QuestionServiceInterface;
 use App\Services\QuestionService;
 use App\Services\Interfaces\AnswerServiceInterface;
 use App\Services\AnswerService;
+use App\Services\Interfaces\StudentServiceInterface;
+use App\Services\StudentService;
 
 class ServiceServiceProvider extends ServiceProvider
 {
@@ -38,5 +40,6 @@ class ServiceServiceProvider extends ServiceProvider
         $this->app->bind(TestServiceInterface::class, TestService::class);
         $this->app->bind(QuestionServiceInterface::class, QuestionService::class);
         $this->app->bind(AnswerServiceInterface::class, AnswerService::class);
+        $this->app->bind(StudentServiceInterface::class, StudentService::class);
     }
 }

@@ -6,7 +6,7 @@
         </div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <div
-            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
             <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div class="flex justify-between items-center pb-3 border-b">
                     <h3 class="text-lg font-medium text-gray-900" id="editQuestionModalLabel">Chỉnh sửa câu hỏi</h3>
@@ -26,126 +26,231 @@
                     <input type="hidden" name="question_id" id="edit_questionId">
                     <input type="hidden" name="media_url" id="edit_media_url">
 
-                    <div class="mt-4">
-                        <!-- Bài kiểm tra -->
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_test_id">
-                                Bài kiểm tra <span class="text-red-500">*</span>
-                            </label>
-                            <select
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="edit_test_id" name="test_id" required>
-                                <option value="">Chọn bài kiểm tra</option>
-                                @foreach (\App\Models\Test::all() as $test)
-                                    <option value="{{ $test->id }}">
-                                        {{ $test->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
+                        <!-- Phần thông tin cơ bản -->
+                        <div class="space-y-8">
+                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                                <h4 class="font-medium text-gray-900 mb-4 flex items-center">
+                                    <span class="mr-2">1. Thông tin cơ bản</span>
+                                    <span class="text-xs text-gray-500">(Các trường bắt buộc có dấu *)</span>
+                                </h4>
 
-                        <!-- Loại câu hỏi -->
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_type">
-                                Loại câu hỏi <span class="text-red-500">*</span>
-                            </label>
-                            <select
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="edit_type" name="type" required>
-                                <option value="text">Văn bản</option>
-                                <option value="image">Hình ảnh</option>
-                                <option value="video">Video</option>
-                                <option value="audio">Âm thanh</option>
-                            </select>
-                        </div>
+                                <!-- Bài kiểm tra -->
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_test_id">
+                                        Bài kiểm tra <span class="text-red-500">*</span>
+                                        <span class="ml-1 text-xs text-gray-500">(Chọn bài kiểm tra để thêm câu hỏi vào)</span>
+                                    </label>
+                                    <select
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="edit_test_id" name="test_id" required>
+                                        <option value="">Chọn bài kiểm tra</option>
+                                        @foreach (\App\Models\Test::all() as $test)
+                                            <option value="{{ $test->id }}">
+                                                {{ $test->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-                        <!-- Nội dung câu hỏi -->
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_question">
-                                Nội dung câu hỏi <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text"
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="edit_question" name="question" required>
-                        </div>
+                                <!-- Loại câu hỏi -->
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_type">
+                                        Loại câu hỏi <span class="text-red-500">*</span>
+                                        <span class="ml-1 text-xs text-gray-500">(Chọn định dạng nội dung câu hỏi)</span>
+                                    </label>
+                                    <select
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="edit_type" name="type" required>
+                                        <option value="text">Văn bản (Chỉ chữ)</option>
+                                        <option value="image">Hình ảnh (Câu hỏi kèm hình)</option>
+                                        <option value="video">Video (Câu hỏi kèm video)</option>
+                                        <option value="audio">Âm thanh (Câu hỏi kèm audio)</option>
+                                    </select>
+                                </div>
 
-                        <!-- Thứ tự -->
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_order_number">
-                                Thứ tự <span class="text-red-500">*</span>
-                            </label>
-                            <input type="number"
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="edit_order_number" name="order_number" min="0" required>
-                        </div>
+                                <!-- Nội dung câu hỏi -->
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_question">
+                                        Nội dung câu hỏi <span class="text-red-500">*</span>
+                                        <span class="ml-1 text-xs text-gray-500">(Nhập câu hỏi chi tiết)</span>
+                                    </label>
+                                    <textarea
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="edit_question" name="question" rows="3" required
+                                        placeholder="VD: What is the capital of Vietnam?"></textarea>
+                                </div>
 
-                        <!-- Giải thích đáp án đúng -->
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2"
-                                for="edit_correct_answer_explanation">
-                                Giải thích đáp án đúng
-                            </label>
-                            <textarea
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="edit_correct_answer_explanation" name="correct_answer_explanation" rows="3"
-                                placeholder="Nhập giải thích cho đáp án đúng"></textarea>
-                            <p class="text-xs text-gray-500 mt-1">Giải thích này sẽ được hiển thị cho học viên sau khi
-                                họ hoàn thành câu hỏi</p>
-                        </div>
-
-                        <!-- Media upload -->
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_media_file">
-                                Tệp Media
-                            </label>
-                            <div class="preview-container mb-2">
-                                <div id="edit_mediaPreviewContainer" class="hidden">
-                                    <img id="edit_imagePreview" src=""
-                                        class="hidden max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
-                                        style="max-height: 200px; object-fit: contain;"
-                                        onclick="openEditMediaModal(this.src)">
-                                    <video id="edit_videoPreview"
-                                        class="hidden max-w-xs rounded-lg shadow-md cursor-pointer"
-                                        style="max-height: 200px; width: 100%;" controls>
-                                        <source src="" type="video/mp4">
-                                    </video>
-                                    <audio id="edit_audioPreview" class="hidden w-full" controls>
-                                        <source src="" type="audio/mpeg">
-                                    </audio>
+                                <!-- Thứ tự -->
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_order_number">
+                                        Thứ tự <span class="text-red-500">*</span>
+                                        <span class="ml-1 text-xs text-gray-500">(Vị trí hiển thị trong bài kiểm tra)</span>
+                                    </label>
+                                    <input type="number"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="edit_order_number" name="order_number" min="1" required>
                                 </div>
                             </div>
-                            <div class="flex space-x-2">
-                                <button type="button" id="edit_chooseMediaBtn"
-                                    class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
-                                    Chọn tệp
-                                </button>
-                                <button type="button" onclick="clearEditMedia()"
-                                    class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded">
-                                    Xóa tệp
+
+                            <!-- Phần media -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                                <h4 class="font-medium text-gray-900 mb-6">2. Tệp đính kèm</h4>
+
+                                <!-- Media upload cho Image -->
+                                <div class="mb-8 media-upload-container" id="edit_imageUploadContainer">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_image_file">
+                                        Tệp Hình ảnh
+                                        <span class="ml-1 text-xs text-gray-500">(JPG, PNG, GIF - Tối đa 5MB)</span>
+                                    </label>
+                                    <div class="preview-container mb-2">
+                                        <div id="edit_imagePreviewContainer" class="hidden">
+                                            <img id="edit_imagePreview" src=""
+                                                class="max-w-xs h-auto rounded-lg shadow-md cursor-pointer"
+                                                style="max-height: 200px; object-fit: contain;"
+                                                onclick="openEditMediaModal(this.src)">
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button type="button" id="edit_chooseImageBtn"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                            Chọn tệp
+                                        </button>
+                                        <button type="button" onclick="clearEditMedia('image')"
+                                            class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                            Xóa tệp
+                                        </button>
+                                    </div>
+                                    <input type="file" class="hidden" id="edit_image_file" name="media_file"
+                                        accept="image/*">
+                                </div>
+
+                                <!-- Media upload cho Video -->
+                                <div class="mb-8 media-upload-container" id="edit_videoUploadContainer">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_video_file">
+                                        Tệp Video
+                                        <span class="ml-1 text-xs text-gray-500">(MP4, WebM - Tối đa 50MB)</span>
+                                    </label>
+                                    <div class="preview-container mb-2">
+                                        <div id="edit_videoPreviewContainer" class="hidden">
+                                            <video id="edit_videoPreview"
+                                                class="max-w-xs rounded-lg shadow-md cursor-pointer"
+                                                style="max-height: 200px; width: 100%;" controls>
+                                                <source src="" type="video/mp4">
+                                            </video>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button type="button" id="edit_chooseVideoBtn"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                            Chọn tệp
+                                        </button>
+                                        <button type="button" onclick="clearEditMedia('video')"
+                                            class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                            Xóa tệp
+                                        </button>
+                                    </div>
+                                    <input type="file" class="hidden" id="edit_video_file" name="media_file"
+                                        accept="video/*">
+                                </div>
+
+                                <!-- Media upload cho Audio -->
+                                <div class="mb-8 media-upload-container" id="edit_audioUploadContainer">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_audio_file">
+                                        Tệp Âm thanh
+                                        <span class="ml-1 text-xs text-gray-500">(MP3, WAV - Tối đa 10MB)</span>
+                                    </label>
+                                    <div class="preview-container mb-2">
+                                        <div id="edit_audioPreviewContainer" class="hidden">
+                                            <audio id="edit_audioPreview" class="w-full" controls>
+                                                <source src="" type="audio/mpeg">
+                                            </audio>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button type="button" id="edit_chooseAudioBtn"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                            Chọn tệp
+                                        </button>
+                                        <button type="button" onclick="clearEditMedia('audio')"
+                                            class="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded">
+                                            Xóa tệp
+                                        </button>
+                                    </div>
+                                    <input type="file" class="hidden" id="edit_audio_file" name="media_file"
+                                        accept="audio/*">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Phần bên phải -->
+                        <div class="space-y-8">
+                            <!-- Phần câu trả lời -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                                <h4 class="font-medium text-gray-900 mb-6">3. Thiết lập câu trả lời</h4>
+
+                                <!-- Loại câu trả lời -->
+                                <div class="mb-6">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_answer_type">
+                                        Loại câu trả lời <span class="text-red-500">*</span>
+                                        <span class="ml-1 text-xs text-gray-500">(Chọn một hoặc nhiều đáp án đúng)</span>
+                                    </label>
+                                    <select
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
+                                        id="edit_answer_type" name="answer_type" required>
+                                        <option value="single">Chọn một đáp án</option>
+                                        <option value="multiple">Chọn nhiều đáp án</option>
+                                    </select>
+                                </div>
+
+                                <!-- Danh sách câu trả lời -->
+                                <div id="edit_answers_container" class="space-y-4">
+                                    <!-- Các câu trả lời sẽ được thêm vào đây động -->
+                                </div>
+
+                                <!-- Nút thêm câu trả lời -->
+                                <button type="button" id="edit_add_answer"
+                                    class="mt-6 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded inline-flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                    Thêm câu trả lời
                                 </button>
                             </div>
-                            <input type="file" class="hidden" id="edit_media_file" name="media_file"
-                                accept="image/*,video/*,audio/*">
+
+                            <!-- Phần giải thích đáp án -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                                <h4 class="font-medium text-gray-900 mb-4">4. Giải thích đáp án</h4>
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                                        for="edit_correct_answer_explanation">
+                                        Giải thích chi tiết
+                                        <span class="ml-1 text-xs text-gray-500">(Sẽ hiển thị sau khi học viên làm xong)</span>
+                                    </label>
+                                    <textarea
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="edit_correct_answer_explanation" name="correct_answer_explanation" rows="3"
+                                        placeholder="VD: Hà Nội là thủ đô của Việt Nam từ năm 1010..."></textarea>
+                                    <p class="text-xs text-gray-500 mt-1">Giải thích này giúp học viên hiểu rõ hơn về đáp án đúng</p>
+                                </div>
+                            </div>
+
+                            <!-- Phần hướng dẫn -->
+                            <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                                <h5 class="text-blue-800 font-medium mb-2">Lưu ý khi chỉnh sửa câu hỏi:</h5>
+                                <ul class="list-disc pl-5 text-blue-700 text-sm space-y-1">
+                                    <li>Nội dung câu hỏi cần rõ ràng, dễ hiểu</li>
+                                    <li>Chọn loại câu hỏi phù hợp với nội dung bài kiểm tra</li>
+                                    <li>Đối với câu hỏi có media, đảm bảo chất lượng tệp tốt</li>
+                                    <li>Thứ tự câu hỏi nên sắp xếp theo độ khó tăng dần</li>
+                                    <li>Cần có ít nhất một đáp án đúng cho mỗi câu hỏi</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2"
-                            for="edit_correct_answer_explanation">
-                            Giải thích đáp án đúng
-                        </label>
-                        <textarea
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline {{ session('errors') && session('errors')->has('correct_answer_explanation') ? 'border-red-500' : '' }}"
-                            id="edit_correct_answer_explanation" name="correct_answer_explanation" rows="3"
-                            placeholder="Nhập giải thích cho đáp án đúng"></textarea>
-                        @if (session('errors') && session('errors')->has('correct_answer_explanation'))
-                            <p class="text-red-500 text-xs italic mt-1">
-                                {{ session('errors')->first('correct_answer_explanation') }}</p>
-                        @endif
-                        <p class="text-xs text-gray-500 mt-1">Giải thích này sẽ được hiển thị cho học viên sau khi họ
-                            hoàn thành bài test</p>
-                    </div>
 
-                    <div class="flex justify-end pt-4 border-t mt-6">
+                    <div class="flex justify-end pt-6 border-t mt-6">
                         <button type="button"
                             class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
                             onclick="closeEditQuestionModal()">
@@ -189,20 +294,209 @@
 </div>
 
 <script>
-    function editQuestion(id) {
-        console.log('Editing question:', id);
+    document.addEventListener('DOMContentLoaded', function() {
+        // Khởi tạo các biến
+        const editTypeSelect = document.getElementById('edit_type');
+        const editImageUploadContainer = document.getElementById('edit_imageUploadContainer');
+        const editVideoUploadContainer = document.getElementById('edit_videoUploadContainer');
+        const editAudioUploadContainer = document.getElementById('edit_audioUploadContainer');
+        const editQuestionForm = document.getElementById('editQuestionForm');
 
-        fetch(`/admin/questions/${id}/edit`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+        // Ẩn tất cả media upload containers ban đầu
+        function hideAllEditMediaContainers() {
+            editImageUploadContainer.style.display = 'none';
+            editVideoUploadContainer.style.display = 'none';
+            editAudioUploadContainer.style.display = 'none';
+        }
+
+        // Hiển thị container dựa vào loại đã chọn
+        function showEditMediaContainer(type) {
+            hideAllEditMediaContainers();
+            if (type === 'image') {
+                editImageUploadContainer.style.display = 'block';
+            } else if (type === 'video') {
+                editVideoUploadContainer.style.display = 'block';
+            } else if (type === 'audio') {
+                editAudioUploadContainer.style.display = 'block';
+            }
+        }
+
+        // Khởi tạo hiển thị
+        hideAllEditMediaContainers();
+        showEditMediaContainer(editTypeSelect.value);
+
+        // Xử lý sự kiện thay đổi loại câu hỏi
+        editTypeSelect.addEventListener('change', function() {
+            const selectedType = this.value;
+            showEditMediaContainer(selectedType);
+        });
+
+        // Xử lý sự kiện click cho các nút "Chọn tệp"
+        document.getElementById('edit_chooseImageBtn').addEventListener('click', function() {
+            document.getElementById('edit_image_file').click();
+        });
+
+        document.getElementById('edit_chooseVideoBtn').addEventListener('click', function() {
+            document.getElementById('edit_video_file').click();
+        });
+
+        document.getElementById('edit_chooseAudioBtn').addEventListener('click', function() {
+            document.getElementById('edit_audio_file').click();
+        });
+
+        // Xử lý preview media
+        function handleEditFileInput(fileInput, previewElement, previewContainer, type) {
+            fileInput.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    const fileType = file.type;
+                    const reader = new FileReader();
+
+                    // Kiểm tra kích thước file
+                    const maxSize = getMaxFileSize(type);
+                    if (file.size > maxSize) {
+                        alert(`File quá lớn. Kích thước tối đa cho ${getFileTypeLabel(type)} là ${formatFileSize(maxSize)}.`);
+                        this.value = '';
+                        return;
+                    }
+
+                    reader.onload = function(e) {
+                        previewContainer.classList.remove('hidden');
+                        if (type === 'image') {
+                            previewElement.src = e.target.result;
+                        } else if (type === 'video' || type === 'audio') {
+                            previewElement.querySelector('source').src = e.target.result;
+                            previewElement.load();
+                        }
+                    }
+
+                    reader.readAsDataURL(file);
                 }
-                return response.json();
+            });
+        }
+
+        // Xử lý preview cho từng loại media
+        handleEditFileInput(
+            document.getElementById('edit_image_file'),
+            document.getElementById('edit_imagePreview'),
+            document.getElementById('edit_imagePreviewContainer'),
+            'image'
+        );
+        handleEditFileInput(
+            document.getElementById('edit_video_file'),
+            document.getElementById('edit_videoPreview'),
+            document.getElementById('edit_videoPreviewContainer'),
+            'video'
+        );
+        handleEditFileInput(
+            document.getElementById('edit_audio_file'),
+            document.getElementById('edit_audioPreview'),
+            document.getElementById('edit_audioPreviewContainer'),
+            'audio'
+        );
+
+        // Xử lý thêm câu trả lời
+        document.getElementById('edit_add_answer').addEventListener('click', function() {
+            const container = document.getElementById('edit_answers_container');
+            const answerCount = container.getElementsByClassName('answer-item').length;
+            const answerType = document.getElementById('edit_answer_type').value;
+
+            const template = `
+                <div class="answer-item mb-4 p-4 border rounded-lg bg-gray-50">
+                    <div class="grid grid-cols-12 gap-4">
+                        <div class="col-span-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Nội dung <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="answers[${answerCount}][answer]"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                placeholder="Nhập câu trả lời" required>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Thứ tự
+                            </label>
+                            <input type="number" name="answers[${answerCount}][order_number]"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                value="${answerCount + 1}" min="1" required>
+                        </div>
+                        <div class="col-span-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Tùy chọn
+                            </label>
+                            <div class="flex items-center mt-2">
+                                <input type="${answerType === 'single' ? 'radio' : 'checkbox'}"
+                                    name="${answerType === 'single' ? 'correct_answer' : `answers[${answerCount}][is_correct]`}"
+                                    value="${answerType === 'single' ? answerCount : '1'}"
+                                    class="form-checkbox h-4 w-4 text-blue-600">
+                                <span class="ml-2 text-sm text-gray-700">Đáp án đúng</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', template);
+        });
+
+        // Xử lý thay đổi loại câu trả lời
+        document.getElementById('edit_answer_type').addEventListener('change', function() {
+            const container = document.getElementById('edit_answers_container');
+            const answerType = this.value;
+            const correctInputs = container.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+
+            correctInputs.forEach((input, index) => {
+                if (answerType === 'single') {
+                    input.type = 'radio';
+                    input.name = 'correct_answer';
+                    input.value = index;
+                } else {
+                    input.type = 'checkbox';
+                    input.name = `answers[${index}][is_correct]`;
+                    input.value = '1';
+                }
+            });
+        });
+
+        // Xử lý form submit
+        editQuestionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const questionId = document.getElementById('edit_questionId').value;
+            const formData = new FormData(this);
+
+            // Gửi form bằng AJAX
+            fetch(`/admin/questions/${questionId}`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert('Cập nhật thành công!');
+                    closeEditQuestionModal();
+                    window.location.reload();
+                } else {
+                    alert('Lỗi: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Đã xảy ra lỗi khi cập nhật');
+            });
+        });
+    });
+
+    // Hàm xử lý khi mở modal chỉnh sửa
+    function editQuestion(id) {
+        fetch(`/admin/questions/${id}/edit`)
+            .then(response => response.json())
             .then(response => {
-                console.log('Response:', response);
                 if (response.status) {
-                    populateQuestionEditModal(response.data);
+                    populateEditQuestionModal(response.data);
                 } else {
                     throw new Error(response.message || 'Không thể tải thông tin câu hỏi');
                 }
@@ -213,135 +507,141 @@
             });
     }
 
-    function populateQuestionEditModal(question) {
-        console.log('Populating modal with:', question);
+    // Hàm điền dữ liệu vào modal
+    function populateEditQuestionModal(question) {
         modalHandler.open('editQuestionModal');
 
-        const form = document.getElementById('editQuestionForm');
-        form.action = `/admin/questions/${question.id}`;
-
-        // Điền dữ liệu vào form
+        // Điền thông tin cơ bản
         document.getElementById('edit_questionId').value = question.id;
         document.getElementById('edit_test_id').value = question.test_id;
         document.getElementById('edit_type').value = question.type;
         document.getElementById('edit_question').value = question.question;
         document.getElementById('edit_order_number').value = question.order_number;
+        document.getElementById('edit_correct_answer_explanation').value = question.correct_answer_explanation || '';
+        document.getElementById('edit_answer_type').value = question.answer_type || 'single';
 
-        // Lưu URL hiện tại vào input hidden để giữ lại khi không upload file mới
+        // Xử lý hiển thị media
         document.getElementById('edit_media_url').value = question.media_url || '';
+        showEditMediaPreview(question);
 
-        // Reset previews
+        // Điền danh sách câu trả lời
+        populateEditAnswers(question.answers || []);
+    }
+
+    // Hàm hiển thị preview media
+    function showEditMediaPreview(question) {
         resetEditPreviews();
 
-        // Hiển thị media
         if (question.media_url) {
-            console.log('Setting media:', question.media_url);
-            const mediaPreviewContainer = document.getElementById('edit_mediaPreviewContainer');
-
-            // Sử dụng full_media_url từ service nếu có
             const mediaUrl = question.full_media_url || question.media_url;
+            const mediaType = question.type;
+            const previewContainer = document.getElementById(`edit_${mediaType}PreviewContainer`);
+            const preview = document.getElementById(`edit_${mediaType}Preview`);
 
-            // Hiển thị preview phù hợp với loại câu hỏi
-            if (question.type === 'image') {
-                const imagePreview = document.getElementById('edit_imagePreview');
-                imagePreview.src = mediaUrl;
-                imagePreview.classList.remove('hidden');
-                mediaPreviewContainer.classList.remove('hidden');
-            } else if (question.type === 'video') {
-                const videoPreview = document.getElementById('edit_videoPreview');
-                const videoSource = videoPreview.querySelector('source');
-                videoSource.src = mediaUrl;
-                videoPreview.load();
-                videoPreview.classList.remove('hidden');
-                mediaPreviewContainer.classList.remove('hidden');
-            } else if (question.type === 'audio') {
-                const audioPreview = document.getElementById('edit_audioPreview');
-                const audioSource = audioPreview.querySelector('source');
-                audioSource.src = mediaUrl;
-                audioPreview.load();
-                audioPreview.classList.remove('hidden');
-                mediaPreviewContainer.classList.remove('hidden');
+            if (mediaType === 'image') {
+                preview.src = mediaUrl;
+            } else if (mediaType === 'video' || mediaType === 'audio') {
+                preview.querySelector('source').src = mediaUrl;
+                preview.load();
             }
-        }
 
-        // Xóa các input hidden nếu có
-        const removeMediaInput = form.querySelector('input[name="remove_media"]');
-        if (removeMediaInput) removeMediaInput.remove();
+            previewContainer.classList.remove('hidden');
+            showEditMediaContainer(mediaType);
+        }
+    }
+
+    // Hàm điền danh sách câu trả lời
+    function populateEditAnswers(answers) {
+        const container = document.getElementById('edit_answers_container');
+        container.innerHTML = '';
+
+        answers.forEach((answer, index) => {
+            const answerType = document.getElementById('edit_answer_type').value;
+            const template = `
+                <div class="answer-item mb-4 p-4 border rounded-lg bg-gray-50">
+                    <div class="grid grid-cols-12 gap-4">
+                        <div class="col-span-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Nội dung <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="answers[${index}][answer]"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                value="${answer.answer}" required>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Thứ tự
+                            </label>
+                            <input type="number" name="answers[${index}][order_number]"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                value="${answer.order_number}" min="1" required>
+                        </div>
+                        <div class="col-span-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Tùy chọn
+                            </label>
+                            <div class="flex items-center mt-2">
+                                <input type="${answerType === 'single' ? 'radio' : 'checkbox'}"
+                                    name="${answerType === 'single' ? 'correct_answer' : `answers[${index}][is_correct]`}"
+                                    value="${answerType === 'single' ? index : '1'}"
+                                    ${answer.is_correct ? 'checked' : ''}
+                                    class="form-checkbox h-4 w-4 text-blue-600">
+                                <span class="ml-2 text-sm text-gray-700">Đáp án đúng</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', template);
+        });
+    }
+
+    // Các hàm tiện ích
+    function getMaxFileSize(type) {
+        if (type === 'image') return 5 * 1024 * 1024; // 5MB
+        if (type === 'video') return 50 * 1024 * 1024; // 50MB
+        if (type === 'audio') return 10 * 1024 * 1024; // 10MB
+        return 5 * 1024 * 1024; // Default 5MB
+    }
+
+    function getFileTypeLabel(type) {
+        if (type === 'image') return 'hình ảnh';
+        if (type === 'video') return 'video';
+        if (type === 'audio') return 'âm thanh';
+        return 'file';
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' bytes';
+        if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / 1048576).toFixed(1) + ' MB';
     }
 
     function resetEditPreviews() {
-        const imagePreview = document.getElementById('edit_imagePreview');
-        const videoPreview = document.getElementById('edit_videoPreview');
-        const audioPreview = document.getElementById('edit_audioPreview');
-        const mediaPreviewContainer = document.getElementById('edit_mediaPreviewContainer');
-
-        imagePreview.classList.add('hidden');
-        videoPreview.classList.add('hidden');
-        audioPreview.classList.add('hidden');
-        mediaPreviewContainer.classList.add('hidden');
-    }
-
-    function handleEditMediaUpload(input) {
-        if (input.files && input.files[0]) {
-            const file = input.files[0];
-            const fileType = file.type;
-            const reader = new FileReader();
-
-            // Reset previews
-            resetEditPreviews();
-
-            reader.onload = function(e) {
-                const mediaPreviewContainer = document.getElementById('edit_mediaPreviewContainer');
-                mediaPreviewContainer.classList.remove('hidden');
-
-                if (fileType.startsWith('image/')) {
-                    const imagePreview = document.getElementById('edit_imagePreview');
-                    imagePreview.src = e.target.result;
-                    imagePreview.classList.remove('hidden');
-
-                    // Đồng bộ loại câu hỏi
-                    document.getElementById('edit_type').value = 'image';
-                } else if (fileType.startsWith('video/')) {
-                    const videoPreview = document.getElementById('edit_videoPreview');
-                    const videoSource = videoPreview.querySelector('source');
-                    videoSource.src = e.target.result;
-                    videoPreview.load();
-                    videoPreview.classList.remove('hidden');
-
-                    // Đồng bộ loại câu hỏi
-                    document.getElementById('edit_type').value = 'video';
-                } else if (fileType.startsWith('audio/')) {
-                    const audioPreview = document.getElementById('edit_audioPreview');
-                    const audioSource = audioPreview.querySelector('source');
-                    audioSource.src = e.target.result;
-                    audioPreview.load();
-                    audioPreview.classList.remove('hidden');
-
-                    // Đồng bộ loại câu hỏi
-                    document.getElementById('edit_type').value = 'audio';
-                }
+        const types = ['image', 'video', 'audio'];
+        types.forEach(type => {
+            const container = document.getElementById(`edit_${type}PreviewContainer`);
+            const preview = document.getElementById(`edit_${type}Preview`);
+            container.classList.add('hidden');
+            if (type === 'image') {
+                preview.src = '';
+            } else {
+                preview.querySelector('source').src = '';
             }
-
-            reader.readAsDataURL(file);
-        }
+        });
     }
 
-    function clearEditMedia() {
-        const mediaFileInput = document.getElementById('edit_media_file');
-        const urlInput = document.getElementById('edit_media_url');
-
-        resetEditPreviews();
-        mediaFileInput.value = '';
-        urlInput.value = ''; // Xóa giá trị URL hiện tại
-
-        // Thêm input hidden để đánh dấu xóa media
-        let removeInput = document.querySelector('input[name="remove_media"]');
-        if (!removeInput) {
-            removeInput = document.createElement('input');
-            removeInput.type = 'hidden';
-            removeInput.name = 'remove_media';
-            removeInput.value = '1';
-            mediaFileInput.parentNode.appendChild(removeInput);
+    function clearEditMedia(type) {
+        if (type === 'all' || !type) {
+            document.getElementById('edit_media_file').value = '';
+            document.getElementById('edit_media_url').value = '';
+            resetEditPreviews();
+        } else {
+            const fileInput = document.getElementById(`edit_${type}_file`);
+            const previewContainer = document.getElementById(`edit_${type}PreviewContainer`);
+            fileInput.value = '';
+            previewContainer.classList.add('hidden');
         }
     }
 
@@ -349,11 +649,7 @@
         modalHandler.close('editQuestionModal');
         document.getElementById('editQuestionForm').reset();
         resetEditPreviews();
-
-        // Xóa các input hidden nếu có
-        const form = document.getElementById('editQuestionForm');
-        const removeMediaInput = form.querySelector('input[name="remove_media"]');
-        if (removeMediaInput) removeMediaInput.remove();
+        clearEditMedia('all');
     }
 
     function openEditMediaModal(src) {
@@ -377,93 +673,12 @@
         const mediaModal = document.getElementById('editMediaModal');
         mediaModal.classList.add('hidden');
     }
-
-    // Các event listeners
-    document.addEventListener('DOMContentLoaded', function() {
-        // Đăng ký sự kiện cho form edit
-        const editForm = document.getElementById('editQuestionForm');
-        if (editForm) {
-            editForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const questionId = document.getElementById('edit_questionId').value;
-                const formData = new FormData(this);
-
-                // Gửi form bằng AJAX
-                fetch(`/admin/questions/${questionId}`, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.success) {
-                            alert('Cập nhật thành công!');
-                            closeEditQuestionModal();
-                            // Reload trang để cập nhật dữ liệu
-                            window.location.reload();
-                        } else {
-                            alert('Lỗi: ' + result.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Đã xảy ra lỗi khi cập nhật');
-                    });
-            });
-        }
-
-        // Xử lý sự kiện click cho nút "Chọn media"
-        const mediaBtn = document.getElementById('edit_chooseMediaBtn');
-        if (mediaBtn) {
-            mediaBtn.addEventListener('click', function() {
-                document.getElementById('edit_media_file').click();
-            });
-        }
-
-        // Xử lý preview media
-        const mediaInput = document.getElementById('edit_media_file');
-        if (mediaInput) {
-            mediaInput.addEventListener('change', function(e) {
-                handleEditMediaUpload(this);
-
-                // Xóa input hidden remove_media nếu chọn file mới
-                const removeInput = document.querySelector('input[name="remove_media"]');
-                if (removeInput) removeInput.remove();
-            });
-        }
-
-        // Cập nhật thuộc tính accept khi thay đổi loại câu hỏi
-        const typeSelect = document.getElementById('edit_type');
-        if (typeSelect) {
-            typeSelect.addEventListener('change', function() {
-                updateEditMediaAccept();
-            });
-        }
-
-        function updateEditMediaAccept() {
-            const type = document.getElementById('edit_type').value;
-            const mediaInput = document.getElementById('edit_media_file');
-
-            if (type === 'image') {
-                mediaInput.setAttribute('accept', 'image/*');
-            } else if (type === 'video') {
-                mediaInput.setAttribute('accept', 'video/*');
-            } else if (type === 'audio') {
-                mediaInput.setAttribute('accept', 'audio/*');
-            } else {
-                mediaInput.setAttribute('accept', 'image/*,video/*,audio/*');
-            }
-        }
-    });
 </script>
 
 <!-- Thêm styles -->
 <style>
     .preview-container {
-        min-height: 50px;
+        min-height: 100px;
         border: 2px dashed #e2e8f0;
         border-radius: 0.5rem;
         padding: 0.5rem;
@@ -474,7 +689,8 @@
     }
 
     .preview-container img,
-    .preview-container video {
+    .preview-container video,
+    .preview-container audio {
         max-width: 100%;
         border-radius: 0.375rem;
         transition: all 0.3s ease;
@@ -496,7 +712,6 @@
             opacity: 0;
             transform: scale(0.95);
         }
-
         to {
             opacity: 1;
             transform: scale(1);

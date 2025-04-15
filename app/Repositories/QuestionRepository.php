@@ -301,7 +301,10 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
 
     public function findWithFullUrls($id)
     {
-        $question = $this->findOrFail($id);
+        $question = $this->model->with(['answers' => function($query) {
+            $query->orderBy('order_number', 'asc');
+        }])->findOrFail($id);
+
         if (!$question) {
             return null;
         }
@@ -309,6 +312,13 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
         // Thêm full URL cho media
         if ($question->media_url) {
             $question->full_media_url = $this->getFullUrl($question->media_url);
+        }
+
+        // Xử lý thêm thông tin cho answers
+        if ($question->answers) {
+            foreach ($question->answers as $answer) {
+                $answer->type = $answer->type ?? 'single';
+            }
         }
 
         return $question;

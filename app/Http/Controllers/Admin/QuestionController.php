@@ -327,11 +327,25 @@ class QuestionController extends BaseController
     {
         try {
             $question = $this->questionService->findWithFullUrls($id);
+
+            Log::info('Question edit data:', [
+                'question_id' => $id,
+                'has_answers' => $question->answers->count(),
+                'media_url' => $question->media_url,
+                'full_media_url' => $question->full_media_url ?? null
+            ]);
+
             return response()->json([
                 'status' => true,
                 'data' => $question
             ]);
         } catch (\Exception $e) {
+            Log::error('Question edit error:', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return response()->json([
                 'status' => false,
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage()

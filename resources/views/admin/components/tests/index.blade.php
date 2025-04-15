@@ -402,14 +402,14 @@
         }
 
         function editQuestion(questionId) {
+            // Mở modal chỉnh sửa câu hỏi ngay lập tức
+            modalHandler.open('editQuestionModal');
+
             fetch(`/admin/questions/${questionId}/edit`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.status) {
                         const question = data.data;
-
-                        // Mở modal chỉnh sửa câu hỏi
-                        modalHandler.open('editQuestionModal');
 
                         // Cập nhật dữ liệu vào form
                         document.getElementById('edit_question_id').value = question.id;
@@ -434,13 +434,10 @@
 
                         // Hiển thị container upload phù hợp với loại câu hỏi
                         showUploadContainer(question.type, 'edit_');
-                    } else {
-                        alert('Có lỗi xảy ra khi tải thông tin câu hỏi');
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching question:', error);
-                    alert('Có lỗi xảy ra khi tải thông tin câu hỏi');
+                    console.log('Error fetching question:', error);
                 });
         }
 
