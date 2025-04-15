@@ -16,7 +16,6 @@ class UpdateRequest extends FormRequest
         $studentId = $this->route('student');
 
         return [
-            'user_id' => 'exists:users,id',
             'student_code' => 'string|unique:students,student_code,' . $studentId,
             'full_name' => 'string|max:255',
             'date_of_birth' => 'nullable|date',
@@ -49,7 +48,6 @@ class UpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'user_id.exists' => 'ID người dùng không tồn tại',
             'student_code.unique' => 'Mã học viên đã tồn tại',
             'full_name.max' => 'Họ tên không được quá 255 ký tự',
             'date_of_birth.date' => 'Ngày sinh không hợp lệ',

@@ -11,7 +11,6 @@ class StudentSeeder extends Seeder
     {
         $students = [
             [
-                'user_id' => 3,
                 'student_code' => 'STU001',
                 'full_name' => 'Alex Thompson',
                 'email' => 'alex',
@@ -27,7 +26,6 @@ class StudentSeeder extends Seeder
                 'is_active' => true
             ],
             [
-                'user_id' => 4,
                 'student_code' => 'STU002',
                 'full_name' => 'Emily Parker',
                 'email' => 'emily',
@@ -43,7 +41,6 @@ class StudentSeeder extends Seeder
                 'is_active' => true
             ],
             [
-                'user_id' => 5,
                 'student_code' => 'STU003',
                 'full_name' => 'William Chen',
                 'email' => 'william',

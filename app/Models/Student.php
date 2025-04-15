@@ -15,7 +15,6 @@ class Student extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id',
         'student_code',
         'full_name',
         'email',
@@ -51,14 +50,6 @@ class Student extends Model
         'parent2_is_emergency_contact' => 'boolean',
         'is_active' => 'boolean'
     ];
-
-    /**
-     * Lấy user liên kết với học viên
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
     /**
      * Lấy các lớp học của học viên

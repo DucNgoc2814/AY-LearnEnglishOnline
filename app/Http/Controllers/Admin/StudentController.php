@@ -7,7 +7,6 @@ use App\Services\Interfaces\StudentServiceInterface;
 use App\Http\Requests\Admin\Student\StoreRequest;
 use App\Http\Requests\Admin\Student\UpdateRequest;
 use Illuminate\Support\Facades\Log;
-use App\Models\User;
 
 /**
  * @package App\Http\Controllers\Admin
@@ -34,14 +33,12 @@ class StudentController extends BaseController
         try {
             $list = $this->studentService->getList();
             $trashList = $this->studentService->getTrashList();
-            $users = User::whereDoesntHave('student')->get(); // Lấy danh sách user chưa là học viên
 
             return view(self::VIEW_PATH . 'index', [
                 'students' => $list['data'],
                 'pagination' => $list['pagination'],
                 'trashList' => $trashList['data'],
                 'trashPagination' => $trashList['pagination'],
-                'users' => $users,
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Có lỗi xảy ra');

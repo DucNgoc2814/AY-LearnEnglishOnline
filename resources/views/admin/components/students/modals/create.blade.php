@@ -24,20 +24,6 @@
                             <h4 class="font-medium text-gray-900 mb-4">Thông tin cơ bản</h4>
 
                             <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="user_id">
-                                    Tài khoản người dùng <span class="text-red-500">*</span>
-                                </label>
-                                <select
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="user_id" name="user_id" required>
-                                    <option value="">-- Chọn tài khoản --</option>
-                                    @foreach($users as $user)
-                                        <option value="{{ $user->id }}">{{ $user->email }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="full_name">
                                     Họ và tên <span class="text-red-500">*</span>
                                 </label>

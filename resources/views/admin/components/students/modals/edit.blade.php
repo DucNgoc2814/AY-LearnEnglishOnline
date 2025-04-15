@@ -25,16 +25,6 @@
                             <h4 class="font-medium text-gray-900 mb-4">Thông tin cơ bản</h4>
 
                             <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2">
-                                    Tài khoản người dùng
-                                </label>
-                                <div class="flex">
-                                    <span class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-gray-100" id="edit_user_email_display"></span>
-                                </div>
-                                <input type="hidden" id="edit_user_id" name="user_id">
-                            </div>
-
-                            <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_full_name">
                                     Họ và tên <span class="text-red-500">*</span>
                                 </label>
@@ -295,9 +285,6 @@
 
             // Điền dữ liệu vào form
             // Hiển thị tài khoản người dùng
-            document.getElementById('edit_user_id').value = item.user_id || '';
-            document.getElementById('edit_user_email_display').textContent = item.user ? item.user.email : 'Chưa có tài khoản';
-
             document.getElementById('edit_full_name').value = item.full_name || '';
             document.getElementById('edit_email_display').textContent = item.email || '';
 

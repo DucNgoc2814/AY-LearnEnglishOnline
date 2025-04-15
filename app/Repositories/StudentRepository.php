@@ -23,7 +23,6 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
     public function getQuery()
     {
         return $this->model
-            ->with('user')
             ->whereNull('deleted_at')
             ->latest('id');
     }
@@ -194,7 +193,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
 
     public function findWithFullUrls($id)
     {
-        $student = $this->model->with('user')->findOrFail($id);
+        $student = $this->model->findOrFail($id);
 
         // Add full URLs for image and video
         $student->avatar = $this->getFullUrl($student->avatar);

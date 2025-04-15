@@ -14,7 +14,6 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
             'full_name' => 'required|string|max:255',
             'email' => 'required|string|unique:students,email',
             'password' => ['required', 'string', 'min:6', 'regex:/^[A-Z]/', 'regex:/[a-z]/', 'regex:/[0-9]/', 'regex:/[@$!%*#?&]/', 'max:20'],
@@ -48,8 +47,6 @@ class StoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'user_id.required' => 'ID người dùng là bắt buộc',
-            'user_id.exists' => 'ID người dùng không tồn tại',
             'full_name.required' => 'Họ tên là bắt buộc',
             'email.required' => 'Email là bắt buộc',
             'email.unique' => 'Email đã tồn tại',
