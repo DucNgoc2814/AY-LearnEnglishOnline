@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Classes extends Model
 {
@@ -16,9 +17,7 @@ class Classes extends Model
     protected $fillable = [
         'name',
         'code',
-        'course_id',
         'teacher_id',
-        'class_type',
         'start_date',
         'end_date',
         'enrollment_deadline',
@@ -88,6 +87,14 @@ class Classes extends Model
     }
 
     /**
+     * Lấy danh sách đăng ký khóa học
+     */
+    public function registrations(): HasMany
+    {
+        return $this->hasMany(CourseRegistration::class, 'class_id');
+    }
+
+    /**
      * Lấy danh sách học viên
      */
     public function students(): BelongsToMany
@@ -108,9 +115,16 @@ class Classes extends Model
     /**
      * Lấy các buổi học
      */
-    public function sessions(): HasMany
+    public function sessions()
     {
-        return $this->hasMany(ClassSession::class, 'class_id');
+        return $this->hasManyThrough(
+            ClassSession::class,
+            ClassSchedule::class,
+            'class_id', // Foreign key on class_schedules table
+            'schedule_id', // Foreign key on class_sessions table
+            'id', // Local key on classes table
+            'id' // Local key on class_schedules table
+        );
     }
 
     /**

@@ -363,4 +363,27 @@ class ClassSession extends Model
 
         return round(($completedActivities / $totalActivities) * 100, 2);
     }
+
+    /**
+     * Kiểm tra xem buổi học có thể tham gia được không (hiển thị nút vào học)
+     * Chỉ cho phép tham gia trong vòng 15 phút trước khi bắt đầu
+     */
+    public function canJoin(): bool
+    {
+        if (!$this->session_date || !$this->start_time) {
+            return false;
+        }
+        
+        // Tạo datetime đầy đủ từ session_date và start_time
+        $sessionDateTime = Carbon::parse($this->session_date->format('Y-m-d') . ' ' . $this->start_time->format('H:i:s'));
+        
+        // Lấy thời gian hiện tại
+        $now = Carbon::now();
+        
+        // Tính số phút còn lại trước khi buổi học bắt đầu
+        $minutesUntilSession = $now->diffInMinutes($sessionDateTime, false);
+        
+        // Cho phép tham gia trong vòng 15 phút trước khi bắt đầu và trong suốt thời gian diễn ra buổi học
+        return $minutesUntilSession <= 15 && $minutesUntilSession >= -60;
+    }
 } 

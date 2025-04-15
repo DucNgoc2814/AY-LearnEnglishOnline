@@ -2,8 +2,7 @@
 <div class="top-navbar">
     <div class="d-flex align-items-center">
         <span class="nav-logo">
-            <i class="fas fa-graduation-cap text-primary me-2"></i>
-            <span class="fw-bold text-primary">AmazingYou</span>
+            <img src="{{ asset('uploads/logos/amazing you.png') }}" alt="AmazingYou" class="img-fluid" style="width: 100px;">
         </span>
     </div>
     <div class="ms-auto d-flex align-items-center">
@@ -24,7 +23,7 @@
                 </ul>
             </div>
         @endif
-        <button class="mobile-menu-toggle" type="button" aria-label="Toggle navigation">
+        <button class="mobile-menu-toggle d-md-none" type="button" aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
         </button>
     </div>

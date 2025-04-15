@@ -12,11 +12,14 @@ use Illuminate\Support\Facades\Log;
 
 class ClassSessionSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         try {
             // Disable foreign key checks
-            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
             
             // Clear existing sessions
             ClassSession::truncate();
@@ -34,14 +37,13 @@ class ClassSessionSeeder extends Seeder
                 'Academic Writing'
             ];
 
-            // Get schedules with their associated classes
-            $schedules = ClassSchedule::select(
-                'class_schedules.*',
-                'classes.type as class_type',
-                'classes.name as class_name'
-            )
-            ->join('classes', 'class_schedules.class_id', '=', 'classes.id')
-            ->get();
+            // Lấy danh sách lịch học từ bảng class_schedules
+            $schedules = DB::table('class_schedules')
+                ->join('classes', 'class_schedules.class_id', '=', 'classes.id')
+                ->select('class_schedules.*')
+                ->get();
+
+            Log::info("Tìm thấy {$schedules->count()} lịch học để tạo buổi học");
 
             if ($schedules->isEmpty()) {
                 echo "No schedules found in the database!\n";
@@ -51,9 +53,14 @@ class ClassSessionSeeder extends Seeder
             $startDate = Carbon::now()->startOfWeek();
             $sessions = [];
 
+            // Tạo buổi học cho mỗi lịch học
             foreach ($schedules as $schedule) {
-                echo "Processing class {$schedule->class_name} (ID: {$schedule->class_id})\n";
-                echo "Class type: {$schedule->class_type}, Days: {$schedule->day_of_week}, Time: {$schedule->start_time}-{$schedule->end_time}\n";
+                $class = DB::table('classes')->where('id', $schedule->class_id)->first();
+                $className = $class ? $class->name : 'Unknown';
+                $classType = $class ? $class->class_type : 'offline';
+                
+                echo "Processing class {$className} (ID: {$schedule->class_id})\n";
+                echo "Class type: {$classType}, Days: {$schedule->day_of_week}, Time: {$schedule->start_time}-{$schedule->end_time}\n";
                 
                 // Create only 2 weeks of sessions for testing
                 for ($week = 0; $week < 2; $week++) {
@@ -64,25 +71,23 @@ class ClassSessionSeeder extends Seeder
                         $sessionDate->addDay();
                     }
 
-                    $room = $schedule->class_type === 'online' ? 'ONLINE-' . rand(1, 5) : $schedule->room_number;
+                    $room = $classType === 'online' ? 'ONLINE-' . rand(1, 5) : $schedule->room_number;
                     echo "Created schedule for day {$schedule->day_of_week} in room {$room}\n";
                     
                     $sessions[] = [
-                        'class_id' => $schedule->class_id,
                         'schedule_id' => $schedule->id,
+                        'resource_id' => null, // Nullable field
                         'session_date' => $sessionDate->format('Y-m-d'),
                         'start_time' => $schedule->start_time,
                         'end_time' => $schedule->end_time,
-                        'room_number' => $room,
                         'topic' => $topics[array_rand($topics)],
                         'content' => 'Chi tiết nội dung buổi học sẽ được cập nhật',
-                        'homework' => 'Bài tập về nhà sẽ được giao sau buổi học',
-                        'recording_url' => null,
-                        'attendance_required' => true,
-                        'status' => 'scheduled',
-                        'notes' => $schedule->class_type === 'online' 
+                        'session_materials' => null, // Nullable field
+                        'recording_url' => null, // Nullable field
+                        'notes' => $classType === 'online' 
                             ? 'Buổi học trực tuyến qua Zoom - Meeting ID sẽ được cập nhật'
                             : 'Buổi học tại phòng ' . $room,
+                        'status' => 'scheduled',
                         'created_at' => now(),
                         'updated_at' => now()
                     ];
@@ -103,7 +108,7 @@ class ClassSessionSeeder extends Seeder
             echo "\nSuccessfully created all class sessions!\n";
 
         } catch (\Exception $e) {
-            Log::error('Error in ClassSessionSeeder: ' . $e->getMessage());
+            Log::error("Lỗi khi tạo buổi học: {$e->getMessage()}");
             echo "Error: " . $e->getMessage() . "\n";
         } finally {
             // Always re-enable foreign key checks

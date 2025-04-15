@@ -25,8 +25,8 @@ class CourseRegistration extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'class_id',
         'student_id',
+        'class_id',
         'status',
         'fee_amount',
         'payment_status',
@@ -35,7 +35,7 @@ class CourseRegistration extends Model
         'invoice_number',
         'enrollment_date',
         'completion_date',
-        'notes',
+        'notes'
     ];
 
     /**
@@ -45,25 +45,51 @@ class CourseRegistration extends Model
      */
     protected $casts = [
         'fee_amount' => 'decimal:2',
-        'enrollment_date' => 'date',
-        'payment_date' => 'date',
-        'completion_date' => 'date',
+        'payment_date' => 'datetime',
+        'enrollment_date' => 'datetime',
+        'completion_date' => 'datetime'
+    ];
+
+    // Định nghĩa các giá trị cho status
+    const STATUS_PENDING = 'pending';
+    const STATUS_ACTIVE = 'active';
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_CANCELLED = 'cancelled';
+
+    // Các status có thể có
+    public static $statuses = [
+        self::STATUS_PENDING,
+        self::STATUS_ACTIVE,
+        self::STATUS_COMPLETED,
+        self::STATUS_CANCELLED
+    ];
+
+    // Định nghĩa các giá trị cho payment_status
+    const PAYMENT_PENDING = 'pending';
+    const PAYMENT_PAID = 'paid';
+    const PAYMENT_REFUNDED = 'refunded';
+
+    // Các payment_status có thể có
+    public static $paymentStatuses = [
+        self::PAYMENT_PENDING,
+        self::PAYMENT_PAID,
+        self::PAYMENT_REFUNDED
     ];
 
     /**
-     * Get the class that the student is registered for.
+     * Get the student that owns the registration.
      */
-    public function class(): BelongsTo
+    public function student()
     {
-        return $this->belongsTo(Classes::class, 'class_id');
+        return $this->belongsTo(Student::class);
     }
 
     /**
-     * Get the student who registered for the class.
+     * Get the class that owns the registration.
      */
-    public function student(): BelongsTo
+    public function class()
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(Classes::class);
     }
 
     /**

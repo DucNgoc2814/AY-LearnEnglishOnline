@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $this->call([
             // 1. Core System Data
@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             ClassSeeder::class,           // Classes (references courses, employees as teachers)
             ClassScheduleSeeder::class,   // Class schedules (references classes)
             ClassSessionSeeder::class,    // Class sessions (generated from schedules)
+            CourseRegistrationSeeder::class, // Course registrations (students to classes)
             
             // 5. Learning Resources - Tests và câu hỏi
             ResourceSeeder::class,        // Learning materials
