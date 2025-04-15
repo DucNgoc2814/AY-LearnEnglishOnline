@@ -62,7 +62,6 @@ class ClassSeeder extends Seeder
                     'enrollment_deadline' => (clone $startDate)->subDays(5),
                     'max_students' => 30,
                     'min_students' => 10,
-                    'fee' => rand(1500000, 3000000),
                     'current_students' => rand(8, 25), // More realistic student counts
                     'status' => rand(1, 10) > 2 ? 'active' : (rand(1, 2) == 1 ? 'pending' : 'completed'), // Mostly active classes
                     'description' => "Lớp {$className} - {$timeSlot[1]} - " . implode(',', array_rand(array_flip([2, 3, 4, 5, 6, 7]), 3)),
