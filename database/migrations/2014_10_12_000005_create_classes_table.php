@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('code')->unique();
             $table->foreignId('teacher_id')->constrained('employees')->onDelete('cascade');
-            $table->foreignId('teacher_id')->constrained('employees')->onDelete('cascade')->nullable();
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->date('enrollment_deadline')->nullable();

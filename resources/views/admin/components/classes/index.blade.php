@@ -52,6 +52,7 @@
                         <th class="border ps-1 py-1 border-gray-300 text-start">Thời gian</th>
                         <th class="border ps-1 py-1 border-gray-300 text-start">Số học viên</th>
                         <th class="border ps-1 py-1 border-gray-300 text-start">Trạng thái</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-start">Kích hoạt</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center">Thao tác</th>
                     </tr>
                 </thead>
@@ -71,7 +72,7 @@
                                 <div class="text-xs">
                                     <div>Bắt đầu: {{ \Carbon\Carbon::parse($item->start_date)->format('d/m/Y H:i') }}</div>
                                     <div>Kết thúc: {{ \Carbon\Carbon::parse($item->end_date)->format('d/m/Y H:i') }}</div>
-                                    <div>Hạn đăng ký: {{ \Carbon\Carbon::parse($item->enrollment_deadline)->format('d/m/Y') }}</div>
+                                    <div>Hạn đăng ký: {{ $item->enrollment_deadline ? \Carbon\Carbon::parse($item->enrollment_deadline)->format('d/m/Y') : 'Không có' }}</div>
                                 </div>
                             </td>
                             <td class="ps-1 pt-1">
@@ -91,9 +92,15 @@
                                     @case('completed')
                                         <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">Hoàn thành</span>
                                         @break
-                                    @default
+                                    @case('cancelled')
                                         <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs">Đã hủy</span>
+                                        @break
                                 @endswitch
+                            </td>
+                            <td class="ps-1 pt-1">
+                                <span class="{{ $item->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }} px-2 py-1 rounded-full text-xs">
+                                    {{ $item->is_active ? 'Có' : 'Không' }}
+                                </span>
                             </td>
                             <td class="ps-1 pt-1 text-center">
                                 <div class="flex justify-center space-x-2">

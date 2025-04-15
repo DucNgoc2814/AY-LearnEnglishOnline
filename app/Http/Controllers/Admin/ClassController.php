@@ -38,12 +38,9 @@ class ClassController extends BaseController
             // Lấy danh sách giáo viên đang hoạt động
             $teachers = Employee::query()
                 ->select('id', 'employee_code', 'name', 'position', 'department')
-                ->activeTeachers()
+                ->active()  // Lọc nhân viên đang hoạt động
                 ->orderBy('name')
                 ->get();
-
-            // Log để debug
-            Log::info('Số lượng giáo viên: ' . $teachers->count());
 
             return view(self::VIEW_PATH . 'index', [
                 'classes' => $list['data'],

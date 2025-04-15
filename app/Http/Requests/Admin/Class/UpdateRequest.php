@@ -58,12 +58,6 @@ class UpdateRequest extends FormRequest
             'teacher_id' => [
                 'required',
                 'exists:employees,id',
-                function ($attribute, $value, $fail) {
-                    $employee = \App\Models\Employee::find($value);
-                    if (!$employee || $employee->employee_role !== EmployeeRole::TEACHER || !$employee->is_active) {
-                        $fail('Giáo viên không tồn tại hoặc không hoạt động');
-                    }
-                }
             ],
             'start_date' => [
                 'required',
@@ -108,7 +102,7 @@ class UpdateRequest extends FormRequest
                 'in:pending,active,completed,cancelled',
             ],
             'description' => ['nullable', 'string'],
-            'schedule' => ['required', 'json'],
+            'schedule' => ['nullable', 'json'],
             'is_active' => ['boolean'],
         ];
     }
@@ -138,7 +132,6 @@ class UpdateRequest extends FormRequest
             'min_students.min' => 'Số học viên tối thiểu phải lớn hơn 0',
             'status.required' => 'Vui lòng chọn trạng thái',
             'status.in' => 'Trạng thái không hợp lệ',
-            'schedule.required' => 'Vui lòng nhập lịch học',
             'schedule.json' => 'Lịch học phải là định dạng JSON hợp lệ',
         ];
     }
