@@ -53,15 +53,12 @@ class StudentSeeder extends Seeder
             // Standard hash
             $testPassword = '123456';
             $hashedPassword = Hash::make($testPassword);
-            
-            // Also save raw password to verify it works
-            // (Normally we wouldn't do this, but for testing it's OK)
             DB::table('students')->insert([
                 [
-                    'user_id' => 6,
                     'student_code' => 'test123',
                     'password' => $hashedPassword,  // Use properly hashed password
                     'full_name' => 'Test Account',
+                    'email' => 'emily',
                     'date_of_birth' => '2000-01-01',
                     'gender' => 'male',
                     'phone' => '0912345681',
@@ -76,7 +73,6 @@ class StudentSeeder extends Seeder
                 ]
             ]);
             
-            // Log success and test that hash works
             $insertedUser = DB::table('students')->where('student_code', 'test123')->first();
             if ($insertedUser) {
                 $hashWorks = Hash::check('123456', $insertedUser->password);
@@ -92,86 +88,6 @@ class StudentSeeder extends Seeder
             ]);
         }
 
-        // Regular student accounts
-        $defaultPassword = Hash::make('password');
-        
-        $students = [
-            [
-                'student_code' => 'STU001',
-                'password' => $defaultPassword,
-                'full_name' => 'Alex Thompson',
-                'email' => 'alex',
-                'password' => 'password123',
-                'date_of_birth' => '2000-01-15',
-                'gender' => 'male',
-                'phone' => '0912345678',
-                'address' => '123 Student St, City',
-                'parent1_name' => 'John Thompson',
-                'parent1_relationship' => 'father',
-                'parent1_phone' => '0923456789',
-                'parent1_email' => 'john.t@email.com',
-                'is_active' => true
-            ],
-            [
-                'student_code' => 'STU002',
-                'password' => $defaultPassword,
-                'full_name' => 'Emily Parker',
-                'email' => 'emily',
-                'password' => 'password123',
-                'date_of_birth' => '2001-03-20',
-                'gender' => 'female',
-                'phone' => '0912345679',
-                'address' => '456 Student Ave, City',
-                'parent1_name' => 'Mary Parker',
-                'parent1_relationship' => 'mother',
-                'parent1_phone' => '0923456790',
-                'parent1_email' => 'mary.p@email.com',
-                'is_active' => true
-            ],
-            [
-                'student_code' => 'STU003',
-                'password' => $defaultPassword,
-                'full_name' => 'William Chen',
-                'email' => 'william',
-                'password' => 'password123',
-                'date_of_birth' => '1999-07-10',
-                'gender' => 'male',
-                'phone' => '0912345680',
-                'address' => '789 Student Rd, City',
-                'parent1_name' => 'Michael Chen',
-                'parent1_relationship' => 'father',
-                'parent1_phone' => '0923456791',
-                'parent1_email' => 'michael.c@email.com',
-                'is_active' => true
-            ],
-            // Thêm 7 student khác với thông tin tương tự...
-        ];
-
-        foreach ($students as $student) {
-            try {
-                // Kiểm tra xem student đã tồn tại chưa
-                $existingStudent = Student::where('student_code', $student['student_code'])->first();
-                if (!$existingStudent) {
-                    $newStudent = Student::create($student);
-                    
-                    // Assign the student to random classes and courses
-                    if (Schema::hasTable('class_student')) {
-                        $this->assignClassesToStudent($newStudent->id);
-                    }
-                    
-                    if (Schema::hasTable('enrollments')) {
-                        $this->assignCoursesToStudent($newStudent->id, $newStudent->user_id);
-                    }
-                }
-            } catch (\Exception $e) {
-                Log::error('Error creating student', [
-                    'student_code' => $student['student_code'],
-                    'error' => $e->getMessage()
-                ]);
-            }
-        }
-        
-        // Thêm học viên test vào các lớp học
         try {
             $testStudent = Student::where('student_code', 'test123')->first();
             if ($testStudent) {

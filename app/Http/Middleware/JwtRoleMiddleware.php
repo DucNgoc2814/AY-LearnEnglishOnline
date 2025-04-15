@@ -41,6 +41,10 @@ class JwtRoleMiddleware extends BaseMiddleware
                 return $this->handleUnauthenticated('Token không hợp lệ.');
             }
 
+            Log::debug('JWT Payload in middleware', [
+                'payload' => $payload->toArray(),
+                'token' => $token
+            ]);
 
             // Get user type and id from payload
             $userType = $payload->get('user_type');
@@ -53,6 +57,12 @@ class JwtRoleMiddleware extends BaseMiddleware
             } else {
                 $user = Employee::find($userId);
             }
+
+            Log::debug('User found in middleware', [
+                'user_type' => $userType,
+                'user_id' => $userId,
+                'user' => $user
+            ]);
 
             if (!$user) {
                 return $this->handleUnauthenticated('Không tìm thấy thông tin người dùng.');

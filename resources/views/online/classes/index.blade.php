@@ -49,10 +49,10 @@
 
         .class-info {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 20px;
             margin-bottom: 10px;
         }
 
@@ -61,6 +61,11 @@
             align-items: center;
             color: var(--gray-600);
             font-size: 14px;
+            margin-right: 15px;
+        }
+
+        .info-item:last-child {
+            margin-right: 0;
         }
 
         .info-item i {
@@ -233,9 +238,28 @@
 
         @media (max-width: 768px) {
             .class-info {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
+                flex-direction: row;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+
+            .info-item {
+                margin-right: 10px;
+                font-size: 13px;
+            }
+
+            .info-item i {
+                font-size: 14px;
+            }
+
+            .class-title {
+                font-size: 16px;
+            }
+
+            .class-status {
+                font-size: 12px;
+                padding: 3px 10px;
             }
 
             .class-actions {
@@ -244,6 +268,16 @@
 
             .action-btn {
                 width: 100%;
+            }
+
+            .filter-buttons {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 10px;
+            }
+
+            .filter-btn {
+                flex: 0 0 auto;
             }
         }
 
@@ -346,7 +380,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <div class="filter-section">
+                <div class="filter-section"></div>
                     <div class="filter-buttons">
                         <button class="filter-btn active" data-filter="all">Tất cả lớp học</button>
                         <button class="filter-btn" data-filter="upcoming">Sắp diễn ra</button>
@@ -356,183 +390,192 @@
                 </div>
 
                 <div class="class-list">
-                    @if($upcomingClasses->isEmpty() && $currentClasses->isEmpty() && $completedClasses->isEmpty())
+                    @if(isset($upcomingClasses) && isset($currentClasses) && isset($completedClasses) && $upcomingClasses->isEmpty() && $currentClasses->isEmpty() && $completedClasses->isEmpty())
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>Bạn chưa đăng ký lớp học nào.
                         </div>
                     @else
                         <!-- Lớp sắp diễn ra -->
-                        @foreach($upcomingClasses as $class)
-                            <div class="class-card" data-type="upcoming">
-                                <div class="class-header">
-                                    <h3 class="class-title">{{ $class->name }} ({{ $class->code }})</h3>
-                                    <div class="class-info">
-                                        <div class="info-item">
-                                            <i class="fas fa-user"></i>
-                                            @if($class->teacher)
-                                                <span>Giảng viên: {{ $class->teacher->name ?? $class->teacher->employee_code ?? $class->teacher->full_name ?? 'EMP001' }}</span>
-                                            @else
-                                                <span>Giảng viên: Chưa phân công</span>
-                                            @endif
+                        @if(isset($upcomingClasses))
+                            @foreach($upcomingClasses as $class)
+                                <div class="class-card" data-type="upcoming">
+                                    <div class="class-header">
+                                        <h3 class="class-title">{{ $class->name }} ({{ $class->code }})</h3>
+                                        <div class="class-info">
+                                            <div class="info-item">
+                                                <i class="fas fa-user"></i>
+                                                @if($class->teacher)
+                                                    <span>{{ $class->teacher->name ?? $class->teacher->employee_code ?? $class->teacher->full_name ?? 'EMP001' }}</span>
+                                                @else
+                                                    <span>Chưa phân công</span>
+                                                @endif
+                                            </div>
+                                            <div class="info-item">
+                                                <i class="fas fa-calendar"></i>
+                                                <span>{{ $class->formatted_schedule }}</span>
+                                            </div>
+                                            <span class="class-status bg-info text-white">Sắp diễn ra</span>
                                         </div>
-                                        <div class="info-item">
-                                            <i class="fas fa-calendar"></i>
-                                            <span>Thời gian: {{ $class->class_type == 'online' ? 'Trực tuyến' : 'Tại trung tâm' }}</span>
+                                    </div>
+                                    <div class="class-content">
+                                        <div class="mb-3">
+                                            <strong>Ngày bắt đầu:</strong> {{ \Carbon\Carbon::parse($class->start_date)->format('d/m/Y') }}
                                         </div>
-                                        <span class="class-status bg-info text-white">Sắp diễn ra</span>
+                                        <div class="mb-3">
+                                            <strong>Trạng thái đăng ký:</strong> 
+                                            <span class="badge {{ $class->stats['registration_status'] == 'active' ? 'bg-success' : 'bg-warning' }}">
+                                                {{ $class->stats['registration_status'] == 'active' ? 'Đã xác nhận' : 'Chờ xác nhận' }}
+                                            </span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <strong>Trạng thái thanh toán:</strong>
+                                            <span class="badge {{ $class->stats['payment_status'] == 'paid' ? 'bg-success' : 'bg-warning' }}">
+                                                {{ $class->stats['payment_status'] == 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán' }}
+                                            </span>
+                                        </div>
+                                        <div class="class-actions">
+                                            <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
+                                                <i class="fas fa-calendar-alt me-2"></i>Lịch học
+                                            </a>
+                                 
+                                            <a href="{{ route('online.grades.index', ['class_id' => $class->id]) }}" class="action-btn btn-grade">
+                                                <i class="fas fa-chart-line me-2"></i>Xem điểm
+                                            </a>
+                                            <a href="{{ route('online.classes.tests', ['class_id' => $class->id]) }}" class="action-btn btn-assignment">
+                                                <i class="fas fa-tasks me-2"></i>Bài tập
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="class-content">
-                                    <div class="mb-3">
-                                        <strong>Ngày bắt đầu:</strong> {{ \Carbon\Carbon::parse($class->start_date)->format('d/m/Y') }}
-                                    </div>
-                                    <div class="mb-3">
-                                        <strong>Trạng thái đăng ký:</strong> 
-                                        <span class="badge {{ $class->stats['registration_status'] == 'active' ? 'bg-success' : 'bg-warning' }}">
-                                            {{ $class->stats['registration_status'] == 'active' ? 'Đã xác nhận' : 'Chờ xác nhận' }}
-                                        </span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <strong>Trạng thái thanh toán:</strong>
-                                        <span class="badge {{ $class->stats['payment_status'] == 'paid' ? 'bg-success' : 'bg-warning' }}">
-                                            {{ $class->stats['payment_status'] == 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán' }}
-                                        </span>
-                                    </div>
-                                    <div class="class-actions">
-                                        <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
-                                            <i class="fas fa-calendar-alt me-2"></i>Lịch học
-                                        </a>
-                             
-                                        <a href="{{ route('online.grades.index', ['class_id' => $class->id]) }}" class="action-btn btn-grade">
-                                            <i class="fas fa-chart-line me-2"></i>Xem điểm
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Schedule Modal for upcoming class -->
-                            @include('online.classes.partials.schedule-modal', ['class' => $class])
-                        @endforeach
+                                <!-- Schedule Modal for upcoming class -->
+                                @include('online.classes.partials.schedule-modal', ['class' => $class])
+                            @endforeach
+                        @endif
 
                         <!-- Lớp đang học -->
-                        @foreach($currentClasses as $class)
-                            <div class="class-card" data-type="{{ \Carbon\Carbon::now()->gt(\Carbon\Carbon::parse($class->end_date)) ? 'completed' : 'current' }}">
-                                <div class="class-header">
-                                    <h3 class="class-title">{{ $class->name }} ({{ $class->code }})</h3>
-                                    <div class="class-info">
-                                        <div class="info-item">
-                                            <i class="fas fa-user"></i>
-                                            @if($class->teacher)
-                                                <span>Giảng viên: {{ $class->teacher->name ?? $class->teacher->employee_code ?? $class->teacher->full_name ?? 'EMP001' }}</span>
-                                            @else
-                                                <span>Giảng viên: Chưa phân công</span>
-                                            @endif
+                        @if(isset($currentClasses))
+                            @foreach($currentClasses as $class)
+                                <div class="class-card" data-type="{{ \Carbon\Carbon::now()->gt(\Carbon\Carbon::parse($class->end_date)) ? 'completed' : 'current' }}">
+                                    <div class="class-header">
+                                        <h3 class="class-title">{{ $class->name }} ({{ $class->code }})</h3>
+                                        <div class="class-info">
+                                            <div class="info-item">
+                                                <i class="fas fa-user"></i>
+                                                @if($class->teacher)
+                                                    <span>{{ $class->teacher->name ?? $class->teacher->employee_code ?? $class->teacher->full_name ?? 'EMP001' }}</span>
+                                                @else
+                                                    <span>Chưa phân công</span>
+                                                @endif
+                                            </div>
+                                            <div class="info-item">
+                                                <i class="fas fa-calendar"></i>
+                                                <span>{{ $class->formatted_schedule }}</span>
+                                            </div>
+                                            @php
+                                                $isEnded = \Carbon\Carbon::now()->gt(\Carbon\Carbon::parse($class->end_date));
+                                            @endphp
+                                            <span class="class-status {{ $isEnded ? 'status-completed' : 'status-active' }}">
+                                                {{ $isEnded ? 'Đã kết thúc' : 'Đang học' }}
+                                            </span>
                                         </div>
-                                        <div class="info-item">
-                                            <i class="fas fa-calendar"></i>
-                                            <span>Thời gian: {{ $class->class_type == 'online' ? 'Trực tuyến' : 'Tại trung tâm' }}</span>
-                                        </div>
-                                        @php
-                                            $isEnded = \Carbon\Carbon::now()->gt(\Carbon\Carbon::parse($class->end_date));
-                                        @endphp
-                                        <span class="class-status {{ $isEnded ? 'status-completed' : 'status-active' }}">
-                                            {{ $isEnded ? 'Đã kết thúc' : 'Đang học' }}
-                                        </span>
                                     </div>
-                                </div>
-                                <div class="class-content">
-                                    <div class="progress-section">
-                                        <div class="progress-label">
-                                            <span>Tiến độ học tập</span>
-                                            <span>{{ $class->stats['attended_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} buổi</span>
-                                        </div>
-                                        <div class="progress">
-                                            <div class="progress-bar" role="progressbar" 
-                                                style="width: {{ $class->stats['attendance_rate'] ?? 0 }}%" 
-                                                aria-valuenow="{{ $class->stats['attendance_rate'] ?? 0 }}" 
-                                                aria-valuemin="0" 
-                                                aria-valuemax="100">
+                                    <div class="class-content">
+                                        <div class="progress-section">
+                                            <div class="progress-label">
+                                                <span>Tiến độ học tập</span>
+                                                <span>{{ $class->stats['attended_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} buổi</span>
+                                            </div>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" 
+                                                    style="width: {{ $class->stats['attendance_rate'] ?? 0 }}%" 
+                                                    aria-valuenow="{{ $class->stats['attendance_rate'] ?? 0 }}" 
+                                                    aria-valuemin="0" 
+                                                    aria-valuemax="100">
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="class-actions">
-                                        <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
-                                            <i class="fas fa-calendar-alt me-2"></i>Lịch học
-                                        </a>
-                                        <a href="{{ route('online.classes.tests', ['class_id' => $class->id]) }}" class="action-btn btn-assignment">
-                                            <i class="fas fa-tasks me-2"></i>Bài tập
-                                        </a>
-                                        <a href="{{ route('online.grades.index', ['class_id' => $class->id]) }}" class="action-btn btn-grade">
-                                            <i class="fas fa-chart-line me-2"></i>Xem điểm
-                                        </a>
+                                        <div class="class-actions">
+                                            <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
+                                                <i class="fas fa-calendar-alt me-2"></i>Lịch học
+                                            </a>
+                                            <a href="{{ route('online.classes.tests', ['class_id' => $class->id]) }}" class="action-btn btn-assignment">
+                                                <i class="fas fa-tasks me-2"></i>Bài tập
+                                            </a>
+                                            <a href="{{ route('online.grades.index', ['class_id' => $class->id]) }}" class="action-btn btn-grade">
+                                                <i class="fas fa-chart-line me-2"></i>Xem điểm
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Schedule Modal for each current class -->
-                            @include('online.classes.partials.schedule-modal', ['class' => $class])
-                        @endforeach
+                                <!-- Schedule Modal for each current class -->
+                                @include('online.classes.partials.schedule-modal', ['class' => $class])
+                            @endforeach
+                        @endif
 
                         <!-- Lớp đã hoàn thành -->
-                        @foreach($completedClasses as $class)
-                            <div class="class-card" data-type="completed">
-                                <div class="class-header">
-                                    <h3 class="class-title">{{ $class->name }} ({{ $class->code }})</h3>
-                                    <div class="class-info">
-                                        <div class="info-item">
-                                            <i class="fas fa-user"></i>
-                                            @if($class->teacher)
-                                                <span>Giảng viên: {{ $class->teacher->name ?? $class->teacher->employee_code ?? $class->teacher->full_name ?? 'EMP001' }}</span>
-                                            @else
-                                                <span>Giảng viên: Chưa phân công</span>
-                                            @endif
+                        @if(isset($completedClasses))
+                            @foreach($completedClasses as $class)
+                                <div class="class-card" data-type="completed">
+                                    <div class="class-header">
+                                        <h3 class="class-title">{{ $class->name }} ({{ $class->code }})</h3>
+                                        <div class="class-info">
+                                            <div class="info-item">
+                                                <i class="fas fa-user"></i>
+                                                @if($class->teacher)
+                                                    <span>{{ $class->teacher->name ?? $class->teacher->employee_code ?? $class->teacher->full_name ?? 'EMP001' }}</span>
+                                                @else
+                                                    <span>Chưa phân công</span>
+                                                @endif
+                                            </div>
+                                            <div class="info-item">
+                                                <i class="fas fa-calendar"></i>
+                                                <span>{{ $class->formatted_schedule }}</span>
+                                            </div>
+                                            <span class="class-status status-completed">Đã hoàn thành</span>
                                         </div>
-                                        <div class="info-item">
-                                            <i class="fas fa-calendar"></i>
-                                            <span>Thời gian: {{ $class->class_type == 'online' ? 'Trực tuyến' : 'Tại trung tâm' }}</span>
-                                        </div>
-                                        <span class="class-status status-completed">Đã hoàn thành</span>
                                     </div>
-                                </div>
-                                <div class="class-content">
-                                    @php
-                                        $isEnded = true; // For completed classes, always mark as ended
-                                    @endphp
-                                    <div class="progress-section">
-                                        <div class="progress-label">
-                                            <span>Tiến độ học tập</span>
-                                            @if($isEnded)
-                                                <span>{{ $class->stats['total_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} buổi</span>
-                                            @else
-                                                <span>{{ $class->stats['attended_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} buổi</span>
-                                            @endif
-                                        </div>
-                                        <div class="progress">
-                                            <div class="progress-bar" role="progressbar" 
-                                                style="width: {{ $isEnded ? 100 : ($class->stats['attendance_rate'] ?? 0) }}%" 
-                                                aria-valuenow="{{ $isEnded ? 100 : ($class->stats['attendance_rate'] ?? 0) }}" 
-                                                aria-valuemin="0" 
-                                                aria-valuemax="100">
+                                    <div class="class-content">
+                                        @php
+                                            $isEnded = true; // For completed classes, always mark as ended
+                                        @endphp
+                                        <div class="progress-section">
+                                            <div class="progress-label">
+                                                <span>Tiến độ học tập</span>
+                                                @if($isEnded)
+                                                    <span>{{ $class->stats['total_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} buổi</span>
+                                                @else
+                                                    <span>{{ $class->stats['attended_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} buổi</span>
+                                                @endif
+                                            </div>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" 
+                                                    style="width: {{ $isEnded ? 100 : ($class->stats['attendance_rate'] ?? 0) }}%" 
+                                                    aria-valuenow="{{ $isEnded ? 100 : ($class->stats['attendance_rate'] ?? 0) }}" 
+                                                    aria-valuemin="0" 
+                                                    aria-valuemax="100">
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="class-actions">
-                                        <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
-                                            <i class="fas fa-calendar-alt me-2"></i>Lịch học
-                                        </a>
-                                        <a href="{{ route('online.classes.tests', ['class_id' => $class->id]) }}" class="action-btn btn-assignment">
-                                            <i class="fas fa-tasks me-2"></i>Bài tập
-                                        </a>
-                                        <a href="{{ route('online.grades.index', ['class_id' => $class->id]) }}" class="action-btn btn-grade">
-                                            <i class="fas fa-chart-line me-2"></i>Xem điểm
-                                        </a>
+                                        <div class="class-actions">
+                                            <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
+                                                <i class="fas fa-calendar-alt me-2"></i>Lịch học
+                                            </a>
+                                            <a href="{{ route('online.classes.tests', ['class_id' => $class->id]) }}" class="action-btn btn-assignment">
+                                                <i class="fas fa-tasks me-2"></i>Bài tập
+                                            </a>
+                                            <a href="{{ route('online.grades.index', ['class_id' => $class->id]) }}" class="action-btn btn-grade">
+                                                <i class="fas fa-chart-line me-2"></i>Xem điểm
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Schedule Modal for each completed class -->
-                            @include('online.classes.partials.schedule-modal', ['class' => $class])
-                        @endforeach
+                                <!-- Schedule Modal for each completed class -->
+                                @include('online.classes.partials.schedule-modal', ['class' => $class])
+                            @endforeach
+                        @endif
                     @endif
                 </div>
             </div>

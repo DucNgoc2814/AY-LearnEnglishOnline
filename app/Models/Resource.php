@@ -15,40 +15,13 @@ class Resource extends Model
     protected $fillable = [
         'title',
         'description',
-        'type',
-        'url',
-        'file_type',
-        'file_size',
-        'download_count',
-        'is_public',
         'order',
         'is_active',
         'resourceable_type',
         'resourceable_id',
         'file_path',
-        'file_extension',
-        'file_url',
-        'external_url',
-        'preview_path',
-        'category',
-        'resource_level',
-        'access_type',
-        'is_downloadable',
-        'is_featured',
-        'duration',
-        'original_lesson_video_id'
     ];
 
-    protected $casts = [
-        'file_size' => 'integer',
-        'download_count' => 'integer',
-        'is_public' => 'boolean',
-        'order' => 'integer',
-        'is_active' => 'boolean',
-        'is_downloadable' => 'boolean',
-        'is_featured' => 'boolean',
-        'duration' => 'integer'
-    ];
 
     /**
      * Lấy model sở hữu resource này

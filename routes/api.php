@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\VoucherController;
 use App\Http\Controllers\VideoProgressController;
 use App\Http\Controllers\LessonProgressController;
+use App\Http\Controllers\ClassSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,3 +43,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/lesson-progress/{lessonId}/{enrollmentId}', [LessonProgressController::class, 'getProgress']);
     Route::get('/course-progress/{enrollmentId}', [LessonProgressController::class, 'getCourseProgress']);
 });
+

@@ -3,104 +3,264 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\ClassSchedule;
 use App\Models\Classes;
-use Carbon\Carbon;
+use App\Models\ClassSchedule;
+use App\Models\ClassSession;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class ClassScheduleSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
+        // Tắt foreign key checks tạm thời
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        // Xóa dữ liệu cũ
+        DB::table('class_schedules')->truncate();
+        DB::table('class_sessions')->truncate();
+        if (Schema::hasTable('course_registrations')) {
+            DB::table('course_registrations')->truncate();
+        }
+
+        // Lấy tất cả các lớp học
+        $classes = Classes::all();
+
+        foreach ($classes as $class) {
+            $this->createSchedulesForClass($class);
+        }
+
+        // Tạo đăng ký khóa học sau khi đã tạo lịch học
+        $this->createCourseRegistrations();
+
+        // Bật lại foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+    }
+
+    /**
+     * Tạo lịch học cho một lớp
+     */
+    private function createSchedulesForClass($class)
+    {
         try {
-            // Disable foreign key checks temporarily
-            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-
-            // Clear existing schedules
-            ClassSchedule::truncate();
-            Log::info('Truncated class_schedules table');
-
-            $classes = Classes::all();
+            // Tạo 1-2 lịch học cho mỗi lớp
+            $scheduleCount = rand(1, 2);
             
-            if ($classes->isEmpty()) {
-                Log::warning("No classes found in database!");
+            // Ngày bắt đầu và kết thúc của lớp học
+            $startDate = Carbon::parse($class->start_date);
+            $endDate = Carbon::parse($class->end_date);
+            
+            // Nếu không có ngày bắt đầu/kết thúc, tạo giá trị mặc định
+            if (!$startDate->isValid()) {
+                $startDate = Carbon::now()->subDays(rand(0, 30));
+            }
+            
+            if (!$endDate->isValid() || $endDate->lessThan($startDate)) {
+                $endDate = (clone $startDate)->addMonths(3);
+            }
+            
+            // Tạo các lịch học
+            for ($i = 0; $i < $scheduleCount; $i++) {
+                // Chọn thứ trong tuần (1-7)
+                $dayOfWeek = rand(1, 7);
+                
+                // Giờ bắt đầu (giữa 8h-19h)
+                $startHour = rand(8, 19);
+                $startMinute = [0, 30][rand(0, 1)]; // 0 hoặc 30 phút
+                $startTime = sprintf('%02d:%02d:00', $startHour, $startMinute);
+                
+                // Giờ kết thúc (1.5 giờ sau khi bắt đầu)
+                $endHour = $startHour + 1;
+                $endMinute = $startMinute + 30;
+                if ($endMinute >= 60) {
+                    $endHour++;
+                    $endMinute -= 60;
+                }
+                $endTime = sprintf('%02d:%02d:00', $endHour, $endMinute);
+                
+                // Xác định loại lớp học
+                $isOnline = rand(0, 1) === 1;
+                $roomOrLink = '';
+                
+                if ($isOnline) {
+                    // Link Zoom cho lớp học online
+                    $roomOrLink = 'https://zoom.us/j/' . rand(1000000000, 9999999999) . '?pwd=' . substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 6);
+                } else {
+                    // Phòng học cho lớp offline
+                    $roomOrLink = 'ONLINE-' . rand(1, 10);
+                }
+                
+                // Tạo lịch học
+                $schedule = ClassSchedule::create([
+                    'class_id' => $class->id,
+                    'day_of_week' => $dayOfWeek,
+                    'start_time' => $startTime,
+                    'end_time' => $endTime,
+                    'room_number' => $roomOrLink,
+                    'meeting_url' => $isOnline ? $roomOrLink : null,
+                    'is_repeating' => true,
+                    'is_active' => true,
+                    'is_online' => $isOnline,
+                    'start_date' => $startDate,
+                    'end_date' => $endDate,
+                    'notes' => 'Lịch học tự động tạo bởi ClassScheduleSeeder'
+                ]);
+                
+                // Tạo các buổi học từ lịch học
+                $this->createSessionsFromSchedule($schedule);
+                
+                Log::info("Đã tạo lịch học cho lớp {$class->name} vào thứ $dayOfWeek, {$startTime}-{$endTime}");
+            }
+        } catch (\Exception $e) {
+            Log::error("Lỗi khi tạo lịch học cho lớp {$class->name}: {$e->getMessage()}");
+        }
+    }
+    
+    /**
+     * Tạo các buổi học từ lịch học
+     */
+    private function createSessionsFromSchedule($schedule)
+    {
+        try {
+            $startDate = Carbon::parse($schedule->start_date);
+            $endDate = Carbon::parse($schedule->end_date);
+            $dayOfWeek = $schedule->day_of_week;
+            
+            // Điều chỉnh ngày bắt đầu để bắt đầu vào đúng thứ
+            while ($startDate->dayOfWeekIso != $dayOfWeek) {
+                $startDate->addDay();
+            }
+            
+            // Tạo các buổi học hàng tuần
+            $currentDate = clone $startDate;
+            $sessionNumber = 1;
+            
+            while ($currentDate->lte($endDate)) {
+                // Xác định trạng thái buổi học
+                $status = 'scheduled';
+                if ($currentDate->lt(Carbon::today())) {
+                    $status = rand(1, 10) > 2 ? 'completed' : 'cancelled';
+                } elseif ($currentDate->isToday()) {
+                    $status = rand(1, 10) > 5 ? 'scheduled' : 'completed';
+                }
+                
+                // Tạo nội dung buổi học
+                $topics = [
+                    'Giới thiệu môn học', 
+                    'Ngữ pháp cơ bản', 
+                    'Kỹ năng đọc hiểu', 
+                    'Kỹ năng nghe', 
+                    'Thực hành nói', 
+                    'Luyện tập viết', 
+                    'Ôn tập và bài kiểm tra',
+                    'Thảo luận nhóm',
+                    'Thuyết trình',
+                    'Bài tập thực hành'
+                ];
+                
+                $topic = $topics[$sessionNumber % count($topics)];
+                $content = "Buổi học số $sessionNumber: $topic";
+                
+                // Tạo buổi học
+                ClassSession::create([
+                    'schedule_id' => $schedule->id,
+                    'resource_id' => null,
+                    'session_date' => $currentDate->format('Y-m-d'),
+                    'start_time' => $schedule->start_time,
+                    'end_time' => $schedule->end_time,
+                    'topic' => $topic,
+                    'content' => $content,
+                    'session_materials' => null,
+                    'recording_url' => null,
+                    'notes' => "Buổi học số $sessionNumber: $topic - " . ($schedule->is_online ? 'Học trực tuyến' : 'Học tại phòng ' . $schedule->room_number),
+                    'status' => $status,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+                
+                // Thêm 1 tuần
+                $currentDate->addWeek();
+                $sessionNumber++;
+            }
+            
+            Log::info("Đã tạo {$sessionNumber} buổi học cho lịch học ID: {$schedule->id}");
+        } catch (\Exception $e) {
+            Log::error("Lỗi khi tạo buổi học từ lịch học {$schedule->id}: {$e->getMessage()}");
+        }
+    }
+    
+    /**
+     * Tạo đăng ký khóa học cho học viên
+     */
+    private function createCourseRegistrations()
+    {
+        try {
+            // Lấy tất cả học viên
+            $students = DB::table('students')->get();
+            if ($students->isEmpty()) {
+                Log::warning("Không có học viên nào trong hệ thống!");
                 return;
             }
-
-            Log::info("Found " . $classes->count() . " classes");
             
-            // Phòng học cho từng loại lớp
-            $rooms = [
-                'online' => ['ONLINE-1', 'ONLINE-2', 'ONLINE-3', 'ONLINE-4', 'ONLINE-5'],
-                'offline' => ['A101', 'A102', 'A103', 'B201', 'B202'],
-                'hybrid' => ['H101', 'H102', 'H103', 'H201', 'H202']
-            ];
-
-            foreach ($classes as $class) {
-                Log::info("Processing class {$class->name} (ID: {$class->id})");
+            // Lấy tất cả lớp học
+            $classes = Classes::all();
+            if ($classes->isEmpty()) {
+                Log::warning("Không có lớp học nào trong hệ thống!");
+                return;
+            }
+            
+            // Mỗi học viên đăng ký 1-3 lớp học
+            foreach ($students as $student) {
+                // Chọn ngẫu nhiên số lượng lớp học để đăng ký
+                $classesToRegister = $classes->random(rand(1, min(3, $classes->count())));
                 
-                // Decode lịch học từ class
-                $schedule = json_decode($class->schedule, true);
-                if (!$schedule || empty($schedule['days']) || empty($schedule['time'])) {
-                    Log::warning("Invalid schedule for class {$class->name}");
-                    continue;
-                }
-
-                $days = $schedule['days'];
-                $times = explode('-', $schedule['time']);
-                
-                // Xác định loại phòng dựa trên class_type
-                $roomType = $class->class_type ?? 'offline';
-                $availableRooms = $rooms[$roomType] ?? $rooms['offline'];
-                
-                Log::info("Class type: {$roomType}, Days: " . implode(',', $days) . ", Time: {$schedule['time']}");
-                
-                foreach ($days as $day) {
-                    $isOnline = in_array($roomType, ['online', 'hybrid']);
-                    $room = $availableRooms[array_rand($availableRooms)];
+                foreach ($classesToRegister as $class) {
+                    // Kiểm tra xem đã đăng ký chưa
+                    $exists = DB::table('course_registrations')
+                        ->where('student_id', $student->id)
+                        ->where('class_id', $class->id)
+                        ->exists();
                     
-                    try {
-                        ClassSchedule::create([
+                    if (!$exists) {
+                        // Tạo ngày đăng ký (1-30 ngày trước)
+                        $enrollmentDate = Carbon::now()->subDays(rand(1, 30));
+                        
+                        // Hầu hết các đăng ký đều là active để dễ kiểm tra
+                        $status = 'active';
+                        if (rand(1, 10) > 8) { // 20% trường hợp là completed
+                            $status = 'completed';
+                        }
+                        
+                        // Tạo bản ghi đăng ký
+                        DB::table('course_registrations')->insert([
+                            'student_id' => $student->id,
                             'class_id' => $class->id,
-                            'day_of_week' => $day,
-                            'start_time' => $times[0],
-                            'end_time' => $times[1],
-                            'room_number' => $room,
-                            'meeting_url' => $isOnline ? 'https://zoom.us/j/' . rand(100000000, 999999999) . '?pwd=' . substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 6) : null,
-                            'is_repeating' => true,
-                            'is_active' => true,
-                            'is_online' => $isOnline,
-                            'start_date' => $class->start_date,
-                            'end_date' => $class->end_date,
-                            'notes' => $this->getNotes($roomType)
+                            'status' => $status,
+                            'fee_amount' => rand(500000, 5000000), // Học phí ngẫu nhiên
+                            'payment_status' => rand(1, 10) > 2 ? 'paid' : 'pending',
+                            'payment_method' => ['cash', 'bank_transfer', 'credit_card'][rand(0, 2)],
+                            'payment_date' => rand(1, 10) > 2 ? $enrollmentDate : null,
+                            'invoice_number' => 'INV-' . strtoupper(substr(md5(rand()), 0, 8)),
+                            'enrollment_date' => $enrollmentDate,
+                            'completion_date' => $status == 'completed' ? Carbon::now()->subDays(rand(1, 5)) : null,
+                            'notes' => 'Đăng ký tự động tạo bởi ClassScheduleSeeder',
+                            'created_at' => now(),
+                            'updated_at' => now()
                         ]);
-                        Log::info("Created schedule for day {$day} in room {$room}");
-                    } catch (\Exception $e) {
-                        Log::error("Error creating schedule: " . $e->getMessage());
+                        
+                        Log::info("Đã đăng ký học viên ID {$student->id} vào lớp {$class->name}");
                     }
                 }
             }
             
-            // Re-enable foreign key checks
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-            Log::info('ClassScheduleSeeder completed successfully');
-            
+            Log::info("Đã hoàn thành việc tạo đăng ký khóa học");
         } catch (\Exception $e) {
-            Log::error('Error in ClassScheduleSeeder: ' . $e->getMessage());
-            // Make sure to re-enable foreign key checks even if there's an error
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-            // Rethrow the exception
-            throw $e;
+            Log::error("Lỗi khi tạo đăng ký khóa học: {$e->getMessage()}");
         }
-    }
-
-    private function getNotes(string $classType): string
-    {
-        return match($classType) {
-            'online' => 'Lớp học trực tuyến qua Zoom',
-            'hybrid' => 'Lớp học kết hợp (trực tiếp và trực tuyến)',
-            default => 'Lớp học trực tiếp tại phòng học'
-        };
     }
 }

@@ -463,14 +463,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Handle filter change
             const filterSelect = document.querySelector('.filter-select');
-            if (filterSelect) {
-                filterSelect.addEventListener('change', function() {
-                    console.log('Filter changed to:', this.value);
-                    // Logic to fetch data based on selected time period would go here
-                });
-            }
-
-            // Handle pagination
             const paginationButtons = document.querySelectorAll('.pagination-btn:not(.disabled)');
             paginationButtons.forEach(button => {
                 button.addEventListener('click', function() {
@@ -487,14 +479,6 @@
                 });
             });
 
-            // Handle per page change
-            const perPageSelect = document.querySelector('.pagination-select');
-            if (perPageSelect) {
-                perPageSelect.addEventListener('change', function() {
-                    console.log('Items per page changed to:', this.value);
-                    // Fetch logic with new page size would go here
-                });
-            }
         });
     </script>
 @endpush

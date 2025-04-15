@@ -16,28 +16,7 @@ class ClassSeeder extends Seeder
         try {
             // Disable foreign key checks
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-            
-            // First truncate related tables to avoid foreign key constraints
-            if (Schema::hasTable('class_schedules')) {
-                DB::table('class_schedules')->truncate();
-                Log::info('Truncated class_schedules table');
-            }
-            
-            if (Schema::hasTable('class_sessions')) {
-                DB::table('class_sessions')->truncate();
-                Log::info('Truncated class_sessions table');
-            }
-            
-            if (Schema::hasTable('class_student')) {
-                DB::table('class_student')->truncate();
-                Log::info('Truncated class_student table');
-            }
-            
-            // Now safe to truncate classes
             Classes::truncate();
-            Log::info('Truncated classes table');
-            
-            $classTypes = ['online', 'offline', 'hybrid'];
             $timeSlots = [
                 ['08:00-09:30', 'Sáng'],
                 ['10:00-11:30', 'Giữa sáng'],
@@ -45,7 +24,7 @@ class ClassSeeder extends Seeder
                 ['16:00-17:30', 'Cuối chiều'],
                 ['18:30-20:00', 'Tối'],
             ];
-            
+
             $classNames = [
                 "Basic English",
                 "Intermediate English",
@@ -63,25 +42,21 @@ class ClassSeeder extends Seeder
                 "English Conversation",
                 "English for Specific Purposes"
             ];
-            
+
             // Create 30 classes instead of 20
             for ($i = 1; $i <= 30; $i++) {
-                $courseId = rand(1, 20); // Assuming we have 20 courses from CourseSeeder
                 $teacherId = rand(1, 5); // Assuming we have 5 teachers
                 $timeSlot = $timeSlots[array_rand($timeSlots)];
-                $classType = $classTypes[array_rand($classTypes)];
                 $className = $classNames[array_rand($classNames)];
-                
+
                 // Create more realistic dates
                 $startDate = Carbon::now()->subDays(rand(0, 30)); // Some classes already started, some will start soon
                 $endDate = (clone $startDate)->addMonths(rand(2, 4)); // 2-4 month duration
-                
+
                 Classes::create([
                     'name' => "{$className} - " . substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 2),
-                    'code' => "C{$courseId}-" . uniqid(),
-                    'course_id' => $courseId,
+                    'code' => "C{$i}-" . uniqid(),
                     'teacher_id' => $teacherId,
-                    'class_type' => $classType,
                     'start_date' => $startDate,
                     'end_date' => $endDate,
                     'enrollment_deadline' => (clone $startDate)->subDays(5),
@@ -90,19 +65,18 @@ class ClassSeeder extends Seeder
                     'fee' => rand(1500000, 3000000),
                     'current_students' => rand(8, 25), // More realistic student counts
                     'status' => rand(1, 10) > 2 ? 'active' : (rand(1, 2) == 1 ? 'pending' : 'completed'), // Mostly active classes
-                    'description' => "Lớp {$className} - {$timeSlot[1]} - " . implode(',', array_rand(array_flip([2,3,4,5,6,7]), 3)),
+                    'description' => "Lớp {$className} - {$timeSlot[1]} - " . implode(',', array_rand(array_flip([2, 3, 4, 5, 6, 7]), 3)),
                     'schedule' => json_encode([
-                        'days' => array_rand(array_flip([2,3,4,5,6,7]), 3),
+                        'days' => array_rand(array_flip([2, 3, 4, 5, 6, 7]), 3),
                         'time' => $timeSlot[0]
                     ]),
                     'is_active' => true
                 ]);
             }
-            
+
             // Re-enable foreign key checks
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             Log::info('ClassSeeder completed successfully');
-            
         } catch (\Exception $e) {
             Log::error('Error in ClassSeeder: ' . $e->getMessage());
             // Make sure to re-enable foreign key checks even if there's an error
@@ -111,4 +85,4 @@ class ClassSeeder extends Seeder
             throw $e;
         }
     }
-} 
+}
