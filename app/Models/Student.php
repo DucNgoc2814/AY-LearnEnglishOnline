@@ -50,9 +50,6 @@ class Student extends Authenticatable implements JWTSubject
         'is_active'
     ];
 
-    protected $hidden = [
-        'password',
-    ];
 
     protected $hidden = [
         'password',
@@ -69,10 +66,6 @@ class Student extends Authenticatable implements JWTSubject
     /**
      * Automatically hash passwords when they are set
      */
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = bcrypt($value);
-    }
 
     /**
      * Get the username field for authentication
@@ -96,8 +89,8 @@ class Student extends Authenticatable implements JWTSubject
     public function classes(): BelongsToMany
     {
         return $this->belongsToMany(Classes::class, 'course_registrations', 'student_id', 'class_id')
-                    ->withPivot(['status', 'fee_amount', 'payment_status', 'payment_method', 'payment_date', 'invoice_number', 'enrollment_date', 'completion_date', 'notes'])
-                    ->withTimestamps();
+            ->withPivot(['status', 'fee_amount', 'payment_status', 'payment_method', 'payment_date', 'invoice_number', 'enrollment_date', 'completion_date', 'notes'])
+            ->withTimestamps();
     }
 
     /**
@@ -355,8 +348,6 @@ class Student extends Authenticatable implements JWTSubject
 
         return $prefix . $year . str_pad($sequence, 3, '0', STR_PAD_LEFT);
     }
-}
-
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -380,4 +371,4 @@ class Student extends Authenticatable implements JWTSubject
             'student_code' => $this->student_code
         ];
     }
-} 
+}
