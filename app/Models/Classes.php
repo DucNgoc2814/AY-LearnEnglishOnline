@@ -313,4 +313,4 @@ class Classes extends Model
     {
         return $this->belongsTo(Employee::class, 'assistant_id');
     }
-} 
+}
