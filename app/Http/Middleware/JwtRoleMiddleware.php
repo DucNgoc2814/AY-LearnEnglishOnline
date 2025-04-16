@@ -54,7 +54,7 @@ class JwtRoleMiddleware extends BaseMiddleware
             $user = null;
             if ($userType === 'student') {
                 $user = Student::find($userId);
-            } else {
+            } elseif ($userType === 'employee') {
                 $user = Employee::find($userId);
             }
 
@@ -77,18 +77,38 @@ class JwtRoleMiddleware extends BaseMiddleware
             // Check if user has any of the required roles
             $hasRole = false;
 
-            if ($userType === 'student' && in_array('student', array_map('strtolower', $roles))) {
+            // Convert all roles to lowercase for case-insensitive comparison
+            $roles = array_map('strtolower', $roles);
+
+            if ($userType === 'student' && in_array('student', $roles)) {
                 $hasRole = true;
-            } elseif ($userType !== 'student') {
-                // For employees, check their role from the employees table
-                $employeeRole = strtolower($user->role);
-                if (in_array($employeeRole, array_map('strtolower', $roles))) {
+            } elseif ($userType === 'employee') {
+                // For employees, check both the 'employee' role and specific roles
+                if (in_array('employee', $roles)) {
                     $hasRole = true;
+                } else {
+                    // Get user roles and convert to lowercase
+                    $userRoles = $user->roles->pluck('slug')->map(function($slug) {
+                        return strtolower($slug);
+                    })->toArray();
+
+                    Log::debug('Checking employee roles', [
+                        'required_roles' => $roles,
+                        'user_roles' => $userRoles,
+                        'user_id' => $userId
+                    ]);
+
+                    // Check if user has any of the required roles
+                    $hasRole = !empty(array_intersect($roles, $userRoles));
                 }
             }
 
-
             if (!$hasRole) {
+                Log::debug('Access denied', [
+                    'user_type' => $userType,
+                    'required_roles' => $roles,
+                    'user_roles' => $user->roles->pluck('slug')->toArray()
+                ]);
                 return $this->handleUnauthorized('Bạn không có quyền truy cập vào trang này.');
             }
 
