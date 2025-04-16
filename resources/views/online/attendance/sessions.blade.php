@@ -167,7 +167,7 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0 text-primary">
-                        <i class="fas fa-calendar-alt me-2"></i>Buổi học lớp Tiếng Anh cơ bản A1
+                        <i class="fas fa-calendar-alt me-2"></i>{{ $class->name }}
                     </h5>
                     <a href="{{ route('online.attendance.index') }}" class="btn btn-sm btn-outline-primary back-btn">
                         <i class="fas fa-arrow-left me-2"></i>Quay lại
@@ -177,30 +177,30 @@
                     <!-- Class Info Section -->
                     <div class="sessions-header">
                         <div class="class-info">
-                            <span><i class="fas fa-graduation-cap me-2"></i><strong>Mã lớp:</strong> TA-CB-A1-01</span>
-                            <span><i class="fas fa-users me-2"></i><strong>Sĩ số:</strong> 20 học viên</span>
-                            <span><i class="fas fa-calendar me-2"></i><strong>Lịch học:</strong> Thứ 2, 4, 6</span>
-                            <span><i class="fas fa-clock me-2"></i><strong>Giờ học:</strong> 18:00 - 20:00</span>
+                            <span><i class="fas fa-graduation-cap me-2"></i><strong>Mã lớp:</strong> {{ $class->code }}</span>
+                            <span><i class="fas fa-users me-2"></i><strong>Sĩ số:</strong> {{ $class->students->count() }} học viên</span>
+                            <span><i class="fas fa-calendar me-2"></i><strong>Lịch học:</strong> {{ $class->formatted_schedule ?? 'Chưa có lịch' }}</span>
+                            <span><i class="fas fa-clock me-2"></i><strong>Giờ học:</strong> {{ $class->schedule_time ?? 'Chưa cập nhật' }}</span>
                         </div>
 
                         <!-- Stats -->
                         <div class="sessions-stats">
                             <div class="stat-card total">
-                                <div class="stat-value">30</div>
+                                <div class="stat-value">{{ $class->sessions->count() }}</div>
                                 <div class="stat-label">
                                     <i class="fas fa-book"></i>
                                     <span>Tổng số buổi</span>
                                 </div>
                             </div>
                             <div class="stat-card completed">
-                                <div class="stat-value">16</div>
+                                <div class="stat-value">{{ $class->sessions->where('status', 'completed')->count() }}</div>
                                 <div class="stat-label">
                                     <i class="fas fa-check"></i>
                                     <span>Đã học</span>
                                 </div>
                             </div>
                             <div class="stat-card remaining">
-                                <div class="stat-value">14</div>
+                                <div class="stat-value">{{ $class->sessions->whereNotIn('status', ['completed'])->count() }}</div>
                                 <div class="stat-label">
                                     <i class="fas fa-hourglass-half"></i>
                                     <span>Còn lại</span>
@@ -226,68 +226,52 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Buổi 16 -->
-                                <tr>
-                                    <td class="fw-medium">Buổi 16</td>
-                                    <td>Unit 8: Daily Activities</td>
-                                    <td><i class="fas fa-calendar-day text-primary me-1"></i>15/03/2024</td>
-                                    <td><i class="fas fa-clock text-primary me-1"></i>18:00 - 20:00</td>
-                                    <td>20/20</td>
-                                    <td class="text-success">15</td>
-                                    <td class="text-danger">5</td>
-                                    <td>
-                                        <span class="table-status status-completed">
-                                            <i class="fas fa-check me-1"></i>Đã học
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('online.attendance.detail', ['id' => 1]) }}" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye me-1"></i>Chi tiết
-                                        </a>
-                                    </td>
-                                </tr>
+                                @foreach($class->sessions as $session)
+                                    <tr>
+                                        <td class="fw-medium">Buổi {{ $loop->iteration }}</td>
+                                        <td>{{ $session->content ?? 'Chưa cập nhật' }}</td>
+                                        <td>
+                                            <i class="fas fa-calendar-day text-primary me-1"></i>
+                                            {{ $session->session_date ? $session->session_date->format('d/m/Y') : 'N/A' }}
+                                        </td>
+                                        <td>
+                                            <i class="fas fa-clock text-primary me-1"></i>
+                                            {{ $session->start_time ? \Carbon\Carbon::parse($session->start_time)->format('H:i') . ' - ' . \Carbon\Carbon::parse($session->end_time)->format('H:i') : 'N/A' }}
+                                        </td>
+                                        <td>{{ $class->students->count() }}/{{ $class->students->count() }}</td>
+                                        <td class="text-success">{{ $session->attendances->where('status', 'present')->count() }}</td>
+                                        <td class="text-danger">{{ $session->attendances->where('status', 'absent')->count() }}</td>
+                                        <td>
+                                            @php
+                                                $statusClass = match($session->status) {
+                                                    'completed' => 'status-completed',
+                                                    'in_progress' => 'status-in-progress',
+                                                    default => 'status-upcoming'
+                                                };
 
-                                <!-- Buổi 17 -->
-                                <tr>
-                                    <td class="fw-medium">Buổi 17</td>
-                                    <td>Unit 9: Hobbies</td>
-                                    <td><i class="fas fa-calendar-day text-primary me-1"></i>18/03/2024</td>
-                                    <td><i class="fas fa-clock text-primary me-1"></i>18:00 - 20:00</td>
-                                    <td>20/20</td>
-                                    <td class="text-muted">-</td>
-                                    <td class="text-muted">-</td>
-                                    <td>
-                                        <span class="table-status status-in-progress">
-                                            <i class="fas fa-clock me-1"></i>Đang học
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye me-1"></i>Chi tiết
-                                        </a>
-                                    </td>
-                                </tr>
+                                                $statusText = match($session->status) {
+                                                    'completed' => 'Đã học',
+                                                    'in_progress' => 'Đang học',
+                                                    default => 'Chưa học'
+                                                };
 
-                                <!-- Buổi 18 -->
-                                <tr>
-                                    <td class="fw-medium">Buổi 18</td>
-                                    <td>Unit 10: Weather</td>
-                                    <td><i class="fas fa-calendar-day text-primary me-1"></i>20/03/2024</td>
-                                    <td><i class="fas fa-clock text-primary me-1"></i>18:00 - 20:00</td>
-                                    <td>20/20</td>
-                                    <td class="text-muted">-</td>
-                                    <td class="text-muted">-</td>
-                                    <td>
-                                        <span class="table-status status-upcoming">
-                                            <i class="fas fa-hourglass me-1"></i>Chưa học
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye me-1"></i>Chi tiết
-                                        </a>
-                                    </td>
-                                </tr>
+                                                $statusIcon = match($session->status) {
+                                                    'completed' => 'fas fa-check',
+                                                    'in_progress' => 'fas fa-clock',
+                                                    default => 'fas fa-hourglass'
+                                                };
+                                            @endphp
+                                            <span class="table-status {{ $statusClass }}">
+                                                <i class="{{ $statusIcon }} me-1"></i>{{ $statusText }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('online.attendance.detail', ['id' => $session->id]) }}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-eye me-1"></i>Chi tiết
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

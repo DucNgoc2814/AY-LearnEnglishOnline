@@ -144,17 +144,17 @@ class Attendance extends Model
     public function updateStatus(string $status, ?string $remarks = null): self
     {
         $this->status = $status;
-        
+
         if ($remarks) {
             $this->remarks = $remarks;
         }
-        
+
         if ($status === self::STATUS_PRESENT && !$this->check_in_time) {
             $this->check_in_time = now();
         }
-        
+
         $this->save();
-        
+
         return $this;
     }
 
@@ -166,7 +166,7 @@ class Attendance extends Model
         $this->status = self::STATUS_PRESENT;
         $this->check_in_time = $checkInTime ?? now();
         $this->save();
-        
+
         return $this;
     }
 
@@ -176,13 +176,13 @@ class Attendance extends Model
     public function markAbsent(?string $remarks = null): self
     {
         $this->status = self::STATUS_ABSENT;
-        
+
         if ($remarks) {
             $this->remarks = $remarks;
         }
-        
+
         $this->save();
-        
+
         return $this;
     }
 
@@ -193,14 +193,14 @@ class Attendance extends Model
     {
         $this->status = self::STATUS_LATE;
         $this->check_in_time = $checkInTime ?? now();
-        
+
         if ($lateMinutes !== null) {
             $this->late_minutes = $lateMinutes;
         } else {
             // Tính số phút trễ dựa trên thời gian bắt đầu buổi học
             $sessionStartTime = $this->session->start_time;
             $checkIn = $this->check_in_time;
-            
+
             if ($sessionStartTime && $checkIn) {
                 // Convert to Carbon if needed and calculate difference
                 $carbonCheckIn = $checkIn instanceof \DateTime ? \Carbon\Carbon::instance($checkIn) : $checkIn;
@@ -208,9 +208,9 @@ class Attendance extends Model
                 $this->late_minutes = max(0, $carbonCheckIn->diffInMinutes($carbonSessionStart));
             }
         }
-        
+
         $this->save();
-        
+
         return $this;
     }
 
@@ -222,7 +222,7 @@ class Attendance extends Model
         $this->status = self::STATUS_EXCUSED;
         $this->remarks = $remarks;
         $this->save();
-        
+
         return $this;
     }
 
@@ -234,10 +234,10 @@ class Attendance extends Model
         if (!$this->duration_minutes) {
             return '00:00';
         }
-        
+
         $hours = floor($this->duration_minutes / 60);
         $minutes = $this->duration_minutes % 60;
-        
+
         return sprintf('%02d:%02d', $hours, $minutes);
     }
 
@@ -280,4 +280,4 @@ class Attendance extends Model
     {
         return $query->whereIn('status', [self::STATUS_PRESENT, self::STATUS_LATE]);
     }
-} 
+}

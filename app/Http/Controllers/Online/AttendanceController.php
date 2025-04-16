@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Online;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Classes;
-use App\Models\Attendance;
-use App\Models\OnlineAttendanceDetail;
 use App\Models\Employee;
+use App\Models\Attendance;
+use App\Models\ClassSession;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\OnlineAttendanceDetail;
 
 class AttendanceController extends Controller
 {
@@ -72,7 +73,20 @@ class AttendanceController extends Controller
     }
     public function detail($id)
     {
-        return view('online.attendance.detail');
+        // Load the session with its relationships
+        $session = ClassSession::with([
+            'class',
+            'class.students',
+            'attendances.student',
+            'schedule'
+        ])->findOrFail($id);
+
+        // Calculate attendance statistics
+        $totalStudents = $session->class->students->count();
+        $presentCount = $session->attendances->where('status', 'present')->count();
+        $absentCount = $session->attendances->where('status', 'absent')->count();
+
+        return view('online.attendance.detail', compact('session', 'totalStudents', 'presentCount', 'absentCount'));
     }
 
     public function saveAttendance(Request $request, $id)
