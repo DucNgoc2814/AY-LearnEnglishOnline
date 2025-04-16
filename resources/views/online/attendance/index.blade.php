@@ -245,95 +245,77 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Lớp 1: Đang học -->
+                                    @forelse($classes as $class)
                                     <tr>
-                                        <td><span class="badge bg-light text-dark">TA-CB-A1-01</span></td>
-                                        <td class="fw-medium">Tiếng Anh cơ bản A1</td>
+                                        <td><span class="badge bg-light text-dark">{{ $class['code'] }}</span></td>
+                                        <td class="fw-medium">{{ $class['name'] }}</td>
                                         <td>
-                                            <span class="badge bg-success rounded-pill">
-                                                <i class="fas fa-play me-1"></i>Đang học
-                                            </span>
+                                            @switch($class['status'])
+                                                @case('active')
+                                                    <span class="badge bg-success rounded-pill">
+                                                        <i class="fas fa-play me-1"></i>Đang học
+                                                    </span>
+                                                    @break
+                                                @case('pending')
+                                                    <span class="badge bg-info rounded-pill">
+                                                        <i class="fas fa-hourglass-start me-1"></i>Sắp khai giảng
+                                                    </span>
+                                                    @break
+                                                @case('completed')
+                                                    <span class="badge bg-secondary rounded-pill">
+                                                        <i class="fas fa-check me-1"></i>Đã kết thúc
+                                                    </span>
+                                                    @break
+                                                @default
+                                                    <span class="badge bg-warning rounded-pill">
+                                                        <i class="fas fa-question me-1"></i>{{ $class['status'] }}
+                                                    </span>
+                                            @endswitch
                                         </td>
-                                        <td><i class="fas fa-users text-primary me-1"></i>25 học viên</td>
-                                        <td><i class="fas fa-calendar-alt text-primary me-1"></i>T2 - T4 - T6</td>
-                                        <td><i class="fas fa-clock text-primary me-1"></i>18:00 - 20:00</td>
+                                        <td><i class="fas fa-users text-primary me-1"></i>{{ $class['student_count'] }} học viên</td>
+                                        <td>
+                                            @if(is_array($class['schedule']))
+                                                <i class="fas fa-calendar-alt text-primary me-1"></i>
+                                                {{ implode(' - ', array_map(function($day) {
+                                                    return 'T' . $day;
+                                                }, $class['schedule']['days'] ?? [])) }}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if(is_array($class['schedule']))
+                                                <i class="fas fa-clock text-primary me-1"></i>
+                                                {{ $class['schedule']['start_time'] ?? '' }} - {{ $class['schedule']['end_time'] ?? '' }}
+                                            @endif
+                                        </td>
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="progress flex-grow-1 me-2" style="height: 8px;">
                                                     <div class="progress-bar bg-primary" role="progressbar"
-                                                        style="width: 66.7%;" aria-valuenow="16" aria-valuemin="0"
-                                                        aria-valuemax="24"></div>
+                                                        style="width: {{ $class['progress']['percentage'] }}%;"
+                                                        aria-valuenow="{{ $class['progress']['completed'] }}"
+                                                        aria-valuemin="0"
+                                                        aria-valuemax="{{ $class['progress']['total'] }}">
+                                                    </div>
                                                 </div>
-                                                <span class="small text-muted">16/24 buổi</span>
+                                                <span class="small text-muted">{{ $class['progress']['completed'] }}/{{ $class['progress']['total'] }} buổi</span>
                                             </div>
                                         </td>
                                         <td>
-                                            <a href="{{ route('online.attendance.sessions', ['class' => 1]) }}"
+                                            <a href="{{ route('online.attendance.sessions', ['class' => $class['id']]) }}"
                                                 class="btn btn-sm btn-primary">
                                                 <i class="fas fa-calendar-check me-1"></i>Xem buổi học
                                             </a>
                                         </td>
                                     </tr>
-
-                                    <!-- Lớp 2: Sắp khai giảng -->
+                                    @empty
                                     <tr>
-                                        <td><span class="badge bg-light text-dark">TA-GT-B1-01</span></td>
-                                        <td class="fw-medium">Tiếng Anh giao tiếp B1</td>
-                                        <td>
-                                            <span class="badge bg-info rounded-pill">
-                                                <i class="fas fa-hourglass-start me-1"></i>Sắp khai giảng
-                                            </span>
-                                        </td>
-                                        <td><i class="fas fa-users text-primary me-1"></i>20 học viên</td>
-                                        <td><i class="fas fa-calendar-alt text-primary me-1"></i>T3 - T5 - T7</td>
-                                        <td><i class="fas fa-clock text-primary me-1"></i>18:30 - 20:30</td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
-                                                    <div class="progress-bar bg-primary" role="progressbar"
-                                                        style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
-                                                        aria-valuemax="30"></div>
-                                                </div>
-                                                <span class="small text-muted">0/30 buổi</span>
+                                        <td colspan="8" class="text-center py-4">
+                                            <div class="text-muted">
+                                                <i class="fas fa-info-circle me-2"></i>Chưa có lớp học nào
                                             </div>
                                         </td>
-                                        <td>
-                                            <a href="{{ route('online.attendance.sessions', ['class' => 2]) }}"
-                                                class="btn btn-sm btn-primary">
-                                                <i class="fas fa-calendar-check me-1"></i>Xem buổi học
-                                            </a>
-                                        </td>
                                     </tr>
-
-                                    <!-- Lớp 3: Đã kết thúc -->
-                                    <tr>
-                                        <td><span class="badge bg-light text-dark">TA-TM-B2-01</span></td>
-                                        <td class="fw-medium">Tiếng Anh thương mại B2</td>
-                                        <td>
-                                            <span class="badge bg-secondary rounded-pill">
-                                                <i class="fas fa-check me-1"></i>Đã kết thúc
-                                            </span>
-                                        </td>
-                                        <td><i class="fas fa-users text-primary me-1"></i>15 học viên</td>
-                                        <td><i class="fas fa-calendar-alt text-primary me-1"></i>T2 - T4 - T6</td>
-                                        <td><i class="fas fa-clock text-primary me-1"></i>19:00 - 21:00</td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
-                                                    <div class="progress-bar bg-primary" role="progressbar"
-                                                        style="width: 100%;" aria-valuenow="36" aria-valuemin="0"
-                                                        aria-valuemax="36"></div>
-                                                </div>
-                                                <span class="small text-muted">36/36 buổi</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('online.attendance.sessions', ['class' => 3]) }}"
-                                                class="btn btn-sm btn-primary">
-                                                <i class="fas fa-calendar-check me-1"></i>Xem buổi học
-                                            </a>
-                                        </td>
-                                    </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>

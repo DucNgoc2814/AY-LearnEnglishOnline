@@ -7,15 +7,51 @@ use Illuminate\Http\Request;
 use App\Models\Classes;
 use App\Models\Attendance;
 use App\Models\OnlineAttendanceDetail;
+use App\Models\Employee;
 
 class AttendanceController extends Controller
 {
     /**
      * Display attendance index.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('online.attendance.index');
+        $query = Classes::with(['teacher', 'sessions', 'students']);
+
+        // Filter by teacher_id if provided
+        if ($request->has('teacher_id')) {
+            $query->where('teacher_id', $request->teacher_id);
+        }
+
+        $classes = $query->orderBy('start_date', 'desc')
+            ->get()
+            ->map(function ($class) {
+                $totalSessions = $class->sessions->count();
+                $completedSessions = $class->sessions->where('status', 'completed')->count();
+
+                return [
+                    'id' => $class->id,
+                    'code' => $class->code,
+                    'name' => $class->name,
+                    'status' => $class->status,
+                    'student_count' => $class->students->count(),
+                    'schedule' => $class->schedule,
+                    'teacher_name' => $class->teacher ? $class->teacher->name : 'N/A',
+                    'teacher_id' => $class->teacher_id,
+                    'progress' => [
+                        'completed' => $completedSessions,
+                        'total' => $totalSessions,
+                        'percentage' => $totalSessions > 0 ? ($completedSessions / $totalSessions * 100) : 0
+                    ]
+                ];
+            });
+
+        // Get list of teachers for the filter dropdown
+        $teachers = Employee::whereHas('roles', function($query) {
+            $query->where('name', 'teacher');
+        })->get();
+
+        return view('online.attendance.index', compact('classes', 'teachers'));
     }
 
     /**
@@ -31,9 +67,9 @@ class AttendanceController extends Controller
         $class = Classes::with(['sessions' => function($query) {
             $query->orderBy('session_date', 'desc');
         }])->findOrFail($class);
-        
+
         return view('online.attendance.sessions', compact('class'));
-    }   
+    }
     public function detail($id)
     {
         return view('online.attendance.detail');
@@ -55,5 +91,5 @@ class AttendanceController extends Controller
             'message' => 'Attendance saved successfully'
         ]);
     }
-    
-} 
+
+}

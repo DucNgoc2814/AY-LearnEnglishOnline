@@ -21,7 +21,7 @@ class LoginController extends Controller
                 $token = session('jwt_token');
                 JWTAuth::setToken($token);
                 $user = JWTAuth::authenticate();
-                
+
                 if ($user) {
                     return redirect()->route('online.dashboard');
                 }
@@ -34,7 +34,7 @@ class LoginController extends Controller
 
         // Clear any existing session data to prevent issues
         session()->forget(['jwt_token']);
-        
+
         return view('online.auth.login');
     }
 
@@ -54,14 +54,14 @@ class LoginController extends Controller
         try {
             if ($credentials['user_type'] === 'student') {
                 $user = Student::where('student_code', $credentials['username'])->first();
-                
+
                 Log::info('Student search result', [
                     'student_code' => $credentials['username'],
                     'found' => $user ? true : false
                 ]);
             } else {
                 $user = Employee::where('employee_code', $credentials['username'])->first();
-                
+
                 Log::info('Employee search result', [
                     'employee_code' => $credentials['username'],
                     'found' => $user ? true : false
@@ -73,7 +73,7 @@ class LoginController extends Controller
                     'username' => $credentials['username'],
                     'user_type' => $credentials['user_type']
                 ]);
-                
+
                 return back()->withErrors([
                     'username' => 'Thông tin đăng nhập không chính xác.',
                 ])->withInput($request->only('username', 'user_type'));
@@ -89,7 +89,7 @@ class LoginController extends Controller
                     'username' => $credentials['username'],
                     'user_type' => $credentials['user_type']
                 ]);
-                
+
                 return back()->withErrors([
                     'username' => 'Thông tin đăng nhập không chính xác.',
                 ])->withInput($request->only('username', 'user_type'));

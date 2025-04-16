@@ -10,17 +10,27 @@ class Banner extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'title',
         'image_url',
         'link_url',
+        'order',
         'is_active',
         'start_date',
         'end_date',
-        'position',
-        'order'
+        'position'
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'is_active' => 'boolean',
         'start_date' => 'datetime',
@@ -28,98 +38,93 @@ class Banner extends Model
         'order' => 'integer'
     ];
 
-    // Scope for active banners
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array<int, string>
+     */
+    protected $dates = [
+        'start_date',
+        'end_date'
+    ];
+
+    /**
+     * Scope a query to only include active banners.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeActive($query)
     {
         return $query->where('is_active', true)
-            ->where(function ($q) {
-                $q->where('start_date', '<=', now())
-                    ->where('end_date', '>=', now())
-                    ->orWhereNull('start_date')
-                    ->orWhereNull('end_date');
+            ->where(function($q) {
+                $q->whereNull('start_date')
+                    ->orWhere('start_date', '<=', now());
+            })
+            ->where(function($q) {
+                $q->whereNull('end_date')
+                    ->orWhere('end_date', '>=', now());
             });
     }
 
     /**
-     * Scope lấy banner theo vị trí
-     */
-    public function scopePosition($query, string $position)
-    {
-        return $query->where('position', $position);
-    }
-
-    /**
-     * Scope lấy banner đang trong thời gian hiển thị
-     */
-    public function scopeInPeriod($query)
-    {
-        $now = now();
-        return $query->where(function($q) use ($now) {
-            $q->whereNull('start_date')
-                ->orWhere('start_date', '<=', $now);
-        })->where(function($q) use ($now) {
-            $q->whereNull('end_date')
-                ->orWhere('end_date', '>=', $now);
-        });
-    }
-
-    /**
-     * Scope sắp xếp banner theo thứ tự
+     * Scope a query to order banners by their position and order.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order');
+        return $query->orderBy('position')->orderBy('order');
     }
 
+    /**
+     * Scope a query to filter banners by position.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $position
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeByPosition($query, $position)
     {
         return $query->where('position', $position);
     }
 
-    // Methods
-    public function isVisible(): bool
+    /**
+     * Get the banner's image URL with domain if it's a relative path.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getImageUrlAttribute($value)
     {
-        $now = now();
-        
+        if ($value && !filter_var($value, FILTER_VALIDATE_URL)) {
+            return asset($value);
+        }
+        return $value;
+    }
+
+    /**
+     * Check if the banner is currently active based on dates.
+     *
+     * @return bool
+     */
+    public function isCurrentlyActive(): bool
+    {
         if (!$this->is_active) {
             return false;
         }
-        
-        if ($this->start_date && $this->start_date > $now) {
+
+        $now = now();
+
+        if ($this->start_date && $this->start_date->gt($now)) {
             return false;
         }
-        
-        if ($this->end_date && $this->end_date < $now) {
+
+        if ($this->end_date && $this->end_date->lt($now)) {
             return false;
         }
-        
+
         return true;
     }
-
-    public function hasExpired(): bool
-    {
-        return $this->end_date && $this->end_date < now();
-    }
-
-    public function getImageUrl(): string
-    {
-        if (filter_var($this->image_url, FILTER_VALIDATE_URL)) {
-            return $this->image_url;
-        }
-        
-        return asset('storage/' . $this->image_url);
-    }
-
-    public function getMobileImageUrl(): string
-    {
-        if (!$this->mobile_image) {
-            return $this->getImageUrl();
-        }
-        
-        if (filter_var($this->mobile_image, FILTER_VALIDATE_URL)) {
-            return $this->mobile_image;
-        }
-        
-        return asset('storage/' . $this->mobile_image);
-    }
-} 
+}

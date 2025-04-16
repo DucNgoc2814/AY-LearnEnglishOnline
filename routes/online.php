@@ -61,7 +61,7 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
         // Student Schedule
         Route::get('/schedule', [ScheduleController::class, 'index'])
             ->name('online.schedule');
-            
+
         // Tests
         Route::prefix('tests')->name('online.tests.')->group(function () {
             Route::get('/', [TestController::class, 'index'])->name('index');
@@ -79,21 +79,11 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
     });
 
     // Teacher Routes
-    Route::middleware(['jwt.role:teacher'])->group(function () {
-        // Attendance Management
-        Route::prefix('attendance')->name('online.attendance.')->group(function () {
-            Route::get('/', [AttendanceController::class, 'index'])->name('index');
-            Route::get('/{class}', [AttendanceController::class, 'show'])->name('show');
-            Route::get('/sessions/{class}', [AttendanceController::class, 'sessions'])->name('sessions');
-            Route::get('/detail/{id}', [AttendanceController::class, 'detail'])->name('detail');
-            Route::post('/save/{id}', [AttendanceController::class, 'saveAttendance'])->name('save');
-            Route::get('/students', [AttendanceController::class, 'students'])->name('students');
-        });
-
+    Route::middleware(['jwt.role:employee'])->group(function () {
         // Teacher Schedule
         Route::get('/teacher/schedule', [ScheduleController::class, 'teacherSchedule'])
             ->name('online.teacher.schedule');
-            
+
         // Teacher Grades Management
         Route::prefix('teacher/grades')->name('online.teacher.grades.')->group(function () {
             Route::get('/', [GradeController::class, 'teacherIndex'])->name('index');
@@ -103,19 +93,25 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
             Route::post('/update', [GradeController::class, 'updateGrades'])->name('update');
             Route::get('/export/{class_id}', [GradeController::class, 'exportGrades'])->name('export');
         });
+
+        // Attendance Management (Teacher-specific actions)
+        Route::prefix('attendance')->name('online.attendance.')->group(function () {
+            Route::post('/save/{id}', [AttendanceController::class, 'saveAttendance'])->name('save');
+            Route::get('/students', [AttendanceController::class, 'students'])->name('students');
+        });
     });
 
     // Shared Routes - Accessible by both Students and Teachers
-    Route::middleware(['jwt.role:student,teacher'])->group(function () {
-        // Awards
+    Route::middleware(['jwt.role:student,employee'])->group(function () {
+        // Shared Attendance Routes
         Route::prefix('attendance')->name('online.attendance.')->group(function () {
             Route::get('/', [AttendanceController::class, 'index'])->name('index');
             Route::get('/{class}', [AttendanceController::class, 'show'])->name('show');
             Route::get('/sessions/{class}', [AttendanceController::class, 'sessions'])->name('sessions');
             Route::get('/detail/{id}', [AttendanceController::class, 'detail'])->name('detail');
-            Route::post('/save/{id}', [AttendanceController::class, 'saveAttendance'])->name('save');
-            Route::get('/students', [AttendanceController::class, 'students'])->name('students');
         });
+
+        // Awards
         Route::prefix('awards')->name('online.awards.')->group(function () {
             Route::get('/', [AwardController::class, 'index'])->name('index');
             Route::get('/{award}', [AwardController::class, 'show'])->name('show');

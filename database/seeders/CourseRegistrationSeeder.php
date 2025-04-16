@@ -30,7 +30,7 @@ class CourseRegistrationSeeder extends Seeder
         // Bật lại foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
-    
+
     /**
      * Tạo đăng ký khóa học cho học viên
      */
@@ -43,61 +43,71 @@ class CourseRegistrationSeeder extends Seeder
                 Log::warning("Không có học viên nào trong hệ thống!");
                 return;
             }
-            
+
             // Lấy tất cả lớp học
             $classes = Classes::all();
             if ($classes->isEmpty()) {
                 Log::warning("Không có lớp học nào trong hệ thống!");
                 return;
             }
-            
-            // Mỗi học viên đăng ký 1-3 lớp học
-            foreach ($students as $student) {
-                // Chọn ngẫu nhiên số lượng lớp học để đăng ký
-                $classesToRegister = $classes->random(rand(1, min(3, $classes->count())));
-                
-                foreach ($classesToRegister as $class) {
-                    // Kiểm tra xem đã đăng ký chưa
-                    $exists = DB::table('course_registrations')
-                        ->where('student_id', $student->id)
-                        ->where('class_id', $class->id)
-                        ->exists();
-                    
-                    if (!$exists) {
-                        // Tạo ngày đăng ký (1-30 ngày trước)
-                        $enrollmentDate = Carbon::now()->subDays(rand(1, 30));
-                        
-                        // Hầu hết các đăng ký đều là active để dễ kiểm tra
-                        $status = 'active';
-                        if (rand(1, 10) > 8) { // 20% trường hợp là completed
-                            $status = 'completed';
-                        }
-                        
-                        // Tạo bản ghi đăng ký
-                        DB::table('course_registrations')->insert([
-                            'student_id' => $student->id,
-                            'class_id' => $class->id,
-                            'status' => $status,
-                            'fee_amount' => rand(500000, 5000000), // Học phí ngẫu nhiên
-                            'payment_status' => rand(1, 10) > 2 ? 'paid' : 'pending',
-                            'payment_method' => ['cash', 'bank_transfer', 'credit_card'][rand(0, 2)],
-                            'payment_date' => rand(1, 10) > 2 ? $enrollmentDate : null,
-                            'invoice_number' => 'INV-' . strtoupper(substr(md5(rand()), 0, 8)),
-                            'enrollment_date' => $enrollmentDate,
-                            'completion_date' => $status == 'completed' ? Carbon::now()->subDays(rand(1, 5)) : null,
-                            'notes' => 'Đăng ký tự động tạo bởi CourseRegistrationSeeder',
-                            'created_at' => now(),
-                            'updated_at' => now()
-                        ]);
-                        
-                        Log::info("Đã đăng ký học viên ID {$student->id} vào lớp {$class->name}");
+
+            $registrations = [];
+            $count = 0;
+            $maxRegistrations = 200;
+            $existingPairs = [];
+
+            echo "Bắt đầu tạo {$maxRegistrations} đăng ký khóa học...\n";
+
+            // Tạo đăng ký cho đến khi đủ số lượng
+            while ($count < $maxRegistrations) {
+                $student = $students->random();
+                $class = $classes->random();
+                $pairKey = $student->id . '-' . $class->id;
+
+                // Kiểm tra xem cặp student-class này đã tồn tại chưa
+                if (!isset($existingPairs[$pairKey])) {
+                    $existingPairs[$pairKey] = true;
+
+                    $enrollmentDate = Carbon::now()->subDays(rand(1, 90));
+                    $status = rand(1, 10) > 8 ? 'completed' : 'active';
+
+                    $registrations[] = [
+                        'student_id' => $student->id,
+                        'class_id' => $class->id,
+                        'status' => $status,
+                        'fee_amount' => rand(500000, 5000000),
+                        'payment_status' => rand(1, 10) > 2 ? 'paid' : 'pending',
+                        'payment_method' => ['cash', 'bank_transfer', 'credit_card'][rand(0, 2)],
+                        'payment_date' => rand(1, 10) > 2 ? $enrollmentDate : null,
+                        'invoice_number' => 'INV-' . strtoupper(substr(md5(uniqid()), 0, 8)),
+                        'enrollment_date' => $enrollmentDate,
+                        'completion_date' => $status == 'completed' ? Carbon::now()->subDays(rand(1, 5)) : null,
+                        'notes' => 'Đăng ký tự động tạo bởi CourseRegistrationSeeder',
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                    $count++;
+
+                    // Insert mỗi 50 bản ghi để tránh quá tải
+                    if (count($registrations) >= 50) {
+                        echo "Đang insert {$count}/200 đăng ký...\n";
+                        DB::table('course_registrations')->insert($registrations);
+                        $registrations = [];
                     }
                 }
             }
-            
-            Log::info("Đã hoàn thành việc tạo đăng ký khóa học");
+
+            // Insert các bản ghi còn lại
+            if (!empty($registrations)) {
+                DB::table('course_registrations')->insert($registrations);
+            }
+
+            echo "Đã tạo thành công {$count} đăng ký khóa học\n";
+            Log::info("Đã tạo chính xác {$count} đăng ký khóa học");
+
         } catch (\Exception $e) {
             Log::error("Lỗi khi tạo đăng ký khóa học: {$e->getMessage()}");
+            echo "Lỗi: " . $e->getMessage() . "\n";
         }
     }
-} 
+}

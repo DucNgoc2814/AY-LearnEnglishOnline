@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Employee extends Model
+class Employee extends Model implements JWTSubject
 {
     use HasFactory, SoftDeletes;
 
@@ -64,6 +65,9 @@ class Employee extends Model
      */
     public function hasRole($role): bool
     {
+        if (is_array($role)) {
+            return $this->roles()->whereIn('slug', $role)->exists();
+        }
         return $this->roles()->where('slug', $role)->exists();
     }
 
@@ -87,7 +91,7 @@ class Employee extends Model
         return $this->join_date->diffInDays($endDate);
     }
 
-    
+
     public function classes()
     {
         return $this->hasMany(Classes::class);
@@ -144,4 +148,30 @@ class Employee extends Model
         }
         $this->permissions()->detach($permission->id);
     }
-} 
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [
+            'user_type' => 'employee',
+            'employee_code' => $this->employee_code,
+            'name' => $this->name,
+            'email' => $this->email,
+            'roles' => $this->roles->pluck('slug')->toArray()
+        ];
+    }
+}
