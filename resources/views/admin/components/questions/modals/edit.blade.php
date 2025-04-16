@@ -63,9 +63,9 @@
                                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="edit_type" name="type" required>
                                         <option value="text">Văn bản (Chỉ chữ)</option>
-                                        <option value="image">Hình ảnh (Câu hỏi kèm hình)</option>
-                                        <option value="video">Video (Câu hỏi kèm video)</option>
-                                        <option value="audio">Âm thanh (Câu hỏi kèm audio)</option>
+                                        <option value="image">Hình ảnh</option>
+                                        <option value="video">Video</option>
+                                        <option value="audio">Âm thanh</option>
                                     </select>
                                 </div>
 
@@ -187,36 +187,54 @@
                         <div class="space-y-8">
                             <!-- Phần câu trả lời -->
                             <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                                <h4 class="font-medium text-gray-900 mb-6">3. Thiết lập câu trả lời</h4>
+                                <div class="flex justify-between items-center mb-6">
+                                    <h4 class="font-medium text-gray-900">3. Thiết lập câu trả lời</h4>
+                                </div>
 
-                                <!-- Loại câu trả lời -->
-                                <div class="mb-6">
+                                <!-- Loại câu trả lời - Moved to top -->
+                                <div class="mb-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
                                     <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_answer_type">
                                         Loại câu trả lời <span class="text-red-500">*</span>
-                                        <span class="ml-1 text-xs text-gray-500">(Chọn một hoặc nhiều đáp án đúng)</span>
                                     </label>
-                                    <select
-                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
-                                        id="edit_answer_type" name="answer_type" required>
-                                        <option value="single">Chọn một đáp án</option>
-                                        <option value="multiple">Chọn nhiều đáp án</option>
-                                    </select>
+                                    <div class="flex items-center space-x-4">
+                                        <select class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline flex-grow"
+                                            id="edit_answer_type" name="answer_type" required>
+                                            <option value="single">Chọn một đáp án</option>
+                                            <option value="multiple">Chọn nhiều đáp án</option>
+                                        </select>
+                                        <div class="text-sm text-blue-700">
+                                            <svg class="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Chọn kiểu đáp án phù hợp
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <!-- Danh sách câu trả lời -->
+                                <div class="flex justify-between items-center mb-4">
+                                    <button type="button" id="edit_add_answer"
+                                        class="bg-green-500 hover:bg-green-600 text-white text-sm font-bold py-2 px-4 rounded inline-flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                        Thêm câu trả lời
+                                    </button>
+                                </div>
+
+                                <!-- Container chứa danh sách câu trả lời -->
                                 <div id="edit_answers_container" class="space-y-4">
-                                    <!-- Các câu trả lời sẽ được thêm vào đây động -->
+                                    <!-- Các câu trả lời sẽ được thêm vào đây -->
                                 </div>
 
-                                <!-- Nút thêm câu trả lời -->
-                                <button type="button" id="edit_add_answer"
-                                    class="mt-6 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded inline-flex items-center">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                    </svg>
-                                    Thêm câu trả lời
-                                </button>
+                                <!-- Hướng dẫn nhỏ -->
+                                <div class="mt-4 text-sm text-gray-600">
+                                    <p class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Mỗi câu hỏi cần có ít nhất một đáp án và phải có ít nhất một đáp án đúng
+                                    </p>
+                                </div>
                             </div>
 
                             <!-- Phần giải thích đáp án -->
@@ -304,32 +322,70 @@
 
         // Ẩn tất cả media upload containers ban đầu
         function hideAllEditMediaContainers() {
-            editImageUploadContainer.style.display = 'none';
-            editVideoUploadContainer.style.display = 'none';
-            editAudioUploadContainer.style.display = 'none';
+            if (editImageUploadContainer) editImageUploadContainer.style.display = 'none';
+            if (editVideoUploadContainer) editVideoUploadContainer.style.display = 'none';
+            if (editAudioUploadContainer) editAudioUploadContainer.style.display = 'none';
         }
 
         // Hiển thị container dựa vào loại đã chọn
-        function showEditMediaContainer(type) {
+        window.showEditMediaContainer = function(type) {
+            console.log('Showing media container for type:', type);
             hideAllEditMediaContainers();
-            if (type === 'image') {
-                editImageUploadContainer.style.display = 'block';
-            } else if (type === 'video') {
-                editVideoUploadContainer.style.display = 'block';
-            } else if (type === 'audio') {
-                editAudioUploadContainer.style.display = 'block';
+
+            // Đảm bảo type là một trong các giá trị hợp lệ
+            const validTypes = ['text', 'image', 'video', 'audio'];
+            if (!validTypes.includes(type)) {
+                type = 'text';
+            }
+
+            // Set giá trị cho select box
+            if (editTypeSelect) {
+                editTypeSelect.value = type;
+            }
+
+            // Hiển thị container tương ứng
+            switch(type) {
+                case 'image':
+                    if (editImageUploadContainer) editImageUploadContainer.style.display = 'block';
+                    break;
+                case 'video':
+                    if (editVideoUploadContainer) editVideoUploadContainer.style.display = 'block';
+                    break;
+                case 'audio':
+                    if (editAudioUploadContainer) editAudioUploadContainer.style.display = 'block';
+                    break;
+                default:
+                    // Nếu là text hoặc không có type, không hiển thị container nào
+                    break;
             }
         }
 
         // Khởi tạo hiển thị
         hideAllEditMediaContainers();
-        showEditMediaContainer(editTypeSelect.value);
 
-        // Xử lý sự kiện thay đổi loại câu hỏi
-        editTypeSelect.addEventListener('change', function() {
-            const selectedType = this.value;
-            showEditMediaContainer(selectedType);
-        });
+        // Xử lý sự kiện change của select
+        if (editTypeSelect) {
+            editTypeSelect.addEventListener('change', function() {
+                const selectedType = this.value;
+                console.log('Type changed to:', selectedType);
+                showEditMediaContainer(selectedType);
+                // Reset file input và preview khi đổi loại
+                clearEditMedia(selectedType);
+            });
+        }
+
+        // Override hàm populateEditModal để đảm bảo type được set đúng
+        window.populateEditModal = function(data) {
+            console.log('Populating edit modal with data:', data);
+            // Set các giá trị khác...
+
+            // Set type và hiển thị container
+            const type = data.type || 'text';
+            if (editTypeSelect) {
+                editTypeSelect.value = type;
+                showEditMediaContainer(type);
+            }
+        }
 
         // Xử lý sự kiện click cho các nút "Chọn tệp"
         document.getElementById('edit_chooseImageBtn').addEventListener('click', function() {
@@ -489,113 +545,6 @@
             });
         });
     });
-
-    // Hàm xử lý khi mở modal chỉnh sửa
-    function editQuestion(id) {
-        fetch(`/admin/questions/${id}/edit`)
-            .then(response => response.json())
-            .then(response => {
-                if (response.status) {
-                    populateEditQuestionModal(response.data);
-                } else {
-                    throw new Error(response.message || 'Không thể tải thông tin câu hỏi');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Đã xảy ra lỗi khi tải dữ liệu: ' + error.message);
-            });
-    }
-
-    // Hàm điền dữ liệu vào modal
-    function populateEditQuestionModal(question) {
-        modalHandler.open('editQuestionModal');
-
-        // Điền thông tin cơ bản
-        document.getElementById('edit_questionId').value = question.id;
-        document.getElementById('edit_test_id').value = question.test_id;
-        document.getElementById('edit_type').value = question.type;
-        document.getElementById('edit_question').value = question.question;
-        document.getElementById('edit_order_number').value = question.order_number;
-        document.getElementById('edit_correct_answer_explanation').value = question.correct_answer_explanation || '';
-        document.getElementById('edit_answer_type').value = question.answer_type || 'single';
-
-        // Xử lý hiển thị media
-        document.getElementById('edit_media_url').value = question.media_url || '';
-        showEditMediaPreview(question);
-
-        // Điền danh sách câu trả lời
-        populateEditAnswers(question.answers || []);
-    }
-
-    // Hàm hiển thị preview media
-    function showEditMediaPreview(question) {
-        resetEditPreviews();
-
-        if (question.media_url) {
-            const mediaUrl = question.full_media_url || question.media_url;
-            const mediaType = question.type;
-            const previewContainer = document.getElementById(`edit_${mediaType}PreviewContainer`);
-            const preview = document.getElementById(`edit_${mediaType}Preview`);
-
-            if (mediaType === 'image') {
-                preview.src = mediaUrl;
-            } else if (mediaType === 'video' || mediaType === 'audio') {
-                preview.querySelector('source').src = mediaUrl;
-                preview.load();
-            }
-
-            previewContainer.classList.remove('hidden');
-            showEditMediaContainer(mediaType);
-        }
-    }
-
-    // Hàm điền danh sách câu trả lời
-    function populateEditAnswers(answers) {
-        const container = document.getElementById('edit_answers_container');
-        container.innerHTML = '';
-
-        answers.forEach((answer, index) => {
-            const answerType = document.getElementById('edit_answer_type').value;
-            const template = `
-                <div class="answer-item mb-4 p-4 border rounded-lg bg-gray-50">
-                    <div class="grid grid-cols-12 gap-4">
-                        <div class="col-span-6">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                Nội dung <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" name="answers[${index}][answer]"
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value="${answer.answer}" required>
-                        </div>
-                        <div class="col-span-2">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                Thứ tự
-                            </label>
-                            <input type="number" name="answers[${index}][order_number]"
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value="${answer.order_number}" min="1" required>
-                        </div>
-                        <div class="col-span-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                Tùy chọn
-                            </label>
-                            <div class="flex items-center mt-2">
-                                <input type="${answerType === 'single' ? 'radio' : 'checkbox'}"
-                                    name="${answerType === 'single' ? 'correct_answer' : `answers[${index}][is_correct]`}"
-                                    value="${answerType === 'single' ? index : '1'}"
-                                    ${answer.is_correct ? 'checked' : ''}
-                                    class="form-checkbox h-4 w-4 text-blue-600">
-                                <span class="ml-2 text-sm text-gray-700">Đáp án đúng</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            container.insertAdjacentHTML('beforeend', template);
-        });
-    }
 
     // Các hàm tiện ích
     function getMaxFileSize(type) {
