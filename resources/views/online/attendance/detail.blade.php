@@ -405,6 +405,7 @@
 
         .form-check-input:not(:checked)~.form-check-label .status-text {
             color: #ef4444;
+            color: #ef4444;
         }
     </style>
 @endpush
@@ -546,12 +547,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Handle save button click
             const saveButton = document.getElementById('saveAttendance');
+            const form = document.querySelector('.attendance-form');
 
-            if (saveButton) {
+            if (saveButton && form) {
                 saveButton.addEventListener('click', function() {
                     // Collect attendance data
                     const attendanceData = [];
-                    const rows = document.querySelectorAll('.attendance-table tbody tr');
+                    const checkboxes = form.querySelectorAll('.form-check-input');
 
                     rows.forEach((row, index) => {
                         const studentIdField = row.querySelector('.form-check-input');
@@ -603,6 +605,24 @@
                         });
                 });
             }
+
+            // Handle switch changes
+            document.querySelectorAll('.form-check-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const row = this.closest('tr');
+                    if (row) {
+                        row.classList.toggle('table-success', this.checked);
+                        row.classList.toggle('table-danger', !this.checked);
+                    }
+                });
+
+                // Set initial state
+                const row = input.closest('tr');
+                if (row) {
+                    row.classList.toggle('table-success', input.checked);
+                    row.classList.toggle('table-danger', !input.checked);
+                }
+            });
         });
     </script>
 @endpush
