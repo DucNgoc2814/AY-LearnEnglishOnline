@@ -4,22 +4,34 @@
         <i class="fas fa-bell"></i>
         <span>Thông báo và tin tức</span>
     </a>      
-    <a href="{{ route('online.classes.index') }}" class="menu-item" data-route="online.classes">
-        <i class="fas fa-graduation-cap"></i>
-        <span>Lớp học của tôi</span>
-    </a>
-    <a href="{{ route('online.attendance.index') }}" class="menu-item" data-route="online.attendance">
-        <i class="fas fa-check-square"></i>
-        <span>Điểm danh</span>
-    </a>
-    <a href="{{ route('online.schedule') }}" class="menu-item" data-route="online.schedule">
-        <i class="fas fa-calendar-alt"></i>
-        <span>Lịch học</span>
-    </a>
-    <a href="{{ route('online.grades.index') }}" class="menu-item" data-route="online.grades">
-        <i class="fas fa-chart-line"></i>
-        <span>Bảng điểm</span>
-    </a>
+    @if(session('user_type') === 'student')
+        <a href="{{ route('online.classes.index') }}" class="menu-item" data-route="online.classes">
+            <i class="fas fa-graduation-cap"></i>
+            <span>Lớp học của tôi</span>
+        </a>
+    @else
+        <a href="{{ route('online.teacher.classes.index') }}" class="menu-item" data-route="online.classes">
+            <i class="fas fa-graduation-cap"></i>
+            <span>Quản lý lớp học</span>
+        </a>
+    @endif
+    
+    @if(session('user_type') === 'student')
+        <a href="{{ route('online.attendance.index') }}" class="menu-item" data-route="online.attendance">
+            <i class="fas fa-check-square"></i>
+            <span>Điểm danh</span>
+        </a>
+        <a href="{{ route('online.schedule') }}" class="menu-item" data-route="online.schedule">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Lịch học</span>
+        </a>
+    @else
+        <a href="{{ route('online.teacher.schedule') }}" class="menu-item" data-route="online.schedule">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Lịch giảng dạy</span>
+        </a>
+    @endif
+
     <a href="{{ route('online.awards.index') }}" class="menu-item" data-route="online.awards">
         <i class="fas fa-award"></i>
         <span>Khen thưởng/Kỷ luật</span>
@@ -52,8 +64,6 @@
             document.querySelector('.menu-item[data-route="online.schedule"]').classList.add('active');
         } else if (currentUrl.includes('/classes')) {
             document.querySelector('.menu-item[data-route="online.classes"]').classList.add('active');
-        } else if (currentUrl.includes('/grades')) {
-            document.querySelector('.menu-item[data-route="online.grades"]').classList.add('active');
         } else if (currentUrl.includes('/awards')) {
             document.querySelector('.menu-item[data-route="online.awards"]').classList.add('active');
         } else if (currentUrl.includes('/guides')) {

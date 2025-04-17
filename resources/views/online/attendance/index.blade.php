@@ -221,15 +221,36 @@
                         <button class="nav-link active" id="classes-tab" data-bs-toggle="tab" data-bs-target="#classes"
                             type="button" role="tab" aria-controls="classes" aria-selected="true">Lớp học</button>
                     </li>
+                    @if(isset($isAdmin) && $isAdmin)
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="filter-tab" data-bs-toggle="tab" data-bs-target="#filter"
                             type="button" role="tab" aria-controls="filter" aria-selected="false">Bộ lọc</button>
                     </li>
+                    @endif
                 </ul>
 
                 <div class="tab-content mt-4" id="attendanceTabContent">
                     <!-- Classes Tab -->
                     <div class="tab-pane fade show active" id="classes" role="tabpanel" aria-labelledby="classes-tab">
+                        @if(!isset($isAdmin) || !$isAdmin)
+                        <div class="mb-4">
+                            <form action="" method="GET" class="row g-3">
+                                <div class="col-md-4">
+                                    <select name="status" id="status" class="form-select">
+                                        <option value="">Tất cả trạng thái</option>
+                                        <option value="active" @if(request('status') == 'active') selected @endif>Đang học</option>
+                                        <option value="completed" @if(request('status') == 'completed') selected @endif>Đã kết thúc</option>
+                                        <option value="pending" @if(request('status') == 'pending') selected @endif>Sắp khai giảng</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-filter me-2"></i>Lọc
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        @endif
                         <div class="table-responsive">
                             <table class="table table-hover table-bordered">
                                 <thead class="table-light">
@@ -322,6 +343,7 @@
                     </div>
 
                     <!-- Filter Tab -->
+                    @if(isset($isAdmin) && $isAdmin)
                     <div class="tab-pane fade" id="filter" role="tabpanel" aria-labelledby="filter-tab">
                         <form action="" method="GET" class="row g-3">
                             <div class="col-md-3">
@@ -359,6 +381,7 @@
                             </div>
                         </form>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

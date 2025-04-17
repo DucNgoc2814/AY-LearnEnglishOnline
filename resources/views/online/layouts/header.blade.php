@@ -2,18 +2,21 @@
 <div class="top-navbar">
     <div class="d-flex align-items-center">
         <span class="nav-logo">
-            <img src="{{ asset('uploads/logos/amazing you.png') }}" alt="AmazingYou" class="img-fluid" style="width: 100px;">
+            <img src="{{ asset('uploads/logos/amazing you.png') }}" alt="AmazingYou" class="img-fluid"
+                style="width: 100px;">
         </span>
     </div>
     <div class="ms-auto d-flex align-items-center">
         @if (Auth::check())
             <div class="dropdown me-3">
                 <button class="btn dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown">
-                    {{ Auth::user()->name }}
+                    {{ session('user_display_name', Auth::user()->name) }}
                 </button>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="">Thông tin cá nhân</a></li>
-                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
                     <li>
                         <form method="POST" action="{{ route('online.logout') }}">
                             @csrf

@@ -162,12 +162,11 @@
 @endpush
 
 @section('content')
-    <div class="content-section">
         <div class="row mb-4">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0 text-primary">
-                        <i class="fas fa-calendar-alt me-2"></i>Buổi học lớp Tiếng Anh cơ bản A1
+                        <i class="fas fa-calendar-alt me-2"></i>Buổi học lớp {{ $class->name }}
                     </h5>
                     <a href="{{ route('online.attendance.index') }}" class="btn btn-sm btn-outline-primary back-btn">
                         <i class="fas fa-arrow-left me-2"></i>Quay lại
@@ -177,30 +176,46 @@
                     <!-- Class Info Section -->
                     <div class="sessions-header">
                         <div class="class-info">
-                            <span><i class="fas fa-graduation-cap me-2"></i><strong>Mã lớp:</strong> TA-CB-A1-01</span>
-                            <span><i class="fas fa-users me-2"></i><strong>Sĩ số:</strong> 20 học viên</span>
-                            <span><i class="fas fa-calendar me-2"></i><strong>Lịch học:</strong> Thứ 2, 4, 6</span>
-                            <span><i class="fas fa-clock me-2"></i><strong>Giờ học:</strong> 18:00 - 20:00</span>
+                            <span><i class="fas fa-graduation-cap me-2"></i><strong>Mã lớp:</strong> {{ $class->code }}</span>
+                            <span><i class="fas fa-users me-2"></i><strong>Sĩ số:</strong> {{ $class->students->count() ?? 0 }} học viên</span>
+                            @if(is_array($class->schedule))
+                                <span><i class="fas fa-calendar me-2"></i><strong>Lịch học:</strong> 
+                                {{ implode(', ', array_map(function($day) {
+                                    return 'Thứ ' . $day;
+                                }, $class->schedule['days'] ?? [])) }}
+                                </span>
+                                <span><i class="fas fa-clock me-2"></i><strong>Giờ học:</strong> 
+                                {{ $class->schedule['start_time'] ?? '' }} - {{ $class->schedule['end_time'] ?? '' }}
+                                </span>
+                            @endif
                         </div>
 
                         <!-- Stats -->
+                        @php
+                            $today = \Carbon\Carbon::now();
+                            $totalSessions = $class->sessions->count();
+                            $completedSessions = $class->sessions->filter(function($session) use ($today) {
+                                return $session->session_date && \Carbon\Carbon::parse($session->session_date)->lt($today);
+                            })->count();
+                            $remainingSessions = $totalSessions - $completedSessions;
+                        @endphp
                         <div class="sessions-stats">
                             <div class="stat-card total">
-                                <div class="stat-value">30</div>
+                                <div class="stat-value">{{ $totalSessions }}</div>
                                 <div class="stat-label">
                                     <i class="fas fa-book"></i>
                                     <span>Tổng số buổi</span>
                                 </div>
                             </div>
                             <div class="stat-card completed">
-                                <div class="stat-value">16</div>
+                                <div class="stat-value">{{ $completedSessions }}</div>
                                 <div class="stat-label">
                                     <i class="fas fa-check"></i>
                                     <span>Đã học</span>
                                 </div>
                             </div>
                             <div class="stat-card remaining">
-                                <div class="stat-value">14</div>
+                                <div class="stat-value">{{ $remainingSessions }}</div>
                                 <div class="stat-label">
                                     <i class="fas fa-hourglass-half"></i>
                                     <span>Còn lại</span>
@@ -226,73 +241,83 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Buổi 16 -->
+                                @forelse($class->sessions as $index => $session)
+                                @php
+                                    $sessionDate = $session->session_date ? \Carbon\Carbon::parse($session->session_date) : null;
+                                    $startTime = $session->start_time ? \Carbon\Carbon::parse($session->start_time)->format('H:i') : null;
+                                    $endTime = $session->end_time ? \Carbon\Carbon::parse($session->end_time)->format('H:i') : null;
+                                    
+                                    $attendances = $session->attendances ?? collect();
+                                    $presentCount = $attendances->where('status', 'present')->count();
+                                    $absentCount = $attendances->where('status', 'absent')->count();
+                                    
+                                    $now = \Carbon\Carbon::now();
+                                    $status = '';
+                                    $statusClass = '';
+                                    $statusIcon = '';
+                                    
+                                    if (!$sessionDate) {
+                                        $status = 'Chưa lên lịch';
+                                        $statusClass = 'status-upcoming';
+                                        $statusIcon = 'fa-hourglass';
+                                    } elseif ($sessionDate->lt($now)) {
+                                        $status = 'Đã học';
+                                        $statusClass = 'status-completed';
+                                        $statusIcon = 'fa-check';
+                                    } elseif ($sessionDate->isToday()) {
+                                        $status = 'Đang học';
+                                        $statusClass = 'status-in-progress';
+                                        $statusIcon = 'fa-clock';
+                                    } else {
+                                        $status = 'Chưa học';
+                                        $statusClass = 'status-upcoming';
+                                        $statusIcon = 'fa-hourglass';
+                                    }
+                                @endphp
                                 <tr>
-                                    <td class="fw-medium">Buổi 16</td>
-                                    <td>Unit 8: Daily Activities</td>
-                                    <td><i class="fas fa-calendar-day text-primary me-1"></i>15/03/2024</td>
-                                    <td><i class="fas fa-clock text-primary me-1"></i>18:00 - 20:00</td>
-                                    <td>20/20</td>
-                                    <td class="text-success">15</td>
-                                    <td class="text-danger">5</td>
+                                    <td class="fw-medium">Buổi {{ $index + 1 }}</td>
+                                    <td>{{ $session->topic ?? $session->content ?? 'Chưa cập nhật' }}</td>
                                     <td>
-                                        <span class="table-status status-completed">
-                                            <i class="fas fa-check me-1"></i>Đã học
+                                        @if($sessionDate)
+                                            <i class="fas fa-calendar-day text-primary me-1"></i>{{ $sessionDate->format('d/m/Y') }}
+                                        @else
+                                            <span class="text-muted">Chưa lên lịch</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($startTime && $endTime)
+                                            <i class="fas fa-clock text-primary me-1"></i>{{ $startTime }} - {{ $endTime }}
+                                        @else
+                                            <span class="text-muted">Chưa cập nhật</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $class->students->count() ?? 0 }}/{{ $class->max_students ?? 0 }}</td>
+                                    <td class="text-success">{{ $presentCount ?: '-' }}</td>
+                                    <td class="text-danger">{{ $absentCount ?: '-' }}</td>
+                                    <td>
+                                        <span class="table-status {{ $statusClass }}">
+                                            <i class="fas {{ $statusIcon }} me-1"></i>{{ $status }}
                                         </span>
                                     </td>
                                     <td>
-                                        <a href="{{ route('online.attendance.detail', ['id' => 1]) }}" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye me-1"></i>Chi tiết
+                                        <a href="{{ route('online.attendance.detail', ['id' => $session->id]) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye me-1"></i>Điểm danh
                                         </a>
                                     </td>
                                 </tr>
-
-                                <!-- Buổi 17 -->
+                                @empty
                                 <tr>
-                                    <td class="fw-medium">Buổi 17</td>
-                                    <td>Unit 9: Hobbies</td>
-                                    <td><i class="fas fa-calendar-day text-primary me-1"></i>18/03/2024</td>
-                                    <td><i class="fas fa-clock text-primary me-1"></i>18:00 - 20:00</td>
-                                    <td>20/20</td>
-                                    <td class="text-muted">-</td>
-                                    <td class="text-muted">-</td>
-                                    <td>
-                                        <span class="table-status status-in-progress">
-                                            <i class="fas fa-clock me-1"></i>Đang học
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye me-1"></i>Chi tiết
-                                        </a>
+                                    <td colspan="9" class="text-center py-4">
+                                        <div class="text-muted">
+                                            <i class="fas fa-info-circle me-2"></i>Chưa có buổi học nào
+                                        </div>
                                     </td>
                                 </tr>
-
-                                <!-- Buổi 18 -->
-                                <tr>
-                                    <td class="fw-medium">Buổi 18</td>
-                                    <td>Unit 10: Weather</td>
-                                    <td><i class="fas fa-calendar-day text-primary me-1"></i>20/03/2024</td>
-                                    <td><i class="fas fa-clock text-primary me-1"></i>18:00 - 20:00</td>
-                                    <td>20/20</td>
-                                    <td class="text-muted">-</td>
-                                    <td class="text-muted">-</td>
-                                    <td>
-                                        <span class="table-status status-upcoming">
-                                            <i class="fas fa-hourglass me-1"></i>Chưa học
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye me-1"></i>Chi tiết
-                                        </a>
-                                    </td>
-                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 @endsection

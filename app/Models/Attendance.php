@@ -16,19 +16,7 @@ class Attendance extends Model
         'session_id',
         'student_id',
         'status',
-        'check_in_time',
-        'check_out_time',
-        'duration_minutes',
-        'manually_marked',
-        'marked_by',
         'notes'
-    ];
-
-    protected $casts = [
-        'check_in_time' => 'datetime',
-        'check_out_time' => 'datetime',
-        'duration_minutes' => 'integer',
-        'manually_marked' => 'boolean'
     ];
 
     /**
@@ -43,7 +31,7 @@ class Attendance extends Model
     // Relationships
     public function session(): BelongsTo
     {
-        return $this->belongsTo(ClassSession::class, 'session_id');
+        return $this->belongsTo(Session::class);
     }
 
     public function student(): BelongsTo
@@ -164,7 +152,6 @@ class Attendance extends Model
     public function markPresent(?\DateTime $checkInTime = null): self
     {
         $this->status = self::STATUS_PRESENT;
-        $this->check_in_time = $checkInTime ?? now();
         $this->save();
         
         return $this;

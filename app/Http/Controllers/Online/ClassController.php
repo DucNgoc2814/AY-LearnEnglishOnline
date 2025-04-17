@@ -351,4 +351,74 @@ class ClassController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi tải thông tin lớp học. Vui lòng thử lại sau.');
         }
     }
+
+    /**
+     * Display a listing of classes for teachers
+     */
+    public function teacherClasses(Request $request)
+    {
+        try {
+            $this->updateClassStatuses();
+            $user = $request->attributes->get('user');
+
+            if (!$user) {
+                return redirect()->route('online.login')
+                    ->with('notification', [
+                        'message' => 'Vui lòng đăng nhập để tiếp tục.',
+                        'type' => 'error'
+                    ]);
+            }
+
+            $classes = Classes::where('teacher_id', $user->id)
+                ->with([
+                    'teacher',
+                    'schedules',
+                    'students',
+                    'sessions' => function ($query) {
+                        $query->orderBy('session_date');
+                    },
+                    'sessions.schedule',
+                    'sessions.attendances'
+                ])
+                ->get();
+
+            // Format schedule information for each class
+            foreach ($classes as $class) {
+                $class->formatted_schedule = $this->formatScheduleInfo($class->schedules);
+                $this->calculateTeacherStats($class);
+            }
+
+            // Phân loại theo status
+            $upcomingClasses = $classes->filter(function ($class) {
+                return $class->status === 'pending';
+            });
+
+            $currentClasses = $classes->filter(function ($class) {
+                return $class->status === 'active';
+            });
+
+            $completedClasses = $classes->filter(function ($class) {
+                return $class->status === 'completed';
+            });
+
+            return view('online.teacher.classes.index', [
+                'upcomingClasses' => $upcomingClasses,
+                'currentClasses' => $currentClasses,
+                'completedClasses' => $completedClasses,
+                'user' => $user
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in teacherClasses: ' . $e->getMessage(), [
+                'exception' => $e
+            ]);
+            
+            return view('online.teacher.classes.index', [
+                'currentClasses' => collect(),
+                'completedClasses' => collect(),
+                'upcomingClasses' => collect(),
+                'error' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ]);
+        }
+    }
 }

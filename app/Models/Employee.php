@@ -22,6 +22,7 @@ class Employee extends Model implements JWTSubject
         'password',
         'phone',
         'address',
+        'role',
         'is_active',
         'join_date',
         'resignation_date',
