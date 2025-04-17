@@ -378,9 +378,14 @@
             appUrl: '{{ url('/') }}'
         };
     </script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
+    @include('online.layouts.partials.notification')
+    
     @include('online.layouts.header')
     @include('online.layouts.sidebar')
     <div class="overlay" id="sidebarOverlay"></div>

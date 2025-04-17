@@ -46,14 +46,17 @@ class ClassRoom extends Model
 
     public function teacher()
     {
-        return $this->belongsTo(User::class, 'teacher_id');
+        return $this->belongsTo(Employee::class, 'teacher_id');
+    }
+
+    public function assistant()
+    {
+        return $this->belongsTo(Employee::class, 'assistant_id');
     }
 
     public function students()
     {
-        return $this->belongsToMany(Student::class, 'class_student')
-            ->withPivot(['status', 'payment_date', 'invoice_number', 'enrollment_date', 'completion_date', 'notes'])
-            ->withTimestamps();
+        return $this->belongsToMany(Student::class, 'class_student');
     }
 
     public function schedules()
@@ -63,6 +66,6 @@ class ClassRoom extends Model
 
     public function sessions()
     {
-        return $this->hasMany(ClassSession::class, 'class_id');
+        return $this->hasMany(Session::class, 'class_id');
     }
 } 
