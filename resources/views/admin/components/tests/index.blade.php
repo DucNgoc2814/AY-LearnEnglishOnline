@@ -365,24 +365,6 @@
 
 @push('scripts')
     <script>
-        function populateEditModal(item) {
-            modalHandler.open('editTestModal');
-
-            modalHandler.setEditModalData('editTestModal', {
-                name: item.name,
-                description: item.description,
-                duration: item.duration,
-                min_score: item.min_score,
-                max_score: item.max_score,
-                is_required: item.is_required,
-                max_attempt: item.max_attempt,
-                type: item.type,
-                testable_type: item.testable_type,
-                testable_id: item.testable_id,
-                settings: item.settings,
-                actionUrl: '{{ url('admin/tests') }}/' + item.id
-            });
-        }
 
         function addQuestion(testId, testName) {
             // Mở modal tạo câu hỏi
