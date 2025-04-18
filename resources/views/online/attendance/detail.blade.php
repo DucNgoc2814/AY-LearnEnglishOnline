@@ -404,122 +404,137 @@
         }
 
         .form-check-input:not(:checked)~.form-check-label .status-text {
-            color: #ef4444; 
+            color: #ef4444;
+            color: #ef4444;
         }
     </style>
 @endpush
 
 @section('content')
-    <div class="content-section">
-        <div class="row mb-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0 text-primary">
-                        <i class="fas fa-clipboard-check me-2"></i>Chi tiết điểm danh
-                    </h5>
-                    <a href="{{ route('online.attendance.sessions', ['class' => 1]) }}" class="btn btn-sm btn-outline-primary back-btn">
-                        <i class="fas fa-arrow-left me-2"></i>Quay lại
-                    </a>
-                </div>
-                <div class="card-body">
-                    <!-- Session Info -->
-                    <div class="session-info">
-                        <div class="session-info-header">
-                            <h4 class="session-info-title">Buổi 16 - Unit 8: Daily Activities</h4>
+    <div class="row mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 text-primary">
+                    <i class="fas fa-clipboard-check me-2"></i>Chi tiết điểm danh
+                </h5>
+                <a href="{{ route('online.attendance.sessions', ['class' => $class->id]) }}"
+                    class="btn btn-sm btn-outline-primary back-btn">
+                    <i class="fas fa-arrow-left me-2"></i>Quay lại
+                </a>
+            </div>
+            <div class="card-body">
+                <!-- Session Info -->
+                <div class="session-info">
+                    <div class="session-info-header">
+                        <h4 class="session-info-title">{{ $session->topic ? $session->topic : 'Buổi học ' . ($session->id) }}</h4>
+                    </div>
+                    <div class="session-info-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>{{ $session->session_date ? \Carbon\Carbon::parse($session->session_date)->format('d/m/Y') : 'Chưa có lịch' }}</span>
                         </div>
-                        <div class="session-info-meta">
-                            <div class="meta-item">
-                                <i class="fas fa-calendar"></i>
-                                <span>15/03/2024</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-clock"></i>
-                                <span>18:00 - 20:00</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-users"></i>
-                                <span>Sĩ số: 20/20 học viên</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-user-check"></i>
-                                <span>Có mặt: 15 học viên</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-user-times"></i>
-                                <span>Vắng mặt: 5 học viên</span>
-                            </div>
+                        <div class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span>{{ ($session->start_time ? \Carbon\Carbon::parse($session->start_time)->format('H:i') : '--:--') }} - {{ ($session->end_time ? \Carbon\Carbon::parse($session->end_time)->format('H:i') : '--:--') }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-users"></i>
+                            <span>Sĩ số: {{ $totalStudents }} học viên</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-user-check"></i>
+                            <span>Có mặt: {{ $presentCount }} học viên</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-user-times"></i>
+                            <span>Vắng mặt: {{ $absentCount }} học viên</span>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Attendance List -->
-                    <div class="attendance-form">
-                        <div class="attendance-list">
-                            <div class="attendance-header d-flex justify-content-between align-items-center">
-                                <h5 class="attendance-title">Danh sách điểm danh</h5>
-                                <button type="button" class="save-btn" id="saveAttendance">
-                                    <i class="fas fa-save me-2"></i>Lưu điểm danh
-                                </button>
-                            </div>
-
-                            <table class="attendance-table">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 40px">STT</th>
-                                        <th>Mã học viên</th>
-                                        <th>Học viên</th>
-                                        <th style="width: 200px">Trạng thái</th>
-                                        <th>Ghi chú</th>
-                                        <th>Tiến độ</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @for ($i = 1; $i <= 20; $i++)
-                                        <tr>
-                                            <td>{{ $i }}</td>
-                                            <td>
-                                                <div class="student-id">PH{{ str_pad($i, 5, '0', STR_PAD_LEFT) }}</div>
-                                            </td>
-                                            <td>
-                                                <div class="student-info">
-                                                    <div class="student-avatar">
-                                                        {{ chr(64 + $i) }}
-                                                    </div>
-                                                    <div class="student-name">Học viên {{ chr(64 + $i) }}</div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="attendance-status">
-                                                    <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" role="switch"
-                                                            name="attendance[{{ $i }}][status]"
-                                                            id="attendance{{ $i }}" {{ $i <= 15 ? 'checked' : '' }}>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <textarea class="note-input" rows="1" placeholder="Nhập ghi chú..."></textarea>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="progress flex-grow-1 me-2" style="height: 6px;">
-                                                        <div class="progress-bar bg-primary" role="progressbar" 
-                                                            style="width: {{ min(100, 50 + $i) }}%;" 
-                                                            aria-valuenow="{{ min(30, 15 + (int)($i/2)) }}" 
-                                                            aria-valuemin="0" 
-                                                            aria-valuemax="30">
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex flex-column align-items-end">
-                                                        <span class="small">{{ min(30, 15 + (int)($i/2)) }}/30</span>
-                                                        <span class="small text-danger fw-medium">(Nghỉ: {{ min(5, (int)($i/4)) }} buổi)</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endfor
-                                </tbody>
-                            </table>
+                <!-- Attendance List -->
+                <div class="attendance-form">
+                    <div class="attendance-list">
+                        <div class="attendance-header d-flex justify-content-between align-items-center">
+                            <h5 class="attendance-title">Danh sách điểm danh - {{ $class->name }} ({{ $class->code }})</h5>
+                            <button type="button" class="save-btn" id="saveAttendance">
+                                <i class="fas fa-save me-2"></i>Lưu điểm danh
+                            </button>
                         </div>
+
+                        <table class="attendance-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px">STT</th>
+                                    <th>Mã học viên</th>
+                                    <th>Học viên</th>
+                                    <th style="width: 200px">Trạng thái</th>
+                                    <th>Ghi chú</th>
+                                    <th>Tiến độ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($registrations as $index => $registration)
+                                    @php
+                                        $student = $registration->student;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>
+                                            <div class="student-id">{{ $student->student_code }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="student-info">
+                                                <div class="student-avatar">
+                                                    {{ strtoupper(substr($student->full_name ?? '', 0, 1)) }}
+                                                </div>
+                                                <div class="student-name">{{ $student->full_name }}</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="attendance-status">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch"
+                                                        name="attendance[{{ $student->id }}][status]" 
+                                                        data-student-id="{{ $student->id }}"
+                                                        id="attendance{{ $student->id }}" 
+                                                        {{ $student->current_attendance && $student->current_attendance->status == 'present' ? 'checked' : '' }}>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <textarea class="note-input" rows="1" data-student-id="{{ $student->id }}" placeholder="Nhập ghi chú...">{{ $student->current_attendance ? $student->current_attendance->notes : '' }}</textarea>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                                                    <div class="progress-bar bg-primary" role="progressbar"
+                                                        style="width: {{ $student->attendance_stats['attendance_rate'] }}%;"
+                                                        aria-valuenow="{{ $student->attendance_stats['present_count'] }}" 
+                                                        aria-valuemin="0"
+                                                        aria-valuemax="{{ $student->attendance_stats['total_sessions'] }}">
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex flex-column align-items-end">
+                                                    <span class="small">{{ $student->attendance_stats['present_count'] }}/{{ $student->attendance_stats['total_sessions'] }}</span>
+                                                    @if($student->attendance_stats['absent_count'] > 0)
+                                                    <span class="small text-danger fw-medium">(Nghỉ: {{ $student->attendance_stats['absent_count'] }} buổi)</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4">
+                                            <div class="text-muted">
+                                                <i class="fas fa-info-circle me-2"></i>Chưa có học viên nào trong lớp
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -530,69 +545,85 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Handle switch changes
-            document.querySelectorAll('.form-check-input').forEach(input => {
-                input.addEventListener('change', function() {
-                    const statusText = this.nextElementSibling.querySelector('.status-text');
-                    statusText.textContent = this.checked ? 'Có mặt' : 'Vắng mặt';
-                });
-            });
-
             // Handle save button click
             const saveButton = document.getElementById('saveAttendance');
+            const form = document.querySelector('.attendance-form');
 
-            if (saveButton) {
+            if (saveButton && form) {
                 saveButton.addEventListener('click', function() {
                     // Collect attendance data
                     const attendanceData = [];
-                    const rows = document.querySelectorAll('.attendance-table tbody tr');
+                    const checkboxes = form.querySelectorAll('.form-check-input');
 
-                    rows.forEach(row => {
-                        const studentId = row.querySelector('.student-id').textContent;
-                        const status = row.querySelector('.form-check-input').checked ? 'present' :
-                            'absent';
-                        const note = row.querySelector('.note-input').value;
+                    rows.forEach((row, index) => {
+                        const studentIdField = row.querySelector('.form-check-input');
+                        if (studentIdField) {
+                            const studentId = studentIdField.dataset.studentId;
+                            const status = studentIdField.checked ? 'present' : 'absent';
+                            const note = row.querySelector('.note-input').value;
 
-                        attendanceData.push({
-                            studentId,
-                            status,
-                            note
-                        });
+                            const studentData = {
+                                student_id: studentId,
+                                status,
+                                notes: note
+                            };
+                            attendanceData.push(studentData);
+                        }
                     });
 
                     // Get the session ID from the URL
-                    const sessionId = window.location.pathname.split('/').pop();
+                    const sessionId = '{{ $session->id }}';
+                    const requestData = {
+                        attendance: attendanceData
+                    };
 
                     // Send data to the server
-                    fetch(`{{ url('/') }}/attendance/save/${sessionId}`, {
+                    fetch('{{ route("online.attendance.save", ["id" => $session->id]) }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                    .content
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                             },
-                            body: JSON.stringify({
-                                attendance: attendanceData
-                            })
+                            body: JSON.stringify(requestData)
                         })
                         .then(response => {
                             if (!response.ok) {
-                                throw new Error('Network response was not ok');
+                                return response.text().then(text => {
+                                    throw new Error(text || 'Network response was not ok');
+                                });
                             }
                             return response.json();
                         })
                         .then(data => {
-                            if (data.message) {
-                                alert('Lưu điểm danh thành công!');
+                            if (data.success) {
                                 window.location.reload();
                             }
                         })
                         .catch(error => {
-                            console.error('Error:', error);
-                            alert('Có lỗi xảy ra khi lưu điểm danh!');
+                            // Redirect to show error message through session
+                            window.location.reload();
                         });
                 });
             }
+
+            // Handle switch changes
+            document.querySelectorAll('.form-check-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const row = this.closest('tr');
+                    if (row) {
+                        row.classList.toggle('table-success', this.checked);
+                        row.classList.toggle('table-danger', !this.checked);
+                    }
+                });
+
+                // Set initial state
+                const row = input.closest('tr');
+                if (row) {
+                    row.classList.toggle('table-success', input.checked);
+                    row.classList.toggle('table-danger', !input.checked);
+                }
+            });
         });
     </script>
 @endpush
+

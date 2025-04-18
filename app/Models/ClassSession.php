@@ -27,11 +27,8 @@ class ClassSession extends Model
         'session_date',
         'start_time',
         'end_time',
-        'room_number',
-        'session_type',
         'topic',
         'content',
-        'homework',
         'session_materials',
         'recording_url',
         'attendance_required',
@@ -149,7 +146,7 @@ class ClassSession extends Model
         if ($totalStudents === 0) {
             return 0;
         }
-        
+
         $presentCount = $this->attendances()
             ->whereIn('status', ['present', 'late'])
             ->count();
@@ -171,11 +168,11 @@ class ClassSession extends Model
     {
         $hours = floor($this->duration / 60);
         $minutes = $this->duration % 60;
-        
+
         if ($hours > 0) {
             return sprintf('%d giờ %d phút', $hours, $minutes);
         }
-        
+
         return sprintf('%d phút', $minutes);
     }
 
@@ -188,19 +185,19 @@ class ClassSession extends Model
         $sessionDate = Carbon::parse($this->session_date);
         $startTime = Carbon::parse($this->start_time)->setDateFrom($sessionDate);
         $endTime = Carbon::parse($this->end_time)->setDateFrom($sessionDate);
-        
+
         if ($this->status === 'cancelled') {
             return 'cancelled';
         }
-        
+
         if ($now->lessThan($startTime)) {
             return 'upcoming';
         }
-        
+
         if ($now->between($startTime, $endTime)) {
             return 'active';
         }
-        
+
         return 'completed';
     }
 
@@ -316,7 +313,7 @@ class ClassSession extends Model
      */
     public function canStart(): bool
     {
-        return $this->status === 'scheduled' && 
+        return $this->status === 'scheduled' &&
             now()->between(
                 $this->start_time->subMinutes(15),
                 $this->end_time
@@ -373,17 +370,17 @@ class ClassSession extends Model
         if (!$this->session_date || !$this->start_time) {
             return false;
         }
-        
+
         // Tạo datetime đầy đủ từ session_date và start_time
         $sessionDateTime = Carbon::parse($this->session_date->format('Y-m-d') . ' ' . $this->start_time->format('H:i:s'));
-        
+
         // Lấy thời gian hiện tại
         $now = Carbon::now();
-        
+
         // Tính số phút còn lại trước khi buổi học bắt đầu
         $minutesUntilSession = $now->diffInMinutes($sessionDateTime, false);
-        
+
         // Cho phép tham gia trong vòng 15 phút trước khi bắt đầu và trong suốt thời gian diễn ra buổi học
         return $minutesUntilSession <= 15 && $minutesUntilSession >= -60;
     }
-} 
+}

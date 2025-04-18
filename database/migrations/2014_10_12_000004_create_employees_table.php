@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true)->comment('Trạng thái hoạt động');
             $table->date('join_date')->nullable()->comment('Ngày vào làm');
             $table->date('resignation_date')->nullable()->comment('Ngày nghỉ việc');
+            $table->enum('role', ['teacher', 'teaching_assistant', 'admin', 'staff'])->nullable()->comment('Vai trò');
             $table->text('note')->nullable()->comment('Ghi chú');
             $table->softDeletes();
             $table->timestamps();

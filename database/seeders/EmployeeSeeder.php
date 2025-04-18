@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Employee;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeSeeder extends Seeder
 {
@@ -16,11 +17,12 @@ class EmployeeSeeder extends Seeder
                 'position' => 'Senior Manager',
                 'department' => 'Academic',
                 'email' => 'john.doe@company.com',
-                'password' => bcrypt('123456789'),
+                'password' => Hash::make('123456789'),
                 'phone' => '0901234567',
                 'address' => '123 Main Street, City',
                 'is_active' => true,
                 'join_date' => '2023-01-01',
+                'role' => 'teacher',
             ],
             [
                 'employee_code' => 'EMP002',
@@ -28,11 +30,12 @@ class EmployeeSeeder extends Seeder
                 'position' => 'Senior Teacher',
                 'department' => 'Technology',
                 'email' => 'jane.smith@company.com',
-                'password' => bcrypt('123456789'),
+                'password' => Hash::make('123456789'),
                 'phone' => '0901234568',
                 'address' => '456 Tech Street, City',
                 'is_active' => true,
                 'join_date' => '2023-02-01',
+                'role' => 'teaching_assistant',
             ],
             [
                 'employee_code' => 'EMP003',
@@ -40,11 +43,12 @@ class EmployeeSeeder extends Seeder
                 'position' => 'Content Creator',
                 'department' => 'Content',
                 'email' => 'robert.j@company.com',
-                'password' => bcrypt('123456789'),
+                'password' => Hash::make('123456789'),
                 'phone' => '0901234569',
                 'address' => '789 Content Ave, City',
                 'is_active' => true,
                 'join_date' => '2023-03-01',
+                'role' => 'teaching_assistant',
             ],
             [
                 'employee_code' => 'EMP004',
@@ -52,11 +56,12 @@ class EmployeeSeeder extends Seeder
                 'position' => 'Support Specialist',
                 'department' => 'Student Support',
                 'email' => 'mary.w@company.com',
-                'password' => bcrypt('123456789'),
+                'password' => Hash::make('123456789'),
                 'phone' => '0901234570',
                 'address' => '321 Support St, City',
                 'is_active' => true,
                 'join_date' => '2023-04-01',
+                'role' => 'teaching_assistant',
             ],
             [
                 'employee_code' => 'EMP005',
@@ -64,11 +69,12 @@ class EmployeeSeeder extends Seeder
                 'position' => 'Marketing Manager',
                 'department' => 'Marketing',
                 'email' => 'david.b@company.com',
-                'password' => bcrypt('123456789'),
+                'password' => Hash::make('123456789'),
                 'phone' => '0901234571',
                 'address' => '654 Marketing Rd, City',
                 'is_active' => true,
                 'join_date' => '2023-05-01',
+                'role' => 'teaching_assistant',
             ],
             [
                 'employee_code' => 'EMP006',
@@ -76,11 +82,12 @@ class EmployeeSeeder extends Seeder
                 'position' => 'Sales Executive',
                 'department' => 'Sales',
                 'email' => 'sarah.d@company.com',
-                'password' => bcrypt('123456789'),
+                'password' => Hash::make('123456789'),
                 'phone' => '0901234572',
                 'address' => '987 Sales Blvd, City',
                 'is_active' => true,
                 'join_date' => '2023-06-01',
+                'role' => 'teaching_assistant',
             ],
             [
                 'employee_code' => 'EMP007',
@@ -88,11 +95,12 @@ class EmployeeSeeder extends Seeder
                 'position' => 'Technical Trainer',
                 'department' => 'Training',
                 'email' => 'michael.w@company.com',
-                'password' => bcrypt('123456789'),
+                'password' => Hash::make('123456789'),
                 'phone' => '0901234573',
                 'address' => '147 Training Lane, City',
                 'is_active' => true,
                 'join_date' => '2023-07-01',
+                'role' => 'teaching_assistant',
             ],
             [
                 'employee_code' => 'EMP008',
@@ -100,11 +108,12 @@ class EmployeeSeeder extends Seeder
                 'position' => 'HR Manager',
                 'department' => 'Human Resources',
                 'email' => 'lisa.a@company.com',
-                'password' => bcrypt('123456789'),
+                'password' => Hash::make('123456789'),
                 'phone' => '0901234574',
                 'address' => '258 HR Street, City',
                 'is_active' => true,
                 'join_date' => '2023-08-01',
+                'role' => 'teaching_assistant',
             ],
             [
                 'employee_code' => 'EMP009',
@@ -112,11 +121,12 @@ class EmployeeSeeder extends Seeder
                 'position' => 'Finance Manager',
                 'department' => 'Finance',
                 'email' => 'james.t@company.com',
-                'password' => bcrypt('123456789'),
+                'password' => Hash::make('123456789'),
                 'phone' => '0901234575',
                 'address' => '369 Finance Ave, City',
                 'is_active' => true,
                 'join_date' => '2023-09-01',
+                'role' => 'teaching_assistant',
             ],
             [
                 'employee_code' => 'EMP010',
@@ -124,11 +134,12 @@ class EmployeeSeeder extends Seeder
                 'position' => 'Quality Assurance',
                 'department' => 'QA',
                 'email' => 'emma.m@company.com',
-                'password' => bcrypt('123456789'),
+                'password' => Hash::make('123456789'),
                 'phone' => '0901234576',
                 'address' => '741 QA Road, City',
                 'is_active' => true,
                 'join_date' => '2023-10-01',
+                'role' => 'teaching_assistant',
             ],
         ];
 
