@@ -243,15 +243,35 @@
                             <tbody>
                                 @forelse($class->sessions as $index => $session)
                                 @php
+                                    // Sử dụng thời gian theo timezone mặc định (đã thiết lập global)
+                                    $now = \Carbon\Carbon::now();
+                                    
                                     $sessionDate = $session->session_date ? \Carbon\Carbon::parse($session->session_date) : null;
-                                    $startTime = $session->start_time ? \Carbon\Carbon::parse($session->start_time)->format('H:i') : null;
-                                    $endTime = $session->end_time ? \Carbon\Carbon::parse($session->end_time)->format('H:i') : null;
+                                    $startTime = $session->start_time ? \Carbon\Carbon::parse($session->start_time) : null;
+                                    $endTime = $session->end_time ? \Carbon\Carbon::parse($session->end_time) : null;
+                                    
+                                    // Tạo datetime đầy đủ với cả ngày và giờ để so sánh chính xác
+                                    $sessionStartDateTime = null;
+                                    $sessionEndDateTime = null;
+                                    
+                                    if ($sessionDate && $startTime) {
+                                        $sessionStartDateTime = clone $sessionDate;
+                                        $sessionStartDateTime->setHour($startTime->hour);
+                                        $sessionStartDateTime->setMinute($startTime->minute);
+                                        $sessionStartDateTime->setSecond(0);
+                                    }
+                                    
+                                    if ($sessionDate && $endTime) {
+                                        $sessionEndDateTime = clone $sessionDate;
+                                        $sessionEndDateTime->setHour($endTime->hour);
+                                        $sessionEndDateTime->setMinute($endTime->minute);
+                                        $sessionEndDateTime->setSecond(0);
+                                    }
                                     
                                     $attendances = $session->attendances ?? collect();
                                     $presentCount = $attendances->where('status', 'present')->count();
                                     $absentCount = $attendances->where('status', 'absent')->count();
                                     
-                                    $now = \Carbon\Carbon::now();
                                     $status = '';
                                     $statusClass = '';
                                     $statusIcon = '';
@@ -259,19 +279,32 @@
                                     if (!$sessionDate) {
                                         $status = 'Chưa lên lịch';
                                         $statusClass = 'status-upcoming';
+                                        $statusIcon = 'fa-calendar-xmark';
+                                    } elseif ($sessionEndDateTime && $now->gt($sessionEndDateTime)) {
+                                        // Buổi học đã kết thúc (đã qua giờ kết thúc)
+                                        $status = 'Đã kết thúc';
+                                        $statusClass = 'status-completed';
+                                        $statusIcon = 'fa-check-circle';
+                                    } elseif ($sessionStartDateTime && $now->gt($sessionStartDateTime) && $sessionEndDateTime && $now->lt($sessionEndDateTime)) {
+                                        // Buổi học đang diễn ra (đã qua giờ bắt đầu nhưng chưa đến giờ kết thúc)
+                                        $status = 'Đang diễn ra';
+                                        $statusClass = 'status-in-progress';
+                                        $statusIcon = 'fa-play-circle';
+                                    } elseif ($sessionDate->isToday() && $sessionStartDateTime && $now->lt($sessionStartDateTime)) {
+                                        // Buổi học sẽ diễn ra trong hôm nay
+                                        $status = 'Hôm nay';
+                                        $statusClass = 'status-in-progress';
+                                        $statusIcon = 'fa-clock';
+                                    } elseif ($sessionDate->gt($now)) {
+                                        // Buổi học sẽ diễn ra trong tương lai
+                                        $status = 'Chưa diễn ra';
+                                        $statusClass = 'status-upcoming';
                                         $statusIcon = 'fa-hourglass';
-                                    } elseif ($sessionDate->lt($now)) {
+                                    } else {
+                                        // Trường hợp còn lại (có thể là quá giờ nhưng chưa có thông tin giờ cụ thể)
                                         $status = 'Đã học';
                                         $statusClass = 'status-completed';
                                         $statusIcon = 'fa-check';
-                                    } elseif ($sessionDate->isToday()) {
-                                        $status = 'Đang học';
-                                        $statusClass = 'status-in-progress';
-                                        $statusIcon = 'fa-clock';
-                                    } else {
-                                        $status = 'Chưa học';
-                                        $statusClass = 'status-upcoming';
-                                        $statusIcon = 'fa-hourglass';
                                     }
                                 @endphp
                                 <tr>
@@ -286,7 +319,7 @@
                                     </td>
                                     <td>
                                         @if($startTime && $endTime)
-                                            <i class="fas fa-clock text-primary me-1"></i>{{ $startTime }} - {{ $endTime }}
+                                            <i class="fas fa-clock text-primary me-1"></i>{{ $startTime->format('H:i') }} - {{ $endTime->format('H:i') }}
                                         @else
                                             <span class="text-muted">Chưa cập nhật</span>
                                         @endif
@@ -300,9 +333,28 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <a href="{{ route('online.attendance.detail', ['id' => $session->id]) }}" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye me-1"></i>Điểm danh
-                                        </a>
+                                        @if($status == 'Đã kết thúc' || $status == 'Đã học')
+                                            <a href="{{ route('online.attendance.detail', ['id' => $session->id]) }}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-eye me-1"></i>Điểm danh
+                                            </a>
+                                        @elseif($status == 'Đang diễn ra')
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ route('online.attendance.detail', ['id' => $session->id]) }}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-eye me-1"></i>Điểm danh
+                                                </a>
+                                            </div>
+                                        @elseif($status == 'Hôm nay')
+                                            <div class="d-flex gap-2">
+                                                @if($session->schedule && $session->schedule->meeting_url)
+                                                    <a href="{{ $session->schedule->meeting_url }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                                        <i class="fas fa-clock me-1"></i>Chờ vào học
+                                                    </a>
+                                                @endif
+                                                <a href="{{ route('online.attendance.detail', ['id' => $session->id]) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye me-1"></i>Chuẩn bị điểm danh
+                                                </a>
+                                            </div>
+                                        @endif
                                     </td>
                                 </tr>
                                 @empty

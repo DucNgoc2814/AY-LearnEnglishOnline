@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-md-3 col-6 mb-3">
                         @php
-                            $now = \Carbon\Carbon::now();
+                            $now = \Carbon\Carbon::now('Asia/Ho_Chi_Minh');
                             $startDate = \Carbon\Carbon::parse($class->start_date);
                             $status = '';
                             $badgeClass = '';
@@ -79,50 +79,65 @@
                             @if ($class->sessions && $class->sessions->count() > 0)
                                 @foreach ($class->sessions->sortBy('session_date') as $session)
                                     @php
-                                        // Make sure we're using the same $now variable defined earlier
-if (!isset($now)) {
-    $now = \Carbon\Carbon::now();
-}
+                                        // Thiết lập timezone là giờ Việt Nam
+                                        $now = \Carbon\Carbon::now('Asia/Ho_Chi_Minh');
+                                        
+                                        $sessionDate = $session->session_date
+                                            ? \Carbon\Carbon::parse($session->session_date)->setTimezone('Asia/Ho_Chi_Minh')
+                                            : null;
+                                        $startTime = $session->start_time
+                                            ? \Carbon\Carbon::parse($session->start_time)->setTimezone('Asia/Ho_Chi_Minh')
+                                            : null;
+                                        $endTime = $session->end_time
+                                            ? \Carbon\Carbon::parse($session->end_time)->setTimezone('Asia/Ho_Chi_Minh')
+                                            : null;
+                                        
+                                        // Create a datetime with both date and time for accurate comparison
+                                        $sessionDateTime = null;
+                                        $sessionStartDateTime = null;
+                                        $sessionEndDateTime = null;
+                                        
+                                        if ($sessionDate && $startTime) {
+                                            // Create a new Carbon instance with the session date
+                                            $sessionDateTime = clone $sessionDate;
+                                            // Set the time components from the start time
+                                            $sessionDateTime->setHour($startTime->hour);
+                                            $sessionDateTime->setMinute($startTime->minute);
+                                            $sessionDateTime->setSecond($startTime->second);
+                                            
+                                            // Set session start datetime
+                                            $sessionStartDateTime = clone $sessionDate;
+                                            $sessionStartDateTime->setHour($startTime->hour);
+                                            $sessionStartDateTime->setMinute($startTime->minute);
+                                            $sessionStartDateTime->setSecond(0);
+                                        }
+                                        
+                                        if ($sessionDate && $endTime) {
+                                            // Set session end datetime
+                                            $sessionEndDateTime = clone $sessionDate;
+                                            $sessionEndDateTime->setHour($endTime->hour);
+                                            $sessionEndDateTime->setMinute($endTime->minute);
+                                            $sessionEndDateTime->setSecond(0);
+                                        }
 
-$sessionDate = $session->session_date
-    ? \Carbon\Carbon::parse($session->session_date)
-    : null;
-$startTime = $session->start_time
-    ? \Carbon\Carbon::parse($session->start_time)
-    : null;
-$endTime = $session->end_time
-    ? \Carbon\Carbon::parse($session->end_time)
-    : null;
+                                        $status = '';
+                                        $badgeClass = '';
 
-// Create a datetime with both date and time for accurate comparison
-$sessionDateTime = null;
-if ($sessionDate && $startTime) {
-    // Create a new Carbon instance with the session date
-    $sessionDateTime = clone $sessionDate;
-    // Set the time components from the start time
-    $sessionDateTime->setHour($startTime->hour);
-    $sessionDateTime->setMinute($startTime->minute);
-    $sessionDateTime->setSecond($startTime->second);
-}
-
-$status = '';
-$badgeClass = '';
-
-if (!$sessionDate) {
-    $status = 'Chưa lên lịch';
-    $badgeClass = 'bg-secondary';
-} elseif ($sessionDateTime && $sessionDateTime->isPast()) {
-    $status = 'Đã học';
-    $badgeClass = 'bg-success';
-} elseif ($sessionDate->isToday()) {
-    $status = 'Hôm nay';
-    $badgeClass = 'bg-primary';
-} elseif ($sessionDate->diffInDays($now) <= 7) {
-    $status = 'Sắp học';
-    $badgeClass = 'bg-warning text-dark';
-} else {
-    $status = 'Chưa học';
-    $badgeClass = 'bg-secondary';
+                                        if (!$sessionDate) {
+                                            $status = 'Chưa lên lịch';
+                                            $badgeClass = 'bg-secondary';
+                                        } elseif ($sessionDateTime && $sessionDateTime->isPast()) {
+                                            $status = 'Đã học';
+                                            $badgeClass = 'bg-success';
+                                        } elseif ($sessionDate->isToday()) {
+                                            $status = 'Hôm nay';
+                                            $badgeClass = 'bg-primary';
+                                        } elseif ($sessionDate->diffInDays($now) <= 7) {
+                                            $status = 'Sắp học';
+                                            $badgeClass = 'bg-warning text-dark';
+                                        } else {
+                                            $status = 'Chưa học';
+                                            $badgeClass = 'bg-secondary';
                                         }
                                     @endphp
                                     <tr>
@@ -178,12 +193,36 @@ if (!$sessionDate) {
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ $session->schedule->meeting_url }}"
-                                                class="btn btn-sm btn-primary"
-                                                style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" target="_blank"
-                                                title="Vào học">
-                                                <i class="fas fa-sign-in-alt"></i> Vào học
-                                            </a>
+                                            @if ($sessionStartDateTime && $now->gt($sessionStartDateTime) && $sessionEndDateTime && $now->lt($sessionEndDateTime))
+                                                <!-- Buổi đang diễn ra -->
+                                                <a href="{{ $session->schedule->meeting_url }}"
+                                                    class="btn btn-sm btn-primary"
+                                                    style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" target="_blank"
+                                                    title="Vào học">
+                                                    <i class="fas fa-sign-in-alt"></i> Vào học
+                                                </a>
+                                            @elseif ($status == 'Đã học' || $status == 'Đã kết thúc')
+                                                <!-- Buổi đã kết thúc -->
+                                                <a href="{{ route('online.attendance.detail', ['id' => $session->id]) }}" 
+                                                    class="btn btn-sm btn-outline-secondary"
+                                                    title="Xem điểm danh">
+                                                    <i class="fas fa-clipboard-check"></i> Điểm danh
+                                                </a>
+                                            @elseif ($sessionDate && $sessionDate->isToday() && $sessionStartDateTime && $now->lt($sessionStartDateTime))
+                                                <!-- Buổi học hôm nay nhưng chưa đến giờ -->
+                                                <span class="badge bg-info">
+                                                    <i class="fas fa-clock me-1"></i> Sắp diễn ra
+                                                </span>
+                                            @elseif ($sessionDate && $sessionDate->gt($now))
+                                                <!-- Buổi học trong tương lai -->
+                                                <span class="badge bg-secondary">
+                                                    <i class="fas fa-calendar me-1"></i> Chưa đến ngày
+                                                </span>
+                                            @else
+                                                <span class="badge bg-secondary">
+                                                    <i class="fas fa-question-circle me-1"></i> Chưa cập nhật
+                                                </span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
