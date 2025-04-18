@@ -193,71 +193,80 @@
 
 
                             <!-- Phần câu trả lời -->
-                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mt-6">
-                                <h4 class="font-medium text-gray-900 mb-6">3. Thiết lập câu trả lời</h4>
+                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h4 class="font-medium text-gray-900">3. Thiết lập câu trả lời</h4>
+                                    <button type="button" id="add_answer"
+                                        class="bg-green-500 hover:bg-green-600 text-white text-sm font-bold py-2 px-4 rounded inline-flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                        Thêm câu trả lời
+                                    </button>
+                                </div>
 
                                 <!-- Loại câu trả lời -->
-                                <div class="mb-6">
-                                    <label class="block text-gray-700 text-sm font-bold mb-2 mt-4" for="answer_type">
+                                <div class="mb-6 bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="answer_type">
                                         Loại câu trả lời <span class="text-red-500">*</span>
-                                        <span class="ml-1 text-xs text-gray-500">(Chọn một hoặc nhiều đáp án
-                                            đúng)</span>
                                     </label>
-                                    <select
-                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
-                                        id="answer_type" name="answer_type" required>
-                                        <option value="single">Chọn một đáp án</option>
-                                        <option value="multiple">Chọn nhiều đáp án</option>
-                                    </select>
+                                    <div class="flex items-center space-x-4">
+                                        <select class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline flex-grow"
+                                            id="answer_type" name="answer_type" required>
+                                            <option value="single" selected>Chọn một đáp án</option>
+                                            <option value="multiple">Chọn nhiều đáp án</option>
+                                        </select>
+                                        <div class="text-sm text-blue-700">
+                                            <svg class="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Chọn kiểu đáp án phù hợp
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Danh sách câu trả lời -->
                                 <div id="answers_container" class="space-y-4">
-                                    <div class="answer-item p-4 border rounded-lg bg-gray-50">
-                                        <div class="grid grid-cols-12 gap-4">
-                                            <div class="col-span-6">
-                                                <label class="block text-gray-700 text-sm font-bold mb-2">
-                                                    Nội dung <span class="text-red-500">*</span>
-                                                    <span class="ml-1 text-xs text-gray-500">(Đáp án cho câu
-                                                        hỏi)</span>
-                                                </label>
-                                                <input type="text" name="answers[0][answer]"
-                                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                    placeholder="VD: Hà Nội" required>
+                                    <div class="answer-item p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                                        <div class="space-y-4">
+                                            <div class="grid grid-cols-12 gap-4">
+                                                <div class="col-span-8">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                                        Nội dung <span class="text-red-500">*</span>
+                                                    </label>
+                                                    <input type="text" name="answers[0][answer]"
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                                        placeholder="Nhập câu trả lời" required>
+                                                </div>
+                                                <div class="col-span-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                                        Thứ tự
+                                                    </label>
+                                                    <input type="number" name="answers[0][order_number]"
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                                        value="1" min="1" required>
+                                                </div>
                                             </div>
-                                            <div class="col-span-2">
-                                                <label class="block text-gray-700 text-sm font-bold mb-2">
-                                                    Thứ tự
-                                                    <span class="ml-1 text-xs text-gray-500">(Vị trí)</span>
-                                                </label>
-                                                <input type="number" name="answers[0][order_number]"
-                                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                                    value="1" min="1" required>
-                                            </div>
-                                            <div class="col-span-4">
-                                                <label class="block text-gray-700 text-sm font-bold mb-2">
-                                                    Tùy chọn
-                                                </label>
-                                                <div class="flex items-center mt-2">
-                                                    <input type="checkbox" name="answers[0][is_correct]"
-                                                        value="1" class="form-checkbox h-4 w-4 text-blue-600">
-                                                    <span class="ml-2 text-sm text-gray-700">Đáp án đúng</span>
+                                            <div>
+                                                <div class="flex items-center">
+                                                    <input type="radio" name="correct_answer" value="0"
+                                                        class="form-radio h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                                    <span class="ml-2 text-sm text-gray-700">Đánh dấu là đáp án đúng</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Nút thêm câu trả lời -->
-                                <button type="button" id="add_answer"
-                                    class="mt-6 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded inline-flex items-center">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                    </svg>
-                                    Thêm câu trả lời
-                                </button>
+                                <!-- Hướng dẫn nhỏ -->
+                                <div class="mt-4 text-sm text-gray-600">
+                                    <p class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Mỗi câu hỏi cần có ít nhất một đáp án và phải có ít nhất một đáp án đúng
+                                    </p>
+                                </div>
                             </div>
 
                             <!-- Phần giải thích đáp án -->
@@ -522,36 +531,36 @@
             const container = document.getElementById('answers_container');
             const answerCount = container.getElementsByClassName('answer-item').length;
             const answerType = document.getElementById('answer_type').value;
+            const nextOrderNumber = getNextOrderNumber();
 
             const template = `
-                <div class="answer-item mb-4 p-4 border rounded-lg bg-gray-50">
-                    <div class="grid grid-cols-12 gap-4">
-                        <div class="col-span-6">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                Nội dung <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" name="answers[${answerCount}][answer]"
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                placeholder="Nhập câu trả lời" required>
+                <div class="answer-item p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-12 gap-4">
+                            <div class="col-span-8">
+                                <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    Nội dung <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="answers[${answerCount}][answer]"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                    placeholder="Nhập câu trả lời" required>
+                            </div>
+                            <div class="col-span-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2">
+                                    Thứ tự
+                                </label>
+                                <input type="number" name="answers[${answerCount}][order_number]"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                    value="${nextOrderNumber}" min="1" required>
+                            </div>
                         </div>
-                        <div class="col-span-2">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                Thứ tự
-                            </label>
-                            <input type="number" name="answers[${answerCount}][order_number]"
-                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                value="${answerCount + 1}" min="1" required>
-                        </div>
-                        <div class="col-span-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                Tùy chọn
-                            </label>
-                            <div class="flex items-center mt-2">
+                        <div>
+                            <div class="flex items-center">
                                 <input type="${answerType === 'single' ? 'radio' : 'checkbox'}"
                                     name="${answerType === 'single' ? 'correct_answer' : `answers[${answerCount}][is_correct]`}"
                                     value="${answerType === 'single' ? answerCount : '1'}"
-                                    class="form-checkbox h-4 w-4 text-blue-600">
-                                <span class="ml-2 text-sm text-gray-700">Đáp án đúng</span>
+                                    class="form-radio h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="ml-2 text-sm text-gray-700">Đánh dấu là đáp án đúng</span>
                             </div>
                         </div>
                     </div>
@@ -559,27 +568,66 @@
             `;
 
             container.insertAdjacentHTML('beforeend', template);
+            updateAnswerNumbers();
         });
 
         // Xử lý thay đổi loại câu trả lời
         document.getElementById('answer_type').addEventListener('change', function() {
             const container = document.getElementById('answers_container');
             const answerType = this.value;
-            const correctInputs = container.querySelectorAll(
-                'input[type="radio"], input[type="checkbox"]');
+            const answers = container.getElementsByClassName('answer-item');
 
-            correctInputs.forEach((input, index) => {
-                if (answerType === 'single') {
-                    input.type = 'radio';
-                    input.name = 'correct_answer';
-                    input.value = index;
-                } else {
-                    input.type = 'checkbox';
-                    input.name = `answers[${index}][is_correct]`;
-                    input.value = '1';
-                }
+            Array.from(answers).forEach((answer, index) => {
+                const input = answer.querySelector('input[type="radio"], input[type="checkbox"]');
+                const newType = answerType === 'single' ? 'radio' : 'checkbox';
+                const newName = answerType === 'single' ? 'correct_answer' : `answers[${index}][is_correct]`;
+                const newValue = answerType === 'single' ? index : '1';
+
+                // Tạo input mới để thay thế input cũ
+                const newInput = document.createElement('input');
+                newInput.type = newType;
+                newInput.name = newName;
+                newInput.value = newValue;
+                newInput.className = `form-${newType} h-5 w-5 text-blue-600 rounded focus:ring-blue-500`;
+
+                // Thay thế input cũ bằng input mới
+                input.parentNode.replaceChild(newInput, input);
             });
         });
+
+        // Hàm lấy số thứ tự tiếp theo
+        function getNextOrderNumber() {
+            const container = document.getElementById('answers_container');
+            const orderInputs = container.querySelectorAll('input[type="number"]');
+            let maxOrder = 0;
+
+            orderInputs.forEach(input => {
+                const value = parseInt(input.value);
+                if (value > maxOrder) {
+                    maxOrder = value;
+                }
+            });
+
+            return maxOrder + 1;
+        }
+
+        // Hàm cập nhật lại số thứ tự khi có thay đổi
+        function updateAnswerNumbers() {
+            const container = document.getElementById('answers_container');
+            const orderInputs = container.querySelectorAll('input[type="number"]');
+
+            orderInputs.forEach((input, index) => {
+                input.addEventListener('change', function() {
+                    const newValue = parseInt(this.value);
+                    if (newValue < 1) {
+                        this.value = 1;
+                    }
+                });
+            });
+        }
+
+        // Khởi tạo số thứ tự ban đầu
+        updateAnswerNumbers();
     });
 
     // Mở modal xem media
@@ -685,3 +733,4 @@
         }
     }
 </style>
+
