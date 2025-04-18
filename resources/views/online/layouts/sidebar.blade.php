@@ -3,8 +3,8 @@
     <a href="{{ route('online.dashboard') }}" class="menu-item" data-route="online.dashboard">
         <i class="fas fa-bell"></i>
         <span>Thông báo và tin tức</span>
-    </a>      
-    @if(session('user_type') === 'student')
+    </a>
+    @if (session('user_type') === 'student')
         <a href="{{ route('online.classes.index') }}" class="menu-item" data-route="online.classes">
             <i class="fas fa-graduation-cap"></i>
             <span>Lớp học của tôi</span>
@@ -15,17 +15,17 @@
             <span>Quản lý lớp học</span>
         </a>
     @endif
-    
-    @if(session('user_type') === 'student')
-        <a href="{{ route('online.attendance.index') }}" class="menu-item" data-route="online.attendance">
-            <i class="fas fa-check-square"></i>
-            <span>Điểm danh</span>
-        </a>
+
+    @if (session('user_type') === 'student')
         <a href="{{ route('online.schedule') }}" class="menu-item" data-route="online.schedule">
             <i class="fas fa-calendar-alt"></i>
             <span>Lịch học</span>
         </a>
     @else
+        <a href="{{ route('online.attendance.index') }}" class="menu-item" data-route="online.attendance">
+            <i class="fas fa-check-square"></i>
+            <span>Điểm danh</span>
+        </a>
         <a href="{{ route('online.teacher.schedule') }}" class="menu-item" data-route="online.schedule">
             <i class="fas fa-calendar-alt"></i>
             <span>Lịch giảng dạy</span>
@@ -36,7 +36,7 @@
         <i class="fas fa-award"></i>
         <span>Khen thưởng/Kỷ luật</span>
     </a>
-    
+
     <a href="{{ route('online.guides.index') }}" class="menu-item" data-route="online.guides">
         <i class="fas fa-book"></i>
         <span>Hướng dẫn</span>
@@ -51,12 +51,12 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Lấy URL hiện tại
         const currentUrl = window.location.href;
-        
+
         // Xóa active khỏi tất cả menu items
         document.querySelectorAll('.menu-item').forEach(item => {
             item.classList.remove('active');
         });
-        
+
         // Set active dựa trên URL
         if (currentUrl.includes('/attendance')) {
             document.querySelector('.menu-item[data-route="online.attendance"]').classList.add('active');
