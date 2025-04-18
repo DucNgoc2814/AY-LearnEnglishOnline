@@ -50,9 +50,9 @@ class ClassSession extends Model
     ];
 
     /**
-     * Get the class that this session belongs to.
+     * Get the class to which this session belongs
      */
-    public function class(): BelongsTo
+    public function class()
     {
         return $this->belongsTo(Classes::class, 'class_id');
     }
