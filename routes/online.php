@@ -145,9 +145,10 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
         // Shared Attendance Routes
         Route::prefix('attendance')->name('online.attendance.')->group(function () {
             Route::get('/', [AttendanceController::class, 'index'])->name('index');
-            Route::get('/{class}', [AttendanceController::class, 'show'])->name('show');
-            Route::get('/sessions/{class}', [AttendanceController::class, 'sessions'])->name('sessions');
             Route::get('/detail/{id}', [AttendanceController::class, 'detail'])->name('detail');
+            Route::post('/save/{id}', [AttendanceController::class, 'saveAttendance'])->name('save');
+            Route::get('/sessions/{class}', [AttendanceController::class, 'sessions'])->name('sessions');
+            Route::get('/{class}', [AttendanceController::class, 'show'])->name('show');
         });
 
         // Awards

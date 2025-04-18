@@ -498,26 +498,30 @@
                                                         name="attendance[{{ $student->id }}][status]" 
                                                         data-student-id="{{ $student->id }}"
                                                         id="attendance{{ $student->id }}" 
-                                                        {{ $student->current_attendance && $student->current_attendance->status == 'present' ? 'checked' : '' }}>
+                                                        {{ isset($student->current_attendance) && $student->current_attendance && $student->current_attendance->status == 'present' ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="attendance{{ $student->id }}">
+                                                        <span class="status-text">{{ isset($student->current_attendance) && $student->current_attendance && $student->current_attendance->status == 'present' ? 'Có mặt' : 'Vắng mặt' }}</span>
+                                                    </label>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <textarea class="note-input" rows="1" data-student-id="{{ $student->id }}" placeholder="Nhập ghi chú...">{{ $student->current_attendance ? $student->current_attendance->notes : '' }}</textarea>
+                                            <textarea class="note-input" rows="1" data-student-id="{{ $student->id }}" 
+                                               placeholder="Nhập ghi chú...">{{ isset($student->current_attendance) && $student->current_attendance ? $student->current_attendance->notes : '' }}</textarea>
                                         </td>
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="progress flex-grow-1 me-2" style="height: 6px;">
                                                     <div class="progress-bar bg-primary" role="progressbar"
-                                                        style="width: {{ $student->attendance_stats['attendance_rate'] }}%;"
-                                                        aria-valuenow="{{ $student->attendance_stats['present_count'] }}" 
+                                                        style="width: {{ $student->attendance_stats['attendance_rate'] ?? 0 }}%;"
+                                                        aria-valuenow="{{ $student->attendance_stats['present_count'] ?? 0 }}" 
                                                         aria-valuemin="0"
-                                                        aria-valuemax="{{ $student->attendance_stats['total_sessions'] }}">
+                                                        aria-valuemax="{{ $student->attendance_stats['total_sessions'] ?? 0 }}">
                                                     </div>
                                                 </div>
                                                 <div class="d-flex flex-column align-items-end">
-                                                    <span class="small">{{ $student->attendance_stats['present_count'] }}/{{ $student->attendance_stats['total_sessions'] }}</span>
-                                                    @if($student->attendance_stats['absent_count'] > 0)
+                                                    <span class="small">{{ $student->attendance_stats['present_count'] ?? 0 }}/{{ $student->attendance_stats['total_sessions'] ?? 0 }}</span>
+                                                    @if(isset($student->attendance_stats['absent_count']) && $student->attendance_stats['absent_count'] > 0)
                                                     <span class="small text-danger fw-medium">(Nghỉ: {{ $student->attendance_stats['absent_count'] }} buổi)</span>
                                                     @endif
                                                 </div>
@@ -548,81 +552,97 @@
             // Handle save button click
             const saveButton = document.getElementById('saveAttendance');
             const form = document.querySelector('.attendance-form');
-
+            
             if (saveButton && form) {
                 saveButton.addEventListener('click', function() {
+                    // Disable the button to prevent double-click
+                    saveButton.disabled = true;
+                    saveButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang lưu...';
+                    
                     // Collect attendance data
-                    const attendanceData = [];
-                    const checkboxes = form.querySelectorAll('.form-check-input');
-
-                    rows.forEach((row, index) => {
-                        const studentIdField = row.querySelector('.form-check-input');
-                        if (studentIdField) {
-                            const studentId = studentIdField.dataset.studentId;
-                            const status = studentIdField.checked ? 'present' : 'absent';
-                            const note = row.querySelector('.note-input').value;
-
-                            const studentData = {
+                    let attendanceData = [];
+                    
+                    // Get all student rows
+                    const rows = document.querySelectorAll('.attendance-table tbody tr');
+                    
+                    // Loop through each row to get attendance data
+                    rows.forEach(function(row) {
+                        const checkbox = row.querySelector('.form-check-input');
+                        
+                        if (checkbox && checkbox.getAttribute('data-student-id')) {
+                            const studentId = checkbox.getAttribute('data-student-id');
+                            const status = checkbox.checked ? 'present' : 'absent';
+                            const noteElem = row.querySelector('.note-input');
+                            const notes = noteElem ? noteElem.value : '';
+                            
+                            // Add to attendance data array
+                            attendanceData.push({
                                 student_id: studentId,
-                                status,
-                                notes: note
-                            };
-                            attendanceData.push(studentData);
+                                status: status,
+                                notes: notes
+                            });
                         }
                     });
-
-                    // Get the session ID from the URL
-                    const sessionId = '{{ $session->id }}';
-                    const requestData = {
+                    
+                    // Prepare the data to send
+                    const postData = {
                         attendance: attendanceData
                     };
-
-                    // Send data to the server
+                    
+                    // Make the AJAX request using fetch
                     fetch('{{ route("online.attendance.save", ["id" => $session->id]) }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                            },
-                            body: JSON.stringify(requestData)
-                        })
-                        .then(response => {
-                            if (!response.ok) {
-                                return response.text().then(text => {
-                                    throw new Error(text || 'Network response was not ok');
-                                });
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            if (data.success) {
-                                window.location.reload();
-                            }
-                        })
-                        .catch(error => {
-                            // Redirect to show error message through session
-                            window.location.reload();
-                        });
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify(postData)
+                    })
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        console.log('Success:', data);
+                        // Re-enable button
+                        saveButton.disabled = false;
+                        saveButton.innerHTML = '<i class="fas fa-save me-2"></i>Lưu điểm danh';
+                        window.location.reload();
+                    })
+                    .catch(function(error) {
+                        console.error('Error:', error);
+                        // Re-enable button
+                        saveButton.disabled = false;
+                        saveButton.innerHTML = '<i class="fas fa-save me-2"></i>Lưu điểm danh';
+                        
+                        // Show error message
+                        alert('Có lỗi xảy ra khi lưu điểm danh. Vui lòng thử lại!');
+                    });
                 });
             }
-
-            // Handle switch changes
-            document.querySelectorAll('.form-check-input').forEach(input => {
+            
+            // Handle switch changes - update row styling
+            document.querySelectorAll('.form-check-input').forEach(function(input) {
+                // Apply initial styling
+                updateRowStyling(input);
+                
+                // Add event listener for changes
                 input.addEventListener('change', function() {
-                    const row = this.closest('tr');
-                    if (row) {
-                        row.classList.toggle('table-success', this.checked);
-                        row.classList.toggle('table-danger', !this.checked);
-                    }
+                    updateRowStyling(this);
                 });
-
-                // Set initial state
-                const row = input.closest('tr');
-                if (row) {
-                    row.classList.toggle('table-success', input.checked);
-                    row.classList.toggle('table-danger', !input.checked);
-                }
             });
+            
+            // Function to update row styling based on attendance status
+            function updateRowStyling(checkbox) {
+                const row = checkbox.closest('tr');
+                if (row) {
+                    row.classList.remove('table-success', 'table-danger');
+                    if (checkbox.checked) {
+                        row.classList.add('table-success');
+                    } else {
+                        row.classList.add('table-danger');
+                    }
+                }
+            }
         });
     </script>
 @endpush
