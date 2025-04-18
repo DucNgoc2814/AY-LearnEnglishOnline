@@ -68,33 +68,21 @@ class Classes extends Model
         self::STATUS_CANCELLED
     ];
 
-    /**
-     * Lấy khóa học của lớp
-     */
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
-    /**
-     * Lấy giáo viên của lớp
-     */
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'teacher_id');
     }
 
-    /**
-     * Lấy danh sách đăng ký khóa học
-     */
     public function registrations(): HasMany
     {
         return $this->hasMany(CourseRegistration::class, 'class_id');
     }
 
-    /**
-     * Lấy danh sách học viên
-     */
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(Student::class, 'course_registrations', 'class_id', 'student_id')
@@ -102,17 +90,11 @@ class Classes extends Model
             ->withTimestamps();
     }
 
-    /**
-     * Lấy lịch học
-     */
     public function schedules(): HasMany
     {
         return $this->hasMany(ClassSchedule::class, 'class_id');
     }
 
-    /**
-     * Lấy các buổi học
-     */
     public function sessions()
     {
         return $this->hasManyThrough(
@@ -125,42 +107,28 @@ class Classes extends Model
         );
     }
 
-    /**
-     * Lấy danh sách online room của lớp
-     */
     public function onlineRooms(): HasMany
     {
         return $this->hasMany(OnlineRoom::class, 'roomable_id')
             ->where('roomable_type', Classes::class);
     }
 
-    /**
-     * Kiểm tra xem lớp có đủ học sinh chưa
-     */
+
     public function hasMinimumStudents(): bool
     {
         return $this->current_students >= $this->max_students;
     }
 
-    /**
-     * Kiểm tra xem lớp có còn chỗ không
-     */
     public function hasAvailableSlots(): bool
     {
         return $this->current_students < $this->max_students;
     }
 
-    /**
-     * Kiểm tra xem một học viên đã đăng ký lớp hay chưa
-     */
     public function hasStudent($studentId): bool
     {
         return $this->students()->where('students.id', $studentId)->exists();
     }
 
-    /**
-     * Cập nhật số lượng học viện hiện tại
-     */
     public function updateCurrentStudents(): self
     {
         $this->current_students = $this->students()->wherePivot('status', 'active')->count();
@@ -168,50 +136,31 @@ class Classes extends Model
         return $this;
     }
 
-    /**
-     * Scope cho lớp đang hoạt động
-     */
     public function scopeActive($query)
     {
         return $query->where('status', 'active');
     }
 
-    /**
-     * Scope cho lớp sắp khai giảng
-     */
     public function scopeUpcoming($query)
     {
         return $query->where('start_date', '>', now());
     }
 
-    /**
-     * Scope cho lớp đang diễn ra
-     */
     public function scopeOngoing($query)
     {
         return $query->where('start_date', '<=', now())
             ->where('end_date', '>=', now());
     }
-
-    /**
-     * Scope cho lớp đã kết thúc
-     */
     public function scopeCompleted($query)
     {
         return $query->where('end_date', '<', now());
     }
 
-    /**
-     * Kiểm tra xem lớp có còn chỗ không
-     */
     public function getAvailableSeats(): int
     {
         return max(0, $this->max_students - $this->current_students);
     }
 
-    /**
-     * Kiểm tra xem đăng ký đã mở chưa
-     */
     public function isEnrollmentOpen(): bool
     {
         if (!$this->start_date || !$this->end_date) {
@@ -220,9 +169,6 @@ class Classes extends Model
         return now()->lessThanOrEqualTo($this->end_date);
     }
 
-    /**
-     * Lấy tiến độ học tập của lớp
-     */
     public function getProgress(): float
     {
         if (!$this->start_date || !$this->end_date) {

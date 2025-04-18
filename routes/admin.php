@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\LessonController;
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\ClassController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\EmployeeController;

@@ -34,36 +34,19 @@ class Employee extends Model implements JWTSubject
         'join_date' => 'date',
         'resignation_date' => 'date'
     ];
-
-
-    /**
-     * Lấy danh sách vai trò của nhân viên
-     */
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(EmployeeRole::class, 'employee_has_roles');
     }
-
-    /**
-     * Lấy danh sách quyền trực tiếp của nhân viên (không thông qua vai trò)
-     */
     public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(EmployeePermission::class, 'employee_has_permissions')
             ->withPivot('is_granted');
     }
-
-    /**
-     * Lấy tên đầy đủ của nhân viên
-     */
     public function getNameAttribute($value)
     {
         return $value ?: $this->user->name;
     }
-
-    /**
-     * Kiểm tra xem nhân viên có vai trò cụ thể hay không
-     */
     public function hasRole($role): bool
     {
         if (is_array($role)) {
@@ -71,10 +54,6 @@ class Employee extends Model implements JWTSubject
         }
         return $this->roles()->where('slug', $role)->exists();
     }
-
-    /**
-     * Kiểm tra xem nhân viên có quyền cụ thể hay không
-     */
     public function hasPermission($permission): bool
     {
         return $this->permissions()
@@ -82,10 +61,6 @@ class Employee extends Model implements JWTSubject
             ->wherePivot('is_granted', true)
             ->exists();
     }
-
-    /**
-     * Tính tổng số ngày làm việc
-     */
     public function getTotalWorkingDays(): int
     {
         $endDate = $this->resignation_date ?? now();

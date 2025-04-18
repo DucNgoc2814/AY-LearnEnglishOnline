@@ -365,24 +365,6 @@
 
 @push('scripts')
     <script>
-        function populateEditModal(item) {
-            modalHandler.open('editTestModal');
-
-            modalHandler.setEditModalData('editTestModal', {
-                name: item.name,
-                description: item.description,
-                duration: item.duration,
-                min_score: item.min_score,
-                max_score: item.max_score,
-                is_required: item.is_required,
-                max_attempt: item.max_attempt,
-                type: item.type,
-                testable_type: item.testable_type,
-                testable_id: item.testable_id,
-                settings: item.settings,
-                actionUrl: '{{ url('admin/tests') }}/' + item.id
-            });
-        }
 
         function addQuestion(testId, testName) {
             // Mở modal tạo câu hỏi
@@ -401,44 +383,126 @@
             modalForm.action = "{{ route('admin.questions.store') }}";
         }
 
-        function editQuestion(questionId) {
-            // Mở modal chỉnh sửa câu hỏi ngay lập tức
+        function populateEditQuestionModal(question) {
+            // Mở modal
             modalHandler.open('editQuestionModal');
 
-            fetch(`/admin/questions/${questionId}/edit`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status) {
-                        const question = data.data;
+            // Điền thông tin cơ bản của câu hỏi
+            document.getElementById('edit_questionId').value = question.id;
+            document.getElementById('edit_test_id').value = question.test_id;
+            document.getElementById('edit_type').value = question.type || 'text';
+            document.getElementById('edit_question').value = question.question;
+            document.getElementById('edit_order_number').value = question.order_number;
+            document.getElementById('edit_correct_answer_explanation').value = question.correct_answer_explanation || '';
+            document.getElementById('edit_answer_type').value = question.answer_type || 'single';
 
-                        // Cập nhật dữ liệu vào form
-                        document.getElementById('edit_question_id').value = question.id;
-                        document.getElementById('edit_test_id').value = question.test_id;
-                        document.getElementById('edit_question').value = question.question;
-                        document.getElementById('edit_order_number').value = question.order_number;
-                        document.getElementById('edit_type').value = question.type;
+            // Hiển thị container media tương ứng
+            if (typeof window.showEditMediaContainer === 'function') {
+                window.showEditMediaContainer(question.type);
+            }
 
-                        // Cập nhật hình ảnh preview nếu có
-                        if (question.media_url) {
-                            if (question.type === 'image') {
-                                document.getElementById('edit_imagePreview').src = question.full_media_url;
-                                document.getElementById('edit_imagePreviewContainer').classList.remove('hidden');
-                            } else if (question.type === 'video') {
-                                document.getElementById('edit_videoPreview').src = question.full_media_url;
-                                document.getElementById('edit_videoPreviewContainer').classList.remove('hidden');
-                            } else if (question.type === 'audio') {
-                                document.getElementById('edit_audioPreview').src = question.full_media_url;
-                                document.getElementById('edit_audioPreviewContainer').classList.remove('hidden');
-                            }
-                        }
+            // Xử lý hiển thị media nếu có
+            if (question.media_url) {
+                document.getElementById('edit_media_url').value = question.media_url;
+                const mediaUrl = question.full_media_url || question.media_url;
+                const mediaType = question.type;
+                const previewContainer = document.getElementById(`edit_${mediaType}PreviewContainer`);
+                const preview = document.getElementById(`edit_${mediaType}Preview`);
 
-                        // Hiển thị container upload phù hợp với loại câu hỏi
-                        showUploadContainer(question.type, 'edit_');
-                    }
-                })
-                .catch(error => {
-                    console.log('Error fetching question:', error);
+                if (mediaType === 'image') {
+                    preview.src = mediaUrl;
+                } else if (mediaType === 'video' || mediaType === 'audio') {
+                    const source = preview.querySelector('source');
+                    source.src = mediaUrl;
+                    preview.load();
+                }
+
+                previewContainer.classList.remove('hidden');
+                if (typeof window.showEditMediaContainer === 'function') {
+                    window.showEditMediaContainer(mediaType);
+                }
+            }
+
+            // Xóa các câu trả lời cũ
+            const answersContainer = document.getElementById('edit_answers_container');
+            answersContainer.innerHTML = '';
+
+            // Thêm các câu trả lời mới
+            if (question.answers && question.answers.length > 0) {
+                question.answers.forEach((answer, index) => {
+                    const answerType = question.answer_type || 'single';
+                    const template = `
+                        <div class="answer-item p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-12 gap-4">
+                                    <div class="col-span-8">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2">
+                                            Nội dung <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" name="answers[${index}][answer]"
+                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                            value="${answer.answer}"
+                                            placeholder="Nhập câu trả lời" required>
+                                    </div>
+                                    <div class="col-span-4">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2">
+                                            Thứ tự
+                                        </label>
+                                        <input type="number" name="answers[${index}][order_number]"
+                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                            value="${answer.order_number}" min="1" required>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex items-center">
+                                        <input type="${answerType === 'single' ? 'radio' : 'checkbox'}"
+                                            name="${answerType === 'single' ? 'correct_answer' : `answers[${index}][is_correct]`}"
+                                            value="${answerType === 'single' ? index : '1'}"
+                                            ${answer.is_correct ? 'checked' : ''}
+                                            class="form-radio h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                        <span class="ml-2 text-sm text-gray-700">Đánh dấu là đáp án đúng</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    answersContainer.insertAdjacentHTML('beforeend', template);
                 });
+            } else {
+                // Thêm một câu trả lời mặc định nếu không có câu trả lời nào
+                const template = `
+                    <div class="answer-item p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-12 gap-4">
+                                <div class="col-span-8">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                        Nội dung <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" name="answers[0][answer]"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                        placeholder="Nhập câu trả lời" required>
+                                </div>
+                                <div class="col-span-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                                        Thứ tự
+                                    </label>
+                                    <input type="number" name="answers[0][order_number]"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
+                                        value="1" min="1" required>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center">
+                                    <input type="radio" name="correct_answer" value="0"
+                                        class="form-radio h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                    <span class="ml-2 text-sm text-gray-700">Đánh dấu là đáp án đúng</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                answersContainer.insertAdjacentHTML('beforeend', template);
+            }
         }
 
         function viewAnswers(questionId, questionText) {
@@ -493,6 +557,26 @@
                 .catch(error => {
                     console.error('Error fetching answers:', error);
                     document.getElementById('answersTableBody').innerHTML = '<tr><td colspan="5" class="text-center py-4 text-red-500">Lỗi khi tải dữ liệu</td></tr>';
+                });
+        }
+
+        function editQuestion(questionId) {
+            // Mở modal chỉnh sửa câu hỏi ngay lập tức
+            modalHandler.open('editQuestionModal');
+
+            // Fetch dữ liệu câu hỏi từ API
+            fetch(`/admin/questions/${questionId}/edit`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status) {
+                        populateEditQuestionModal(data.data);
+                    } else {
+                        throw new Error(data.message || 'Không thể tải thông tin câu hỏi');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Đã xảy ra lỗi khi tải dữ liệu: ' + error.message);
                 });
         }
 
