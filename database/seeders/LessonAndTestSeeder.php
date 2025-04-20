@@ -81,42 +81,6 @@ class LessonAndTestSeeder extends Seeder
                 ]);
             }
 
-            // Create 10 final exams for the course with unique slugs
-            for ($e = 1; $e <= 10; $e++) {
-                $examName = match($e) {
-                    1 => "Kiểm tra cuối khóa - Phần Cơ bản",
-                    2 => "Kiểm tra cuối khóa - Phần Nâng cao",
-                    3 => "Kiểm tra cuối khóa - Lý thuyết",
-                    4 => "Kiểm tra cuối khóa - Thực hành",
-                    5 => "Kiểm tra cuối khóa - Database",
-                    6 => "Kiểm tra cuối khóa - API",
-                    7 => "Kiểm tra cuối khóa - Security",
-                    8 => "Kiểm tra cuối khóa - Performance",
-                    9 => "Kiểm tra cuối khóa - Best Practices",
-                    10 => "Kiểm tra tổng kết khóa học",
-                };
-
-                $examSlug = 'course-' . $course->id . '-exam-' . $e . '-' . Str::slug($examName);
-
-                Test::create([
-                    'testable_type' => 'App\Models\Course',
-                    'testable_id' => $course->id,
-                    'name' => $examName,
-                    'slug' => $examSlug,
-                    'description' => "Bài kiểm tra tổng hợp: " . $examName,
-                    'duration' => 60,
-                    'min_score' => 80,
-                    'max_score' => 100,
-                    'is_required' => true,
-                    'total_attempt' => 0,
-                    'max_attempt' => 2,
-                    'type' => 'final_exam',
-                    'settings' => json_encode([
-                        'show_result' => true,
-                        'randomize_questions' => true
-                    ])
-                ]);
-            }
         }
     }
 } 

@@ -46,6 +46,30 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::put('/{user}', 'update')->name('update');
             Route::delete('/{user}', 'destroy')->name('destroy');
         });
+    Route::controller(ClassController::class)
+        ->prefix('classes')
+        ->name('classes.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{user}', 'show')->name('show');
+            Route::get('/{user}/edit', 'edit')->name('edit');
+            Route::put('/{user}', 'update')->name('update');
+            Route::delete('/{user}', 'destroy')->name('destroy');
+        });
+    Route::controller(UserController::class)
+        ->prefix('users')
+        ->name('users.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{user}', 'show')->name('show');
+            Route::get('/{user}/edit', 'edit')->name('edit');
+            Route::put('/{user}', 'update')->name('update');
+            Route::delete('/{user}', 'destroy')->name('destroy');
+        });
 
     // Courses Management
     Route::controller(CourseController::class)

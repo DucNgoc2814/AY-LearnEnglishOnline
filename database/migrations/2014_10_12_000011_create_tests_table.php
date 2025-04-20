@@ -10,7 +10,7 @@ class CreateTestsTable extends Migration
     {
         Schema::create('tests', function (Blueprint $table) {
             $table->id();
-            $table->nullableMorphs('testable'); // Cho lesson_test và final_exam
+            $table->nullableMorphs('testable'); 
             $table->string('slug')->unique()->comment('Slug bài kiểm tra/thi');
             $table->string('name')->comment('Tên bài kiểm tra/thi');
             $table->text('description')->nullable()->comment('Mô tả bài kiểm tra/thi');
@@ -22,7 +22,6 @@ class CreateTestsTable extends Migration
             $table->integer('max_attempt')->nullable()->comment('Số lần được phép làm lại');
             $table->enum('type', [
                 'lesson_test',     // Bài kiểm tra của bài học
-                'final_exam',      // Bài thi cuối khóa
                 'entrance_test',   // Bài test đầu vào
                 'session_test'     // Bài kiểm tra trong buổi học
             ])->comment('Loại bài kiểm tra');

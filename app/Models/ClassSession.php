@@ -23,7 +23,6 @@ class ClassSession extends Model
     protected $fillable = [
         'class_id',
         'schedule_id',
-        'resource_id',
         'session_date',
         'start_time',
         'end_time',

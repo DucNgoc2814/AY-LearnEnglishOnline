@@ -13,13 +13,14 @@ class Resource extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'resourceable_type',
+        'resourceable_id',
         'title',
         'description',
         'order',
         'is_active',
-        'resourceable_type',
-        'resourceable_id',
         'file_path',
+        'type',
     ];
 
 
