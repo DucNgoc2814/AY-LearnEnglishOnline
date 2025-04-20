@@ -13,6 +13,7 @@ class TestSeeder extends Seeder
             [
                 'testable_type' => 'App\Models\Lesson',
                 'testable_id' => 1,
+                'type' => 'lesson_test',
                 'slug' => 'laravel-basics-quiz',
                 'name' => 'Laravel Basics Quiz',
                 'description' => 'Kiểm tra kiến thức cơ bản về Laravel',

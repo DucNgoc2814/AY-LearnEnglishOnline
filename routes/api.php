@@ -33,14 +33,14 @@ Route::get('/table-columns/{tableId}', function ($tableId) {
 });
 
 // Video Progress Routes
-Route::middleware('auth:sanctum')->group(function () {
-    // Video Progress
-    Route::post('/video-progress', [VideoProgressController::class, 'saveProgress']);
-    Route::get('/video-progress/{videoId}', [VideoProgressController::class, 'getProgress']);
+// Route::middleware('auth:sanctum')->group(function () {
+//     // Video Progress
+//     Route::post('/video-progress', [VideoProgressController::class, 'saveProgress']);
+//     Route::get('/video-progress/{videoId}', [VideoProgressController::class, 'getProgress']);
     
-    // Lesson Progress
-    Route::post('/lesson-progress', [LessonProgressController::class, 'saveProgress']);
-    Route::get('/lesson-progress/{lessonId}/{enrollmentId}', [LessonProgressController::class, 'getProgress']);
-    Route::get('/course-progress/{enrollmentId}', [LessonProgressController::class, 'getCourseProgress']);
-});
+//     // Lesson Progress
+//     Route::post('/lesson-progress', [LessonProgressController::class, 'saveProgress']);
+//     Route::get('/lesson-progress/{lessonId}/{enrollmentId}', [LessonProgressController::class, 'getProgress']);
+//     Route::get('/course-progress/{enrollmentId}', [LessonProgressController::class, 'getCourseProgress']);
+// });
 

@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('class_sessions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('schedule_id')->nullable()->constrained('class_schedules')->nullOnDelete();
-            $table->foreignId('resource_id')->nullable()->constrained('resources')->nullOnDelete();
             $table->date('session_date');
             $table->time('start_time');
             $table->time('end_time');

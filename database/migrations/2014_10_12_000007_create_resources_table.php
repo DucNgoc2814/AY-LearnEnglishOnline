@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('resources', function (Blueprint $table) {
             $table->id();
             $table->nullableMorphs('resourceable');
+            $table->enum('type', ['text', 'image', 'video', 'audio', 'file', 'link']);
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('file_path')->nullable();
