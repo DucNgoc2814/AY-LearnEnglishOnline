@@ -37,6 +37,8 @@ Route::middleware(['web'])->group(function () {
 // Protected Routes - Require JWT Authentication
 Route::middleware(['web', 'jwt.role'])->group(function () {
     // Logout Route
+    Route::get('/online/teacher/classes/show/{id}', [TeacherClassController::class, 'show'])->name('show');
+
     Route::post('/logout', [LoginController::class, 'logout'])
         ->name('online.logout');
 
@@ -86,13 +88,27 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
         Route::get('/teacher/schedule', [TeacherScheduleController::class, 'index'])
             ->name('online.teacher.schedule');
 
+        // Class Sessions Management
+        Route::prefix('teacher/sessions')->name('online.teacher.sessions.')->group(function () {
+            Route::get('/{id}', [App\Http\Controllers\Online\Teacher\SessionController::class, 'show'])->name('show');
+            Route::get('/{id}/attendance', [App\Http\Controllers\Online\Teacher\SessionController::class, 'attendance'])->name('attendance');
+            Route::post('/add-material', [App\Http\Controllers\Online\Teacher\SessionController::class, 'addMaterial'])->name('add-material');
+            Route::put('/update', [App\Http\Controllers\Online\Teacher\SessionController::class, 'update'])->name('update');
+            Route::get('/detail', [App\Http\Controllers\Online\Teacher\SessionController::class, 'getDetail'])->name('detail');
+            Route::get('/get', [App\Http\Controllers\Online\Teacher\SessionController::class, 'getSession'])->name('get');
+        });
+
         // Class Management - Sử dụng controller mới
         Route::prefix('teacher/classes')->name('online.teacher.classes.')->group(function () {
             Route::get('/', [TeacherClassController::class, 'index'])->name('index');
             Route::get('/{id}', [TeacherClassController::class, 'show'])->name('show');
-            
+
             // Attendance
             Route::get('/{id}/attendance', [TeacherClassController::class, 'attendance'])->name('attendance');
+            
+            // Materials
+            Route::post('/{id}/materials/upload', [TeacherClassController::class, 'uploadMaterial'])->name('materials.upload');
+            Route::delete('/materials/{id}', [TeacherClassController::class, 'deleteMaterial'])->name('materials.delete');
             
             // Assignments
             Route::get('/{class}/assignments', [ClassController::class, 'classAssignments'])->name('assignments');
@@ -107,6 +123,18 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
             Route::get('/{class}/grades', [ClassController::class, 'classGrades'])->name('grades');
             Route::post('/{class}/grades/update', [ClassController::class, 'updateGrades'])->name('grades.update');
             Route::get('/{class}/grades/export', [ClassController::class, 'exportGrades'])->name('grades.export');
+            
+            // Grade Items Management
+            Route::prefix('{class_id}/grade-items')->name('grade-items.')->group(function () {
+                Route::get('/', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'index'])->name('index');
+                Route::post('/', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'store'])->name('store');
+                Route::get('/{id}', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'show'])->name('show');
+                Route::put('/{id}', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'update'])->name('update');
+                Route::delete('/{id}', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'destroy'])->name('delete');
+                Route::get('/tests', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'getAvailableTests'])->name('tests');
+                Route::post('/batch-update', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'batchUpdate'])->name('batch-update');
+                Route::post('/import-test-results', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'importTestResults'])->name('import-test-results');
+            });
             
             // Students
             Route::get('/{class}/students', [ClassController::class, 'classStudents'])->name('students');
@@ -174,5 +202,15 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
             Route::get('/', [EbookController::class, 'index'])->name('index');
             Route::get('/{ebook}', [EbookController::class, 'show'])->name('show');
         });
+    });
+
+    // Test Routes
+    Route::prefix('test')->middleware(['debug.request'])->group(function () {
+        Route::get('/test-class-details/{id}', [TeacherClassController::class, 'show'])
+            ->name('test.class.details');
+        Route::get('/direct-class/{id}', [TeacherClassController::class, 'show'])
+            ->name('direct.class');
+        Route::get('/super-test/{id}', [TeacherClassController::class, 'show'])
+            ->name('super.test');
     });
 });

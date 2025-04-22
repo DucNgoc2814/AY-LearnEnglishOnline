@@ -156,4 +156,14 @@ class Test extends Model
     {
         return $query->where('course_id', $courseId);
     }
+
+    /**
+     * Get the grade items related to this test
+     */
+    public function gradeItems()
+    {
+        return $this->belongsToMany(GradeItem::class, 'grade_item_test')
+                    ->withPivot('metadata')
+                    ->withTimestamps();
+    }
 }
