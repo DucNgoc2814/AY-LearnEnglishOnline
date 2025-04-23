@@ -62,8 +62,7 @@ class LessonAndTestSeeder extends Seeder
                 $testSlug = 'lesson-' . $lesson->id . '-test-' . Str::slug($lessonName);
                 
                 Test::create([
-                    'testable_type' => 'App\Models\Lesson',
-                    'testable_id' => $lesson->id,
+                    'lesson_id' => $lesson->id,
                     'name' => "Bài kiểm tra: " . $lessonName,
                     'slug' => $testSlug,
                     'description' => "Kiểm tra kiến thức về " . $lessonName,

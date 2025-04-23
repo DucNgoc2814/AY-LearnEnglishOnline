@@ -290,7 +290,7 @@ class ClassController extends Controller
     /**
      * Display the specified class.
      */
-    public function show($classId)
+    public function show($id)
     {
         try {
             // Find the student safely
@@ -304,6 +304,8 @@ class ClassController extends Controller
             // Get the class with sessions and attendance data
             $class = Classes::with([
                 'teacher',
+                'schedules',
+                'students',
                 'sessions' => function ($query) {
                     $query->orderBy('session_date');
                 },
@@ -313,42 +315,62 @@ class ClassController extends Controller
                         $query->where('student_id', $student->id);
                     }
                 }
-            ])->findOrFail($classId);
+            ])->findOrFail($id);
 
-            // Get attendance stats for this student in this class
+            // Format schedule information
+            $class->formatted_schedule = $this->formatScheduleInfo($class->schedules);
+
+            // Prepare statistics for the view
             $totalSessions = $class->sessions->count();
+            $completedSessions = $class->sessions->where('status', 'completed')->count();
+            $upcomingSessions = $class->sessions->where('status', '!=', 'completed')->count();
+
+            // Calculate attendance statistics
+            $attendanceRate = 0;
+            $assignmentCount = 0;
+            $averageScore = 0;
 
             if ($student && $totalSessions > 0) {
                 // Get attendance from eager loaded data
                 $attendances = $class->sessions->pluck('attendances')->flatten()->filter();
 
-                // If no data was loaded, get it from the database
-                if ($attendances->isEmpty()) {
-                    $attendances = Attendance::whereIn('session_id', $class->sessions->pluck('id'))
-                        ->where('student_id', $student->id)
-                        ->get();
+                // Calculate attendance rate
+                $presentCount = $attendances->whereIn('status', ['present', 'late'])->count();
+                $attendanceRate = $totalSessions > 0 ? round(($presentCount / $totalSessions) * 100, 1) : 0;
+
+                // Get assignments data (you may need to adjust this based on your actual models)
+                $assignmentCount = DB::table('assignments')
+                    ->where('class_id', $class->id)
+                    ->count();
+
+                // Get average score (adjust based on your grading model)
+                $grades = DB::table('grades')
+                    ->where('class_id', $class->id)
+                    ->where('student_id', $student->id)
+                    ->get();
+
+                if ($grades->count() > 0) {
+                    $averageScore = round($grades->avg('grade'), 1);
                 }
-
-                $absentCount = $attendances->where('status', 'absent')->count();
-                $absentPercentage = $totalSessions > 0 ? round(($absentCount / $totalSessions) * 100, 1) : 0;
-
-                $class->attendance_stats = [
-                    'absent_count' => $absentCount,
-                    'total_sessions' => $totalSessions,
-                    'absent_percentage' => $absentPercentage
-                ];
-            } else {
-                $class->attendance_stats = [
-                    'absent_count' => 0,
-                    'total_sessions' => $totalSessions ?: 0,
-                    'absent_percentage' => 0
-                ];
             }
 
-            return view('online.classes.show', compact('class'));
+            // Prepare stats for view
+            $stats = [
+                'total_sessions' => $totalSessions,
+                'completed_sessions' => $completedSessions,
+                'upcoming_sessions' => $upcomingSessions,
+                'attendance_rate' => $attendanceRate,
+                'assignment_count' => $assignmentCount,
+                'average_score' => $averageScore
+            ];
+
+            return view('online.classes.show', compact('class', 'stats'));
         } catch (\Exception $e) {
-            Log::error('Error displaying class details: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi tải thông tin lớp học. Vui lòng thử lại sau.');
+            Log::error('Error displaying class details: ' . $e->getMessage(), [
+                'exception' => $e,
+                'id' => $id
+            ]);
+            return redirect()->route('online.classes.index')->with('error', 'Có lỗi xảy ra khi tải thông tin lớp học. Vui lòng thử lại sau.');
         }
     }
 

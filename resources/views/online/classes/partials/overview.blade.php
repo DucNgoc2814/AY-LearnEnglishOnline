@@ -1,7 +1,8 @@
 @php
-    $upcomingSessions = $class->sessions()
-        ->where('start_time', '>', now())
-        ->orderBy('start_time')
+    $upcomingSessions = $class
+        ->sessions()
+        ->where('class_sessions.start_time', '>', now())
+        ->orderBy('class_sessions.start_time')
         ->take(5)
         ->get();
 @endphp
@@ -11,13 +12,13 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Buổi học sắp tới</h5>
-                <a href="{{ route('online.teacher.classes.sessions.index', $class->id) }}" class="btn btn-sm btn-primary">
+                <a href="" class="btn btn-sm btn-primary">
                     <i class="fas fa-calendar"></i>
                     Xem tất cả
                 </a>
             </div>
             <div class="card-body">
-                @if($upcomingSessions->count() > 0)
+                @if ($upcomingSessions->count() > 0)
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -30,27 +31,28 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($upcomingSessions as $session)
-                                <tr>
-                                    <td>
-                                        <div class="fw-bold">{{ $session->start_time->format('d/m/Y') }}</div>
-                                        <div class="text-muted">{{ $session->start_time->format('H:i') }} - {{ $session->end_time->format('H:i') }}</div>
-                                    </td>
-                                    <td>{{ $session->room }}</td>
-                                    <td>{{ $session->content }}</td>
-                                    <td>
-                                        <span class="badge bg-{{ $session->status_color }}">
-                                            {{ $session->status_text }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('online.teacher.classes.attendance', ['class' => $class->id, 'session' => $session->id]) }}" 
-                                           class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-clipboard-check"></i>
-                                            Điểm danh
-                                        </a>
-                                    </td>
-                                </tr>
+                                @foreach ($upcomingSessions as $session)
+                                    <tr>
+                                        <td>
+                                            <div class="fw-bold">{{ $session->start_time->format('d/m/Y') }}</div>
+                                            <div class="text-muted">{{ $session->start_time->format('H:i') }} -
+                                                {{ $session->end_time->format('H:i') }}</div>
+                                        </td>
+                                        <td>{{ $session->room }}</td>
+                                        <td>{{ $session->content }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ $session->status_color }}">
+                                                {{ $session->status_text }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('online.teacher.classes.attendance', ['class' => $class->id, 'session' => $session->id]) }}"
+                                                class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-clipboard-check"></i>
+                                                Điểm danh
+                                            </a>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -72,26 +74,28 @@
             </div>
             <div class="card-body">
                 <dl class="row mb-0">
-                    <dt class="col-sm-4">Khóa học:</dt>
-                    <dd class="col-sm-8">{{ $class->course->name }}</dd>
+                    @foreach ($class->category->courses as $course)
+                        <dt class="col-sm-4">Khóa học:</dt>
+                        <dd class="col-sm-8">{{ $course->title }}</dd>
 
-                    <dt class="col-sm-4">Trình độ:</dt>
-                    <dd class="col-sm-8">{{ $class->level }}</dd>
+                        <dt class="col-sm-4">Trình độ:</dt>
+                        <dd class="col-sm-8">{{ $class->level }}</dd>
 
-                    <dt class="col-sm-4">Ngày bắt đầu:</dt>
-                    <dd class="col-sm-8">{{ $class->start_date->format('d/m/Y') }}</dd>
+                        <dt class="col-sm-4">Ngày bắt đầu:</dt>
+                        <dd class="col-sm-8">{{ $class->start_date->format('d/m/Y') }}</dd>
 
-                    <dt class="col-sm-4">Ngày kết thúc:</dt>
-                    <dd class="col-sm-8">{{ $class->end_date->format('d/m/Y') }}</dd>
+                        <dt class="col-sm-4">Ngày kết thúc:</dt>
+                        <dd class="col-sm-8">{{ $class->end_date->format('d/m/Y') }}</dd>
 
-                    <dt class="col-sm-4">Lịch học:</dt>
-                    <dd class="col-sm-8">{{ $class->schedule }}</dd>
+                        <dt class="col-sm-4">Lịch học:</dt>
+                        <dd class="col-sm-8">{{ $class->schedule }}</dd>
 
-                    <dt class="col-sm-4">Phòng học:</dt>
-                    <dd class="col-sm-8">{{ $class->room }}</dd>
+                        <dt class="col-sm-4">Phòng học:</dt>
+                        <dd class="col-sm-8">{{ $class->room }}</dd>
 
-                    <dt class="col-sm-4">Sĩ số:</dt>
-                    <dd class="col-sm-8">{{ $class->students->count() }}/{{ $class->max_students }}</dd>
+                        <dt class="col-sm-4">Sĩ số:</dt>
+                        <dd class="col-sm-8">{{ $class->students->count() }}/{{ $class->max_students }}</dd>
+                    @endforeach
                 </dl>
             </div>
         </div>
@@ -99,20 +103,21 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Thông báo lớp học</h5>
-                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#createAnnouncementModal">
+                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#createAnnouncementModal">
                     <i class="fas fa-plus"></i>
                 </button>
             </div>
             <div class="card-body">
-                @if($class->announcements->count() > 0)
-                    @foreach($class->announcements as $announcement)
-                    <div class="announcement-item mb-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h6 class="mb-1">{{ $announcement->title }}</h6>
-                            <small class="text-muted">{{ $announcement->created_at->diffForHumans() }}</small>
+                @if ($class->announcements->count() > 0)
+                    @foreach ($class->announcements as $announcement)
+                        <div class="announcement-item mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h6 class="mb-1">{{ $announcement->title }}</h6>
+                                <small class="text-muted">{{ $announcement->created_at->diffForHumans() }}</small>
+                            </div>
+                            <p class="mb-0">{{ $announcement->content }}</p>
                         </div>
-                        <p class="mb-0">{{ $announcement->content }}</p>
-                    </div>
                     @endforeach
                 @else
                     <div class="text-center text-muted py-3">
@@ -152,4 +157,4 @@
             </form>
         </div>
     </div>
-</div> 
+</div>

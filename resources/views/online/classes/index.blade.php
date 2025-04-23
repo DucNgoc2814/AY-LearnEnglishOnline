@@ -434,10 +434,12 @@
                                             </span>
                                         </div>
                                         <div class="class-actions">
+                                            <a href="{{ route('online.classes.show', ['id' => $class->id]) }}" class="action-btn" style="background-color: var(--primary-color); color: white !important;">
+                                                <i class="fas fa-eye me-2"></i>Xem chi tiết
+                                            </a>
                                             <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
                                                 <i class="fas fa-calendar-alt me-2"></i>Lịch học
                                             </a>
-                                 
                                             <a href="{{ route('online.grades.index', ['class_id' => $class->id]) }}" class="action-btn btn-grade">
                                                 <i class="fas fa-chart-line me-2"></i>Xem điểm
                                             </a>
@@ -496,6 +498,9 @@
                                             </div>
                                         </div>
                                         <div class="class-actions">
+                                            <a href="{{ route('online.classes.show', ['id' => $class->id]) }}" class="action-btn" style="background-color: var(--primary-color); color: white !important;">
+                                                <i class="fas fa-eye me-2"></i>Xem chi tiết
+                                            </a>
                                             <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
                                                 <i class="fas fa-calendar-alt me-2"></i>Lịch học
                                             </a>
@@ -559,6 +564,9 @@
                                             </div>
                                         </div>
                                         <div class="class-actions">
+                                            <a href="{{ route('online.classes.show', ['id' => $class->id]) }}" class="action-btn" style="background-color: var(--primary-color); color: white !important;">
+                                                <i class="fas fa-eye me-2"></i>Xem chi tiết
+                                            </a>
                                             <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
                                                 <i class="fas fa-calendar-alt me-2"></i>Lịch học
                                             </a>
