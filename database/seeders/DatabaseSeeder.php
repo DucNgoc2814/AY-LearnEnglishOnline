@@ -51,10 +51,8 @@ class DatabaseSeeder extends Seeder
             BannerSeeder::class,         // Website banners
 
             // 10. Online Learning - Phòng học trực tuyến và tương tác
-            OnlineRoomSeeder::class,     // Virtual classrooms
             LearningLogSeeder::class,    // Student learning logs
             LessonAndTestSeeder::class,  // Online lessons and tests
-            SessionInteractionSeeder::class, // Session interactions (references sessions)
         ]);
     }
 }

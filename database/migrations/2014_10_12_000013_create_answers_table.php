@@ -11,7 +11,8 @@ class CreateAnswersTable extends Migration
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('question_id')->constrained('questions');
-            $table->string('answer');
+            $table->string('answer')->nullable();
+            $table->string('url')->nullable();
             $table->boolean('is_correct')->default(false);
             $table->enum('type', ['single', 'multiple'])->default('single');
             $table->integer('order_number');

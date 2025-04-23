@@ -102,6 +102,14 @@ class Student extends Authenticatable implements JWTSubject
     }
 
     /**
+     * Get the grades for the student.
+     */
+    public function grades(): HasMany
+    {
+        return $this->hasMany(Grade::class);
+    }
+
+    /**
      * Lấy danh sách kết quả hoạt động của học viên
      */
     public function activityResults(): HasMany

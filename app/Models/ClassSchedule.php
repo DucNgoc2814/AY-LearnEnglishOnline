@@ -15,6 +15,7 @@ class ClassSchedule extends Model
 
     protected $fillable = [
         'class_id',
+        'lesson_id',
         'day_of_week',
         'start_time',
         'end_time',
@@ -54,6 +55,10 @@ class ClassSchedule extends Model
         return $this->hasMany(ClassSession::class, 'schedule_id');
     }
 
+    public function lesson(): BelongsTo
+    {
+        return $this->belongsTo(Lesson::class, 'lesson_id');
+    }   
     /**
      * Lấy ngày trong tuần dạng text
      */

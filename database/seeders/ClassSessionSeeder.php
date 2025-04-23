@@ -95,13 +95,11 @@ class ClassSessionSeeder extends Seeder
                         if ($sessionDate->isFuture()) {
                             $scheduleSession[] = [
                                 'schedule_id' => $schedule->id,
-                                'resource_id' => null,
                                 'session_date' => $sessionDate->format('Y-m-d'),
                                 'start_time' => $schedule->start_time,
                                 'end_time' => $schedule->end_time,
                                 'topic' => $topics[array_rand($topics)],
                                 'content' => 'Chi tiết nội dung buổi học sẽ được cập nhật',
-                                'session_materials' => null,
                                 'recording_url' => null,
                                 'notes' => 'Buổi học trực tuyến qua Zoom - Meeting ID sẽ được cập nhật',
                                 'status' => 'scheduled',

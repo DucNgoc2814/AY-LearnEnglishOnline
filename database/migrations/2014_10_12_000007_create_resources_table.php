@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('resources', function (Blueprint $table) {
             $table->id();
-            $table->nullableMorphs('resourceable');
+            $table->foreignId('lesson_id')->constrained('lessons')->onDelete('cascade');
             $table->enum('type', ['text', 'image', 'video', 'audio', 'file', 'link']);
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->string('file_path')->nullable();
             $table->integer('order')->default(0);

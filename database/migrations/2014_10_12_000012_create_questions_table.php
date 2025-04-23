@@ -12,7 +12,8 @@ class CreateQuestionsTable extends Migration
             $table->id();
             $table->foreignId('test_id')->constrained('tests');
             $table->enum('type', ['text', 'image', 'video', 'audio']);
-            $table->string('question');
+            $table->integer('role')->default(0)->nullable()->comment('loại câu hỏi: 1 - trắc nghiệm, 2 - tự luận');
+            $table->text('question');
             $table->string('media_url')->nullable();
             $table->text('correct_answer_explanation')->nullable();
             $table->integer('order_number');

@@ -19,7 +19,6 @@ return new class extends Migration
             $table->time('end_time');
             $table->text('topic')->nullable();
             $table->text('content')->nullable();
-            $table->text('session_materials')->nullable();
             $table->string('recording_url')->nullable();
             $table->text('notes')->nullable();
             $table->enum('status', ['scheduled', 'completed', 'cancelled', 'rescheduled'])->default('scheduled');
