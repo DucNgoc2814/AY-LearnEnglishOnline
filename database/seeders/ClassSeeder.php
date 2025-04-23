@@ -56,7 +56,7 @@ class ClassSeeder extends Seeder
                 Classes::create([
                     'name' => "{$className} - " . substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 2),
                     'code' => "C{$i}-" . uniqid(),
-                    'course_id' => rand(1, 10),
+                    'category_id' => rand(1, 5),
                     'teacher_id' => $teacherId,
                     'start_date' => $startDate,
                     'end_date' => $endDate,

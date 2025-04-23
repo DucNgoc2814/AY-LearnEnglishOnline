@@ -51,7 +51,7 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
         // Classes
         Route::prefix('classes')->name('online.classes.')->group(function () {
             Route::get('/', [ClassController::class, 'index'])->name('index');
-            Route::get('/{class}', [ClassController::class, 'show'])->name('show');
+            Route::get('/{id}', [ClassController::class, 'show'])->name('show');
             Route::get('/{class_id}/tests', [TestController::class, 'index'])->name('tests');
         });
 

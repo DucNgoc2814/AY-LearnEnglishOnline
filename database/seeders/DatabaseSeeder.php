@@ -26,10 +26,10 @@ class DatabaseSeeder extends Seeder
             ClassScheduleSeeder::class,   // Class schedules (references classes)
             ClassSessionSeeder::class,    // Class sessions (generated from schedules)
             CourseRegistrationSeeder::class, // Course registrations (students to classes)
+            LessonAndTestSeeder::class,  // Online lessons and tests
 
             // 5. Learning Resources - Tests và câu hỏi
             ResourceSeeder::class,        // Learning materials
-            TestSeeder::class,           // Tests for courses
             QuestionSeeder::class,       // Questions (references tests)
             AnswerSeeder::class,         // Answers (references questions)
 
@@ -52,7 +52,6 @@ class DatabaseSeeder extends Seeder
 
             // 10. Online Learning - Phòng học trực tuyến và tương tác
             LearningLogSeeder::class,    // Student learning logs
-            LessonAndTestSeeder::class,  // Online lessons and tests
         ]);
     }
 }
