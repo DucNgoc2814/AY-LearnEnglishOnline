@@ -19,22 +19,18 @@
                 <form id="editTestForm" method="POST" class="mt-4">
                     @csrf
                     @method('PUT')
-                    <input type="hidden" name="testable_type" id="edit_testable_type" value="">
-                    <input type="hidden" name="testable_id" id="edit_testable_id" value="">
+                    <input type="hidden" name="lesson_id" id="edit_lesson_id" value="">
                     <div class="grid grid-cols-2 gap-6 mt-4">
                         <!-- Thông tin cơ bản -->
                         <div>
                             <h4 class="font-medium text-gray-900 mb-4">Thông tin cơ bản</h4>
                             <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_testName">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_name">
                                     Tên bài test <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline {{ session('errors') && session('errors')->has('name') ? 'border-red-500' : '' }}"
-                                    id="edit_testName" name="name" placeholder="Nhập tên bài test" required>
-                                @if (session('errors') && session('errors')->has('name'))
-                                    <p class="text-red-500 text-xs italic mt-1">{{ session('errors')->first('name') }}</p>
-                                @endif
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="edit_name" name="name" placeholder="Nhập tên bài test" required>
                             </div>
 
                             <div class="mb-4">
@@ -42,11 +38,8 @@
                                     Mô tả
                                 </label>
                                 <textarea
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline {{ session('errors') && session('errors')->has('description') ? 'border-red-500' : '' }}"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="edit_description" name="description" rows="3" placeholder="Nhập mô tả bài test"></textarea>
-                                @if (session('errors') && session('errors')->has('description'))
-                                    <p class="text-red-500 text-xs italic mt-1">{{ session('errors')->first('description') }}</p>
-                                @endif
                             </div>
 
                             <div class="mb-4">
@@ -54,50 +47,29 @@
                                     Loại bài test <span class="text-red-500">*</span>
                                 </label>
                                 <select
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline {{ session('errors') && session('errors')->has('type') ? 'border-red-500' : '' }}"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="edit_type" name="type" required onchange="handleTestTypeChangeEdit()">
                                     <option value="">-- Chọn loại bài test --</option>
                                     <option value="lesson_test">Bài kiểm tra bài học</option>
-                                    <option value="final_exam">Bài thi cuối khóa</option>
                                     <option value="entrance_test">Bài test đầu vào</option>
-                                    <option value="session_test">Bài kiểm tra buổi học</option>
+                                    <option value="after_class">Bài kiểm tra sau buổi học</option>
+                                    <option value="before_class">Bài kiểm tra trước buổi học</option>
                                 </select>
-                                <p class="text-xs text-gray-500 mt-1">Chọn loại bài test để xác định liên kết với bài học hoặc khóa học</p>
-                                @if (session('errors') && session('errors')->has('type'))
-                                    <p class="text-red-500 text-xs italic mt-1">{{ session('errors')->first('type') }}</p>
-                                @endif
                             </div>
 
                             <!-- Dropdown chọn Lesson cho lesson_test -->
                             <div class="mb-4" id="edit_lessonSelectContainer" style="display: none;">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_lesson_id">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_lesson_select">
                                     Chọn bài học <span class="text-red-500">*</span>
                                 </label>
                                 <select
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="edit_lesson_id" onchange="updateTestableIdEdit('lesson')">
+                                    id="edit_lesson_select" onchange="updateLessonIdEdit()">
                                     <option value="">-- Chọn bài học --</option>
                                     @foreach(App\Models\Lesson::all() as $lesson)
                                         <option value="{{ $lesson->id }}">{{ $lesson->name }}</option>
                                     @endforeach
                                 </select>
-                                <p class="text-xs text-gray-500 mt-1">Bài test này sẽ được liên kết với bài học đã chọn</p>
-                            </div>
-
-                            <!-- Dropdown chọn Course cho final_exam -->
-                            <div class="mb-4" id="edit_courseSelectContainer" style="display: none;">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_course_id">
-                                    Chọn khóa học <span class="text-red-500">*</span>
-                                </label>
-                                <select
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="edit_course_id" onchange="updateTestableIdEdit('course')">
-                                    <option value="">-- Chọn khóa học --</option>
-                                    @foreach(App\Models\Course::all() as $course)
-                                        <option value="{{ $course->id }}">{{ $course->title }}</option>
-                                    @endforeach
-                                </select>
-                                <p class="text-xs text-gray-500 mt-1">Bài test này sẽ được liên kết với khóa học đã chọn</p>
                             </div>
                         </div>
 
@@ -109,11 +81,8 @@
                                     Thời gian làm bài (phút)
                                 </label>
                                 <input type="number"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline {{ session('errors') && session('errors')->has('duration') ? 'border-red-500' : '' }}"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="edit_duration" name="duration" placeholder="Nhập thời gian làm bài">
-                                @if (session('errors') && session('errors')->has('duration'))
-                                    <p class="text-red-500 text-xs italic mt-1">{{ session('errors')->first('duration') }}</p>
-                                @endif
                             </div>
 
                             <div class="grid grid-cols-2 gap-4">
@@ -122,11 +91,8 @@
                                         Điểm tối thiểu <span class="text-red-500">*</span>
                                     </label>
                                     <input type="number"
-                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline {{ session('errors') && session('errors')->has('min_score') ? 'border-red-500' : '' }}"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="edit_min_score" name="min_score" placeholder="Nhập điểm tối thiểu" required>
-                                    @if (session('errors') && session('errors')->has('min_score'))
-                                        <p class="text-red-500 text-xs italic mt-1">{{ session('errors')->first('min_score') }}</p>
-                                    @endif
                                 </div>
 
                                 <div class="mb-4">
@@ -134,25 +100,18 @@
                                         Điểm tối đa <span class="text-red-500">*</span>
                                     </label>
                                     <input type="number"
-                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline {{ session('errors') && session('errors')->has('max_score') ? 'border-red-500' : '' }}"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="edit_max_score" name="max_score" placeholder="Nhập điểm tối đa" required>
-                                    @if (session('errors') && session('errors')->has('max_score'))
-                                        <p class="text-red-500 text-xs italic mt-1">{{ session('errors')->first('max_score') }}</p>
-                                    @endif
                                 </div>
                             </div>
 
                             <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_max_attempt">
-                                    Số lần làm lại tối đa
+                                    Số lần được phép làm lại
                                 </label>
                                 <input type="number"
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline {{ session('errors') && session('errors')->has('max_attempt') ? 'border-red-500' : '' }}"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     id="edit_max_attempt" name="max_attempt" placeholder="Nhập số lần làm lại tối đa">
-                                @if (session('errors') && session('errors')->has('max_attempt'))
-                                    <p class="text-red-500 text-xs italic mt-1">{{ session('errors')->first('max_attempt') }}</p>
-                                @endif
-                                <p class="text-xs text-gray-500 mt-1">Để trống nếu không giới hạn số lần làm lại</p>
                             </div>
 
                             <div class="mb-4">
@@ -169,9 +128,15 @@
                                         <span class="ml-2">Không</span>
                                     </label>
                                 </div>
-                                @if (session('errors') && session('errors')->has('is_required'))
-                                    <p class="text-red-500 text-xs italic mt-1">{{ session('errors')->first('is_required') }}</p>
-                                @endif
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="edit_role">
+                                    Thứ tự sắp xếp
+                                </label>
+                                <input type="number"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="edit_role" name="role" placeholder="Nhập thứ tự sắp xếp">
                             </div>
                         </div>
                     </div>
@@ -195,47 +160,30 @@
 <script>
     function handleTestTypeChangeEdit() {
         const typeSelect = document.getElementById('edit_type');
-        const testableTypeInput = document.getElementById('edit_testable_type');
-        const testableIdInput = document.getElementById('edit_testable_id');
         const lessonSelectContainer = document.getElementById('edit_lessonSelectContainer');
-        const courseSelectContainer = document.getElementById('edit_courseSelectContainer');
-
-        const selectedType = typeSelect.value;
+        const lessonIdInput = document.getElementById('edit_lesson_id');
 
         // Reset values
-        testableTypeInput.value = '';
-        testableIdInput.value = '';
+        lessonIdInput.value = '';
 
         // Hide all containers
         lessonSelectContainer.style.display = 'none';
-        courseSelectContainer.style.display = 'none';
 
-        // Set values based on test type
-        if (selectedType === 'lesson_test') {
-            testableTypeInput.value = 'App\\Models\\Lesson';
+        // Show relevant containers based on type
+        if (typeSelect.value === 'lesson_test') {
             lessonSelectContainer.style.display = 'block';
-        } else if (selectedType === 'final_exam') {
-            testableTypeInput.value = 'App\\Models\\Course';
-            courseSelectContainer.style.display = 'block';
         }
-        // entrance_test và session_test sẽ để null
     }
 
-    function updateTestableIdEdit(type) {
-        const testableIdInput = document.getElementById('edit_testable_id');
-
-        if (type === 'lesson') {
-            const lessonSelect = document.getElementById('edit_lesson_id');
-            testableIdInput.value = lessonSelect.value;
-        } else if (type === 'course') {
-            const courseSelect = document.getElementById('edit_course_id');
-            testableIdInput.value = courseSelect.value;
-        }
+    function updateLessonIdEdit() {
+        const lessonSelect = document.getElementById('edit_lesson_select');
+        const lessonIdInput = document.getElementById('edit_lesson_id');
+        lessonIdInput.value = lessonSelect.value;
     }
 
     document.addEventListener('DOMContentLoaded', function() {
         modalHandler.addEventListener('editTestModal', 'show', function(data) {
-            document.getElementById('edit_testName').value = data.name || '';
+            document.getElementById('edit_name').value = data.name || '';
 
             // Xử lý mô tả với TinyMCE
             if (tinymce.get('edit_description')) {
@@ -257,18 +205,17 @@
                 }, 100);
             }
 
+            // Set duration (convert from seconds to minutes)
             document.getElementById('edit_duration').value = data.duration ? Math.floor(data.duration / 60) : '';
+
             document.getElementById('edit_min_score').value = data.min_score || '';
             document.getElementById('edit_max_score').value = data.max_score || '';
             document.getElementById('edit_max_attempt').value = data.max_attempt || '';
+            document.getElementById('edit_role').value = data.role || '';
 
-            // Set testable type and id
-            if (data.testable_type) {
-                document.getElementById('edit_testable_type').value = data.testable_type;
-            }
-
-            if (data.testable_id) {
-                document.getElementById('edit_testable_id').value = data.testable_id;
+            // Set lesson_id if available
+            if (data.lesson_id) {
+                document.getElementById('edit_lesson_id').value = data.lesson_id;
             }
 
             // Set type select option
@@ -285,11 +232,9 @@
             // Show appropriate containers based on test type
             handleTestTypeChangeEdit();
 
-            // Set selected lesson or course if available
-            if (data.type === 'lesson_test' && data.testable_id) {
-                document.getElementById('edit_lesson_id').value = data.testable_id;
-            } else if (data.type === 'final_exam' && data.testable_id) {
-                document.getElementById('edit_course_id').value = data.testable_id;
+            // Set selected lesson if available
+            if (data.type === 'lesson_test' && data.lesson_id) {
+                document.getElementById('edit_lesson_select').value = data.lesson_id;
             }
 
             // Set is_required radio buttons
@@ -313,21 +258,11 @@
             }
         });
 
-        // Kiểm tra form trước khi submit
+        // Convert duration to seconds before submit
         document.getElementById('editTestForm').addEventListener('submit', function(e) {
-            const typeSelect = document.getElementById('edit_type');
-            const testableIdInput = document.getElementById('edit_testable_id');
-
-            if (typeSelect.value === 'lesson_test' && !testableIdInput.value) {
-                e.preventDefault();
-                alert('Vui lòng chọn bài học cho bài kiểm tra');
-                return false;
-            }
-
-            if (typeSelect.value === 'final_exam' && !testableIdInput.value) {
-                e.preventDefault();
-                alert('Vui lòng chọn khóa học cho bài thi cuối khóa');
-                return false;
+            const durationInput = document.getElementById('edit_duration');
+            if (durationInput.value) {
+                durationInput.value = parseInt(durationInput.value) * 60;
             }
         });
     });
