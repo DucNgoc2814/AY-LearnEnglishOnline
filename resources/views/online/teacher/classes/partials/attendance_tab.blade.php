@@ -1,13 +1,4 @@
 <div class="attendance-tab-content">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4>Bảng điểm danh học viên</h4>
-        <div>
-            <a href="{{ route('online.teacher.classes.attendance', $class->id) }}" class="btn btn-primary">
-                <i class="fas fa-clipboard-check"></i> Điểm danh hôm nay
-            </a>
-        </div>
-    </div>
-
     <div class="table-responsive">
         <table class="table table-bordered table-hover" id="attendanceMatrixTable" width="100%" cellspacing="0">
             <thead>

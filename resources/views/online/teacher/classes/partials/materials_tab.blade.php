@@ -17,12 +17,12 @@
         </div>
         <div class="col-xl-4 col-md-6">
             <div class="card bg-success text-white mb-4">
-                <div class="card-body">Buổi học có tài liệu: {{ count($materials) > 0 ? count(array_unique(array_column($materials, 'session_id'))) : 0 }}</div>
+                <div class="card-body">Tài liệu hoạt động: {{ count($materials) > 0 ? collect($materials)->where('is_active', true)->count() : 0 }}</div>
             </div>
         </div>
         <div class="col-xl-4 col-md-6">
             <div class="card bg-info text-white mb-4">
-                <div class="card-body">Buổi học gần nhất: {{ count($materials) > 0 ? $materials[0]['session_date'] : 'N/A' }}</div>
+                <div class="card-body">Tài liệu mới nhất: {{ count($materials) > 0 ? $materials[0]['uploaded_at'] : 'N/A' }}</div>
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4 mb-2">
+                <div class="col-md-6 mb-2">
                     <label for="materialType" class="form-label">Loại tài liệu</label>
                     <select class="form-select" id="materialType">
                         <option value="">Tất cả</option>
@@ -45,16 +45,7 @@
                         <option value="audio">Audio</option>
                     </select>
                 </div>
-                <div class="col-md-4 mb-2">
-                    <label for="sessionFilter" class="form-label">Buổi học</label>
-                    <select class="form-select" id="sessionFilter">
-                        <option value="">Tất cả buổi học</option>
-                        @foreach($class->sessions->sortByDesc('session_date') as $session)
-                            <option value="{{ $session->id }}">{{ $session->session_date->format('d/m/Y') }} - {{ $session->topic ?? 'Chưa có chủ đề' }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-4 mb-2">
+                <div class="col-md-6 mb-2">
                     <label for="searchMaterial" class="form-label">Tìm kiếm</label>
                     <input type="text" class="form-control" id="searchMaterial" placeholder="Tên tài liệu...">
                 </div>
@@ -68,8 +59,9 @@
             <thead>
                 <tr>
                     <th>STT</th>
-                    <th>Buổi học</th>
                     <th>Tên tài liệu</th>
+                    <th>Loại file</th>
+                    <th>Kích thước</th>
                     <th>Mô tả</th>
                     <th>Ngày tải lên</th>
                     <th>Thao tác</th>
@@ -80,8 +72,12 @@
                     @foreach($materials as $index => $material)
                     <tr>
                         <td>{{ $index + 1 }}</td>
-                        <td>{{ $material['session_date'] }}</td>
-                        <td>{{ $material['name'] }}</td>
+                        <td>
+                            <i class="fas {{ $material['icon_class'] ?? 'fa-file' }}"></i>
+                            {{ $material['name'] }}
+                        </td>
+                        <td>{{ $material['file_type'] ?? 'Không xác định' }}</td>
+                        <td>{{ $material['file_size'] ?? 'Không xác định' }}</td>
                         <td>{{ $material['description'] }}</td>
                         <td>{{ $material['uploaded_at'] }}</td>
                         <td>
@@ -99,7 +95,7 @@
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="6" class="text-center">Chưa có tài liệu nào</td>
+                        <td colspan="7" class="text-center">Chưa có tài liệu nào</td>
                     </tr>
                 @endif
             </tbody>
@@ -111,7 +107,7 @@
 <div class="modal fade" id="uploadClassMaterialModal" tabindex="-1" aria-labelledby="uploadClassMaterialModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="{{ route('online.teacher.classes.materials.upload', $class->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="uploadClassMaterialModalLabel">Tải lên tài liệu lớp học</h5>
@@ -121,15 +117,6 @@
                     <div class="mb-3">
                         <label for="class_material_name" class="form-label">Tên tài liệu</label>
                         <input type="text" class="form-control" id="class_material_name" name="material_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="material_session" class="form-label">Buổi học</label>
-                        <select class="form-select" id="material_session" name="session_id">
-                            <option value="">-- Không liên kết với buổi học cụ thể --</option>
-                            @foreach($class->sessions->sortByDesc('session_date') as $session)
-                                <option value="{{ $session->id }}">{{ $session->session_date->format('d/m/Y') }} - {{ $session->topic ?? 'Chưa có chủ đề' }}</option>
-                            @endforeach
-                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="class_material_file" class="form-label">File tài liệu</label>
@@ -191,11 +178,6 @@
         // Lọc theo loại tài liệu
         $('#materialType').on('change', function() {
             materialsTable.column(2).search($(this).val()).draw();
-        });
-        
-        // Lọc theo buổi học
-        $('#sessionFilter').on('change', function() {
-            materialsTable.column(1).search($(this).val()).draw();
         });
         
         // Tìm kiếm tài liệu

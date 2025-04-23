@@ -212,8 +212,8 @@
                                         @foreach($class->students as $index => $student)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
-                                            <td>{{ $student->code }}</td>
-                                            <td>{{ $student->name }}</td>
+                                            <td>{{ $student->student_code }}</td>
+                                            <td>{{ $student->full_name }}</td>
                                             <td>{{ $student->phone }}</td>
                                             <td>{{ $student->email }}</td>
                                             <td>{{ $student->pivot->enrollment_date ? date('d/m/Y', strtotime($student->pivot->enrollment_date)) : 'N/A' }}</td>

@@ -16,6 +16,7 @@ class Answer extends Model
         'answer',
         'is_correct',
         'type',
+        'url',
         'order_number'
     ];
 

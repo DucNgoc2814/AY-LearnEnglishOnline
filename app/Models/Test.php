@@ -26,6 +26,7 @@ class Test extends Model
         'total_attempt',
         'max_attempt',
         'type',
+        'role',
         'settings'
     ];
 

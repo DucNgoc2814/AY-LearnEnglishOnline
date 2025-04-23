@@ -18,7 +18,7 @@ class Classes extends Model
     protected $fillable = [
         'name',
         'code',
-        'course_id',
+        'category_id',
         'teacher_id',
         'start_date',
         'end_date',
@@ -70,9 +70,9 @@ class Classes extends Model
         self::STATUS_CANCELLED
     ];
 
-    public function course(): BelongsTo
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function teacher(): BelongsTo
@@ -110,12 +110,6 @@ class Classes extends Model
             'id',          // Local key on classes table
             'id'           // Local key on class_schedules table
         );
-    }
-
-    public function onlineRooms(): HasMany
-    {
-        return $this->hasMany(OnlineRoom::class, 'roomable_id')
-            ->where('roomable_type', Classes::class);
     }
 
     public function hasMinimumStudents(): bool

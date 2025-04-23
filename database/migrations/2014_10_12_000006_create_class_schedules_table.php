@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('class_schedules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('class_id')->constrained('classes')->onDelete('cascade');
+            $table->foreignId('lesson_id')->constrained('lessons')->nullable()->onDelete('cascade');
             $table->integer('day_of_week');  // 1-7 tương ứng với Thứ 2 - Chủ nhật
             $table->time('start_time');
             $table->time('end_time');

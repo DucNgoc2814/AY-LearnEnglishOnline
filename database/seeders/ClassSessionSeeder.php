@@ -100,7 +100,6 @@ class ClassSessionSeeder extends Seeder
                                 'end_time' => $schedule->end_time,
                                 'topic' => $topics[array_rand($topics)],
                                 'content' => 'Chi tiết nội dung buổi học sẽ được cập nhật',
-                                'session_materials' => null,
                                 'recording_url' => null,
                                 'notes' => 'Buổi học trực tuyến qua Zoom - Meeting ID sẽ được cập nhật',
                                 'status' => 'scheduled',

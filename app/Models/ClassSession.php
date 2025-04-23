@@ -27,7 +27,6 @@ class ClassSession extends Model
         'end_time',
         'topic',
         'content',
-        'session_materials',
         'recording_url',
         'attendance_required',
         'notes',

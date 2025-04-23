@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Resource;
+use App\Models\ClassSession;
 
 class ClassController extends Controller
 {
@@ -253,25 +254,39 @@ class ClassController extends Controller
             // Get session statistics
             $sessionStats = $this->getSessionStats($class);
 
-            // Get class materials
-            $materials = $class->resources()
-                ->where('type', 'material')
+            // Lấy tài liệu từ bảng resources (có quan hệ polymorphic với class)
+            $resources = Resource::where('resourceable_type', 'App\Models\Classes')
+                ->where('resourceable_id', $class->id)
+                ->where('type', 'text')
                 ->orderBy('created_at', 'desc')
-                ->get()
-                ->map(function($material) {
-                    return [
-                        'id' => $material->id,
-                        'name' => $material->title,
-                        'description' => $material->description,
-                        'url' => Storage::url($material->file_path),
-                        'session_id' => $material->session_id ?? null,
-                        'session_date' => $material->session ? $material->session->session_date->format('d/m/Y') : 'N/A',
-                        'uploaded_at' => $material->created_at->format('d/m/Y H:i'),
-                        'file_size' => $material->getFormattedFileSize(),
-                        'file_type' => $material->file_type,
-                        'icon_class' => $material->getIconClass()
-                    ];
-                });
+                ->get();
+                
+            // Debug để xem có lấy được resource không
+            Log::debug('Resources found', [
+                'count' => $resources->count(),
+                'resources' => $resources->pluck('id', 'title')->toArray()
+            ]);
+            
+            // Chuẩn bị dữ liệu tài liệu cho view
+            $materials = $resources->map(function($resource) {
+                return [
+                    'id' => $resource->id,
+                    'name' => $resource->title,
+                    'description' => $resource->description,
+                    'url' => Storage::url($resource->file_path),
+                    'session_id' => $resource->session_id ?? null,
+                    'session_date' => $resource->session_id ? ClassSession::find($resource->session_id)->session_date->format('d/m/Y') : 'N/A',
+                    'uploaded_at' => $resource->created_at->format('d/m/Y H:i'),
+                    'file_size' => $resource->getFormattedFileSize(), 
+                    'file_type' => $resource->file_type,
+                    'icon_class' => $resource->getIconClass()
+                ];
+            });
+            
+            Log::debug('Materials prepared for view', [
+                'count' => $materials->count(),
+                'first_item' => $materials->first()
+            ]);
 
             return view('online.teacher.classes.show', [
                 'class' => $class,
@@ -387,8 +402,8 @@ class ClassController extends Controller
             $attendanceRate = $totalSessions > 0 ? round(($presentSessions / $totalSessions) * 100) : 0;
             
             $attendanceMatrix[$student->id] = [
-                'student_name' => $student->name,
-                'student_code' => $student->code,
+                'student_name' => $student->full_name,
+                'student_code' => $student->student_code,
                 'present_sessions' => $presentSessions,
                 'total_sessions' => $totalSessions,
                 'attendance_rate' => $attendanceRate,
@@ -455,7 +470,6 @@ class ClassController extends Controller
                 'material_name' => 'required|string|max:255',
                 'material_file' => 'required|file|max:10240', // Max 10MB
                 'material_description' => 'nullable|string',
-                'session_id' => 'nullable|exists:class_sessions,id'
             ]);
 
             $class = Classes::findOrFail($id);
@@ -470,30 +484,48 @@ class ClassController extends Controller
             $fileName = time() . '_' . $file->getClientOriginalName();
             $filePath = $file->storeAs('class_materials/' . $id, $fileName, 'public');
 
-            // Lưu thông tin tài liệu vào database
-            $material = new Resource([
-                'title' => $request->material_name,
-                'description' => $request->material_description,
-                'file_path' => $filePath,
-                'type' => 'material',
-                'is_active' => true,
-                'is_public' => false,
-                'file_type' => $file->getClientOriginalExtension(),
-                'file_size' => $file->getSize(),
-                'created_by' => session('user_id'),
-                'updated_by' => session('user_id')
+            // Lấy thông tin file
+            $fileSize = $file->getSize();
+            $fileType = $file->getClientMimeType();
+            $fileExtension = $file->getClientOriginalExtension();
+
+            // Lưu resource vào bảng resources
+            $material = new Resource();
+            $material->resourceable_type = 'App\\Models\\Classes'; 
+            $material->resourceable_id = $class->id;
+            $material->title = $request->material_name;
+            $material->description = $request->material_description;
+            $material->file_path = $filePath;
+            $material->type = 'text';
+            $material->is_active = true;
+            $material->file_type = $fileExtension;
+            $material->file_size = $fileSize;
+            $material->created_by = session('user_id');
+            $material->order = 0;
+            
+            // Hiện thị debug để kiểm tra
+            Log::debug('Resource data before save', [
+                'resourceable_type' => $material->resourceable_type,
+                'resourceable_id' => $material->resourceable_id,
+                'title' => $material->title,
+                'file_path' => $material->file_path,
+                'file_size' => $material->file_size,
+                'file_type' => $material->file_type
             ]);
-
-            $class->resources()->save($material);
-
-            if ($request->session_id) {
-                $material->session_id = $request->session_id;
-                $material->save();
-            }
+            
+            // Lưu resource
+            $material->save();
+            
+            // Log thông tin resource sau khi lưu
+            Log::debug('Resource after save', [
+                'id' => $material->id,
+                'resourceable_type' => $material->resourceable_type,
+                'resourceable_id' => $material->resourceable_id,
+            ]);
 
             return back()->with('success', 'Tài liệu đã được tải lên thành công.');
         } catch (\Exception $e) {
-            Log::error('Error uploading material: ' . $e->getMessage());
+            Log::error('Error uploading material: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             return back()->with('error', 'Có lỗi xảy ra khi tải lên tài liệu. Vui lòng thử lại.');
         }
     }

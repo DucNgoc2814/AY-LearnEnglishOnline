@@ -51,7 +51,6 @@
                     <th>Tỷ lệ điểm danh</th>
                     <th>Tài liệu</th>
                     <th>Trạng thái</th>
-                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -99,19 +98,6 @@
                         @else
                             <span class="badge bg-secondary">{{ $session->status }}</span>
                         @endif
-                    </td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <a href="{{ route('online.teacher.sessions.attendance', $session->id) }}" class="btn btn-sm btn-primary">
-                                <i class="fas fa-clipboard-check"></i> Điểm danh
-                            </a>
-                            <a href="{{ route('online.teacher.classes.show', ['id' => $class->id, 'session_id' => $session->id]) }}" class="btn btn-sm btn-info">
-                                <i class="fas fa-eye"></i> Chi tiết
-                            </a>
-                            <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editSessionModal" data-session-id="{{ $session->id }}">
-                                <i class="fas fa-edit"></i> Sửa
-                            </button>
-                        </div>
                     </td>
                 </tr>
                 @endforeach
