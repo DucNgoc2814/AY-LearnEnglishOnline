@@ -81,7 +81,7 @@
                                     @php
                                         // Thiết lập timezone là giờ Việt Nam
                                         $now = \Carbon\Carbon::now('Asia/Ho_Chi_Minh');
-                                        
+
                                         $sessionDate = $session->session_date
                                             ? \Carbon\Carbon::parse($session->session_date)->setTimezone('Asia/Ho_Chi_Minh')
                                             : null;
@@ -91,12 +91,12 @@
                                         $endTime = $session->end_time
                                             ? \Carbon\Carbon::parse($session->end_time)->setTimezone('Asia/Ho_Chi_Minh')
                                             : null;
-                                        
+
                                         // Create a datetime with both date and time for accurate comparison
                                         $sessionDateTime = null;
                                         $sessionStartDateTime = null;
                                         $sessionEndDateTime = null;
-                                        
+
                                         if ($sessionDate && $startTime) {
                                             // Create a new Carbon instance with the session date
                                             $sessionDateTime = clone $sessionDate;
@@ -104,14 +104,14 @@
                                             $sessionDateTime->setHour($startTime->hour);
                                             $sessionDateTime->setMinute($startTime->minute);
                                             $sessionDateTime->setSecond($startTime->second);
-                                            
+
                                             // Set session start datetime
                                             $sessionStartDateTime = clone $sessionDate;
                                             $sessionStartDateTime->setHour($startTime->hour);
                                             $sessionStartDateTime->setMinute($startTime->minute);
                                             $sessionStartDateTime->setSecond(0);
                                         }
-                                        
+
                                         if ($sessionDate && $endTime) {
                                             // Set session end datetime
                                             $sessionEndDateTime = clone $sessionDate;
@@ -193,17 +193,17 @@
                                             @endif
                                         </td>
                                         <td>
+                                            <!-- Buổi đang diễn ra -->
+                                            <a href="{{ $session->schedule->meeting_url }}"
+                                                class="btn btn-sm btn-primary"
+                                                style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" target="_blank"
+                                                title="Vào học">
+                                                <i class="fas fa-sign-in-alt"></i> Vào học
+                                            </a>
                                             @if ($sessionStartDateTime && $now->gt($sessionStartDateTime) && $sessionEndDateTime && $now->lt($sessionEndDateTime))
-                                                <!-- Buổi đang diễn ra -->
-                                                <a href="{{ $session->schedule->meeting_url }}"
-                                                    class="btn btn-sm btn-primary"
-                                                    style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" target="_blank"
-                                                    title="Vào học">
-                                                    <i class="fas fa-sign-in-alt"></i> Vào học
-                                                </a>
                                             @elseif ($status == 'Đã học' || $status == 'Đã kết thúc')
                                                 <!-- Buổi đã kết thúc -->
-                                                <a href="{{ route('online.attendance.detail', ['id' => $session->id]) }}" 
+                                                <a href="{{ route('online.attendance.detail', ['id' => $session->id]) }}"
                                                     class="btn btn-sm btn-outline-secondary"
                                                     title="Xem điểm danh">
                                                     <i class="fas fa-clipboard-check"></i> Điểm danh
