@@ -16,13 +16,13 @@ class SessionController extends Controller
     public function index()
     {
         $upcomingSessions = ClassSession::with(['class', 'class.teacher', 'class.course'])
-            ->where('start_time', '>', now())
-            ->orderBy('start_time', 'asc')
+            ->where('class_sessions.start_time', '>', now())
+            ->orderBy('class_sessions.start_time', 'asc')
             ->paginate(10);
 
         $pastSessions = ClassSession::with(['class', 'class.teacher', 'class.course'])
-            ->where('start_time', '<', now())
-            ->orderBy('start_time', 'desc')
+            ->where('class_sessions.start_time', '<', now())
+            ->orderBy('class_sessions.start_time', 'desc')
             ->paginate(10);
 
         return view('online.sessions.index', compact('upcomingSessions', 'pastSessions'));

@@ -470,6 +470,7 @@ class ClassController extends Controller
                 'material_name' => 'required|string|max:255',
                 'material_file' => 'required|file|max:10240', // Max 10MB
                 'material_description' => 'nullable|string',
+                'session_id' => 'nullable|exists:class_sessions,id',
             ]);
 
             $class = Classes::findOrFail($id);
@@ -491,17 +492,22 @@ class ClassController extends Controller
 
             // Lưu resource vào bảng resources
             $material = new Resource();
-            $material->resourceable_type = 'App\\Models\\Classes'; 
+            $material->resourceable_type = Classes::class; 
             $material->resourceable_id = $class->id;
             $material->title = $request->material_name;
             $material->description = $request->material_description;
             $material->file_path = $filePath;
-            $material->type = 'text';
+            $material->type = 'material';
             $material->is_active = true;
+            $material->is_public = true;
             $material->file_type = $fileExtension;
             $material->file_size = $fileSize;
             $material->created_by = session('user_id');
-            $material->order = 0;
+            
+            // Lưu session_id nếu có
+            if ($request->filled('session_id')) {
+                $material->session_id = $request->session_id;
+            }
             
             // Hiện thị debug để kiểm tra
             Log::debug('Resource data before save', [
@@ -510,7 +516,8 @@ class ClassController extends Controller
                 'title' => $material->title,
                 'file_path' => $material->file_path,
                 'file_size' => $material->file_size,
-                'file_type' => $material->file_type
+                'file_type' => $material->file_type,
+                'session_id' => $material->session_id ?? null
             ]);
             
             // Lưu resource
@@ -521,6 +528,7 @@ class ClassController extends Controller
                 'id' => $material->id,
                 'resourceable_type' => $material->resourceable_type,
                 'resourceable_id' => $material->resourceable_id,
+                'session_id' => $material->session_id ?? null
             ]);
 
             return back()->with('success', 'Tài liệu đã được tải lên thành công.');
