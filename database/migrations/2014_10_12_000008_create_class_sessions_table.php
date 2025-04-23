@@ -14,13 +14,11 @@ return new class extends Migration
         Schema::create('class_sessions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('schedule_id')->nullable()->constrained('class_schedules')->nullOnDelete();
-            $table->foreignId('resource_id')->nullable()->constrained('resources')->nullOnDelete();
             $table->date('session_date');
             $table->time('start_time');
             $table->time('end_time');
             $table->text('topic')->nullable();
             $table->text('content')->nullable();
-            $table->text('session_materials')->nullable();
             $table->string('recording_url')->nullable();
             $table->text('notes')->nullable();
             $table->enum('status', ['scheduled', 'completed', 'cancelled', 'rescheduled'])->default('scheduled');

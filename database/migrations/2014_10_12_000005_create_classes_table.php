@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('classes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('category_id')->constrained('categories')->nullable()->onDelete('cascade');
             $table->string('name');
             $table->string('code')->unique();
             $table->foreignId('teacher_id')->constrained('employees')->onDelete('cascade');
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
             $table->date('enrollment_deadline')->nullable();
             $table->integer('max_students')->default(30);
             $table->integer('min_students')->default(5);

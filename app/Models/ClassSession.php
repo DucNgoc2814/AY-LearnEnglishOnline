@@ -21,15 +21,12 @@ class ClassSession extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'class_id',
         'schedule_id',
-        'resource_id',
         'session_date',
         'start_time',
         'end_time',
         'topic',
         'content',
-        'session_materials',
         'recording_url',
         'attendance_required',
         'notes',
@@ -49,13 +46,7 @@ class ClassSession extends Model
         'session_materials' => 'array'
     ];
 
-    /**
-     * Get the class to which this session belongs
-     */
-    public function class()
-    {
-        return $this->belongsTo(Classes::class, 'class_id');
-    }
+
 
     /**
      * Get the schedule that this session belongs to.
@@ -63,6 +54,14 @@ class ClassSession extends Model
     public function schedule(): BelongsTo
     {
         return $this->belongsTo(ClassSchedule::class, 'schedule_id');
+    }
+
+    /**
+     * Get the class that this session belongs to.
+     */
+    public function class(): BelongsTo
+    {
+        return $this->belongsTo(Classes::class, 'class_id');
     }
 
     /**
@@ -142,6 +141,11 @@ class ClassSession extends Model
      */
     public function getAttendanceRate(): float
     {
+        // Kiểm tra xem có liên kết với class không
+        if (!$this->class) {
+            return 0;
+        }
+        
         $totalStudents = $this->class->students()->count();
         if ($totalStudents === 0) {
             return 0;

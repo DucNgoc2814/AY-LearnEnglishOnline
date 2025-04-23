@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Classes extends Model
 {
@@ -17,6 +18,7 @@ class Classes extends Model
     protected $fillable = [
         'name',
         'code',
+        'category_id',
         'teacher_id',
         'start_date',
         'end_date',
@@ -68,9 +70,9 @@ class Classes extends Model
         self::STATUS_CANCELLED
     ];
 
-    public function course(): BelongsTo
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function teacher(): BelongsTo
@@ -95,24 +97,20 @@ class Classes extends Model
         return $this->hasMany(ClassSchedule::class, 'class_id');
     }
 
+    /**
+     * Lấy tất cả các phiên học thuộc lớp này thông qua bảng class_schedules.
+     */
     public function sessions()
     {
         return $this->hasManyThrough(
             ClassSession::class,
             ClassSchedule::class,
-            'class_id', // Foreign key on class_schedules table
+            'class_id',    // Foreign key on class_schedules table
             'schedule_id', // Foreign key on class_sessions table
-            'id', // Local key on classes table
-            'id' // Local key on class_schedules table
+            'id',          // Local key on classes table
+            'id'           // Local key on class_schedules table
         );
     }
-
-    public function onlineRooms(): HasMany
-    {
-        return $this->hasMany(OnlineRoom::class, 'roomable_id')
-            ->where('roomable_type', Classes::class);
-    }
-
 
     public function hasMinimumStudents(): bool
     {
@@ -256,5 +254,13 @@ class Classes extends Model
     public function assistant()
     {
         return $this->belongsTo(Employee::class, 'assistant_id');
+    }
+
+    /**
+     * Get the resources for the class.
+     */
+    public function resources(): MorphMany
+    {
+        return $this->morphMany(Resource::class, 'resourceable');
     }
 }

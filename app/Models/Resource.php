@@ -13,22 +13,22 @@ class Resource extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'lesson_id',
         'title',
         'description',
         'order',
         'is_active',
-        'resourceable_type',
-        'resourceable_id',
         'file_path',
+        'type',
     ];
 
 
     /**
      * Lấy model sở hữu resource này
      */
-    public function resourceable(): MorphTo
+    public function lesson(): BelongsTo
     {
-        return $this->morphTo();
+        return $this->belongsTo(Lesson::class);
     }
 
     /**
@@ -44,7 +44,7 @@ class Resource extends Model
      */
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(Employee::class, 'created_by');
     }
 
     /**
@@ -52,7 +52,7 @@ class Resource extends Model
      */
     public function updater(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updated_by');
+        return $this->belongsTo(Employee::class, 'updated_by');
     }
 
     /**
@@ -329,10 +329,5 @@ class Resource extends Model
         }
 
         return 'fa-file';
-    }
-
-    public function sessions()
-    {
-        return $this->hasMany(ClassSession::class);
     }
 } 

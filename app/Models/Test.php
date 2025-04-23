@@ -26,6 +26,7 @@ class Test extends Model
         'total_attempt',
         'max_attempt',
         'type',
+        'role',
         'settings'
     ];
 
@@ -155,5 +156,15 @@ class Test extends Model
     public function scopeForCourse($query, $courseId)
     {
         return $query->where('course_id', $courseId);
+    }
+
+    /**
+     * Get the grade items related to this test
+     */
+    public function gradeItems()
+    {
+        return $this->belongsToMany(GradeItem::class, 'grade_item_test')
+                    ->withPivot('metadata')
+                    ->withTimestamps();
     }
 }

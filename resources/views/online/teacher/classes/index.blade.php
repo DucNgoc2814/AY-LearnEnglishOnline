@@ -118,10 +118,24 @@
         margin-bottom: 1rem;
         color: var(--text-muted);
     }
+    
+    #url-debug {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        z-index: 9999;
+        display: none;
+    }
 </style>
 @endpush
 
 @section('content')
+<div id="url-debug"></div>
 <div class="container">
     @if(isset($error))
         <div class="alert alert-danger">
@@ -167,7 +181,7 @@
                         </div>
                     </div>
                     <div class="class-card-footer">
-                        <a href="{{ route('online.teacher.classes.show', $class->id) }}" class="btn btn-primary btn-sm">
+                        <a href="{{ route('online.teacher.classes.show', $class->id) }}" class="btn btn-primary btn-sm detail-btn" data-id="{{ $class->id }}">
                             <i class="fas fa-eye"></i>
                             Chi tiết
                         </a>
@@ -210,7 +224,7 @@
                         </div>
                     </div>
                     <div class="class-card-footer">
-                        <a href="{{ route('online.teacher.classes.show', $class->id) }}" class="btn btn-primary btn-sm">
+                        <a href="{{ route('online.teacher.classes.show', $class->id) }}" class="btn btn-primary btn-sm detail-btn" data-id="{{ $class->id }}">
                             <i class="fas fa-eye"></i>
                             Chi tiết
                         </a>
@@ -249,7 +263,7 @@
                         </div>
                     </div>
                     <div class="class-card-footer">
-                        <a href="{{ route('online.teacher.classes.show', $class->id) }}" class="btn btn-primary btn-sm">
+                        <a href="{{ route('online.teacher.classes.show', $class->id) }}" class="btn btn-primary btn-sm detail-btn" data-id="{{ $class->id }}">
                             <i class="fas fa-eye"></i>
                             Chi tiết
                         </a>
@@ -267,4 +281,5 @@
         @endif
     @endif
 </div>
+
 @endsection 

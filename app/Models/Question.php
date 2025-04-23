@@ -18,6 +18,7 @@ class Question extends Model
         'type',
         'question',
         'media_url',
+        'role',
         'correct_answer_explanation',
         'order_number'
     ];

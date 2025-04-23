@@ -43,7 +43,10 @@ class Category extends Model
     {
         return $this->courses()->count();
     }
-
+    public function classes(): HasMany
+    {
+        return $this->hasMany(Classes::class);
+    }
     /**
      * Lấy số lượng khóa học đang hoạt động thuộc danh mục
      */

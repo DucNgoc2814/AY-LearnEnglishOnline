@@ -38,6 +38,10 @@ class Lesson extends Model
         return $this->belongsTo(Course::class);
     }
 
+    public function classSchedule(): HasMany
+    {
+        return $this->hasMany(ClassSchedule::class);
+    }
 
     /**
      * Lấy danh sách tiến độ học tập
@@ -50,9 +54,9 @@ class Lesson extends Model
     /**
      * Lấy danh sách tài liệu
      */
-    public function resources(): MorphMany
+    public function resources(): HasMany
     {
-        return $this->morphMany(Resource::class, 'resourceable');
+        return $this->hasMany(Resource::class);
     }
 
     /**
