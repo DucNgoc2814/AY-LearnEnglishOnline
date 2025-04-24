@@ -126,9 +126,8 @@
                                         class="text-purple-500 hover:text-purple-700" title="Thêm câu hỏi">
                                         <i class="fas fa-question"></i>
                                     </button>
-                                    <button class="text-blue-500 hover:text-blue-700" data-bs-toggle="modal"
-                                        data-bs-target="#editTestModal"
-                                        onclick="populateEditModal({{ json_encode($item) }})" title="Chỉnh sửa">
+                                    <button class="text-blue-500 hover:text-blue-700"
+                                        onclick="openEditModal({{ json_encode($item) }})" title="Chỉnh sửa">
                                         <i class="far fa-edit"></i>
                                     </button>
                                     <form action="{{ route('admin.tests.destroy', $item->id) }}" method="POST"
@@ -790,5 +789,71 @@
                 closeMediaPreviewModal();
             }
         });
+
+        function openEditModal(item) {
+            // Mở modal edit
+            modalHandler.open('editTestModal');
+
+            // Điền dữ liệu vào form
+            document.getElementById('edit_name').value = item.name || '';
+
+            // Xử lý mô tả với TinyMCE
+            if (tinymce.get('edit_description')) {
+                tinymce.get('edit_description').setContent(item.description || '');
+            } else {
+                document.getElementById('edit_description').value = item.description || '';
+                initTinyMCE();
+            }
+
+            // Set duration (chuyển đổi từ giây sang phút)
+            document.getElementById('edit_duration').value = item.duration ? Math.floor(item.duration / 60) : '';
+
+            // Set các trường dữ liệu khác
+            document.getElementById('edit_min_score').value = item.min_score || '';
+            document.getElementById('edit_max_score').value = item.max_score || '';
+            document.getElementById('edit_max_attempt').value = item.max_attempt || '';
+            document.getElementById('edit_role').value = item.role || '0';
+
+            // Set loại test
+            const typeSelect = document.getElementById('edit_type');
+            if (item.type) {
+                typeSelect.value = item.type;
+                handleTestTypeChangeEdit(); // Gọi hàm để xử lý hiển thị các trường phụ thuộc
+            }
+
+            // Set lesson_id nếu có
+            if (item.lesson_id) {
+                document.getElementById('edit_lesson_id').value = item.lesson_id;
+                document.getElementById('edit_lesson_select').value = item.lesson_id;
+            }
+
+            // Set trạng thái bắt buộc
+            if (typeof item.is_required !== 'undefined') {
+                if (item.is_required) {
+                    document.getElementById('edit_is_required_yes').checked = true;
+                } else {
+                    document.getElementById('edit_is_required_no').checked = true;
+                }
+            } else {
+                document.getElementById('edit_is_required_yes').checked = true;
+            }
+
+            // Set action URL cho form
+            document.getElementById('editTestForm').action = `/admin/tests/${item.id}`;
+        }
+
+        function initTinyMCE() {
+            tinymce.init({
+                selector: '#edit_description',
+                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                height: 300,
+                image_title: true,
+                automatic_uploads: true,
+                file_picker_types: 'image',
+                entity_encoding: 'raw',
+                encoding: 'UTF-8'
+            });
+        }
     </script>
 @endpush
