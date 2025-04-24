@@ -75,25 +75,25 @@
                             <td class="ps-1 pt-1">
                                 @switch($item->type)
                                     @case('lesson_test')
-                                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded">Bài học</span>
-                                        @break
-                                    @case('final_exam')
-                                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded">Thi cuối khóa</span>
+                                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded">Kiểm tra của bài học</span>
                                         @break
                                     @case('entrance_test')
-                                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">Test đầu vào</span>
+                                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded">Test đầu vào</span>
                                         @break
-                                    @case('session_test')
-                                        <span class="bg-orange-100 text-orange-800 text-xs font-medium px-2 py-0.5 rounded">Buổi học</span>
+                                    @case('after_class')
+                                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">Bài kiểm tra sau buổi học</span>
+                                        @break
+                                    @case('before_class')
+                                        <span class="bg-orange-100 text-orange-800 text-xs font-medium px-2 py-0.5 rounded">Bài kiểm tra trước buổi học</span>
                                         @break
                                     @default
                                         <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2 py-0.5 rounded">{{ $item->type }}</span>
                                 @endswitch
                             </td>
                             <td class="ps-1 pt-1">
-                                @if($item->testable_type == 'App\Models\Lesson' && $item->testable_id)
+                                @if($item->lesson_id)
                                     @php
-                                        $lesson = App\Models\Lesson::find($item->testable_id);
+                                        $lesson = App\Models\Lesson::find($item->lesson_id);
                                     @endphp
                                     @if($lesson)
                                         <span class="bg-blue-50 text-blue-700 text-xs font-medium px-2 py-0.5 rounded">
@@ -104,23 +104,16 @@
                                             Bài học không tồn tại
                                         </span>
                                     @endif
-                                @elseif($item->testable_type == 'App\Models\Course' && $item->testable_id)
-                                    @php
-                                        $course = App\Models\Course::find($item->testable_id);
-                                    @endphp
-                                    @if($course)
+                                @else
+                                    @if($item->type === 'entrance_test')
                                         <span class="bg-purple-50 text-purple-700 text-xs font-medium px-2 py-0.5 rounded">
-                                            Khóa học: {{ $course->title }}
+                                            Bài test đầu vào
                                         </span>
                                     @else
                                         <span class="bg-gray-100 text-gray-600 text-xs font-medium px-2 py-0.5 rounded">
-                                            Khóa học không tồn tại
+                                            Chưa liên kết với bài học
                                         </span>
                                     @endif
-                                @else
-                                    <span class="bg-gray-100 text-gray-600 text-xs font-medium px-2 py-0.5 rounded">
-                                        Không liên kết
-                                    </span>
                                 @endif
                             </td>
                             <td class="ps-1 pt-1">{{ $item->min_score }}/{{ $item->max_score }}</td>

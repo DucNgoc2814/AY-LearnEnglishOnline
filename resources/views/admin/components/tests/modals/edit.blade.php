@@ -161,17 +161,20 @@
     function handleTestTypeChangeEdit() {
         const typeSelect = document.getElementById('edit_type');
         const lessonSelectContainer = document.getElementById('edit_lessonSelectContainer');
+        const lessonSelect = document.getElementById('edit_lesson_select');
         const lessonIdInput = document.getElementById('edit_lesson_id');
 
         // Reset values
         lessonIdInput.value = '';
+        lessonSelect.required = false;
 
         // Hide all containers
         lessonSelectContainer.style.display = 'none';
 
         // Show relevant containers based on type
-        if (typeSelect.value === 'lesson_test') {
+        if (typeSelect.value !== 'entrance_test' && typeSelect.value !== '') {
             lessonSelectContainer.style.display = 'block';
+            lessonSelect.required = true;
         }
     }
 
@@ -213,11 +216,6 @@
             document.getElementById('edit_max_attempt').value = data.max_attempt || '';
             document.getElementById('edit_role').value = data.role || '';
 
-            // Set lesson_id if available
-            if (data.lesson_id) {
-                document.getElementById('edit_lesson_id').value = data.lesson_id;
-            }
-
             // Set type select option
             const typeSelect = document.getElementById('edit_type');
             if (data.type) {
@@ -229,13 +227,14 @@
                 }
             }
 
-            // Show appropriate containers based on test type
-            handleTestTypeChangeEdit();
-
-            // Set selected lesson if available
-            if (data.type === 'lesson_test' && data.lesson_id) {
+            // Set lesson_id if available
+            if (data.lesson_id) {
+                document.getElementById('edit_lesson_id').value = data.lesson_id;
                 document.getElementById('edit_lesson_select').value = data.lesson_id;
             }
+
+            // Show appropriate containers based on test type
+            handleTestTypeChangeEdit();
 
             // Set is_required radio buttons
             if (typeof data.is_required !== 'undefined') {
@@ -258,8 +257,19 @@
             }
         });
 
-        // Convert duration to seconds before submit
+        // Validate form before submit
         document.getElementById('editTestForm').addEventListener('submit', function(e) {
+            const typeSelect = document.getElementById('edit_type');
+            const lessonSelect = document.getElementById('edit_lesson_select');
+
+            // Validate lesson selection when type is not entrance_test
+            if (typeSelect.value !== 'entrance_test' && typeSelect.value !== '' && !lessonSelect.value) {
+                e.preventDefault();
+                alert('Vui lòng chọn bài học cho bài kiểm tra');
+                return false;
+            }
+
+            // Convert duration to seconds
             const durationInput = document.getElementById('edit_duration');
             if (durationInput.value) {
                 durationInput.value = parseInt(durationInput.value) * 60;

@@ -14,8 +14,7 @@ class Test extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'testable_type',
-        'testable_id',
+        'lesson_id',
         'slug',
         'name',
         'description',
@@ -37,6 +36,7 @@ class Test extends Model
         'is_required' => 'boolean',
         'total_attempt' => 'integer',
         'max_attempt' => 'integer',
+        'role' => 'integer',
         'settings' => 'json'
     ];
 
@@ -51,9 +51,9 @@ class Test extends Model
     // }
 
     // Relationships
-    public function testable()
+    public function lesson(): BelongsTo
     {
-        return $this->morphTo();
+        return $this->belongsTo(Lesson::class);
     }
 
     public function questions(): HasMany
@@ -66,18 +66,7 @@ class Test extends Model
         return $this->hasMany(TestResult::class);
     }
 
-    public function lesson()
-    {
-        return $this->belongsTo(Lesson::class, 'testable_id')
-                    ->where('testable_type', 'App\Models\Lesson');
-    }
-
     // Methods
-    public function isActive(): bool
-    {
-        return $this->status === 'active';
-    }
-
     public function getFormattedTimeLimit(): string
     {
         $minutes = $this->duration / 60; // Convert from seconds to minutes
@@ -103,7 +92,7 @@ class Test extends Model
     public function getAttemptCount($studentId): int
     {
         return $this->results()
-            ->where('user_id', $studentId)
+            ->where('student_id', $studentId)
             ->count();
     }
 
@@ -120,7 +109,7 @@ class Test extends Model
     public function hasPassed($studentId): bool
     {
         $highestScore = $this->results()
-            ->where('user_id', $studentId)
+            ->where('student_id', $studentId)
             ->max('score');
 
         return $highestScore >= $this->min_score;
@@ -129,7 +118,7 @@ class Test extends Model
     public function getBestResult($studentId)
     {
         return $this->results()
-            ->where('user_id', $studentId)
+            ->where('student_id', $studentId)
             ->orderByDesc('score')
             ->first();
     }
@@ -137,25 +126,25 @@ class Test extends Model
     public function getLatestResult($studentId)
     {
         return $this->results()
-            ->where('user_id', $studentId)
+            ->where('student_id', $studentId)
             ->latest()
             ->first();
     }
 
     // Scopes
-    public function scopeActive($query)
+    public function scopeForLesson($query, $lessonId)
     {
-        return $query->where('status', 'active');
+        return $query->where('lesson_id', $lessonId);
     }
 
-    public function scopeInactive($query)
+    public function scopeRequired($query)
     {
-        return $query->where('status', 'inactive');
+        return $query->where('is_required', true);
     }
 
-    public function scopeForCourse($query, $courseId)
+    public function scopeByType($query, $type)
     {
-        return $query->where('course_id', $courseId);
+        return $query->where('type', $type);
     }
 
     /**

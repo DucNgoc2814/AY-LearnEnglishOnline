@@ -160,17 +160,20 @@
     function handleTestTypeChange() {
         const typeSelect = document.getElementById('type');
         const lessonSelectContainer = document.getElementById('lessonSelectContainer');
+        const lessonSelect = document.getElementById('lesson_select');
         const lessonIdInput = document.getElementById('lesson_id');
 
         // Reset values
         lessonIdInput.value = '';
+        lessonSelect.required = false;
 
         // Hide all containers
         lessonSelectContainer.style.display = 'none';
 
         // Show relevant containers based on type
-        if (typeSelect.value === 'lesson_test') {
+        if (typeSelect.value !== 'entrance_test' && typeSelect.value !== '') {
             lessonSelectContainer.style.display = 'block';
+            lessonSelect.required = true;
         }
     }
 
@@ -182,9 +185,24 @@
 
     // Convert duration to seconds before submit
     document.querySelector('form').addEventListener('submit', function(e) {
+        const typeSelect = document.getElementById('type');
+        const lessonSelect = document.getElementById('lesson_select');
+
+        // Validate lesson selection when type is not entrance_test
+        if (typeSelect.value !== 'entrance_test' && typeSelect.value !== '' && !lessonSelect.value) {
+            e.preventDefault();
+            alert('Vui lòng chọn bài học cho bài kiểm tra');
+            return false;
+        }
+
         const durationInput = document.getElementById('duration');
         if (durationInput.value) {
             durationInput.value = parseInt(durationInput.value) * 60;
         }
+    });
+
+    // Initialize form
+    document.addEventListener('DOMContentLoaded', function() {
+        handleTestTypeChange();
     });
 </script>
