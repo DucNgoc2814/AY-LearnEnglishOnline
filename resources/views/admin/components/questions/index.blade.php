@@ -65,6 +65,7 @@
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="index">STT</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="test_id">Bài kiểm tra</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="type">Loại câu hỏi</th>
+                        <th class="border ps-1 py-1 border-gray-300 text-center" data-column="role">Hình thức</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="question">Nội dung câu hỏi</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="media_url">Media</th>
                         <th class="border ps-1 py-1 border-gray-300 text-center" data-column="order_number">Thứ tự</th>
@@ -97,6 +98,11 @@
                                 @endphp
                                 <span class="px-2 py-1 rounded-full text-sm {{ $question->type == 'text' ? 'bg-blue-100 text-blue-800' : ($question->type == 'image' ? 'bg-green-100 text-green-800' : ($question->type == 'video' ? 'bg-purple-100 text-purple-800' : 'bg-orange-100 text-orange-800')) }}">
                                     {{ $typeLabels[$question->type] ?? $question->type }}
+                                </span>
+                            </td>
+                            <td class="ps-1 pt-1" data-column="role">
+                                <span class="px-2 py-1 rounded-full text-sm {{ $question->role == 1 ? 'bg-indigo-100 text-indigo-800' : 'bg-pink-100 text-pink-800' }}">
+                                    {{ $question->role == 1 ? 'Trắc nghiệm' : 'Tự luận' }}
                                 </span>
                             </td>
                             <td class="ps-1 pt-1 max-w-xs truncate" data-column="question">

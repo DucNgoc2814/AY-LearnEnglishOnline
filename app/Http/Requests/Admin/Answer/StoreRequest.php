@@ -22,6 +22,7 @@ class StoreRequest extends FormRequest
             'answer' => 'required|string|max:255',
             'is_correct' => 'required|boolean',
             'type' => 'required|string|in:single,multiple',
+            'url' => 'nullable|file|max:51200',
             'order_number' => 'required|integer|min:0',
         ];
     }
@@ -38,6 +39,8 @@ class StoreRequest extends FormRequest
             'type.required' => 'Loại câu trả lời không được để trống',
             'type.string' => 'Loại câu trả lời phải là chuỗi',
             'type.in' => 'Loại câu trả lời phải là single hoặc multiple',
+            'url.file' => 'File đính kèm không hợp lệ',
+            'url.max' => 'Kích thước file không được vượt quá 50MB',
             'order_number.required' => 'Thứ tự câu trả lời không được để trống',
             'order_number.integer' => 'Thứ tự câu trả lời phải là số nguyên',
             'order_number.min' => 'Thứ tự câu trả lời phải lớn hơn hoặc bằng 0',
@@ -51,33 +54,11 @@ class StoreRequest extends FormRequest
             'answer' => 'Nội dung câu trả lời',
             'is_correct' => 'Trạng thái đúng/sai',
             'type' => 'Loại câu trả lời',
+            'url' => 'File đính kèm',
             'order_number' => 'Thứ tự câu trả lời',
         ];
     }
 
-    protected function prepareForValidation()
-    {
-        $data = [];
-
-        // Tự động tạo order_number nếu không được cung cấp
-        if (!$this->has('order_number')) {
-            $data['order_number'] = 1;
-        }
-
-        // Chuyển đổi is_correct thành boolean
-        if ($this->has('is_correct')) {
-            $data['is_correct'] = filter_var($this->is_correct, FILTER_VALIDATE_BOOLEAN);
-        }
-
-        // Mặc định type là single nếu không được cung cấp
-        if (!$this->has('type')) {
-            $data['type'] = 'single';
-        }
-
-        if (!empty($data)) {
-            $this->merge($data);
-        }
-    }
 
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {

@@ -236,6 +236,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/{id}/restore', 'restore')->name('restore');
         });
 
+    // Classes Management
+    Route::controller(ClassController::class)
+        ->prefix('classes')
+        ->name('classes.')
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::post('/{id}/restore', 'restore')->name('restore');
+        });
+
     // Employees Management
     Route::resource('employees', EmployeeController::class);
 });

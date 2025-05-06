@@ -7,12 +7,15 @@
     "require": {
         "php": "^8.1",
         "chillerlan/php-qrcode": "^5.0",
+        "google/apiclient": "^2.18",
         "guzzlehttp/guzzle": "^7.2",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "^3.29",
+        "masbug/flysystem-google-drive-ext": "^2.4",
+        "stichoza/google-translate-php": "*",
         "tymon/jwt-auth": "^2.2",
         "whichbrowser/parser": "^2.1"
     },

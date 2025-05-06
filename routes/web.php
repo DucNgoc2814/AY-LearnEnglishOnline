@@ -12,6 +12,7 @@ use App\Http\Controllers\Client\TestResultController;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Client\AttendanceController;
 use App\Http\Controllers\Online\NewsController;
+use App\Http\Controllers\OxfordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -158,5 +159,16 @@ Route::middleware(['auth'])->group(function () {
         Artisan::call('route:clear');
         return redirect()->back()->with('success', 'Tất cả cache đã được xóa thành công!');
     })->name('clear.all');
+});
+
+// Routes cho từ điển Oxford
+Route::get('/dictionary', function () {
+    return view('dictionary.index');
+})->name('dictionary.index');
+
+// API routes
+Route::prefix('api/oxford')->middleware('web')->group(function () {
+    Route::post('/process-text', [App\Http\Controllers\OxfordController::class, 'processText'])->withoutMiddleware(['csrf']);
+    Route::get('/word-info', [App\Http\Controllers\OxfordController::class, 'getWordInfo'])->withoutMiddleware(['csrf']);
 });
 

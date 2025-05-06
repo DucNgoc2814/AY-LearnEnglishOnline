@@ -40,7 +40,8 @@ class StoreRequest extends FormRequest
             'is_required' => 'nullable|in:0,1,true,false',
             'total_attempt' => 'nullable|integer|min:0',
             'max_attempt' => 'nullable|integer|min:0',
-            'type' => 'required|string|in:lesson_test,final_exam,entrance_test,session_test',
+            'type' => 'required|string|in:lesson_test,entrance_test,after_class,before_class',
+            'lesson_id' => 'required_unless:type,entrance_test|exists:lessons,id',
             'settings' => 'nullable|json',
         ];
     }
@@ -72,6 +73,8 @@ class StoreRequest extends FormRequest
                 'max_attempt.min' => 'Số lần thử tối đa không được âm',
                 'type.required' => 'Loại bài test là bắt buộc',
                 'type.in' => 'Loại bài test không hợp lệ',
+                'lesson_id.required_unless' => 'Bài học là bắt buộc cho loại bài test này',
+                'lesson_id.exists' => 'Bài học không tồn tại',
                 'settings.json' => 'Cài đặt phải là định dạng JSON hợp lệ',
             ]
         );
