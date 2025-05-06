@@ -22,6 +22,8 @@ class UpdateRequest extends FormRequest
             'answer' => 'sometimes|string|max:255',
             'is_correct' => 'sometimes|boolean',
             'type' => 'sometimes|string|in:single,multiple',
+            'url' => 'nullable|file|max:51200',
+            'remove_url' => 'nullable|in:0,1',
             'order_number' => 'sometimes|integer|min:0',
         ];
     }
@@ -34,6 +36,9 @@ class UpdateRequest extends FormRequest
             'is_correct.boolean' => 'Trạng thái đúng/sai phải là true hoặc false',
             'type.string' => 'Loại câu trả lời phải là chuỗi',
             'type.in' => 'Loại câu trả lời phải là single hoặc multiple',
+            'url.file' => 'File đính kèm không hợp lệ',
+            'url.max' => 'Kích thước file không được vượt quá 50MB',
+            'remove_url.in' => 'Giá trị xóa URL không hợp lệ',
             'order_number.integer' => 'Thứ tự câu trả lời phải là số nguyên',
             'order_number.min' => 'Thứ tự câu trả lời phải lớn hơn hoặc bằng 0',
         ];
@@ -46,6 +51,8 @@ class UpdateRequest extends FormRequest
             'answer' => 'Nội dung câu trả lời',
             'is_correct' => 'Trạng thái đúng/sai',
             'type' => 'Loại câu trả lời',
+            'url' => 'File đính kèm',
+            'remove_url' => 'Xóa file đính kèm',
             'order_number' => 'Thứ tự câu trả lời',
         ];
     }
@@ -57,6 +64,11 @@ class UpdateRequest extends FormRequest
         // Chuyển đổi is_correct thành boolean nếu được cung cấp
         if ($this->has('is_correct')) {
             $data['is_correct'] = filter_var($this->is_correct, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        // Chuyển đổi remove_url thành boolean
+        if ($this->has('remove_url')) {
+            $data['remove_url'] = filter_var($this->remove_url, FILTER_VALIDATE_BOOLEAN) ? '1' : '0';
         }
 
         if (!empty($data)) {

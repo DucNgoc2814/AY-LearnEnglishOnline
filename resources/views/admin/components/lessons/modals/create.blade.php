@@ -30,48 +30,46 @@
                     @csrf
                     <input type="hidden" name="course_id" id="lessonCourseId">
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
+                    <div class="space-y-4 mt-4">
                         <!-- Thông tin cơ bản -->
-                        <div>
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
-                                    Tên bài học <span class="text-red-500">*</span>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                                Tên bài học <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="name" name="name" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
+                                Mô tả
+                            </label>
+                            <textarea
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="description" name="description" rows="4"></textarea>
+                        </div>
+
+                        <div class="flex space-x-4">
+                            <div class="mb-4 flex-1">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="order_number">
+                                    Thứ tự <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text"
+                                <input type="number"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="name" name="name" required>
+                                    id="order_number" name="order_number" value="1" required>
                             </div>
 
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
-                                    Mô tả
+                            <div class="mb-4 flex-1">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="is_preview">
+                                    Cho phép xem thử
                                 </label>
-                                <textarea
-                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    id="description" name="description" rows="4"></textarea>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="mb-4">
-                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="order_number">
-                                        Thứ tự <span class="text-red-500">*</span>
+                                <div class="mt-2">
+                                    <label class="inline-flex items-center">
+                                        <input type="checkbox" class="form-checkbox" name="is_preview"
+                                            id="is_preview" value="1">
+                                        <span class="ml-2">Cho phép xem thử</span>
                                     </label>
-                                    <input type="number"
-                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="order_number" name="order_number" value="1" required>
-                                </div>
-
-                                <div class="mb-4">
-                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="is_preview">
-                                        Cho phép xem thử
-                                    </label>
-                                    <div class="mt-2">
-                                        <label class="inline-flex items-center">
-                                            <input type="checkbox" class="form-checkbox" name="is_preview"
-                                                id="is_preview" value="1">
-                                            <span class="ml-2">Cho phép xem thử</span>
-                                        </label>
-                                    </div>
                                 </div>
                             </div>
                         </div>

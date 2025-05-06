@@ -153,9 +153,62 @@ class QuestionController extends BaseController
                 }
 
                 // Lưu các câu trả lời
-                foreach ($answers as $answer) {
+                foreach ($answers as $index => $answer) {
+                    // Đảm bảo có question_id cho câu trả lời
                     $answer['question_id'] = $question->id;
+                    // Đảm bảo có type cho câu trả lời
                     $answer['type'] = $answerType;
+
+                    // Xử lý upload file cho câu trả lời nếu có
+                    if ($request->hasFile("answers.{$index}.url")) {
+                        try {
+                            $file = $request->file("answers.{$index}.url");
+
+                            // Kiểm tra và xác định loại file
+                            $mimeType = $file->getMimeType();
+                            $fileType = 'files';
+
+                            if (strpos($mimeType, 'image/') === 0) {
+                                $fileType = 'images';
+                                // Kiểm tra kích thước file
+                                if ($file->getSize() > 5 * 1024 * 1024) { // 5MB
+                                    throw new \Exception('Image size should not exceed 5MB');
+                                }
+                                // Kiểm tra phần mở rộng
+                                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                                if (!in_array(strtolower($file->getClientOriginalExtension()), $allowedExtensions)) {
+                                    throw new \Exception('Invalid image format. Allowed formats: ' . implode(', ', $allowedExtensions));
+                                }
+                            }
+
+                            // Upload file
+                            $filePath = $this->answerService->handleFileUpload($file, $fileType);
+                            if ($filePath) {
+                                $answer['url'] = $filePath;
+                                Log::info('Answer file uploaded successfully', [
+                                    'question_id' => $question->id,
+                                    'answer_index' => $index,
+                                    'file_path' => $filePath
+                                ]);
+                            } else {
+                                throw new \Exception('Failed to upload answer file');
+                            }
+                        } catch (\Exception $e) {
+                            Log::error('Failed to upload file for answer', [
+                                'error' => $e->getMessage(),
+                                'answer_index' => $index,
+                                'question_id' => $question->id
+                            ]);
+                            throw new \Exception('Error uploading answer file: ' . $e->getMessage());
+                        }
+                    }
+
+                    // Ghi log để debug
+                    Log::info('Creating answer for question', [
+                        'question_id' => $question->id,
+                        'answer_data' => $answer
+                    ]);
+
                     $this->answerService->create($answer);
                 }
             }

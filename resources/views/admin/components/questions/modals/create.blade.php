@@ -451,6 +451,20 @@
                 formData.append('media_file', audioFileInput.files[0]);
             }
 
+            // Xử lý file cho các câu trả lời
+            const answerItems = document.querySelectorAll('.answer-item');
+            answerItems.forEach((item, index) => {
+                const fileInput = item.querySelector('.answer-image-input');
+                if (fileInput && fileInput.files.length > 0) {
+                    formData.append(`answers[${index}][url]`, fileInput.files[0]);
+                }
+            });
+
+            // Log FormData để debug
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+
             // Gửi request bằng fetch API
             fetch(this.action, {
                     method: 'POST',
@@ -540,6 +554,16 @@
                                     class="form-${answerType === 'single' ? 'radio' : 'checkbox'} h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
                                 <span class="ml-2 text-sm text-gray-700">Đánh dấu là đáp án đúng</span>
                             </div>
+                        </div>
+
+                        <!-- Thứ tự câu trả lời -->
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Thứ tự <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" name="answers[${answerCount}][order_number]"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                value="${answerCount + 1}" min="1" required>
                         </div>
 
                         <!-- Phần upload ảnh cho câu trả lời -->
@@ -661,6 +685,7 @@
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 placeholder="Nhập câu trả lời mẫu" required></textarea>
                             <input type="hidden" name="answers[0][is_correct]" value="1">
+                            <input type="hidden" name="answers[0][order_number]" value="1">
                         </div>
                     </div>
                 </div>
@@ -689,6 +714,14 @@
                                     class="form-radio h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
                                 <span class="ml-2 text-sm text-gray-700">Đánh dấu là đáp án đúng</span>
                             </div>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Thứ tự <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" name="answers[0][order_number]"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                value="1" min="1" required>
                         </div>
                         <div>
                             <label class="block text-gray-700 text-sm font-bold mb-2">
