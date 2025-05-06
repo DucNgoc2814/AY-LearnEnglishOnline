@@ -13,6 +13,7 @@ use App\Http\Controllers\Online\EbookController;
 use App\Http\Controllers\Online\GradeController;
 use App\Http\Controllers\Online\NewsController;
 use App\Http\Controllers\Online\TestController;
+use App\Http\Controllers\Online\MaterialController;
 use App\Http\Controllers\Online\Teacher\ClassController as TeacherClassController;
 use App\Http\Controllers\Online\Teacher\ScheduleController as TeacherScheduleController;
 
@@ -46,6 +47,21 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
     Route::get('/', [NewsController::class, 'index'])
         ->name('online.dashboard');
 
+    // Exercise Routes
+    Route::prefix('exercises')->name('exercises.')->group(function () {
+        Route::get('/video/{id}', [MaterialController::class, 'videoExercise'])->name('video');
+        Route::get('/audio/{id}', [MaterialController::class, 'audioExercise'])->name('audio');
+        Route::get('/grammar/{id}', [MaterialController::class, 'grammarExercise'])->name('grammar');
+        Route::get('/video-series/{id}', [MaterialController::class, 'videoSeries'])->name('video-series');
+        Route::get('/audio-collection/{id}', [MaterialController::class, 'audioCollection'])->name('audio-collection');
+        Route::get('/games/{id}', [MaterialController::class, 'vocabularyGames'])->name('games');
+        
+        // Submit exercise routes
+        Route::post('/video/{id}/submit', [MaterialController::class, 'submitVideoExercise'])->name('video.submit');
+        Route::post('/audio/{id}/submit', [MaterialController::class, 'submitAudioExercise'])->name('audio.submit');
+        Route::post('/grammar/{id}/submit', [MaterialController::class, 'submitGrammarExercise'])->name('grammar.submit');
+    });
+
     // Student Routes
     Route::middleware(['jwt.role:student'])->group(function () {
         // Classes
@@ -53,6 +69,7 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
             Route::get('/', [ClassController::class, 'index'])->name('index');
             Route::get('/{id}', [ClassController::class, 'show'])->name('show');
             Route::get('/{class_id}/tests', [TestController::class, 'index'])->name('tests');
+            Route::get('/quiz/{quiz}', [ClassController::class, 'quiz'])->name('quiz');
         });
 
         // Sessions

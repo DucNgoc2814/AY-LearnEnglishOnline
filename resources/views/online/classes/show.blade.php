@@ -47,42 +47,108 @@
     .tab-content {
         background: var(--card-bg, #fff);
         border-radius: var(--border-radius, 0.375rem);
-        padding: 1.5rem;
         border: 1px solid var(--border-color, #dee2e6);
         min-height: 400px;
+        margin-top: -1px;
         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     }
 
-    .nav-tabs {
-        border: none;
-        margin-bottom: 1rem;
-        gap: 0.5rem;
+    /* Tab thiết kế nhỏ gọn hơn */
+    .simple-tabs {
+        display: flex;
+        width: 100%;
+        margin-bottom: 0;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        overflow: hidden;
     }
 
-    .nav-tabs .nav-link {
-        border: 1px solid var(--border-color, #dee2e6);
-        border-radius: var(--border-radius, 0.375rem);
-        padding: 0.75rem 1.25rem;
-        color: var(--text-muted, #6c757d);
+    .simple-tabs .nav-item {
+        flex: 1;
+    }
+
+    .simple-tabs .nav-link {
+        text-align: center;
+        color: #495057;
+        font-weight: 500;
+        padding: 0.75rem 0.5rem;
+        border: none;
+        border-radius: 0;
         display: flex;
+        flex-direction: column;
         align-items: center;
+        justify-content: center;
         gap: 0.5rem;
         transition: all 0.2s ease;
+        background-color: #f8f9fa;
+        position: relative;
     }
 
-    .nav-tabs .nav-link:hover {
-        background: var(--bg-color, #f8f9fa);
-        color: var(--primary-color, #0d6efd);
+    .simple-tabs .nav-link i {
+        font-size: 1.25rem;
+        margin-bottom: 0.25rem;
     }
 
-    .nav-tabs .nav-link.active {
-        background: var(--primary-color, #0d6efd);
-        color: white;
-        border-color: var(--primary-color, #0d6efd);
+    .simple-tabs .nav-link.active {
+        color: #0d6efd;
+        background-color: #fff;
+        border-bottom: 3px solid #0d6efd;
     }
 
-    .nav-tabs .nav-link i {
-        font-size: 1rem;
+    .simple-tabs .nav-link:hover:not(.active) {
+        background: #e9ecef;
+    }
+
+    /* Nội dung tab */
+    .tab-pane {
+        padding: 1.5rem;
+    }
+
+    /* Lesson layout */
+    .lesson-header {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    .lesson-header .icon {
+        font-size: 1.5rem;
+        margin-right: 1rem;
+        color: #0d6efd;
+    }
+
+    .lesson-title {
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-bottom: 0;
+        flex-grow: 1;
+    }
+
+    .resource-card {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        transition: all 0.2s;
+    }
+
+    .resource-card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+
+    .resource-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
     }
 
     .quick-stats {
@@ -118,58 +184,31 @@
         font-size: 0.875rem;
     }
 
-    .action-buttons {
+    /* Filter button */
+    .filter-btn {
         display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .action-btn {
-        display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        border-radius: var(--border-radius, 0.375rem);
+        padding: 0.375rem 0.75rem;
+        border-radius: 4px;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        color: #495057;
         font-weight: 500;
         cursor: pointer;
-        transition: all 0.2s ease;
-        border: none;
-        text-decoration: none;
+        transition: all 0.2s;
     }
 
-    .action-btn.primary {
-        background: var(--primary-color, #0d6efd);
-        color: white !important;
+    .filter-btn:hover {
+        background-color: #e9ecef;
     }
 
-    .action-btn.primary:hover {
-        background: var(--primary-dark, #0a58ca);
-        transform: translateY(-2px);
-    }
-
-    .action-btn.secondary {
-        background: var(--bg-color, #f8f9fa);
-        color: var(--text-color, #343a40) !important;
-        border: 1px solid var(--border-color, #dee2e6);
-    }
-
-    .action-btn.secondary:hover {
-        background: var(--hover-bg, #e9ecef);
-        transform: translateY(-2px);
+    .filter-btn i {
+        margin-right: 0.5rem;
     }
     
     @media (max-width: 768px) {
         .class-meta {
             gap: 1rem;
-        }
-        
-        .action-buttons {
-            flex-direction: column;
-        }
-        
-        .action-btn {
-            width: 100%;
         }
         
         .quick-stats {
@@ -228,82 +267,45 @@
         </div>
     </div>
 
-    <div class="action-buttons">
-        <a href="#schedule" class="action-btn primary">
-            <i class="fas fa-calendar-alt"></i>
-            Lịch học
-        </a>
-        <a href="#assignments" class="action-btn primary">
-            <i class="fas fa-tasks"></i>
-            Bài tập
-        </a>
-        <a href="#materials" class="action-btn primary">
-            <i class="fas fa-book"></i>
-            Tài liệu
-        </a>
-        <a href="#grades" class="action-btn secondary">
-            <i class="fas fa-chart-line"></i>
-            Xem điểm
-        </a>
-    </div>
-
-    <ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#overview">
-                <i class="fas fa-home"></i>
-                Tổng quan
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#schedule">
-                <i class="fas fa-calendar-alt"></i>
-                Lịch học
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#attendance">
-                <i class="fas fa-clipboard-check"></i>
-                Điểm danh
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#assignments">
-                <i class="fas fa-tasks"></i>
-                Bài tập
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#materials">
+    <ul class="nav simple-tabs" id="classTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="materials-tab" data-bs-toggle="tab" href="#materials" role="tab">
                 <i class="fas fa-book"></i>
                 Tài liệu
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#grades">
-                <i class="fas fa-chart-bar"></i>
-                Bảng điểm
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="zoom-tab" data-bs-toggle="tab" href="#zoom" role="tab">
+                <i class="fas fa-video"></i>
+                Link Zoom
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="tests-tab" data-bs-toggle="tab" href="#tests" role="tab">
+                <i class="fas fa-tasks"></i>
+                Bài test
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="resources-tab" data-bs-toggle="tab" href="#resources" role="tab">
+                <i class="fas fa-graduation-cap"></i>
+                Học liệu
             </a>
         </li>
     </ul>
 
     <div class="tab-content">
-        <div class="tab-pane fade show active" id="overview">
-            @include('online.classes.partials.overview', ['class' => $class, 'stats' => $stats])
-        </div>
-        <div class="tab-pane fade" id="schedule">
-            @include('online.classes.partials.schedule', ['class' => $class])
-        </div>
-        <div class="tab-pane fade" id="attendance">
-            @include('online.classes.partials.attendance', ['class' => $class])
-        </div>
-        <div class="tab-pane fade" id="assignments">
-            @include('online.classes.partials.assignments', ['class' => $class])
-        </div>
-        <div class="tab-pane fade" id="materials">
+        <div class="tab-pane fade show active" id="materials" role="tabpanel">
             @include('online.classes.partials.materials', ['class' => $class])
         </div>
-        <div class="tab-pane fade" id="grades">
-            @include('online.classes.partials.grades', ['class' => $class])
+        <div class="tab-pane fade" id="zoom" role="tabpanel">
+            @include('online.classes.partials.zoom', ['class' => $class])
+        </div>
+        <div class="tab-pane fade" id="tests" role="tabpanel">
+            @include('online.classes.partials.tests', ['class' => $class])
+        </div>
+        <div class="tab-pane fade" id="resources" role="tabpanel">
+            @include('online.classes.partials.resources', ['class' => $class])
         </div>
     </div>
 </div>
@@ -320,22 +322,9 @@
         }
 
         // Store active tab
-        document.querySelectorAll('a[data-bs-toggle="tab"]').forEach(tab => {
+        document.querySelectorAll('.simple-tabs .nav-link').forEach(tab => {
             tab.addEventListener('shown.bs.tab', function(e) {
                 localStorage.setItem('activeClassTab', e.target.getAttribute('href'));
-            });
-        });
-        
-        // Handle action buttons
-        document.querySelectorAll('.action-buttons .action-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetTab = document.querySelector(`a[href="${targetId}"]`);
-                if (targetTab) {
-                    const tab = new bootstrap.Tab(targetTab);
-                    tab.show();
-                }
             });
         });
     });
