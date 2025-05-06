@@ -451,7 +451,6 @@
                                 </div>
 
                                 <!-- Schedule Modal for upcoming class -->
-                                @include('online.classes.partials.schedule-modal', ['class' => $class])
                             @endforeach
                         @endif
 
@@ -515,7 +514,6 @@
                                 </div>
 
                                 <!-- Schedule Modal for each current class -->
-                                @include('online.classes.partials.schedule-modal', ['class' => $class])
                             @endforeach
                         @endif
 
@@ -581,11 +579,10 @@
                                 </div>
 
                                 <!-- Schedule Modal for each completed class -->
-                                @include('online.classes.partials.schedule-modal', ['class' => $class])
                             @endforeach
                         @endif
                     @endif
-                </div>
+                </div>      
             </div>
         </div>
     </div>

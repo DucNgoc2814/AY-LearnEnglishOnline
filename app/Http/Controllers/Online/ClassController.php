@@ -443,4 +443,41 @@ class ClassController extends Controller
             ]);
         }
     }
+
+    /**
+     * Hiển thị trang làm bài trắc nghiệm
+     *
+     * @param  string  $quiz
+     * @return \Illuminate\View\View
+     */
+    public function quiz($quiz)
+    {
+        // Xử lý lấy thông tin của bài quiz dựa trên tham số $quiz
+        $quizData = [
+            'present-simple' => [
+                'title' => 'Bài trắc nghiệm 2.1: Thì hiện tại đơn',
+                'time' => 15, // phút
+                'questions' => 10
+            ],
+            'present-continuous' => [
+                'title' => 'Bài trắc nghiệm 2.2: Thì hiện tại tiếp diễn',
+                'time' => 15,
+                'questions' => 10
+            ],
+            'communication-vocab' => [
+                'title' => 'Bài trắc nghiệm 2.3: Từ vựng về chủ đề giao tiếp',
+                'time' => 10,
+                'questions' => 10
+            ]
+        ];
+
+        // Kiểm tra bài quiz có tồn tại không
+        if (!isset($quizData[$quiz])) {
+            abort(404, 'Không tìm thấy bài trắc nghiệm');
+        }
+
+        $quizInfo = $quizData[$quiz];
+
+        return view('online.classes.partials.quiz', compact('quizInfo', 'quiz'));
+    }
 }
