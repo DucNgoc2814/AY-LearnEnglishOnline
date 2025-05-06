@@ -433,8 +433,21 @@
         createQuestionForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // Lấy loại câu hỏi hiện tại
-            const questionType = typeSelect.value;
+            // Xử lý đáp án đúng cho single choice
+            if (document.getElementById('answer_type').value === 'single') {
+                const selectedRadio = document.querySelector('input[name="correct_answer"]:checked');
+                if (selectedRadio) {
+                    const answerIndex = selectedRadio.getAttribute('data-answer-index');
+                    const answerItems = document.querySelectorAll('.answer-item');
+
+                    answerItems.forEach((item, index) => {
+                        const isCorrectInput = item.querySelector(`input[name="answers[${index}][is_correct]"]`);
+                        if (isCorrectInput) {
+                            isCorrectInput.value = (index.toString() === answerIndex) ? "1" : "0";
+                        }
+                    });
+                }
+            }
 
             // Tạo FormData mới
             const formData = new FormData(this);
@@ -443,11 +456,11 @@
             formData.delete('media_file');
 
             // Thêm file đúng loại theo loại câu hỏi
-            if (questionType === 'image' && imageFileInput.files.length > 0) {
+            if (typeSelect.value === 'image' && imageFileInput.files.length > 0) {
                 formData.append('media_file', imageFileInput.files[0]);
-            } else if (questionType === 'video' && videoFileInput.files.length > 0) {
+            } else if (typeSelect.value === 'video' && videoFileInput.files.length > 0) {
                 formData.append('media_file', videoFileInput.files[0]);
-            } else if (questionType === 'audio' && audioFileInput.files.length > 0) {
+            } else if (typeSelect.value === 'audio' && audioFileInput.files.length > 0) {
                 formData.append('media_file', audioFileInput.files[0]);
             }
 
@@ -549,9 +562,11 @@
                         <div>
                             <div class="flex items-center mb-4">
                                 <input type="${answerType === 'single' ? 'radio' : 'checkbox'}"
-                                    name="${answerType === 'single' ? 'correct_answer' : `answers[${answerCount}][is_correct]`}"
-                                    value="${answerType === 'single' ? answerCount : '1'}"
-                                    class="form-${answerType === 'single' ? 'radio' : 'checkbox'} h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                    name="correct_answer"
+                                    value="${answerCount}"
+                                    class="answer-correct-input form-${answerType === 'single' ? 'radio' : 'checkbox'} h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
+                                    onchange="updateIsCorrect(this)">
+                                <input type="hidden" name="answers[${answerCount}][is_correct]" value="0" class="answer-is-correct-input">
                                 <span class="ml-2 text-sm text-gray-700">Đánh dấu là đáp án đúng</span>
                             </div>
                         </div>
@@ -596,6 +611,26 @@
             `;
 
             container.insertAdjacentHTML('beforeend', template);
+
+            // Thêm hàm xử lý cập nhật is_correct
+            window.updateIsCorrect = function(radio) {
+                // Lấy tất cả các input hidden is_correct
+                const allIsCorrectInputs = document.querySelectorAll('.answer-is-correct-input');
+
+                // Reset tất cả về 0
+                allIsCorrectInputs.forEach(input => {
+                    input.value = "0";
+                });
+
+                // Tìm input hidden tương ứng với radio được chọn và set giá trị 1
+                if (radio.checked) {
+                    const answerItem = radio.closest('.answer-item');
+                    const isCorrectInput = answerItem.querySelector('.answer-is-correct-input');
+                    if (isCorrectInput) {
+                        isCorrectInput.value = "1";
+                    }
+                }
+            };
         });
 
         // Xử lý thay đổi loại câu trả lời

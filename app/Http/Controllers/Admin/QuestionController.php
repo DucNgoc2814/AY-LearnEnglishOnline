@@ -145,10 +145,17 @@ class QuestionController extends BaseController
                 $answerType = $request->input('answer_type', 'single');
 
                 // Nếu là single choice, chỉ cho phép một đáp án đúng
-                if ($answerType === 'single' && $request->has('correct_answer')) {
+                if ($answerType === 'single') {
                     $correctAnswerIndex = $request->input('correct_answer');
+                    // Đảm bảo tất cả đáp án đều có giá trị is_correct
                     foreach ($answers as $index => &$answer) {
+                        // Set is_correct = true cho đáp án được chọn, false cho các đáp án khác
                         $answer['is_correct'] = ($index == $correctAnswerIndex);
+                        Log::info('Setting is_correct for answer', [
+                            'index' => $index,
+                            'is_correct' => $answer['is_correct'],
+                            'correct_index' => $correctAnswerIndex
+                        ]);
                     }
                 }
 
