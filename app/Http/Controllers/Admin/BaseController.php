@@ -20,6 +20,10 @@ abstract class BaseController extends Controller
     protected $imageField = 'image'; // Tên trường ảnh
     protected $imageFolder = 'uploads'; // Thư mục lưu ảnh
 
+    // Cấu hình cho các models liên quan
+    protected $relatedModels = []; // Danh sách các models liên quan, format: ['relation_name' => ModelClass::class]
+    protected $relatedFields = []; // Cấu hình trường cho từng model liên quan
+
     public function __construct()
     {
         $this->setupBaseProperties();
@@ -88,10 +92,23 @@ abstract class BaseController extends Controller
     public function create()
     {
         $fields = $this->model::getFields();
-        return view($this->viewPath . '.form', [
+        $data = [
             'fields' => $fields,
             'route' => $this->route
-        ]);
+        ];
+
+        // Nếu có models liên quan, thêm các fields của chúng vào view
+        if (!empty($this->relatedModels)) {
+            foreach ($this->relatedModels as $relation => $modelClass) {
+                $data['related_fields'][$relation] = $this->getRelatedModelFields($modelClass);
+                $data['relations'][$relation] = [
+                    'model' => $modelClass,
+                    'multiple' => $this->isRelationMultiple($relation)
+                ];
+            }
+        }
+
+        return view($this->viewPath . '.form', $data);
     }
 
     public function store(Request $request)
@@ -103,7 +120,13 @@ abstract class BaseController extends Controller
             $validated = $this->handleImageUpload($request, $validated);
         }
 
-        $this->model::create($validated);
+        // Tạo instance chính
+        $item = $this->model::create($validated);
+
+        // Xử lý các models liên quan
+        if (!empty($this->relatedModels)) {
+            $this->handleRelatedModels($request, $item);
+        }
 
         return redirect()->route($this->route . '.index')
             ->with('success', 'Item created successfully');
@@ -113,11 +136,32 @@ abstract class BaseController extends Controller
     {
         $item = $this->model::withTrashed()->where('slug', $slug)->firstOrFail();
         $fields = $this->model::getFields();
-        return view($this->viewPath . '.form', [
+
+        $data = [
             'item' => $item,
             'fields' => $fields,
             'route' => $this->route
-        ]);
+        ];
+
+        // Nếu có models liên quan, thêm dữ liệu của chúng vào view
+        if (!empty($this->relatedModels)) {
+            foreach ($this->relatedModels as $relation => $modelClass) {
+                $data['related_fields'][$relation] = $this->getRelatedModelFields($modelClass);
+                $data['relations'][$relation] = [
+                    'model' => $modelClass,
+                    'multiple' => $this->isRelationMultiple($relation)
+                ];
+
+                // Lấy dữ liệu liên quan hiện tại
+                if ($this->isRelationMultiple($relation)) {
+                    $data['related_items'][$relation] = $item->$relation;
+                } else {
+                    $data['related_items'][$relation] = $item->$relation;
+                }
+            }
+        }
+
+        return view($this->viewPath . '.form', $data);
     }
 
     public function update(Request $request, $slug)
@@ -131,6 +175,11 @@ abstract class BaseController extends Controller
         }
 
         $item->update($validated);
+
+        // Xử lý các models liên quan
+        if (!empty($this->relatedModels)) {
+            $this->handleRelatedModels($request, $item, true);
+        }
 
         return redirect()->route($this->route . '.index')
             ->with('success', 'Item updated successfully');
@@ -187,6 +236,80 @@ abstract class BaseController extends Controller
     {
         if ($item->{$this->imageField}) {
             Storage::disk('public')->delete($item->{$this->imageField});
+        }
+    }
+
+    // Phương thức hỗ trợ xử lý các model liên quan
+    protected function getRelatedModelFields($modelClass)
+    {
+        // Lấy cấu hình trường từ model hoặc từ cấu hình
+        $relationName = array_search($modelClass, $this->relatedModels);
+
+        if ($relationName && isset($this->relatedFields[$relationName])) {
+            return $this->relatedFields[$relationName];
+        }
+
+        return $modelClass::getFields();
+    }
+
+    protected function isRelationMultiple($relation)
+    {
+        // Kiểm tra xem quan hệ có phải là 1-n hay không
+        // Các quan hệ có nhiều: hasMany, belongsToMany, morphMany, hasManyThrough...
+        if (method_exists($this->model, $relation)) {
+            $reflection = new \ReflectionMethod($this->model, $relation);
+            $relationInstance = $reflection->invoke(new $this->model);
+
+            return in_array(get_class($relationInstance), [
+                'Illuminate\Database\Eloquent\Relations\HasMany',
+                'Illuminate\Database\Eloquent\Relations\BelongsToMany',
+                'Illuminate\Database\Eloquent\Relations\MorphMany',
+                'Illuminate\Database\Eloquent\Relations\HasManyThrough'
+            ]);
+        }
+
+        return false;
+    }
+
+    protected function handleRelatedModels(Request $request, $item, $isUpdate = false)
+    {
+        foreach ($this->relatedModels as $relation => $modelClass) {
+            $isMultiple = $this->isRelationMultiple($relation);
+            $relationDataKey = "related_{$relation}";
+
+            if ($isMultiple) {
+                // Quan hệ 1-n
+                if ($request->has($relationDataKey)) {
+                    $relatedData = $request->input($relationDataKey);
+
+                    if ($isUpdate) {
+                        // Cập nhật: xóa dữ liệu cũ trước
+                        $item->$relation()->delete();
+                    }
+
+                    // Thêm mới từng item
+                    foreach ($relatedData as $data) {
+                        if (!empty(array_filter($data))) { // Bỏ qua dữ liệu trống
+                            $item->$relation()->create($data);
+                        }
+                    }
+                }
+            } else {
+                // Quan hệ 1-1
+                if ($request->has($relationDataKey)) {
+                    $relatedData = $request->input($relationDataKey);
+
+                    if (!empty(array_filter($relatedData))) {
+                        if ($isUpdate && $item->$relation) {
+                            // Cập nhật
+                            $item->$relation->update($relatedData);
+                        } else {
+                            // Thêm mới
+                            $item->$relation()->create($relatedData);
+                        }
+                    }
+                }
+            }
         }
     }
 }

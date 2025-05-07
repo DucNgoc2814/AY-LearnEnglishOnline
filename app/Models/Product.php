@@ -53,6 +53,18 @@ class Product extends BaseModel
         return $this->belongsTo(Category::class);
     }
 
+    // Quan hệ với bảng thông số kỹ thuật
+    public function specifications()
+    {
+        return $this->hasMany(ProductSpecification::class);
+    }
+
+    // Quan hệ với thông tin chi tiết sản phẩm
+    public function detail()
+    {
+        return $this->hasOne(ProductDetail::class);
+    }
+
     // Format giá tiền
     public function getFormattedPriceAttribute()
     {

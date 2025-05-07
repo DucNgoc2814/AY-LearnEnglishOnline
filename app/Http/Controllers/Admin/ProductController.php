@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Product;
+use App\Models\ProductDetail;
+use App\Models\ProductSpecification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Admin\Traits\HasUploadImage;
@@ -16,6 +18,17 @@ class ProductController extends BaseController
         $this->model = Product::class;
         $this->viewPath = 'admin.crud';
         $this->route = 'admin.products';
+
+        // Cấu hình các model liên quan
+        $this->relatedModels = [
+            'detail' => ProductDetail::class,
+            'specifications' => ProductSpecification::class
+        ];
+
+        $this->hasImage = true;
+        $this->imageField = 'image';
+        $this->imageFolder = 'products';
+
         parent::__construct();
     }
 
@@ -23,7 +36,10 @@ class ProductController extends BaseController
     {
         $validated = $request->validate($this->model::rules());
         $validated = $this->handleImageUpload($request, $validated, 'image', 'products');
-        $this->model::create($validated);
+        $product = $this->model::create($validated);
+
+        // Xử lý các model liên quan
+        $this->handleRelatedModels($request, $product);
 
         return redirect()->route($this->route . '.index')
             ->with('success', 'Sản phẩm đã được tạo thành công');
@@ -35,6 +51,9 @@ class ProductController extends BaseController
         $validated = $request->validate($this->model::rules($id));
         $validated = $this->handleImageUpdate($request, $item, $validated, 'image', 'products');
         $item->update($validated);
+
+        // Xử lý các model liên quan
+        $this->handleRelatedModels($request, $item, true);
 
         return redirect()->route($this->route . '.index')
             ->with('success', 'Sản phẩm đã được cập nhật thành công');

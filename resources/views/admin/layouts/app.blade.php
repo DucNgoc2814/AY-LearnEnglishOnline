@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="{{ asset('js/rich-editor.js') }}"></script>
 </head>
 <body class="bg-gray-100">
     <div class="min-h-screen flex">
@@ -62,5 +63,6 @@
             </main>
         </div>
     </div>
+    @stack('scripts')
 </body>
 </html>
