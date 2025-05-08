@@ -115,15 +115,13 @@ abstract class BaseController extends Controller
     {
         $validated = $request->validate($this->model::rules());
 
-        // Xử lý upload ảnh nếu có
-        if ($this->hasImage) {
-            $validated = $this->handleImageUpload($request, $validated);
-        }
-
-        // Tạo instance chính
+        // Create instance
         $item = $this->model::create($validated);
 
-        // Xử lý các models liên quan
+        // Handle file uploads
+        $this->handleFileUploads($request, $item);
+
+        // Handle related models
         if (!empty($this->relatedModels)) {
             $this->handleRelatedModels($request, $item);
         }
@@ -169,14 +167,12 @@ abstract class BaseController extends Controller
         $item = $this->model::withTrashed()->where('slug', $slug)->firstOrFail();
         $validated = $request->validate($this->model::rules($item->id));
 
-        // Xử lý upload ảnh nếu có
-        if ($this->hasImage) {
-            $validated = $this->handleImageUpdate($request, $item, $validated);
-        }
-
         $item->update($validated);
 
-        // Xử lý các models liên quan
+        // Handle file uploads
+        $this->handleFileUploads($request, $item);
+
+        // Handle related models
         if (!empty($this->relatedModels)) {
             $this->handleRelatedModels($request, $item, true);
         }
@@ -188,12 +184,6 @@ abstract class BaseController extends Controller
     public function destroy($slug)
     {
         $item = $this->model::where('slug', $slug)->firstOrFail();
-
-        // Xử lý xóa ảnh nếu có
-        if ($this->hasImage) {
-            $this->handleImageDelete($item);
-        }
-
         $item->delete();
 
         return redirect()->route($this->route . '.index')
@@ -209,33 +199,21 @@ abstract class BaseController extends Controller
             ->with('success', 'Item restored successfully');
     }
 
-    // Các phương thức xử lý ảnh
-    protected function handleImageUpload(Request $request, array $validated)
+    /**
+     * Handle file uploads for the model
+     */
+    protected function handleFileUploads(Request $request, $item)
     {
-        if ($request->hasFile($this->imageField)) {
-            $validated[$this->imageField] = $request->file($this->imageField)
-                ->store($this->imageFolder, 'public');
-        }
-        return $validated;
-    }
+        $fields = $this->model::getFields();
 
-    protected function handleImageUpdate(Request $request, $item, array $validated)
-    {
-        if ($request->hasFile($this->imageField)) {
-            // Xóa ảnh cũ
-            if ($item->{$this->imageField}) {
-                Storage::disk('public')->delete($item->{$this->imageField});
+        foreach ($fields as $field => $options) {
+            if (in_array($options['type'] ?? '', ['file', 'image', 'video', 'audio']) && $request->hasFile($field)) {
+                $file = $request->file($field);
+
+                // Upload file and save path
+                $path = $item->handleMediaUpload($field, $file);
+                $item->update([$field => $path]);
             }
-            $validated[$this->imageField] = $request->file($this->imageField)
-                ->store($this->imageFolder, 'public');
-        }
-        return $validated;
-    }
-
-    protected function handleImageDelete($item)
-    {
-        if ($item->{$this->imageField}) {
-            Storage::disk('public')->delete($item->{$this->imageField});
         }
     }
 

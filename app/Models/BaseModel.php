@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Traits\HasSlug;
+use App\Traits\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\UploadedFile;
 
 abstract class BaseModel extends Model
 {
-    use SoftDeletes, HasSlug;
+    use SoftDeletes, HasSlug, HasMedia;
 
     protected $guarded = ['id'];
 
@@ -106,5 +108,37 @@ abstract class BaseModel extends Model
     {
         $fields = static::getFields();
         return $fields[$field]['options'] ?? [];
+    }
+
+    /**
+     * Handle file upload for a field
+     */
+    public function handleMediaUpload($field, UploadedFile $file)
+    {
+        $fields = static::getFields();
+        $fieldConfig = $fields[$field] ?? null;
+
+        if (!$fieldConfig) {
+            throw new \InvalidArgumentException("Field {$field} not found in model configuration");
+        }
+
+        $type = $fieldConfig['media_type'] ?? 'image';
+        if (!in_array($type, ['image', 'video', 'audio'])) {
+            throw new \InvalidArgumentException("Invalid media type: {$type}");
+        }
+
+        return $this->handleFileUpload($field, $file, $type);
+    }
+
+    /**
+     * Get full URL for a media field
+     */
+    public function getMediaUrl($field): ?string
+    {
+        if (!$this->$field) {
+            return null;
+        }
+
+        return $this->getFileUrl($this->$field);
     }
 }

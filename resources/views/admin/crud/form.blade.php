@@ -49,18 +49,34 @@
                                     </select>
                                     @break
 
-                                @case('file')
+                                @case('image')
+                                    @if(isset($item))
+                                        @include('admin.partials._media_preview', ['model' => $item, 'field' => $field])
+                                    @endif
                                     <input
                                         type="file"
                                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="{{ $field }}"
                                         name="{{ $field }}"
+                                        accept="image/*"
                                     >
-                                    @if(isset($item) && $item->$field)
-                                        <div class="mt-2">
-                                            <p class="text-sm text-gray-600">Current file: {{ $item->$field }}</p>
-                                        </div>
+                                    @break
+
+                                @case('file')
+                                    @if(isset($item))
+                                        @include('admin.partials._media_preview', ['model' => $item, 'field' => $field])
                                     @endif
+                                    <input
+                                        type="file"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="{{ $field }}"
+                                        name="{{ $field }}"
+                                        @if(str_contains($field, 'video'))
+                                            accept="video/*"
+                                        @elseif(str_contains($field, 'audio'))
+                                            accept="audio/*"
+                                        @endif
+                                    >
                                     @break
 
                                 @case('checkbox')
@@ -338,7 +354,6 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('Form script loaded with native JavaScript');
 
         // Lấy tất cả các nút thêm mới
         var addButtons = document.querySelectorAll('.add-related-btn');
@@ -352,8 +367,6 @@
                 var container = document.getElementById('container-' + relation);
                 var template = document.getElementById('template-' + relation);
 
-                console.log('Adding new item for relation:', relation);
-
                 if (!container || !template) {
                     console.error('Container or template not found');
                     return;
@@ -361,7 +374,6 @@
 
                 // Đếm số lượng item hiện tại
                 var itemCount = container.querySelectorAll('.related-item').length;
-                console.log('Current items:', itemCount);
 
                 // Clone template
                 var newItemTemplate = template.querySelector('.related-item');
@@ -485,11 +497,8 @@
                     var item = this.closest('.related-item');
                     var container = item.parentNode;
 
-                    console.log('Remove button clicked');
-
                     // Nếu là item cuối cùng thì chỉ xóa giá trị
                     if (container.querySelectorAll('.related-item').length <= 1) {
-                        console.log('Last item - clearing fields');
 
                         var inputs = item.querySelectorAll('input, textarea, select');
                         inputs.forEach(function(input) {
@@ -516,8 +525,6 @@
                             }
                         });
                     } else {
-                        // Ngược lại thì xóa phần tử
-                        console.log('Removing item');
 
                         // Hủy các editor trước khi xóa phần tử
                         if (typeof $ !== 'undefined') {
@@ -547,7 +554,6 @@
 
         // Update the updateItemIndices function
         function updateItemIndices(container) {
-            console.log('Updating indices');
 
             var items = container.querySelectorAll('.related-item');
 
