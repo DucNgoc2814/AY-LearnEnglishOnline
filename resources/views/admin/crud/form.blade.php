@@ -49,34 +49,18 @@
                                     </select>
                                     @break
 
-                                @case('image')
-                                    @if(isset($item))
-                                        @include('admin.partials._media_preview', ['model' => $item, 'field' => $field])
-                                    @endif
-                                    <input
-                                        type="file"
-                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="{{ $field }}"
-                                        name="{{ $field }}"
-                                        accept="image/*"
-                                    >
-                                    @break
-
                                 @case('file')
-                                    @if(isset($item))
-                                        @include('admin.partials._media_preview', ['model' => $item, 'field' => $field])
-                                    @endif
                                     <input
                                         type="file"
                                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="{{ $field }}"
                                         name="{{ $field }}"
-                                        @if(str_contains($field, 'video'))
-                                            accept="video/*"
-                                        @elseif(str_contains($field, 'audio'))
-                                            accept="audio/*"
-                                        @endif
                                     >
+                                    @if(isset($item) && $item->$field)
+                                        <div class="mt-2">
+                                            <p class="text-sm text-gray-600">Current file: {{ $item->$field }}</p>
+                                        </div>
+                                    @endif
                                     @break
 
                                 @case('checkbox')

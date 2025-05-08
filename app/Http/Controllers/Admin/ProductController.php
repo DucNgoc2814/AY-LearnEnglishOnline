@@ -6,13 +6,9 @@ use App\Models\Product;
 use App\Models\ProductDetail;
 use App\Models\ProductSpecification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Controllers\Admin\Traits\HasUploadImage;
 
 class ProductController extends BaseController
 {
-    use HasUploadImage;
-
     public function __construct()
     {
         $this->model = Product::class;
@@ -25,18 +21,21 @@ class ProductController extends BaseController
             'specifications' => ProductSpecification::class
         ];
 
-        $this->hasImage = true;
-        $this->imageField = 'image';
-        $this->imageFolder = 'products';
-
         parent::__construct();
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate($this->model::rules());
-        $validated = $this->handleImageUpload($request, $validated, 'image', 'products');
+
+        // Tạo instance mới
         $product = $this->model::create($validated);
+
+        // Xử lý upload media
+        if ($request->hasFile('image')) {
+            $path = $product->handleMediaUpload('image', $request->file('image'));
+            $product->update(['image' => $path]);
+        }
 
         // Xử lý các model liên quan
         $this->handleRelatedModels($request, $product);
@@ -49,8 +48,15 @@ class ProductController extends BaseController
     {
         $item = $this->model::findOrFail($id);
         $validated = $request->validate($this->model::rules($id));
-        $validated = $this->handleImageUpdate($request, $item, $validated, 'image', 'products');
+
+        // Cập nhật thông tin cơ bản
         $item->update($validated);
+
+        // Xử lý upload media
+        if ($request->hasFile('image')) {
+            $path = $item->handleMediaUpload('image', $request->file('image'));
+            $item->update(['image' => $path]);
+        }
 
         // Xử lý các model liên quan
         $this->handleRelatedModels($request, $item, true);
@@ -62,7 +68,6 @@ class ProductController extends BaseController
     public function destroy($id)
     {
         $item = $this->model::findOrFail($id);
-        $this->handleImageDelete($item, 'image');
         $item->delete();
 
         return redirect()->route($this->route . '.index')

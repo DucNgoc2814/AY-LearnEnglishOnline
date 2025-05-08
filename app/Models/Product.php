@@ -4,33 +4,45 @@ namespace App\Models;
 
 class Product extends BaseModel
 {
-    public static function getMediaConfig(): array
+    /**
+     * Define media fields for the model
+     */
+    public static function mediaFields(): array
     {
         return [
             'image' => [
+                'type' => 'image',
                 'max_size' => 2048, // 2MB
                 'mimes' => 'jpeg,png,jpg,gif',
+                'label' => 'Hình ảnh sản phẩm'
             ],
             'video' => [
-                'max_size' => 10240, // 10MB
+                'type' => 'video',
+                'max_size' => 20480, // 20MB
                 'mimes' => 'mp4,mov,avi',
+                'label' => 'Video sản phẩm'
             ],
             'audio' => [
-                'max_size' => 5120, // 5MB
+                'type' => 'audio',
+                'max_size' => 10240, // 10MB
                 'mimes' => 'mp3,wav',
+                'label' => 'Audio sản phẩm'
             ]
         ];
     }
 
-    public static function rules($id = null)
+    /**
+     * Get base validation rules
+     */
+    public static function getBaseRules($id = null)
     {
-        return array_merge([
+        return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'category_id' => 'nullable|exists:categories,id',
             'is_active' => 'boolean'
-        ], static::getMediaValidationRules());
+        ];
     }
 
     public static function getFields()
@@ -60,12 +72,11 @@ class Product extends BaseModel
             ]
         ];
 
-        // Add media fields
-        foreach (static::getSupportedMediaTypes() as $type) {
-            $fields[$type] = [
-                'label' => ucfirst($type),
-                'type' => $type === 'image' ? 'image' : 'file',
-                'media_type' => $type
+        // Thêm các trường media vào fields
+        foreach (static::mediaFields() as $field => $config) {
+            $fields[$field] = [
+                'label' => $config['label'],
+                'type' => 'file'
             ];
         }
 
@@ -93,21 +104,5 @@ class Product extends BaseModel
     public function getFormattedPriceAttribute()
     {
         return number_format($this->price, 0, ',', '.') . ' đ';
-    }
-
-    // Get media URLs
-    public function getImageUrlAttribute()
-    {
-        return $this->getMediaUrl('image');
-    }
-
-    public function getVideoUrlAttribute()
-    {
-        return $this->getMediaUrl('video');
-    }
-
-    public function getAudioUrlAttribute()
-    {
-        return $this->getMediaUrl('audio');
     }
 }

@@ -2,79 +2,49 @@
 
 namespace App\Traits;
 
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 trait HasMedia
 {
     /**
-     * Get media configuration for the model
-     * Override this method in your model to define which media types are supported
+     * Get the table name for the model
      */
-    public static function getMediaConfig(): array
+    protected function getTableNameForMedia(): string
     {
-        return [
-            'image' => [
-                'max_size' => 2048, // 2MB
-                'mimes' => 'jpeg,png,jpg,gif',
-            ],
-            'video' => [
-                'max_size' => 10240, // 10MB
-                'mimes' => 'mp4,mov,avi',
-            ],
-            'audio' => [
-                'max_size' => 5120, // 5MB
-                'mimes' => 'mp3,wav',
-            ]
-        ];
+        return $this->getTable();
     }
 
     /**
-     * Get supported media types for the model
+     * Handle file upload to S3
+     *
+     * @param string $field Field name
+     * @param UploadedFile $file The uploaded file
+     * @return string The file path that was stored
      */
-    public static function getSupportedMediaTypes(): array
+    public function handleMediaUpload(string $field, UploadedFile $file): string
     {
-        return array_keys(static::getMediaConfig());
-    }
-
-    /**
-     * Get validation rules for media fields
-     */
-    public static function getMediaValidationRules(): array
-    {
-        $rules = [];
-        $config = static::getMediaConfig();
-
-        foreach ($config as $type => $settings) {
-            $rules[$type] = [
-                'nullable',
-                'file',
-                'mimes:' . $settings['mimes'],
-                'max:' . $settings['max_size']
-            ];
+        if (!static::isMediaField($field)) {
+            throw new \InvalidArgumentException("Field {$field} is not configured as a media field");
         }
 
-        return $rules;
-    }
-
-    /**
-     * Upload a file to S3 and return the path
-     */
-    protected function uploadFile(UploadedFile $file, string $type = 'image'): string
-    {
-        if (!in_array($type, static::getSupportedMediaTypes())) {
-            throw new \InvalidArgumentException("Unsupported media type: {$type}");
+        $type = static::getMediaType($field);
+        if (!in_array($type, ['image', 'video', 'audio'])) {
+            throw new \InvalidArgumentException('Invalid media type');
         }
 
-        // Get table name for folder structure
-        $table = $this->getTable();
+        // Delete old file if exists
+        if ($this->$field) {
+            $this->deleteMedia($this->$field);
+        }
 
         // Generate unique filename
-        $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $extension = $file->getClientOriginalExtension();
+        $filename = Str::uuid() . '.' . $extension;
 
-        // Create path based on table and file type
-        $path = "{$table}/{$type}/" . $filename;
+        // Create path based on table name and media type
+        $path = $this->getTableNameForMedia() . '/' . $type . '/' . $filename;
 
         // Store file to S3
         Storage::disk('s3')->put($path, file_get_contents($file));
@@ -83,72 +53,47 @@ trait HasMedia
     }
 
     /**
-     * Delete a file from S3
+     * Delete media from S3
+     *
+     * @param string $path Path to the file
+     * @return bool
      */
-    protected function deleteFile(string $path): bool
+    public function deleteMedia(?string $path): bool
     {
-        if ($path && Storage::disk('s3')->exists($path)) {
-            return Storage::disk('s3')->delete($path);
+        if (!$path) {
+            return false;
         }
-        return false;
+
+        return Storage::disk('s3')->delete($path);
     }
 
     /**
-     * Get full URL for a file
+     * Get media URL
+     *
+     * @param string $field Field name containing the media path
+     * @return string|null
      */
-    protected function getFileUrl(?string $path): ?string
+    public function getMediaUrl(?string $field): ?string
     {
-        if (!$path) {
+        if (!$this->$field) {
             return null;
         }
 
-        $s3Url = env('AWS_URL');
-        if (!$s3Url) {
-            throw new \RuntimeException('AWS_URL not configured');
-        }
-
-        return rtrim($s3Url, '/') . '/' . $path;
+        return Storage::disk('s3')->temporaryUrl(
+            $this->$field,
+            now()->addMinutes(5)
+        );
     }
 
     /**
-     * Handle file upload for a field
+     * Delete all media files for the model
      */
-    public function handleFileUpload($field, UploadedFile $file, string $type = 'image'): string
+    public function deleteAllMedia(): void
     {
-        if (!in_array($type, static::getSupportedMediaTypes())) {
-            throw new \InvalidArgumentException("Unsupported media type: {$type}");
-        }
-
-        // Delete old file if exists
-        if ($this->$field) {
-            $this->deleteFile($this->$field);
-        }
-
-        // Upload new file
-        return $this->uploadFile($file, $type);
-    }
-
-    /**
-     * Register media URL accessors for the model
-     */
-    protected static function bootHasMedia()
-    {
-        foreach (static::getSupportedMediaTypes() as $type) {
-            static::addMediaUrlAccessor($type);
-        }
-    }
-
-    /**
-     * Add URL accessor for a media type
-     */
-    protected static function addMediaUrlAccessor(string $type)
-    {
-        $method = 'get' . Str::studly($type) . 'UrlAttribute';
-
-        if (!method_exists(static::class, $method)) {
-            static::macro($method, function () use ($type) {
-                return $this->getFileUrl($this->$type);
-            });
+        foreach (static::mediaFields() as $field => $config) {
+            if ($this->$field) {
+                $this->deleteMedia($this->$field);
+            }
         }
     }
 }

@@ -15,11 +15,6 @@ abstract class BaseController extends Controller
     protected $route;
     protected $itemsPerPage = 10;
 
-    // Cấu hình xử lý ảnh
-    protected $hasImage = false; // Mặc định không xử lý ảnh
-    protected $imageField = 'image'; // Tên trường ảnh
-    protected $imageFolder = 'uploads'; // Thư mục lưu ảnh
-
     // Cấu hình cho các models liên quan
     protected $relatedModels = []; // Danh sách các models liên quan, format: ['relation_name' => ModelClass::class]
     protected $relatedFields = []; // Cấu hình trường cho từng model liên quan
@@ -115,13 +110,13 @@ abstract class BaseController extends Controller
     {
         $validated = $request->validate($this->model::rules());
 
-        // Create instance
+        // Tạo instance chính
         $item = $this->model::create($validated);
 
-        // Handle file uploads
-        $this->handleFileUploads($request, $item);
+        // Xử lý upload media
+        $this->handleMediaUploads($request, $item);
 
-        // Handle related models
+        // Xử lý các models liên quan
         if (!empty($this->relatedModels)) {
             $this->handleRelatedModels($request, $item);
         }
@@ -167,12 +162,13 @@ abstract class BaseController extends Controller
         $item = $this->model::withTrashed()->where('slug', $slug)->firstOrFail();
         $validated = $request->validate($this->model::rules($item->id));
 
+        // Cập nhật thông tin
         $item->update($validated);
 
-        // Handle file uploads
-        $this->handleFileUploads($request, $item);
+        // Xử lý upload media
+        $this->handleMediaUploads($request, $item);
 
-        // Handle related models
+        // Xử lý các models liên quan
         if (!empty($this->relatedModels)) {
             $this->handleRelatedModels($request, $item, true);
         }
@@ -184,6 +180,12 @@ abstract class BaseController extends Controller
     public function destroy($slug)
     {
         $item = $this->model::where('slug', $slug)->firstOrFail();
+
+        // Xóa media files
+        if (method_exists($item, 'deleteAllMedia')) {
+            $item->deleteAllMedia();
+        }
+
         $item->delete();
 
         return redirect()->route($this->route . '.index')
@@ -200,18 +202,17 @@ abstract class BaseController extends Controller
     }
 
     /**
-     * Handle file uploads for the model
+     * Handle media uploads for the model
      */
-    protected function handleFileUploads(Request $request, $item)
+    protected function handleMediaUploads(Request $request, $item)
     {
-        $fields = $this->model::getFields();
+        if (!method_exists($item, 'mediaFields')) {
+            return;
+        }
 
-        foreach ($fields as $field => $options) {
-            if (in_array($options['type'] ?? '', ['file', 'image', 'video', 'audio']) && $request->hasFile($field)) {
-                $file = $request->file($field);
-
-                // Upload file and save path
-                $path = $item->handleMediaUpload($field, $file);
+        foreach ($item::mediaFields() as $field => $config) {
+            if ($request->hasFile($field)) {
+                $path = $item->handleMediaUpload($field, $request->file($field));
                 $item->update([$field => $path]);
             }
         }
