@@ -31,10 +31,12 @@ class ProductController extends BaseController
         // Tạo instance mới
         $product = $this->model::create($validated);
 
-        // Xử lý upload media
-        if ($request->hasFile('image')) {
-            $path = $product->handleMediaUpload('image', $request->file('image'));
-            $product->update(['image' => $path]);
+        // Xử lý upload tất cả các trường media
+        foreach ($product::mediaFields() as $field => $config) {
+            if ($request->hasFile($field)) {
+                $path = $product->handleMediaUpload($field, $request->file($field));
+                $product->update([$field => $path]);
+            }
         }
 
         // Xử lý các model liên quan
@@ -52,10 +54,12 @@ class ProductController extends BaseController
         // Cập nhật thông tin cơ bản
         $item->update($validated);
 
-        // Xử lý upload media
-        if ($request->hasFile('image')) {
-            $path = $item->handleMediaUpload('image', $request->file('image'));
-            $item->update(['image' => $path]);
+        // Xử lý upload tất cả các trường media
+        foreach ($item::mediaFields() as $field => $config) {
+            if ($request->hasFile($field)) {
+                $path = $item->handleMediaUpload($field, $request->file($field));
+                $item->update([$field => $path]);
+            }
         }
 
         // Xử lý các model liên quan

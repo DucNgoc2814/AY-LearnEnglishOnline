@@ -29,9 +29,19 @@ trait HasMedia
             throw new \InvalidArgumentException("Field {$field} is not configured as a media field");
         }
 
-        $type = static::getMediaType($field);
+        $config = static::getMediaFieldConfig($field);
+        $type = $config['type'] ?? null;
+
         if (!in_array($type, ['image', 'video', 'audio'])) {
             throw new \InvalidArgumentException('Invalid media type');
+        }
+
+        // Validate mime type
+        $allowedMimes = explode(',', $config['mimes'] ?? '');
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        if (!empty($allowedMimes) && !in_array($extension, $allowedMimes)) {
+            throw new \InvalidArgumentException("Invalid file type. Allowed types: " . implode(', ', $allowedMimes));
         }
 
         // Delete old file if exists
@@ -40,7 +50,6 @@ trait HasMedia
         }
 
         // Generate unique filename
-        $extension = $file->getClientOriginalExtension();
         $filename = Str::uuid() . '.' . $extension;
 
         // Create path based on table name and media type
@@ -79,10 +88,14 @@ trait HasMedia
             return null;
         }
 
-        return Storage::disk('s3')->temporaryUrl(
-            $this->$field,
-            now()->addMinutes(5)
-        );
+        // Get the base S3 URL from config
+        $baseUrl = config('filesystems.disks.s3.url');
+        if (!$baseUrl) {
+            $baseUrl = 'https://' . config('filesystems.disks.s3.bucket') . '.s3.' .
+                      config('filesystems.disks.s3.region') . '.amazonaws.com';
+        }
+
+        return $baseUrl . '/' . $this->$field;
     }
 
     /**
