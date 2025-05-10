@@ -3,61 +3,70 @@
 @section('title', $title ?? 'List')
 
 @section('content')
-<div class="bg-white shadow rounded-lg">
-    <div class="p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-semibold text-gray-900">{{ $title ?? 'List' }}</h2>
-            <div class="flex space-x-2">
-                <a href="{{ route($route.'.index', ['trashed' => request()->get('trashed') ? 0 : 1]) }}"
-                   class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    {{ request()->get('trashed') ? 'View Active' : 'View Trash' }}
-                </a>
-                <a href="{{ route($route.'.create') }}"
-                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Add New
-                </a>
-            </div>
+<div class="space-y-6">
+    <!-- Header Section -->
+    <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-bold text-gray-900">{{ $title ?? 'List' }}</h2>
+        <div class="flex space-x-3">
+            <a href="{{ route($route.'.index', ['trashed' => request()->get('trashed') ? 0 : 1]) }}"
+               class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                <svg class="w-5 h-5 mr-2 {{ request()->get('trashed') ? 'text-green-500' : 'text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ request()->get('trashed') ? 'M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3' : 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' }}" />
+                </svg>
+                {{ request()->get('trashed') ? 'View Active' : 'View Trash' }}
+            </a>
+            <a href="{{ route($route.'.create') }}"
+               class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Add New
+            </a>
         </div>
+    </div>
 
-        <!-- Search and Filter Section -->
-        <div class="mb-6">
+    <!-- Search and Filter Section -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="p-5">
             <form action="{{ route($route.'.index') }}" method="GET" class="space-y-4">
                 <input type="hidden" name="trashed" value="{{ request()->get('trashed', 0) }}">
 
-                <!-- Search Bar -->
-                <div class="flex space-x-4">
-                    <div class="flex-1">
-                        <div class="relative">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Search Bar -->
+                    <div class="md:col-span-2">
+                        <div class="relative rounded-md shadow-sm">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                             </div>
                             <input type="text" name="search" value="{{ request()->get('search') }}"
-                                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                    placeholder="Search...">
                         </div>
                     </div>
 
-                    <!-- Filters Dropdown -->
-                    <div class="flex space-x-4">
-                        @foreach($fields as $field => $options)
-                            @if(isset($options['filterable']) && $options['filterable'])
-                            <select name="filter[{{ $field }}]"
-                                    class="block w-40 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                                <option value="">Filter {{ $options['label'] ?? ucfirst($field) }}</option>
-                                @foreach($options['filter_options'] ?? [] as $value => $label)
-                                    <option value="{{ $value }}" {{ request()->input("filter.$field") == $value ? 'selected' : '' }}>
-                                        {{ $label }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @endif
-                        @endforeach
+                    <!-- Filters -->
+                    @foreach($fields as $field => $options)
+                        @if(isset($options['filterable']) && $options['filterable'])
+                            <div>
+                                <select name="filter[{{ $field }}]"
+                                        class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                    <option value="">{{ $options['label'] ?? ucfirst($field) }}</option>
+                                    @foreach($options['filter_options'] ?? [] as $value => $label)
+                                        <option value="{{ $value }}" {{ request()->input("filter.$field") == $value ? 'selected' : '' }}>
+                                            {{ $label }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
+                    @endforeach
 
-                        <!-- Sort Dropdown -->
+                    <!-- Sort -->
+                    <div>
                         <select name="sort"
-                                class="block w-48 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
                             <option value="">Sort By</option>
                             @foreach($fields as $field => $options)
                                 @if(!isset($options['sortable']) || $options['sortable'])
@@ -71,90 +80,185 @@
                             @endforeach
                         </select>
                     </div>
+                </div>
 
-                    <!-- Apply Filters Button -->
+                <div class="flex justify-between items-center pt-4">
                     <button type="submit"
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                        </svg>
                         Apply Filters
                     </button>
 
-                    <!-- Clear Filters -->
                     @if(request()->has('search') || request()->has('filter') || request()->has('sort'))
                         <a href="{{ route($route.'.index', ['trashed' => request()->get('trashed', 0)]) }}"
-                           class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                           class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                            <svg class="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
                             Clear Filters
                         </a>
                     @endif
                 </div>
             </form>
         </div>
+    </div>
 
+    <!-- Table Section -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
                         @foreach($fields as $field => $options)
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            {{ $options['label'] ?? ucfirst($field) }}
-                        </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ $options['label'] ?? ucfirst($field) }}
+                            </th>
                         @endforeach
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Actions
                         </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($items as $item)
-                    <tr>
-                        @foreach($fields as $field => $options)
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ $item->$field }}
-                        </td>
-                        @endforeach
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            @if($item->trashed())
-                                <form action="{{ route($route.'.restore', $item->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="text-green-600 hover:text-green-900 p-1 rounded-full hover:bg-green-50 transition-colors duration-200" title="Restore">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
-                                        </svg>
-                                    </button>
-                                </form>
-                            @else
-                                <div class="flex items-center justify-end space-x-2">
+                    @forelse($items as $item)
+                        <tr class="hover:bg-gray-50 transition-colors duration-200">
+                            @foreach($fields as $field => $options)
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
+                                    @if(isset($options['type']) && $options['type'] == 'file')
+                                        @php
+                                            $mediaUrl = $item->getMediaUrl($field);
+                                            $extension = pathinfo($item->$field ?? '', PATHINFO_EXTENSION);
+                                            $fileType = '';
+
+                                            if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif'])) {
+                                                $fileType = 'image';
+                                            } elseif (in_array(strtolower($extension), ['mp4', 'mov', 'avi'])) {
+                                                $fileType = 'video';
+                                            } elseif (in_array(strtolower($extension), ['mp3', 'wav'])) {
+                                                $fileType = 'audio';
+                                            }
+                                        @endphp
+
+                                        @if($mediaUrl)
+                                            <div class="relative group flex justify-center">
+                                                @if($fileType == 'image')
+                                                    <div class="h-16 w-16 rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                                                        <img src="{{ $mediaUrl }}" alt="{{ basename($item->$field) }}"
+                                                             class="h-full w-full object-cover transform group-hover:scale-110 transition-transform duration-200">
+                                                    </div>
+                                                @elseif($fileType == 'video')
+                                                    <div class="h-16 w-16 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100 transition-colors duration-200 shadow-sm border border-gray-200">
+                                                        <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                        </svg>
+                                                    </div>
+                                                @elseif($fileType == 'audio')
+                                                    <div class="h-16 w-16 bg-green-50 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors duration-200 shadow-sm border border-gray-200">
+                                                        <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                  d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                                                        </svg>
+                                                    </div>
+                                                @endif
+
+                                                <!-- Preview/Download Overlay -->
+                                                <div class="opacity-0 group-hover:opacity-100 absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center space-x-2 transition-opacity duration-200">
+                                                    @if($fileType == 'image')
+                                                        <a href="{{ $mediaUrl }}" target="_blank"
+                                                           class="p-1.5 rounded-full bg-white text-gray-700 hover:text-blue-500 transition-colors duration-200 tooltip"
+                                                           data-tooltip="Preview">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                            </svg>
+                                                        </a>
+                                                    @elseif($fileType == 'video')
+                                                        <a href="{{ $mediaUrl }}" target="_blank"
+                                                           class="p-1.5 rounded-full bg-white text-gray-700 hover:text-blue-500 transition-colors duration-200 tooltip"
+                                                           data-tooltip="Play Video">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                                                            </svg>
+                                                        </a>
+                                                    @elseif($fileType == 'audio')
+                                                        <a href="{{ $mediaUrl }}" target="_blank"
+                                                           class="p-1.5 rounded-full bg-white text-gray-700 hover:text-green-500 transition-colors duration-200 tooltip"
+                                                           data-tooltip="Play Audio">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                      d="M9 19V6l12-3v13"/>
+                                                            </svg>
+                                                        </a>
+                                                    @endif
+
+                                                    <a href="{{ $mediaUrl }}" download="{{ basename($item->$field) }}"
+                                                       class="p-1.5 rounded-full bg-white text-gray-700 hover:text-green-500 transition-colors duration-200 tooltip"
+                                                       data-tooltip="Download">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                                No file
+                                            </span>
+                                        @endif
+                                    @else
+                                        <span class="flex justify-center">{{ $item->$field }}</span>
+                                    @endif
+                                </td>
+                            @endforeach
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
+                                <div class="flex items-center justify-center space-x-2">
                                     <a href="{{ route($route.'.edit', $item->id) }}"
-                                       class="p-1 rounded-full text-indigo-600 hover:text-indigo-900 hover:bg-indigo-50 transition-colors duration-200"
+                                       class="text-indigo-600 hover:text-indigo-900 p-1.5 hover:bg-indigo-50 rounded-full transition-colors duration-200"
                                        title="Edit">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </a>
                                     <form action="{{ route($route.'.destroy', $item->id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                                class="p-1 rounded-full text-red-600 hover:text-red-900 hover:bg-red-50 transition-colors duration-200"
+                                                class="text-red-600 hover:text-red-900 p-1.5 hover:bg-red-50 rounded-full transition-colors duration-200"
                                                 title="Move to Trash"
                                                 onclick="return confirm('Are you sure you want to move this item to trash?')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
                                         </button>
                                     </form>
                                 </div>
-                            @endif
-                        </td>
-                    </tr>
-                    @endforeach
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="{{ count($fields) + 1 }}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                No items found.
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
-        <div class="px-6 py-4">
-            {{ $items->links() }}
-        </div>
+        @if($items->hasPages())
+            <div class="px-6 py-4 border-t border-gray-200">
+                {{ $items->links() }}
+            </div>
+        @endif
     </div>
 </div>
 @endsection

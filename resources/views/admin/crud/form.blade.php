@@ -50,17 +50,72 @@
                                     @break
 
                                 @case('file')
-                                    <input
-                                        type="file"
-                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        id="{{ $field }}"
-                                        name="{{ $field }}"
-                                    >
-                                    @if(isset($item) && $item->$field)
-                                        <div class="mt-2">
-                                            <p class="text-sm text-gray-600">Current file: {{ $item->$field }}</p>
-                                        </div>
-                                    @endif
+                                    <div class="media-upload-container">
+                                        <input
+                                            type="file"
+                                            class="hidden media-input"
+                                            id="{{ $field }}"
+                                            name="{{ $field }}"
+                                            accept="{{ implode(',', array_map(fn($mime) => '.' . $mime, explode(',', $options['mimes'] ?? ''))) }}"
+                                            onchange="handleMediaPreview(this)"
+                                        >
+
+                                        <label for="{{ $field }}" class="cursor-pointer block">
+                                            <div class="media-preview-container border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-500 transition-colors">
+                                                <!-- Preview Container -->
+                                                <div class="preview-box {{ isset($item) && $item->$field ? '' : 'hidden' }} mb-3">
+                                                    @php
+                                                        $mediaUrl = isset($item) ? $item->getMediaUrl($field) : null;
+                                                        $extension = isset($item) && $item->$field ? pathinfo($item->$field, PATHINFO_EXTENSION) : '';
+                                                        $fileType = '';
+
+                                                        if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif'])) {
+                                                            $fileType = 'image';
+                                                        } elseif (in_array(strtolower($extension), ['mp4', 'mov', 'avi'])) {
+                                                            $fileType = 'video';
+                                                        } elseif (in_array(strtolower($extension), ['mp3', 'wav'])) {
+                                                            $fileType = 'audio';
+                                                        }
+                                                    @endphp
+
+                                                    @if($fileType == 'image')
+                                                        <img src="{{ $mediaUrl }}" class="max-h-48 mx-auto rounded-lg shadow-sm" alt="Preview">
+                                                    @elseif($fileType == 'video')
+                                                        <video src="{{ $mediaUrl }}" class="max-h-48 mx-auto rounded-lg shadow-sm" controls></video>
+                                                    @elseif($fileType == 'audio')
+                                                        <audio src="{{ $mediaUrl }}" class="w-full" controls></audio>
+                                                    @endif
+                                                </div>
+
+                                                <!-- Upload Icon & Text -->
+                                                <div class="upload-placeholder {{ isset($item) && $item->$field ? 'hidden' : '' }}">
+                                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4-4m0 0l4-4m-4 4l-4 4m8-12V12a4 4 0 00-4-4h-12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    </svg>
+                                                    <p class="mt-1 text-sm text-gray-600">
+                                                        Click to upload or drag and drop<br>
+                                                        {{ implode(', ', explode(',', strtoupper($options['mimes'] ?? ''))) }}
+                                                    </p>
+                                                </div>
+
+                                                <!-- File Info -->
+                                                <div class="file-info {{ isset($item) && $item->$field ? '' : 'hidden' }} mt-2 text-sm text-gray-600">
+                                                    <p class="selected-file-name">
+                                                        {{ isset($item) && $item->$field ? basename($item->$field) : '' }}
+                                                    </p>
+                                                    <button type="button"
+                                                            class="text-red-600 hover:text-red-800 mt-1"
+                                                            onclick="removeMedia(this, '{{ $field }}')">
+                                                        Remove
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    @error($field)
+                                        <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                                    @enderror
                                     @break
 
                                 @case('checkbox')
@@ -337,6 +392,9 @@
 
 @push('scripts')
 <script>
+    // Store temporary files
+    let tempFiles = {};
+
     document.addEventListener('DOMContentLoaded', function() {
 
         // Lấy tất cả các nút thêm mới
@@ -569,6 +627,176 @@
 
         // Khởi tạo sự kiện cho các nút xóa khi trang được tải
         initRemoveButtons();
+    });
+
+    function handleMediaPreview(input) {
+        const container = input.closest('.media-upload-container');
+        const previewBox = container.querySelector('.preview-box');
+        const placeholder = container.querySelector('.upload-placeholder');
+        const fileInfo = container.querySelector('.file-info');
+        const fileNameElement = container.querySelector('.selected-file-name');
+
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const reader = new FileReader();
+
+            // Store file in temporary storage
+            tempFiles[input.id] = file;
+
+            // Show file name
+            fileNameElement.textContent = file.name;
+            fileInfo.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+
+            // Handle preview based on file type
+            if (file.type.startsWith('image/')) {
+                reader.onload = function(e) {
+                    previewBox.innerHTML = `<img src="${e.target.result}" class="max-h-48 mx-auto rounded-lg shadow-sm" alt="Preview">`;
+                    previewBox.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+            else if (file.type.startsWith('video/')) {
+                reader.onload = function(e) {
+                    previewBox.innerHTML = `<video src="${e.target.result}" class="max-h-48 mx-auto rounded-lg shadow-sm" controls></video>`;
+                    previewBox.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+            else if (file.type.startsWith('audio/')) {
+                reader.onload = function(e) {
+                    previewBox.innerHTML = `<audio src="${e.target.result}" class="w-full" controls></audio>`;
+                    previewBox.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // Store preview data in localStorage
+            reader.onloadend = function() {
+                try {
+                    localStorage.setItem(`preview_${input.id}`, reader.result);
+                    localStorage.setItem(`filename_${input.id}`, file.name);
+                    localStorage.setItem(`filetype_${input.id}`, file.type);
+                } catch (e) {
+                    console.warn('Failed to store preview in localStorage:', e);
+                }
+            };
+        }
+    }
+
+    function removeMedia(button, fieldName) {
+        const container = button.closest('.media-upload-container');
+        const input = container.querySelector('.media-input');
+        const previewBox = container.querySelector('.preview-box');
+        const placeholder = container.querySelector('.upload-placeholder');
+        const fileInfo = container.querySelector('.file-info');
+
+        // Clear input and temporary storage
+        input.value = '';
+        delete tempFiles[input.id];
+        localStorage.removeItem(`preview_${input.id}`);
+        localStorage.removeItem(`filename_${input.id}`);
+        localStorage.removeItem(`filetype_${input.id}`);
+
+        // Reset preview
+        previewBox.innerHTML = '';
+        previewBox.classList.add('hidden');
+
+        // Show placeholder
+        placeholder.classList.remove('hidden');
+
+        // Hide file info
+        fileInfo.classList.add('hidden');
+
+        // If you want to remove the existing file on the server when editing
+        if (document.querySelector('input[name="_method"]')?.value === 'PUT') {
+            // Add a hidden input to indicate file removal
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = `remove_${fieldName}`;
+            hiddenInput.value = '1';
+            container.appendChild(hiddenInput);
+        }
+    }
+
+    // Handle drag and drop
+    document.querySelectorAll('.media-preview-container').forEach(container => {
+        container.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            container.classList.add('border-blue-500');
+        });
+
+        container.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            container.classList.remove('border-blue-500');
+        });
+
+        container.addEventListener('drop', (e) => {
+            e.preventDefault();
+            container.classList.remove('border-blue-500');
+
+            const input = container.closest('.media-upload-container').querySelector('.media-input');
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            input.files = files;
+            handleMediaPreview(input);
+        });
+    });
+
+    // Restore previews from localStorage on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.media-input').forEach(input => {
+            const previewData = localStorage.getItem(`preview_${input.id}`);
+            const fileName = localStorage.getItem(`filename_${input.id}`);
+            const fileType = localStorage.getItem(`filetype_${input.id}`);
+
+            if (previewData && fileName && fileType) {
+                const container = input.closest('.media-upload-container');
+                const previewBox = container.querySelector('.preview-box');
+                const placeholder = container.querySelector('.upload-placeholder');
+                const fileInfo = container.querySelector('.file-info');
+                const fileNameElement = container.querySelector('.selected-file-name');
+
+                // Show file name
+                fileNameElement.textContent = fileName;
+                fileInfo.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+
+                // Show preview based on file type
+                if (fileType.startsWith('image/')) {
+                    previewBox.innerHTML = `<img src="${previewData}" class="max-h-48 mx-auto rounded-lg shadow-sm" alt="Preview">`;
+                } else if (fileType.startsWith('video/')) {
+                    previewBox.innerHTML = `<video src="${previewData}" class="max-h-48 mx-auto rounded-lg shadow-sm" controls></video>`;
+                } else if (fileType.startsWith('audio/')) {
+                    previewBox.innerHTML = `<audio src="${previewData}" class="w-full" controls></audio>`;
+                }
+                previewBox.classList.remove('hidden');
+
+                // Create a new File object from the stored data
+                fetch(previewData)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], fileName, { type: fileType });
+                        tempFiles[input.id] = file;
+
+                        // Create a new FileList-like object
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        input.files = dataTransfer.files;
+                    });
+            }
+        });
+
+        // Clear localStorage after restoring previews
+        const formElement = document.querySelector('form');
+        formElement.addEventListener('submit', () => {
+            document.querySelectorAll('.media-input').forEach(input => {
+                localStorage.removeItem(`preview_${input.id}`);
+                localStorage.removeItem(`filename_${input.id}`);
+                localStorage.removeItem(`filetype_${input.id}`);
+            });
+        });
     });
 </script>
 @endpush

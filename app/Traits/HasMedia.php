@@ -88,14 +88,11 @@ trait HasMedia
             return null;
         }
 
-        // Get the base S3 URL from config
-        $baseUrl = config('filesystems.disks.s3.url');
-        if (!$baseUrl) {
-            $baseUrl = 'https://' . config('filesystems.disks.s3.bucket') . '.s3.' .
-                      config('filesystems.disks.s3.region') . '.amazonaws.com';
-        }
+        $bucket = config('filesystems.disks.s3.bucket');
+        $region = config('filesystems.disks.s3.region');
 
-        return $baseUrl . '/' . $this->$field;
+        // Format: https://bucket-name.s3.region.amazonaws.com/path/to/file
+        return "https://{$bucket}.s3.{$region}.amazonaws.com/" . $this->$field;
     }
 
     /**
