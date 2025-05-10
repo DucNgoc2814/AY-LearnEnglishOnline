@@ -48,8 +48,8 @@ class ProductController extends BaseController
 
     public function update(Request $request, $id)
     {
-        $item = $this->model::findOrFail($id);
-        $validated = $request->validate($this->model::rules($id));
+        $item = $this->model::withTrashed()->findOrFail($id);
+        $validated = $request->validate($this->model::rules($item->id));
 
         // Cập nhật thông tin cơ bản
         $item->update($validated);
@@ -59,6 +59,15 @@ class ProductController extends BaseController
             if ($request->hasFile($field)) {
                 $path = $item->handleMediaUpload($field, $request->file($field));
                 $item->update([$field => $path]);
+            }
+            // Nếu không có file mới và có request xóa file cũ
+            elseif ($request->has("remove_{$field}")) {
+                $item->deleteMedia($item->$field);
+                $item->update([$field => null]);
+            }
+            // Nếu không có file mới nhưng có file cũ và đang edit
+            elseif ($request->has("{$field}_current")) {
+                $item->update([$field => $request->input("{$field}_current")]);
             }
         }
 

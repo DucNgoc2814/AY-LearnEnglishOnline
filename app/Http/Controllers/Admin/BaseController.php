@@ -125,9 +125,9 @@ abstract class BaseController extends Controller
             ->with('success', 'Item created successfully');
     }
 
-    public function edit($slug)
+    public function edit($id)
     {
-        $item = $this->model::withTrashed()->where('slug', $slug)->firstOrFail();
+        $item = $this->model::withTrashed()->findOrFail($id);
         $fields = $this->model::getFields();
 
         $data = [
@@ -157,9 +157,9 @@ abstract class BaseController extends Controller
         return view($this->viewPath . '.form', $data);
     }
 
-    public function update(Request $request, $slug)
+    public function update(Request $request, $id)
     {
-        $item = $this->model::withTrashed()->where('slug', $slug)->firstOrFail();
+        $item = $this->model::withTrashed()->findOrFail($id);
         $validated = $request->validate($this->model::rules($item->id));
 
         // Cập nhật thông tin
@@ -177,9 +177,9 @@ abstract class BaseController extends Controller
             ->with('success', 'Item updated successfully');
     }
 
-    public function destroy($slug)
+    public function destroy($id)
     {
-        $item = $this->model::where('slug', $slug)->firstOrFail();
+        $item = $this->model::findOrFail($id);
 
         // Xóa media files
         if (method_exists($item, 'deleteAllMedia')) {
@@ -192,9 +192,9 @@ abstract class BaseController extends Controller
             ->with('success', 'Item moved to trash successfully');
     }
 
-    public function restore($slug)
+    public function restore($id)
     {
-        $item = $this->model::onlyTrashed()->where('slug', $slug)->firstOrFail();
+        $item = $this->model::onlyTrashed()->findOrFail($id);
         $item->restore();
 
         return redirect()->route($this->route . '.index')
