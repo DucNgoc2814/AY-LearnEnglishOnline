@@ -16,10 +16,10 @@ class ContentSecurityPolicy
             "default-src 'self'; " .
             "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " .
             "style-src 'self' 'unsafe-inline'; " .
-            "media-src 'self' https://*.oxforddictionaries.com https://*.amazonaws.com; " .
+            "media-src 'self' https://*.gstatic.com; " .
             "img-src 'self' data: https: http:; " .
             "font-src 'self' data:; " .
-            "connect-src 'self' https://*.oxforddictionaries.com https://od-api.oxforddictionaries.com"
+            "connect-src 'self' https://api.dictionaryapi.dev"
         );
 
         return $response;

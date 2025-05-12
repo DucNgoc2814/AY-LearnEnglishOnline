@@ -3,40 +3,26 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-3xl mx-auto">
-        <h1 class="text-3xl font-bold text-gray-800 mb-8">Từ điển Oxford</h1>
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">English Dictionary</h1>
 
         <!-- Form nhập text -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-8">
             <div class="mb-4">
                 <label for="input-text" class="block text-sm font-medium text-gray-700 mb-2">
-                    Nhập từ hoặc câu cần tra cứu (Tiếng Việt)
+                    Enter English word
                 </label>
-                <textarea id="input-text" rows="3"
+                <input type="text" id="input-text"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Nhập nội dung tiếng Việt cần tra cứu..."></textarea>
+                    placeholder="Type an English word...">
             </div>
             <button id="submit-text"
                 class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                Tra cứu
+                Look up
             </button>
         </div>
 
         <!-- Kết quả -->
         <div id="result-container" class="bg-white rounded-lg shadow-md p-6 hidden">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Kết quả tra cứu:</h2>
-
-            <!-- Hiển thị văn bản gốc và bản dịch -->
-            <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-                <div class="mb-2">
-                    <span class="font-medium text-gray-700">Văn bản gốc:</span>
-                    <span id="original-text" class="ml-2"></span>
-                </div>
-                <div>
-                    <span class="font-medium text-gray-700">Bản dịch:</span>
-                    <span id="translated-text" class="ml-2"></span>
-                </div>
-            </div>
-
             <div id="result-content" class="space-y-6">
                 <!-- Kết quả sẽ được thêm vào đây bằng JavaScript -->
             </div>
@@ -59,8 +45,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultContainer = document.getElementById('result-container');
     const resultContent = document.getElementById('result-content');
     const loading = document.getElementById('loading');
-    const originalText = document.getElementById('original-text');
-    const translatedText = document.getElementById('translated-text');
 
     submitButton.addEventListener('click', async function() {
         const text = inputText.value.trim();
@@ -81,20 +65,15 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const data = await response.json();
-            console.log('API Response:', data); // Debug log
+            console.log('API Response:', data);
 
             if (data.success) {
-                // Hiển thị văn bản gốc và bản dịch
-                originalText.textContent = data.originalText;
-                translatedText.textContent = data.translatedText;
-
                 // Xóa nội dung cũ
                 resultContent.innerHTML = '';
 
-                // Tạo phần tử cho mỗi từ
-                data.data.forEach((wordInfo, index) => {
-                    console.log('Processing word:', wordInfo); // Debug log
-
+                // Tạo phần tử cho từ
+                const wordInfo = data.data[0]; // Chỉ lấy kết quả đầu tiên vì chỉ tra 1 từ
+                if (wordInfo) {
                     const wordElement = document.createElement('div');
                     wordElement.className = 'p-4 bg-gray-50 rounded-lg space-y-4';
 
@@ -107,58 +86,36 @@ document.addEventListener('DOMContentLoaded', function() {
                     wordContent.className = 'flex-1';
 
                     const wordText = document.createElement('div');
-                    wordText.className = 'text-xl font-bold text-gray-900';
+                    wordText.className = 'text-3xl font-bold text-gray-900';
                     wordText.textContent = wordInfo.word;
 
                     const phonetic = document.createElement('div');
-                    phonetic.className = 'text-md text-gray-600 font-mono mt-1';
+                    phonetic.className = 'text-xl text-blue-600 font-mono mt-2';
 
-                    console.log('Word phonetic data:', {
-                        phonetic: wordInfo.phonetic,
-                        pronunciations: wordInfo.pronunciations
-                    }); // Debug log
-
-                    // Hiển thị phiên âm từ API hoặc từ mảng pronunciations
                     if (wordInfo.phonetic) {
                         phonetic.textContent = `/${wordInfo.phonetic}/`;
-                        phonetic.classList.add('text-blue-600');
                     } else if (wordInfo.pronunciations && wordInfo.pronunciations.length > 0) {
-                        // Tìm phiên âm British English trong mảng pronunciations
-                        const britishPron = wordInfo.pronunciations.find(p =>
-                            p.dialects && p.dialects.includes('British English')
-                        );
-                        // Nếu không có British English, lấy phiên âm đầu tiên
-                        const pronunciation = britishPron || wordInfo.pronunciations[0];
-
+                        const pronunciation = wordInfo.pronunciations[0];
                         if (pronunciation && pronunciation.phoneticSpelling) {
                             phonetic.textContent = `/${pronunciation.phoneticSpelling}/`;
-                            phonetic.classList.add('text-blue-600');
-                        } else {
-                            phonetic.textContent = '(không có phiên âm)';
-                            phonetic.classList.add('text-gray-400', 'italic');
                         }
-                    } else {
-                        phonetic.textContent = '(không có phiên âm)';
-                        phonetic.classList.add('text-gray-400', 'italic');
                     }
 
                     wordContent.appendChild(wordText);
                     wordContent.appendChild(phonetic);
                     wordHeader.appendChild(wordContent);
 
-                    // Nút phát âm - cập nhật để sử dụng audio từ pronunciations nếu có
+                    // Nút phát âm
                     const audioUrl = wordInfo.audio_url ||
                         (wordInfo.pronunciations && wordInfo.pronunciations.length > 0
                             ? wordInfo.pronunciations[0].audioFile
                             : null);
 
-                    console.log('Audio URL:', audioUrl); // Debug log
-
                     if (audioUrl) {
                         const audioButton = document.createElement('button');
-                        audioButton.className = 'p-2 text-blue-600 hover:text-blue-800 focus:outline-none transition-colors duration-200';
+                        audioButton.className = 'p-3 text-blue-600 hover:text-blue-800 focus:outline-none transition-colors duration-200';
                         audioButton.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                             </svg>
                         `;
@@ -167,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         audioButton.addEventListener('click', () => {
                             audio.play().catch(error => {
                                 console.error('Error playing audio:', error);
-                                alert('Không thể phát âm thanh. Vui lòng thử lại sau.');
+                                alert('Cannot play audio. Please try again later.');
                             });
                         });
 
@@ -179,16 +136,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Hiển thị nghĩa của từ
                     if (wordInfo.definitions && wordInfo.definitions.length > 0) {
                         const definitionsContainer = document.createElement('div');
-                        definitionsContainer.className = 'mt-4 space-y-2';
+                        definitionsContainer.className = 'mt-6 space-y-3';
 
                         const definitionTitle = document.createElement('div');
-                        definitionTitle.className = 'font-medium text-gray-700';
-                        definitionTitle.textContent = 'Nghĩa:';
+                        definitionTitle.className = 'text-lg font-medium text-gray-700';
+                        definitionTitle.textContent = 'Definitions:';
                         definitionsContainer.appendChild(definitionTitle);
 
                         wordInfo.definitions.forEach((definition, idx) => {
                             const definitionElement = document.createElement('div');
-                            definitionElement.className = 'ml-4 text-gray-600';
+                            definitionElement.className = 'ml-4 text-gray-600 text-lg';
                             definitionElement.textContent = `${idx + 1}. ${definition}`;
                             definitionsContainer.appendChild(definitionElement);
                         });
@@ -199,16 +156,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Hiển thị ví dụ
                     if (wordInfo.examples && wordInfo.examples.length > 0) {
                         const examplesContainer = document.createElement('div');
-                        examplesContainer.className = 'mt-4 space-y-2';
+                        examplesContainer.className = 'mt-6 space-y-3';
 
                         const exampleTitle = document.createElement('div');
-                        exampleTitle.className = 'font-medium text-gray-700';
-                        exampleTitle.textContent = 'Ví dụ:';
+                        exampleTitle.className = 'text-lg font-medium text-gray-700';
+                        exampleTitle.textContent = 'Examples:';
                         examplesContainer.appendChild(exampleTitle);
 
                         wordInfo.examples.forEach((example, idx) => {
                             const exampleElement = document.createElement('div');
-                            exampleElement.className = 'ml-4 text-gray-600 italic';
+                            exampleElement.className = 'ml-4 text-gray-600 italic text-lg';
                             exampleElement.textContent = `• ${example}`;
                             examplesContainer.appendChild(exampleElement);
                         });
@@ -217,15 +174,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
 
                     resultContent.appendChild(wordElement);
-                });
+                }
 
                 resultContainer.classList.remove('hidden');
             } else {
-                alert('Có lỗi xảy ra khi tra cứu: ' + data.message);
+                alert('Error: ' + data.message);
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Có lỗi xảy ra khi tra cứu');
+            alert('An error occurred while looking up the word');
         } finally {
             loading.classList.add('hidden');
         }
@@ -233,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Cho phép nhấn Enter để submit
     inputText.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
+        if (e.key === 'Enter') {
             e.preventDefault();
             submitButton.click();
         }

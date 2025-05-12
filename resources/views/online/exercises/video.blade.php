@@ -13,7 +13,7 @@
         background-color: #000;
         cursor: pointer;
     }
-    
+
     .video-container img {
         position: absolute;
         top: 0;
@@ -22,7 +22,7 @@
         height: 100%;
         object-fit: cover;
     }
-    
+
     .video-container .play-button {
         position: absolute;
         top: 50%;
@@ -35,7 +35,7 @@
         cursor: pointer;
         transition: all 0.2s;
     }
-    
+
     .video-container .play-button::before {
         content: '';
         position: absolute;
@@ -46,7 +46,7 @@
         border-width: 12px 0 12px 20px;
         border-color: transparent transparent transparent #fff;
     }
-    
+
     .video-container .play-button:hover {
         background-color: #ff2222;
     }
@@ -59,7 +59,7 @@
         height: 100%;
         border: none;
     }
-    
+
     .transcript-container {
         background-color: #f8f9fa;
         border-radius: 8px;
@@ -67,7 +67,7 @@
         margin-top: 20px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-    
+
     .transcript-line {
         margin-bottom: 15px;
         padding: 10px;
@@ -77,12 +77,12 @@
         cursor: pointer;
         transition: all 0.2s ease;
     }
-    
+
     .transcript-line:hover {
         border-left-color: #0d6efd;
         background-color: #f8f9fa;
     }
-    
+
     .transcript-line .time {
         color: #0d6efd;
         font-weight: 500;
@@ -91,11 +91,11 @@
         min-width: 50px;
         cursor: pointer;
     }
-    
+
     .transcript-line .time:hover {
         text-decoration: underline;
     }
-    
+
     .input-underline {
         border: none;
         border-bottom: 1px solid #ced4da;
@@ -105,22 +105,22 @@
         font-weight: 500;
         background-color: #f8f9ff;
     }
-    
+
     .input-underline:focus {
         border-bottom: 2px solid var(--primary-color);
         box-shadow: none;
     }
-    
+
     .input-correct {
         border-bottom: 2px solid var(--success-color);
         background-color: rgba(16, 185, 129, 0.1);
     }
-    
+
     .input-incorrect {
         border-bottom: 2px solid var(--danger-color);
         background-color: rgba(239, 68, 68, 0.1);
     }
-    
+
     .result-container {
         margin-top: 20px;
         padding: 20px;
@@ -187,7 +187,7 @@ $exercise = [
                     <img src="https://i.ytimg.com/vi/{{ $exercise['youtube_id'] }}/hqdefault.jpg" alt="Video thumbnail">
                     <div class="play-button"></div>
                 </div>
-                
+
                 @if(session('result'))
                 <div class="result-container">
                     <div class="d-flex align-items-center mb-3">
@@ -213,7 +213,7 @@ $exercise = [
             </div>
         </div>
     </div>
-    
+
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header bg-primary text-white">
@@ -231,7 +231,7 @@ $exercise = [
                                         $parts = explode('_____', $line['text']);
                                     @endphp
                                     <span>{{ $parts[0] }}</span>
-                                    <input type="text" name="answers[]" class="input-underline" placeholder="..." 
+                                    <input type="text" name="answers[]" class="input-underline" placeholder="..."
                                         @if(session('result'))
                                             value="{{ old('answers.'.$index, '') }}"
                                             class="input-underline {{ strtolower(trim(old('answers.'.$index, ''))) === strtolower(trim($line['answer'])) ? 'input-correct' : 'input-incorrect' }}"
@@ -245,7 +245,7 @@ $exercise = [
                             </div>
                         @endforeach
                     </div>
-                    
+
                     @if(!session('result'))
                         <div class="d-grid gap-2 mt-4">
                             <button type="submit" class="btn btn-primary">
@@ -266,17 +266,17 @@ let videoLoaded = false;
 
 function loadVideo(startTime = 0) {
     if (videoLoaded) return;
-    
+
     const container = document.getElementById('videoContainer');
     const videoId = '{{ $exercise['youtube_id'] }}';
-    
+
     // Create iframe
     const iframe = document.createElement('iframe');
     iframe.id = 'youtubePlayer';
-    iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&start=${startTime}`;
+    iframe.src = `https://tienganh-abc.com/videos/tuoi-tho-ba-djao-cua-sheldon-2017=66735f66cd8dc73b802af882/tap-1`;
     iframe.setAttribute('allowfullscreen', '');
     iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-    
+
     // Replace thumbnail with iframe
     container.innerHTML = '';
     container.appendChild(iframe);
@@ -310,7 +310,7 @@ function showError(message) {
     if (existingError) {
         existingError.remove();
     }
-    container.insertAdjacentHTML('beforeend', 
+    container.insertAdjacentHTML('beforeend',
         `<div class="alert alert-danger mt-3">${message}</div>`
     );
 }
@@ -334,4 +334,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-@endsection 
+@endsection

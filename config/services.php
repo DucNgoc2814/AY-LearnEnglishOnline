@@ -31,10 +31,4 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'oxford' => [
-        'base_url' => env('OXFORD_API_BASE_URL', 'https://od-api.oxforddictionaries.com/api/v2'),
-        'app_id' => env('OXFORD_APP_ID', '63022d7f'),
-        'app_key' => env('OXFORD_APP_KEY', '77e4226e32d1237e79a3692cabdb06a5'),
-    ],
-
 ];

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Client\AttendanceController;
 use App\Http\Controllers\Online\NewsController;
 use App\Http\Controllers\OxfordController;
+use App\Http\Controllers\DictationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -166,9 +167,16 @@ Route::get('/dictionary', function () {
     return view('dictionary.index');
 })->name('dictionary.index');
 
+// Routes cho bài tập dictation
+Route::prefix('exercises')->group(function () {
+    Route::get('/dictation/{id}', [DictationController::class, 'show'])->name('exercises.dictation');
+    Route::post('/dictation/check', [DictationController::class, 'check'])->name('exercises.dictation.check');
+    Route::get('/dictation/{id}/script', [DictationController::class, 'getScript'])->name('exercises.dictation.script');
+});
+
 // API routes
 Route::prefix('api/oxford')->middleware('web')->group(function () {
-    Route::post('/process-text', [App\Http\Controllers\OxfordController::class, 'processText'])->withoutMiddleware(['csrf']);
-    Route::get('/word-info', [App\Http\Controllers\OxfordController::class, 'getWordInfo'])->withoutMiddleware(['csrf']);
+    Route::post('/process-text', [OxfordController::class, 'processText'])->withoutMiddleware(['csrf']);
+    Route::get('/word-info', [OxfordController::class, 'getWordInfo'])->withoutMiddleware(['csrf']);
 });
 
