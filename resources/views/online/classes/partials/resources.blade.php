@@ -104,15 +104,15 @@
                                     <span class="badge bg-success resource-badge">Interactive</span>
                                 </div>
                                 <div class="card-body">
-                                    <h6 class="card-title">Listen and Complete - Gap Fill Exercises</h6>
-                                    <p class="card-text small">Bài tập điền từ vào chỗ trống dựa trên đoạn nghe.</p>
+                                    <h6 class="card-title">Dictation Practice - Listen and Write</h6>
+                                    <p class="card-text small">Luyện nghe và viết theo các đoạn hội thoại, cải thiện kỹ năng nghe và chính tả.</p>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="badge bg-secondary">8 bài tập</span>
-                                        <small class="text-muted">15 phút</small>
+                                        <span class="badge bg-secondary">15 bài tập</span>
+                                        <small class="text-muted">30 phút</small>
                                     </div>
                                 </div>
                                 <div class="card-footer bg-transparent">
-                                    <a href="#" class="btn btn-primary btn-sm d-block">Học ngay</a>
+                                    <a href="{{ route('exercises.dictation', ['id' => 1]) }}" class="btn btn-primary btn-sm d-block">Học ngay</a>
                                 </div>
                             </div>
                         </div>
@@ -120,7 +120,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="accordion-item mb-3">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#speakingResources" aria-expanded="false">
@@ -172,7 +172,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="accordion-item mb-3">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#readingResources" aria-expanded="false">
@@ -205,7 +205,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#additionalResources" aria-expanded="false">
@@ -256,4 +256,4 @@
         // Resource filtering functionality would go here
     });
 </script>
-@endpush 
+@endpush
