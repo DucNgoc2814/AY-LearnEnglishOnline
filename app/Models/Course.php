@@ -1,53 +1,259 @@
 <?php
 
 namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-
-class Course extends Model
+class Course extends BaseModel
 {
-    use HasFactory, SoftDeletes;
+    public static function mediaFields(): array
+    {
+        return [
+            'thumbnail' => [
+                'type' => 'image',
+                'max_size' => 2048, // 2MB
+                'mimes' => 'jpeg,png,jpg,gif',
+                'label' => 'Hình ảnh khóa học'
+            ],
+            'preview_video' => [
+                'type' => 'video',
+                'max_size' => 102400,
+                'mimes' => 'mp4,webm,ogg',
+                'label' => 'Video khóa học'
+            ]
+        ];
+    }
+    public static function getBaseRules($id = null)
+    {
+        return [
+            'category_id' => 'required|exists:categories,id',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'short_description' => 'nullable|string|max:255',
+            'course_type' => 'required|in:self_paced,instructor_led,hybrid',
+            'course_format' => 'required|in:online,offline,hybrid',
+            'price' => 'required|numeric|min:0',
+            'sale_price' => 'nullable|numeric|min:0|lt:price',
+            'estimated_hours' => 'nullable|integer|min:0',
+            'has_certificate' => 'boolean',
+            'requires_enrollment' => 'boolean',
+            'course_outline' => 'nullable|json',
+            'requirements' => 'nullable|array',
+            'learning_outcomes' => 'nullable|array',
+            'release_date' => 'nullable|date',
+            'order' => 'nullable|integer|min:0',
+            'is_featured' => 'boolean',
+            'is_active' => 'boolean'
+        ];
+    }
 
-    protected $fillable = [
-        'category_id',
-        'title',
-        'slug',
-        'description',
-        'short_description',
-        'course_type',
-        'course_format',
-        'price',
-        'sale_price',
-        'estimated_hours',
-        'has_certificate',
-        'requires_enrollment',
-        'thumbnail',
-        'preview_video',
-        'total_students',
-        'rating',
-        'total_ratings',
-        'course_outline',
-        'requirements',
-        'learning_outcomes',
-        'release_date',
-        'order',
-        'is_featured',
-        'is_active',
-    ];
+    public static function getFields()
+    {
+        $fields = [
+            'category_id' => [
+                'label' => 'Danh mục',
+                'type' => 'select',
+                'options' => Category::pluck('name', 'id')->toArray(),
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'title' => [
+                'label' => 'Tên khóa học',
+                'type' => 'text',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'description' => [
+                'label' => 'Mô tả chi tiết',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ],
+            'short_description' => [
+                'label' => 'Mô tả ngắn',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'course_type' => [
+                'label' => 'Loại khóa học',
+                'type' => 'select',
+                'options' => [
+                    'self_paced' => 'Tự học',
+                    'instructor_led' => 'Có giảng viên hướng dẫn',
+                    'hybrid' => 'Kết hợp'
+                ],
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'course_format' => [
+                'label' => 'Hình thức học',
+                'type' => 'select',
+                'options' => [
+                    'online' => 'Trực tuyến',
+                    'offline' => 'Trực tiếp',
+                    'hybrid' => 'Kết hợp'
+                ],
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'price' => [
+                'label' => 'Giá gốc',
+                'type' => 'number',
+                'step' => '1000',
+                'min' => '0',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'sale_price' => [
+                'label' => 'Giá khuyến mãi',
+                'type' => 'number',
+                'step' => '1000',
+                'min' => '0',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'estimated_hours' => [
+                'label' => 'Thời lượng ước tính (giờ)',
+                'type' => 'number',
+                'min' => '0',
+                'step' => '1',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'has_certificate' => [
+                'label' => 'Cấp chứng chỉ',
+                'type' => 'checkbox',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ],
+            'requires_enrollment' => [
+                'label' => 'Yêu cầu đăng ký',
+                'type' => 'checkbox',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ],
+            'course_outline' => [
+                'label' => 'Đề cương khóa học',
+                'type' => 'json_editor',
+                'searchable' => false,
+                'sortable' => false,
+                'editable' => true
+            ],
+            'requirements' => [
+                'label' => 'Yêu cầu đầu vào',
+                'type' => 'array_editor',
+                'searchable' => false,
+                'sortable' => false,
+                'editable' => true
+            ],
+            'learning_outcomes' => [
+                'label' => 'Kết quả đầu ra',
+                'type' => 'array_editor',
+                'searchable' => false,
+                'sortable' => false,
+                'editable' => true
+            ],
+            'release_date' => [
+                'label' => 'Ngày phát hành',
+                'type' => 'date',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'order' => [
+                'label' => 'Thứ tự hiển thị',
+                'type' => 'number',
+                'min' => '0',
+                'step' => '1',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'is_featured' => [
+                'label' => 'Khóa học nổi bật',
+                'type' => 'checkbox',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'is_active' => [
+                'label' => 'Kích hoạt',
+                'type' => 'checkbox',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'total_students' => [
+                'label' => 'Tổng số học viên',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => false
+            ],
+            'total_ratings' => [
+                'label' => 'Tổng số đánh giá',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => false
+            ],
+            'rating' => [
+                'label' => 'Điểm đánh giá',
+                'type' => 'number',
+                'step' => '0.1',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => false
+            ]
+        ];
 
-    protected $casts = [
-        'learning_outcomes' => 'array',
-        'requirements' => 'array',
-        'is_featured' => 'boolean',
-        'is_active' => 'boolean',
-        'release_date' => 'datetime'
-    ];
+        // Thêm các trường media vào fields
+        foreach (static::mediaFields() as $field => $config) {
+            $fields[$field] = [
+                'label' => $config['label'],
+                'type' => 'file',
+                'accept' => $config['type'] === 'image' ? 'image/*' : 'video/*',
+                'max_size' => $config['max_size'],
+                'editable' => true
+            ];
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Get fields for form (create/edit)
+     */
+    public static function getFormFields()
+    {
+        $fields = [];
+        foreach (self::getFields() as $key => $field) {
+            if (!isset($field['editable']) || $field['editable']) {
+                $fields[$key] = $field;
+            }
+        }
+        return $fields;
+    }
+
+    /**
+     * Get fields for listing
+     */
+    public static function getListFields()
+    {
+        return self::getFields();
+    }
 
     /**
      * Lấy danh mục khóa học
@@ -301,21 +507,21 @@ class Course extends Model
     public function totalDuration()
     {
         $totalSeconds = 0;
-        
+
         $lessonsWithVideos = $this->lessons()->with('videoLessons')->get();
-        
+
         foreach ($lessonsWithVideos as $lesson) {
             $totalSeconds += $lesson->videoLessons->sum('duration');
         }
-        
+
         $hours = floor($totalSeconds / 3600);
         $minutes = floor(($totalSeconds % 3600) / 60);
         $seconds = $totalSeconds % 60;
-        
+
         if ($hours > 0) {
             return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
         }
-        
+
         return sprintf('%02d:%02d', $minutes, $seconds);
     }
 

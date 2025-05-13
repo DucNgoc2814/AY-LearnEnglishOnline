@@ -2,32 +2,193 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Question extends Model
+class Question extends BaseModel
 {
-    use HasFactory, SoftDeletes;
+    public static function mediaFields(): array
+    {
+        $questionType = request()->input('type', 'text');
 
-    protected $fillable = [
-        'test_id',
-        'type',
-        'question',
-        'media_url',
-        'role',
-        'correct_answer_explanation',
-        'order_number'
-    ];
+        $config = [
+            'media_url' => [
+                'type' => match($questionType) {
+                    'image' => 'image',
+                    'video' => 'video',
+                    'audio' => 'audio',
+                    default => 'file'
+                },
+                'max_size' => match($questionType) {
+                    'image' => 2048, // 2MB for images
+                    'video' => 102400, // 100MB for videos
+                    'audio' => 51200, // 50MB for audio
+                    default => 2048
+                },
+                'mimes' => match($questionType) {
+                    'image' => 'jpeg,png,jpg,gif',
+                    'video' => 'mp4,webm,ogg',
+                    'audio' => 'mp3,wav,ogg',
+                    default => 'jpeg,png,jpg,gif'
+                },
+                'label' => 'Tệp đính kèm'
+            ]
+        ];
 
-    protected $casts = [
-        'order_number' => 'integer'
-    ];
+        return $config;
+    }
 
-    protected $appends = ['full_media_url'];
+    protected static function bootHasSlug()
+    {
+        // Override to disable slug generation
+    }
+
+    public static function getBaseRules($id = null)
+    {
+        return [
+            'test_id' => 'required|exists:tests,id',
+            'type' => 'required|in:text,image,video,audio',
+            'role' => 'required|in:1,2',
+            'question' => 'required|string',
+            'media_url' => [
+                'nullable',
+                'required_if:type,image,video,audio',
+                function ($attribute, $value, $fail) use ($id) {
+                    $question = $id ? self::find($id) : null;
+                    $type = request()->input('type', $question ? $question->type : null);
+
+                    if ($type && in_array($type, ['image', 'video', 'audio']) && empty($value)) {
+                        $fail('The media file is required for ' . $type . ' questions.');
+                    }
+                }
+            ],
+            'correct_answer_explanation' => 'nullable|string',
+            'order_number' => 'required|integer|min:0',
+        ];
+    }
+
+    public static function getFields()
+    {
+        $fields = [
+            'test_id' => [
+                'label' => 'Bài kiểm tra',
+                'type' => 'select',
+                'options' => Test::pluck('name', 'id')->toArray(),
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true,
+            ],
+            'type' => [
+                'label' => 'Loại câu hỏi',
+                'type' => 'select',
+                'options' => [
+                    'text' => 'Câu hỏi văn bản',
+                    'image' => 'Câu hỏi hình ảnh',
+                    'video' => 'Câu hỏi video',
+                    'audio' => 'Câu hỏi âm thanh'
+                ],
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true,
+            ],
+            'role' => [
+                'label' => 'Hình thức',
+                'type' => 'select',
+                'options' => [
+                    1 => 'Trắc nghiệm',
+                    2 => 'Tự luận'
+                ],
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true,
+                'default' => 1
+            ],
+            'question' => [
+                'label' => 'Nội dung câu hỏi',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true,
+            ],
+            'media_url' => [
+                'label' => 'Tệp đính kèm',
+                'type' => 'file',
+                'editable' => true,
+                'depends_on' => [
+                    'field' => 'type',
+                    'values' => ['image', 'video', 'audio'],
+                    'show_if_in' => true
+                ],
+                'file_types' => [
+                    'image' => [
+                        'accept' => 'image/*',
+                        'max_size' => 2048, // 2MB
+                        'mimes' => 'jpeg,png,jpg,gif'
+                    ],
+                    'video' => [
+                        'accept' => 'video/*',
+                        'max_size' => 102400, // 100MB
+                        'mimes' => 'mp4,webm,ogg'
+                    ],
+                    'audio' => [
+                        'accept' => 'audio/*',
+                        'max_size' => 51200, // 50MB
+                        'mimes' => 'mp3,wav,ogg'
+                    ]
+                ]
+            ],
+            'correct_answer_explanation' => [
+                'label' => 'Giải thích đáp án đúng',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ],
+            'order_number' => [
+                'label' => 'Thứ tự',
+                'type' => 'number',
+                'min' => 0,
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true,
+                'default' => 0
+            ]
+        ];
+        // Thêm các trường media vào fields
+        foreach (static::mediaFields() as $field => $config) {
+            $fields[$field] = [
+                'label' => $config['label'],
+                'type' => 'file',
+                'accept' => $config['type'] === 'image' ? 'image/*' : 'video/*',
+                'max_size' => $config['max_size'],
+                'editable' => true
+            ];
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Get fields for form (create/edit)
+     */
+    public static function getFormFields()
+    {
+        $fields = [];
+        foreach (self::getFields() as $key => $field) {
+            if (!isset($field['editable']) || $field['editable']) {
+                $fields[$key] = $field;
+            }
+        }
+        return $fields;
+    }
+
+    /**
+     * Get fields for listing
+     */
+    public static function getListFields()
+    {
+        return self::getFields();
+    }
 
     public function questionable()
     {
@@ -178,42 +339,9 @@ class Question extends Model
         }
     }
 
-    public function shuffleOptions(): array
-    {
-        $options = $this->answers;
-        $shuffled = $options->shuffle();
-        return $shuffled->values()->all();
-    }
-
-    public function getCorrectAnswers()
-    {
-        return $this->answers()->where('is_correct', true)->get();
-    }
 
     public function resultDetails()
     {
         return $this->hasMany(TestResultDetail::class);
-    }
-
-    public function getFullMediaUrlAttribute()
-    {
-        if (empty($this->media_url)) {
-            return null;
-        }
-
-        // Nếu đã là URL đầy đủ, trả về luôn
-        if (filter_var($this->media_url, FILTER_VALIDATE_URL)) {
-            return $this->media_url;
-        }
-
-        // Xây dựng URL đầy đủ từ cấu hình
-        $diskConfig = config('filesystems.disks.s3');
-        $cloudFrontDomain = config('filesystems.disks.cloudfront.domain', null);
-
-        if ($cloudFrontDomain) {
-            return "https://{$cloudFrontDomain}/{$this->media_url}";
-        }
-
-        return "{$diskConfig['url']}/{$this->media_url}";
     }
 }

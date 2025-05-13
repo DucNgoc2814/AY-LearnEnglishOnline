@@ -54,17 +54,6 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
-            'cache' => [
-                'store' => 'file',
-                'expire' => 600,
-                'prefix' => 'ay-learn-english',
-            ],
-        ],
-
-        'cloudfront' => [
-            'driver' => 'cloudfront',
-            'url' => env('CLOUDFRONT_URL'),
-            'domain' => env('CLOUDFRONT_DOMAIN'),
         ],
 
     ],

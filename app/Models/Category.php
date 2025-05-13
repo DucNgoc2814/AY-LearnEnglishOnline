@@ -8,25 +8,58 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
-class Category extends Model
+class Category extends BaseModel
 {
-    use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'name',
-        'slug',
-        'description',
-        'parent_id',
-        'order',
-        'is_active',
-        'icon',
-        'thumbnail'
-    ];
+    public static function getBaseRules($id = null)
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ];
+    }
 
-    protected $casts = [
-        'order' => 'integer',
-        'is_active' => 'boolean'
-    ];
+    public static function getFields()
+    {
+        return [
+            'name' => [
+                'label' => 'Tên danh mục',
+                'type' => 'text',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'description' => [
+                'label' => 'Mô tả',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ],
+        ];
+    }
+
+    /**
+     * Get fields for form (create/edit)
+     */
+    public static function getFormFields()
+    {
+        $fields = [];
+        foreach (self::getFields() as $key => $field) {
+            if (!isset($field['editable']) || $field['editable']) {
+                $fields[$key] = $field;
+            }
+        }
+        return $fields;
+    }
+
+    /**
+     * Get fields for listing
+     */
+    public static function getListFields()
+    {
+        return self::getFields();
+    }
 
     /**
      * Lấy danh sách khóa học thuộc danh mục
@@ -102,4 +135,4 @@ class Category extends Model
     {
         return $query->orderBy('order', 'asc');
     }
-} 
+}

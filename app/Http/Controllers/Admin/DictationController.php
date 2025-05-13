@@ -3,23 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Course;
+use App\Models\Dictation;
 use App\Models\Lesson;
 use Illuminate\Http\Request;
 
-class CourseController extends BaseController
+class DictationController extends BaseController
 {
-    protected $pageTitle = 'Danh sách khóa học';
+    protected $pageTitle = 'Danh sách đề tài';
     public function __construct()
     {
-        $this->model = Course::class;
+        $this->model = Dictation::class;
         $this->viewPath = 'admin.crud';
-        $this->route = 'admin.courses';
-
-        // Cấu hình các model liên quan
-        $this->relatedModels = [
-            // 'detail' => Lesson::class,
-            // 'specifications' => ProductSpecification::class
-        ];
+        $this->route = 'admin.dictations';
 
         parent::__construct();
     }

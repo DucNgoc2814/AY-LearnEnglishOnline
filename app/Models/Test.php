@@ -2,53 +2,155 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Test extends Model
+class Test extends BaseModel
 {
-    use HasFactory, SoftDeletes;
+    public static function getBaseRules($id = null)
+    {
+        return [
+            'name' => 'required|string|max:255|unique:tests,name' . ($id ? ','. $id : ''),
+            'description' => 'nullable|string',
+            'duration' => 'nullable|integer|min:1',
+            'min_score' => 'required|integer|min:0',
+            'max_score' => 'required|integer|min:0|gte:min_score',
+            'is_required' => 'boolean',
+            'max_attempt' => 'nullable|integer|min:0',
+            'total_attempt' => 'nullable|integer|min:0',
+            'type' => 'required|string|in:lesson_test,entrance_test,after_class,before_class',
+            'lesson_id' => 'required_if:type,lesson_test,after_class,before_class|nullable|exists:lessons,id',
+            'role' => 'nullable|integer',
+            'settings' => 'nullable|json'
+        ];
+    }
 
-    protected $fillable = [
-        'lesson_id',
-        'slug',
-        'name',
-        'description',
-        'duration',
-        'min_score',
-        'max_score',
-        'is_required',
-        'total_attempt',
-        'max_attempt',
-        'type',
-        'role',
-        'settings'
-    ];
+    public static function getFields()
+    {
+        return [
+            'name' => [
+                'label' => 'Tên bài kiểm tra',
+                'type' => 'text',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'description' => [
+                'label' => 'Mô tả',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ],
+            'duration' => [
+                'label' => 'Thời gian làm bài (phút)',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'min_score' => [
+                'label' => 'Điểm tối thiểu',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'max_score' => [
+                'label' => 'Điểm tối đa',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'default' => 100,
+                'editable' => true
+            ],
+            'is_required' => [
+                'label' => 'Bắt buộc làm bài',
+                'type' => 'checkbox',
+                'searchable' => true,
+                'sortable' => true,
+                'default' => true,
+                'editable' => true
+            ],
+            'total_attempt' => [
+                'label' => 'Tổng số lần làm bài',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => false // Trường này chỉ hiển thị, không cho phép sửa
+            ],
+            'max_attempt' => [
+                'label' => 'Số lần được phép làm lại',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'type' => [
+                'label' => 'Loại bài kiểm tra',
+                'type' => 'select',
+                'options' => [
+                    'lesson_test' => 'Kiểm tra bài học',
+                    'entrance_test' => 'Kiểm tra đầu vào',
+                    'after_class' => 'Kiểm tra sau lớp',
+                    'before_class' => 'Kiểm tra trước lớp'
+                ],
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'lesson_id' => [
+                'label' => 'Bài học',
+                'type' => 'select',
+                'options' => Lesson::pluck('name', 'id')->toArray(),
+                'searchable' => true,
+                'sortable' => true,
+                'depends_on' => [
+                    'field' => 'type',
+                    'values' => ['lesson_test', 'after_class', 'before_class'],
+                    'show_if_in' => true
+                ],
+                'editable' => true
+            ],
+            'role' => [
+                'label' => 'Thứ tự sắp xếp',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'default' => 0,
+                'editable' => true
+            ],
+            'settings' => [
+                'label' => 'Cài đặt',
+                'type' => 'json',
+                'searchable' => false,
+                'sortable' => false,
+                'editable' => true
+            ]
+        ];
+    }
 
-    protected $casts = [
-        'duration' => 'integer',
-        'min_score' => 'integer',
-        'max_score' => 'integer',
-        'is_required' => 'boolean',
-        'total_attempt' => 'integer',
-        'max_attempt' => 'integer',
-        'role' => 'integer',
-        'settings' => 'json'
-    ];
+    /**
+     * Get fields for form (create/edit)
+     */
+    public static function getFormFields()
+    {
+        $fields = [];
+        foreach (self::getFields() as $key => $field) {
+            if (!isset($field['editable']) || $field['editable']) {
+                $fields[$key] = $field;
+            }
+        }
+        return $fields;
+    }
 
-    // // Thêm debug
-    // protected static function boot()
-    // {
-    //     parent::boot();
-    //     static::addGlobalScope('debug', function ($query) {
-    //         \Log::info($query->toSql());
-    //         \Log::info($query->getBindings());
-    //     });
-    // }
+    /**
+     * Get fields for listing
+     */
+    public static function getListFields()
+    {
+        return self::getFields();
+    }
 
     // Relationships
     public function lesson(): BelongsTo
@@ -69,7 +171,11 @@ class Test extends Model
     // Methods
     public function getFormattedTimeLimit(): string
     {
-        $minutes = $this->duration / 60; // Convert from seconds to minutes
+        if (!$this->duration) {
+            return 'Không giới hạn';
+        }
+
+        $minutes = floor($this->duration / 60);
         $hours = floor($minutes / 60);
         $remainingMinutes = $minutes % 60;
 
@@ -82,7 +188,7 @@ class Test extends Model
 
     public function canAttempt($studentId): bool
     {
-        if ($this->max_attempt === 0) {
+        if ($this->max_attempt === null || $this->max_attempt === 0) {
             return true;
         }
 
@@ -98,7 +204,7 @@ class Test extends Model
 
     public function getRemainingAttempts($studentId): int
     {
-        if ($this->max_attempt === 0) {
+        if ($this->max_attempt === null || $this->max_attempt === 0) {
             return PHP_INT_MAX; // Unlimited
         }
 
@@ -145,6 +251,11 @@ class Test extends Model
     public function scopeByType($query, $type)
     {
         return $query->where('type', $type);
+    }
+
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('role', 'asc');
     }
 
     /**

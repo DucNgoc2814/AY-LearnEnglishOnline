@@ -1,15 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
-use App\Http\Controllers\BaseController;
-use App\Services\Interfaces\LessonServiceInterface;
-use App\Http\Requests\Admin\Lesson\StoreRequest;
-use App\Http\Requests\Admin\Lesson\UpdateRequest;
-use App\Services\Interfaces\CourseServiceInterface;
 use Illuminate\Http\Request;
-use App\Repositories\LessonRepository;
-use App\Repositories\CourseRepository;
 use App\Models\Lesson;
 
 /**
@@ -19,138 +11,77 @@ use App\Models\Lesson;
  */
 class LessonController extends BaseController
 {
-    protected $lessonService;
-    protected const VIEW_PATH = 'admin.components.lessons.';
-    protected $lessonRepository;
-    protected $courseRepository;
+    protected $pageTitle = 'Danh sách bài học';
 
-    public function __construct(LessonServiceInterface $lessonService, LessonRepository $lessonRepository, CourseRepository $courseRepository)
+    public function __construct()
     {
-        $this->lessonService = $lessonService;
-        $this->lessonRepository = $lessonRepository;
-        $this->courseRepository = $courseRepository;
+        $this->model = Lesson::class;
+        $this->viewPath = 'admin.crud';
+        $this->route = 'admin.lessons';
+
+        parent::__construct();
     }
 
-    /**
-     * Hiển thị danh sách bài học
-     *
-     * @return \Illuminate\View\View
-     */
-    public function index(Request $request)
+    public function store(Request $request)
     {
-        try {
-            $list = $this->lessonService->getList();
-            $trashList = $this->lessonService->getTrashList();
-            $course = $this->courseRepository->findById($request->route('courseId'));
-            return view(self::VIEW_PATH . 'index', [
-                'lessons' => $list['data'],
-                'pagination' => $list['pagination'],
-                'trashList' => $trashList['data'],
-                'trashPagination' => $trashList['pagination'],
-                'course' => $course,
-            ]);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra');
+        $validated = $request->validate($this->model::rules());
+
+        // Tạo instance mới
+        $product = $this->model::create($validated);
+
+        // Xử lý upload tất cả các trường media
+        foreach ($product::mediaFields() as $field => $config) {
+            if ($request->hasFile($field)) {
+                $path = $product->handleMediaUpload($field, $request->file($field));
+                $product->update([$field => $path]);
+            }
         }
+
+        // Xử lý các model liên quan
+        $this->handleRelatedModels($request, $product);
+
+        return redirect()->route($this->route . '.index')
+            ->with('success', 'Sản phẩm đã được tạo thành công');
     }
 
-    /**
-     * Lưu bài học mới
-     *
-     * @param StoreRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(StoreRequest $request)
+    public function update(Request $request, $id)
     {
-        $result = $this->lessonService->create($request->validated());
-        return $this->redirectResponse($result);
+        $item = $this->model::withTrashed()->findOrFail($id);
+        $validated = $request->validate($this->model::rules($item->id));
+
+        // Cập nhật thông tin cơ bản
+        $item->update($validated);
+
+        // Xử lý upload tất cả các trường media
+        foreach ($item::mediaFields() as $field => $config) {
+            if ($request->hasFile($field)) {
+                $path = $item->handleMediaUpload($field, $request->file($field));
+                $item->update([$field => $path]);
+            }
+            // Nếu không có file mới và có request xóa file cũ
+            elseif ($request->has("remove_{$field}")) {
+                $item->deleteMedia($item->$field);
+                $item->update([$field => null]);
+            }
+            // Nếu không có file mới nhưng có file cũ và đang edit
+            elseif ($request->has("{$field}_current")) {
+                $item->update([$field => $request->input("{$field}_current")]);
+            }
+        }
+
+        // Xử lý các model liên quan
+        $this->handleRelatedModels($request, $item, true);
+
+        return redirect()->route($this->route . '.index')
+            ->with('success', 'Sản phẩm đã được cập nhật thành công');
     }
 
-    /**
-     * Hiển thị chi tiết bài học
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show($id)
-    {
-        $result = $this->lessonService->findById($id);
-        return response()->json($result);
-    }
-
-    /**
-     * Hiển thị chi tiết bài học để chỉnh sửa
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function edit($id)
-    {
-        $lesson = $this->lessonService->findWithFullUrls($id);
-        return response()->json([
-            'status' => true,
-            'data' => $lesson
-        ]);
-    }
-
-    /**
-     * Cập nhật bài học
-     *
-     * @param UpdateRequest $request
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function update(UpdateRequest $request, $id)
-    {
-        $result = $this->lessonService->update($request->validated(), $id);
-        return $this->redirectResponse($result);
-    }
-
-    /**
-     * Xóa bài học
-     *
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function destroy($id)
     {
-        $result = $this->lessonService->delete($id);
-        return $this->redirectResponse($result);
-    }
+        $item = $this->model::findOrFail($id);
+        $item->delete();
 
-    /**
-     * Khôi phục danh mục đã xóa
-     *
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function restore($id)
-    {
-        $result = $this->lessonService->restore($id);
-        return $this->redirectResponse($result);
-    }
-
-    /**
-     * Lấy danh sách bài học theo khóa học
-     *
-     * @param int $courseId
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getLessonsByCourse($courseId)
-    {
-        $result = $this->lessonService->getLessonsByCourse($courseId);
-        return response()->json($result);
-    }
-
-    /**
-     * Lấy danh sách video của bài học
-     *
-     * @param int $lessonId
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getVideosByLesson($lessonId)
-    {
-        $result = $this->lessonService->getVideosByLesson($lessonId);
-        return response()->json($result);
+        return redirect()->route($this->route . '.index')
+            ->with('success', 'Sản phẩm đã được chuyển vào thùng rác');
     }
 }
