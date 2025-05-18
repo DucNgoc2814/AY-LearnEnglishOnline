@@ -11,6 +11,11 @@ class Question extends BaseModel
     {
         $questionType = request()->input('type', 'text');
 
+        // Return empty array for text type
+        if ($questionType === 'text') {
+            return [];
+        }
+
         $config = [
             'media_url' => [
                 'type' => match($questionType) {
@@ -154,15 +159,19 @@ class Question extends BaseModel
                 'default' => 0
             ]
         ];
-        // Thêm các trường media vào fields
-        foreach (static::mediaFields() as $field => $config) {
-            $fields[$field] = [
-                'label' => $config['label'],
-                'type' => 'file',
-                'accept' => $config['type'] === 'image' ? 'image/*' : 'video/*',
-                'max_size' => $config['max_size'],
-                'editable' => true
-            ];
+
+        // Chỉ thêm các trường media nếu không phải type text
+        $currentType = request()->input('type', 'text');
+        if ($currentType !== 'text') {
+            foreach (static::mediaFields() as $field => $config) {
+                $fields[$field] = [
+                    'label' => $config['label'],
+                    'type' => 'file',
+                    'accept' => $config['type'] === 'image' ? 'image/*' : 'video/*',
+                    'max_size' => $config['max_size'],
+                    'editable' => true
+                ];
+            }
         }
 
         return $fields;

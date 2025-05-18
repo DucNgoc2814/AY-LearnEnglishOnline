@@ -16,6 +16,15 @@ class Dictation extends BaseModel
             ],
         ];
     }
+
+    public function getAudioUrlAttribute($value)
+    {
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            return $value;
+        }
+        return config('filesystems.disks.s3.url') . '/' . ltrim($value, '/');
+    }
+
     public static function getBaseRules($id = null)
     {
         return [

@@ -169,9 +169,12 @@ Route::get('/dictionary', function () {
 
 // Routes cho bài tập dictation
 Route::prefix('exercises')->group(function () {
-    Route::get('/dictation/{id}', [DictationController::class, 'show'])->name('exercises.dictation');
-    Route::post('/dictation/check', [DictationController::class, 'check'])->name('exercises.dictation.check');
-    Route::get('/dictation/{id}/script', [DictationController::class, 'getScript'])->name('exercises.dictation.script');
+    Route::prefix('dictation')->group(function () {
+        Route::get('/', [DictationController::class, 'index'])->name('exercises.dictation.index');
+        Route::get('/{id}', [DictationController::class, 'show'])->name('exercises.dictation');
+        Route::post('/check', [DictationController::class, 'check'])->name('dictation.check');
+        Route::get('/{id}/script', [DictationController::class, 'getScript'])->name('dictation.script');
+    });
 });
 
 // API routes

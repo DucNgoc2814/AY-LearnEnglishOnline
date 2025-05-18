@@ -289,7 +289,7 @@
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
         }
-            
+
         .overlay.active {
             display: block;
             opacity: 1;
@@ -305,19 +305,19 @@
             :root {
                 --sidebar-width: 250px;
             }
-            
+
             .mobile-menu-toggle {
                 display: flex;
             }
-            
+
             .left-sidebar {
                 transform: translateX(-100%);
             }
-            
+
             .left-sidebar.active {
                 transform: translateX(0);
             }
-            
+
             .main-content {
                 margin-left: 0;
                 padding: calc(var(--header-height) + 1rem) 1rem 1rem;
@@ -328,15 +328,15 @@
             .content-section {
                 padding: 1rem;
             }
-            
+
             h2, .h2 {
                 font-size: 1.25rem;
             }
-            
+
             h3, .h3 {
                 font-size: 1.125rem;
             }
-            
+
             .grid-container {
                 grid-template-columns: 1fr;
                 gap: 1rem;
@@ -352,12 +352,12 @@
             border-color: var(--primary-color);
             color: var(--primary-color);
         }
-        
+
         .btn-outline-primary:hover {
             background-color: var(--primary-color);
             color: white;
         }
-        
+
         /* Standardize "Back" buttons */
         .back-btn {
             font-size: 0.875rem !important;
@@ -368,7 +368,7 @@
             gap: 0.5rem !important;
             font-weight: 500 !important;
         }
-        
+
         /* Add any other global custom styles here */
     </style>
 
@@ -385,7 +385,7 @@
 
 <body>
     @include('online.layouts.partials.notification')
-    
+
     @include('online.layouts.header')
     @include('online.layouts.sidebar')
     <div class="overlay" id="sidebarOverlay"></div>
@@ -400,7 +400,7 @@
             const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
             const sidebar = document.querySelector('.left-sidebar');
             const overlay = document.getElementById('sidebarOverlay');
-            
+
             if (mobileMenuToggle) {
                 mobileMenuToggle.addEventListener('click', function() {
                     sidebar.classList.toggle('active');
@@ -408,7 +408,7 @@
                     document.body.classList.toggle('sidebar-open');
                 });
             }
-            
+
             if (overlay) {
                 overlay.addEventListener('click', function() {
                     sidebar.classList.remove('active');
@@ -416,7 +416,7 @@
                     document.body.classList.remove('sidebar-open');
                 });
             }
-            
+
             // Handle window resize
             window.addEventListener('resize', function() {
                 if (window.innerWidth > 768 && document.body.classList.contains('sidebar-open')) {

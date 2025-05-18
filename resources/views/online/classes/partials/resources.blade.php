@@ -112,7 +112,7 @@
                                     </div>
                                 </div>
                                 <div class="card-footer bg-transparent">
-                                    <a href="{{ route('exercises.dictation', ['id' => 1]) }}" class="btn btn-primary btn-sm d-block">Học ngay</a>
+                                    <a href="{{ route('exercises.dictation.index') }}" class="btn btn-primary btn-sm d-block">Học ngay</a>
                                 </div>
                             </div>
                         </div>

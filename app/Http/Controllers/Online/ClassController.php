@@ -27,14 +27,19 @@ class ClassController extends Controller
             $now = Carbon::now()->startOfDay();
 
             foreach ($pendingClasses as $class) {
-                if ($class->start_date->startOfDay()->lte($now)) {
+                // Convert start_date to Carbon instance if it's not already
+                $startDate = $class->start_date instanceof Carbon
+                    ? $class->start_date
+                    : Carbon::parse($class->start_date);
+
+                if ($startDate->startOfDay()->lte($now)) {
                     $class->status = 'active';
                     $class->save();
 
                     Log::info('Class activated', [
                         'class_id' => $class->id,
                         'class_name' => $class->name,
-                        'start_date' => $class->start_date->toDateString()
+                        'start_date' => $startDate->toDateString()
                     ]);
                 }
             }
@@ -434,7 +439,7 @@ class ClassController extends Controller
             Log::error('Error in teacherClasses: ' . $e->getMessage(), [
                 'exception' => $e
             ]);
-            
+
             return view('online.teacher.classes.index', [
                 'currentClasses' => collect(),
                 'completedClasses' => collect(),

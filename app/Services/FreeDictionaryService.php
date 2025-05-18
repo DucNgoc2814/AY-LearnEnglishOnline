@@ -68,14 +68,41 @@ class FreeDictionaryService
 
         // Get audio URL and pronunciations
         if (!empty($data['phonetics'])) {
+            $usPhonetic = null;
+            $ukPhonetic = null;
+            $defaultPhonetic = null;
+
             foreach ($data['phonetics'] as $phonetic) {
-                if (!empty($phonetic['audio'])) {
-                    $result['audio_url'] = $phonetic['audio'];
+                // Skip empty phonetics
+                if (empty($phonetic['text']) && empty($phonetic['audio'])) {
+                    continue;
                 }
-                if (!empty($phonetic['text'])) {
+
+                // Check if this is a US pronunciation
+                if (!empty($phonetic['audio']) && str_contains($phonetic['audio'], '-us.mp3')) {
+                    $usPhonetic = $phonetic;
+                }
+                // Check if this is a UK pronunciation
+                else if (!empty($phonetic['audio']) && str_contains($phonetic['audio'], '-uk.mp3')) {
+                    $ukPhonetic = $phonetic;
+                }
+                // Store the first valid phonetic as default
+                else if (!$defaultPhonetic) {
+                    $defaultPhonetic = $phonetic;
+                }
+            }
+
+            // Prioritize US > UK > Default phonetic
+            $selectedPhonetic = $usPhonetic ?? $ukPhonetic ?? $defaultPhonetic;
+
+            if ($selectedPhonetic) {
+                $result['phonetic'] = $selectedPhonetic['text'] ?? '';
+                $result['audio_url'] = $selectedPhonetic['audio'] ?? '';
+
+                if (!empty($selectedPhonetic['text'])) {
                     $result['pronunciations'][] = [
-                        'phoneticSpelling' => $phonetic['text'],
-                        'audioFile' => $phonetic['audio'] ?? '',
+                        'phoneticSpelling' => $selectedPhonetic['text'],
+                        'audioFile' => $selectedPhonetic['audio'] ?? '',
                         'dialects' => []
                     ];
                 }
