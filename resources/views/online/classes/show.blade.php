@@ -167,7 +167,7 @@
         transition: transform 0.2s ease;
         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     }
-    
+
     .stat-card:hover {
         transform: translateY(-3px);
     }
@@ -205,12 +205,12 @@
     .filter-btn i {
         margin-right: 0.5rem;
     }
-    
+
     @media (max-width: 768px) {
         .class-meta {
             gap: 1rem;
         }
-        
+
         .quick-stats {
             grid-template-columns: 1fr 1fr;
         }
@@ -292,6 +292,12 @@
                 Học liệu
             </a>
         </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="progress-tab" data-bs-toggle="tab" href="#progress" role="tab">
+                <i class="fas fa-chart-line"></i>
+                Tiến độ làm bài
+            </a>
+        </li>
     </ul>
 
     <div class="tab-content">
@@ -306,6 +312,9 @@
         </div>
         <div class="tab-pane fade" id="resources" role="tabpanel">
             @include('online.classes.partials.resources', ['class' => $class])
+        </div>
+        <div class="tab-pane fade" id="progress" role="tabpanel">
+            @include('online.classes.partials.progress', ['class' => $class])
         </div>
     </div>
 </div>
@@ -329,4 +338,4 @@
         });
     });
 </script>
-@endpush 
+@endpush

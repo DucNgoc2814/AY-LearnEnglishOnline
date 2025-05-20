@@ -19,6 +19,8 @@ use App\Http\Controllers\ReflectionExerciseController;
 use App\Http\Controllers\VideoHandoutController;
 use App\Http\Controllers\VideoShadowingController;
 use App\Http\Controllers\VocabularyListeningController;
+use App\Http\Controllers\VideoDubbingController;
+use App\Http\Controllers\ExerciseProgressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -180,6 +182,16 @@ Route::prefix('exercises')->group(function () {
         Route::post('/check', [DictationController::class, 'check'])->name('dictation.check');
         Route::get('/{id}/script', [DictationController::class, 'getScript'])->name('dictation.script');
     });
+
+    Route::prefix('video-dubbing')->group(function () {
+        Route::get('/', [VideoDubbingController::class, 'index'])->name('exercises.video-dubbing.index');
+        Route::get('/{id}', [VideoDubbingController::class, 'show'])->name('exercises.video-dubbing.show');
+    });
+
+    // Route cập nhật tiến độ
+    Route::post('/progress/update', [ExerciseProgressController::class, 'update'])
+        ->name('exercises.progress.update')
+        ->middleware('auth');
 });
 
 // API routes
