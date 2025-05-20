@@ -50,14 +50,14 @@
             <div id="beforeClassMaterials" class="accordion-collapse collapse show" data-bs-parent="#materialsAccordion">
                 <div class="accordion-body p-0">
                     <div class="accordion" id="beforeLessonsAccordion">
-                        <!-- Lesson 1 -->
+                        <!-- Học tiếng Anh qua phim -->
                         <div class="accordion-item level-2">
                             <h2 class="accordion-header">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#beforeLesson1" aria-expanded="true">
-                                    <i class="fas fa-book me-2"></i> Buổi 1: Giới thiệu khóa học
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#movieLearning" aria-expanded="true">
+                                    <i class="fas fa-film me-2"></i> Học tiếng Anh qua phim
                                 </button>
                             </h2>
-                            <div id="beforeLesson1" class="accordion-collapse collapse show" data-bs-parent="#beforeLessonsAccordion">
+                            <div id="movieLearning" class="accordion-collapse collapse show" data-bs-parent="#beforeLessonsAccordion">
                                 <div class="list-group list-group-flush level-3">
                                     <div class="list-group-item d-flex gap-3 py-3">
                                         <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; background-color: #f8f9fa; border-radius: 8px;">
@@ -66,11 +66,11 @@
                                         <div class="d-flex w-100 justify-content-between">
                                             <div>
                                                 <h6 class="mb-0">Video Exercise - Basic Introductions</h6>
-                                                <p class="mb-0 small text-muted">Xem video và điền từ còn thiếu vào đoạn hội thoại.</p>
+                                                <p class="mb-0 small text-muted">Xem video và làm theo các bước nhé.</p>
                                             </div>
                                             <div class="d-flex flex-column align-items-end">
                                                 <div class="btn-group">
-                                                    <a href="{{ route('exercises.video', ['id' => 1]) }}" class="btn btn-sm btn-outline-primary">
+                                                    <a href="{{ route('video-exercise.show', ['id' => 1]) }}" class="btn btn-sm btn-outline-primary">
                                                         <i class="fas fa-play"></i> Làm bài
                                                     </a>
                                                 </div>
@@ -81,14 +81,14 @@
                             </div>
                         </div>
 
-                        <!-- Lesson 2 -->
+                        <!-- Học từ vựng & luyện nghe -->
                         <div class="accordion-item level-2">
                             <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#beforeLesson2" aria-expanded="false">
-                                    <i class="fas fa-book me-2"></i> Buổi 2: Ngữ pháp cơ bản
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#vocabListening" aria-expanded="false">
+                                    <i class="fas fa-headphones me-2"></i> Học từ vựng & luyện nghe
                                 </button>
                             </h2>
-                            <div id="beforeLesson2" class="accordion-collapse collapse" data-bs-parent="#beforeLessonsAccordion">
+                            <div id="vocabListening" class="accordion-collapse collapse" data-bs-parent="#beforeLessonsAccordion">
                                 <div class="list-group list-group-flush level-3">
                                     <div class="list-group-item d-flex gap-3 py-3">
                                         <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; background-color: #f8f9fa; border-radius: 8px;">
@@ -96,44 +96,13 @@
                                         </div>
                                         <div class="d-flex w-100 justify-content-between">
                                             <div>
-                                                <h6 class="mb-0">Grammar Preview - Present Simple</h6>
-                                                <p class="mb-0 small text-muted">Ôn tập thì hiện tại đơn trước buổi học.</p>
+                                                <h6 class="mb-0">Vocabulary & Listening Practice</h6>
+                                                <p class="mb-0 small text-muted">Học từ vựng và luyện nghe qua các bài tập tương tác.</p>
                                             </div>
                                             <div class="d-flex flex-column align-items-end">
                                                 <div class="btn-group">
-                                                    <a href="{{ route('exercises.grammar', ['id' => 1]) }}" class="btn btn-sm btn-outline-primary">
-                                                        <i class="fas fa-pen"></i> Làm bài
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Lesson 3 -->
-                        <div class="accordion-item level-2">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#beforeLesson3" aria-expanded="false">
-                                    <i class="fas fa-book me-2"></i> Buổi 3: Từ vựng chủ đề du lịch
-                                </button>
-                            </h2>
-                            <div id="beforeLesson3" class="accordion-collapse collapse" data-bs-parent="#beforeLessonsAccordion">
-                                <div class="list-group list-group-flush level-3">
-                                    <div class="list-group-item d-flex gap-3 py-3">
-                                        <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; background-color: #f8f9fa; border-radius: 8px;">
-                                            <i class="fas fa-tasks text-warning"></i>
-                                        </div>
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <div>
-                                                <h6 class="mb-0">Vocabulary Flashcards - Travel</h6>
-                                                <p class="mb-0 small text-muted">Học từ vựng về chủ đề du lịch qua flashcards.</p>
-                                            </div>
-                                            <div class="d-flex flex-column align-items-end">
-                                                <div class="btn-group">
-                                                    <a href="" class="btn btn-sm btn-outline-primary">
-                                                        <i class="fas fa-play"></i> Học từ
+                                                    <a href="{{ route('vocabulary-listening.show') }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-headphones"></i> Làm bài
                                                     </a>
                                                 </div>
                                             </div>
@@ -157,28 +126,28 @@
             <div id="duringClassMaterials" class="accordion-collapse collapse" data-bs-parent="#materialsAccordion">
                 <div class="accordion-body p-0">
                     <div class="accordion" id="duringLessonsAccordion">
-                        <!-- Lesson 1 -->
+                        <!-- Xem video & handout -->
                         <div class="accordion-item level-2">
                             <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#duringLesson1" aria-expanded="false">
-                                    <i class="fas fa-book me-2"></i> Buổi 1: Giới thiệu khóa học
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#videoHandout" aria-expanded="false">
+                                    <i class="fas fa-film me-2"></i> Xem video & handout
                                 </button>
                             </h2>
-                            <div id="duringLesson1" class="accordion-collapse collapse" data-bs-parent="#duringLessonsAccordion">
+                            <div id="videoHandout" class="accordion-collapse collapse" data-bs-parent="#duringLessonsAccordion">
                                 <div class="list-group list-group-flush level-3">
                                     <div class="list-group-item d-flex gap-3 py-3">
                                         <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; background-color: #f8f9fa; border-radius: 8px;">
-                                            <i class="fas fa-headphones text-primary"></i>
+                                            <i class="fas fa-film text-primary"></i>
                                         </div>
                                         <div class="d-flex w-100 justify-content-between">
                                             <div>
-                                                <h6 class="mb-0">Listening Exercise - Basic Greetings</h6>
-                                                <p class="mb-0 small text-muted">Nghe đoạn hội thoại và điền từ còn thiếu.</p>
+                                                <h6 class="mb-0">Video Learning with Handouts</h6>
+                                                <p class="mb-0 small text-muted">Xem video và làm bài tập handout đi kèm.</p>
                                             </div>
                                             <div class="d-flex flex-column align-items-end">
                                                 <div class="btn-group">
-                                                    <a href="{{ route('exercises.audio', ['id' => 1]) }}" class="btn btn-sm btn-outline-primary">
-                                                        <i class="fas fa-headphones"></i> Làm bài
+                                                    <a href="{{ route('video-handout.show') }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-play"></i> Xem video và làm bài
                                                     </a>
                                                 </div>
                                             </div>
@@ -188,28 +157,28 @@
                             </div>
                         </div>
 
-                        <!-- Lesson 2 -->
+                        <!-- Xem video Shadowing -->
                         <div class="accordion-item level-2">
                             <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#duringLesson2" aria-expanded="false">
-                                    <i class="fas fa-book me-2"></i> Buổi 2: Ngữ pháp cơ bản
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#videoShadowing" aria-expanded="false">
+                                    <i class="fas fa-film me-2"></i> Xem video Shadowing
                                 </button>
                             </h2>
-                            <div id="duringLesson2" class="accordion-collapse collapse" data-bs-parent="#duringLessonsAccordion">
+                            <div id="videoShadowing" class="accordion-collapse collapse" data-bs-parent="#duringLessonsAccordion">
                                 <div class="list-group list-group-flush level-3">
                                     <div class="list-group-item d-flex gap-3 py-3">
                                         <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; background-color: #f8f9fa; border-radius: 8px;">
-                                            <i class="fas fa-pencil-alt text-success"></i>
+                                            <i class="fas fa-microphone text-success"></i>
                                         </div>
                                         <div class="d-flex w-100 justify-content-between">
                                             <div>
-                                                <h6 class="mb-0">Grammar Practice - Present Simple</h6>
-                                                <p class="mb-0 small text-muted">Luyện tập sử dụng thì hiện tại đơn.</p>
+                                                <h6 class="mb-0">Video Shadowing Practice</h6>
+                                                <p class="mb-0 small text-muted">Luyện phát âm theo phương pháp Shadowing.</p>
                                             </div>
                                             <div class="d-flex flex-column align-items-end">
                                                 <div class="btn-group">
-                                                    <a href="{{ route('exercises.grammar', ['id' => 2]) }}" class="btn btn-sm btn-outline-primary">
-                                                        <i class="fas fa-pen"></i> Làm bài
+                                                    <a href="{{ route('video-shadowing.show') }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-play"></i> Xem video
                                                     </a>
                                                 </div>
                                             </div>
@@ -233,59 +202,28 @@
             <div id="afterClassMaterials" class="accordion-collapse collapse" data-bs-parent="#materialsAccordion">
                 <div class="accordion-body p-0">
                     <div class="accordion" id="afterLessonsAccordion">
-                        <!-- Lesson 1 -->
+                        <!-- Viết bài Reflection -->
                         <div class="accordion-item level-2">
                             <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#afterLesson1" aria-expanded="false">
-                                    <i class="fas fa-book me-2"></i> Buổi 1: Giới thiệu khóa học
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#reflection" aria-expanded="false">
+                                    <i class="fas fa-pen-fancy me-2"></i> Viết bài Reflection
                                 </button>
                             </h2>
-                            <div id="afterLesson1" class="accordion-collapse collapse" data-bs-parent="#afterLessonsAccordion">
+                            <div id="reflection" class="accordion-collapse collapse" data-bs-parent="#afterLessonsAccordion">
                                 <div class="list-group list-group-flush level-3">
                                     <div class="list-group-item d-flex gap-3 py-3">
                                         <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; background-color: #f8f9fa; border-radius: 8px;">
-                                            <i class="fas fa-tasks text-success"></i>
+                                            <i class="fas fa-edit text-primary"></i>
                                         </div>
                                         <div class="d-flex w-100 justify-content-between">
                                             <div>
-                                                <h6 class="mb-0">Bài tập về nhà - Basic Introductions</h6>
-                                                <p class="mb-0 small text-muted">Làm bài tập củng cố kiến thức.</p>
+                                                <h6 class="mb-0">Viết bài Reflection</h6>
+                                                <p class="mb-0 small text-muted">Viết bài phản ánh về những gì bạn đã học được.</p>
                                             </div>
                                             <div class="d-flex flex-column align-items-end">
                                                 <div class="btn-group">
-                                                    <a href="" class="btn btn-sm btn-outline-primary">
-                                                        <i class="fas fa-pen"></i> Làm bài
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Lesson 2 -->
-                        <div class="accordion-item level-2">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#afterLesson2" aria-expanded="false">
-                                    <i class="fas fa-book me-2"></i> Buổi 2: Ngữ pháp cơ bản
-                                </button>
-                            </h2>
-                            <div id="afterLesson2" class="accordion-collapse collapse" data-bs-parent="#afterLessonsAccordion">
-                                <div class="list-group list-group-flush level-3">
-                                    <div class="list-group-item d-flex gap-3 py-3">
-                                        <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; background-color: #f8f9fa; border-radius: 8px;">
-                                            <i class="fas fa-book text-warning"></i>
-                                        </div>
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <div>
-                                                <h6 class="mb-0">Grammar Review - Present Simple</h6>
-                                                <p class="mb-0 small text-muted">Ôn tập và làm bài tập về thì hiện tại đơn.</p>
-                                            </div>
-                                            <div class="d-flex flex-column align-items-end">
-                                                <div class="btn-group">
-                                                    <a href="" class="btn btn-sm btn-outline-primary">
-                                                        <i class="fas fa-pen"></i> Làm bài
+                                                    <a href="{{ route('reflection-exercise.show', ['id' => 1]) }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-pen"></i> Viết bài
                                                     </a>
                                                 </div>
                                             </div>
@@ -299,4 +237,4 @@
             </div>
         </div>
     </div>
-</div> 
+</div>

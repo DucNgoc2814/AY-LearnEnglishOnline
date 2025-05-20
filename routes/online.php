@@ -55,7 +55,7 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
         Route::get('/video-series/{id}', [MaterialController::class, 'videoSeries'])->name('video-series');
         Route::get('/audio-collection/{id}', [MaterialController::class, 'audioCollection'])->name('audio-collection');
         Route::get('/games/{id}', [MaterialController::class, 'vocabularyGames'])->name('games');
-        
+
         // Submit exercise routes
         Route::post('/video/{id}/submit', [MaterialController::class, 'submitVideoExercise'])->name('video.submit');
         Route::post('/audio/{id}/submit', [MaterialController::class, 'submitAudioExercise'])->name('audio.submit');
@@ -122,11 +122,11 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
 
             // Attendance
             Route::get('/{id}/attendance', [TeacherClassController::class, 'attendance'])->name('attendance');
-            
+
             // Materials
             Route::post('/{id}/materials/upload', [TeacherClassController::class, 'uploadMaterial'])->name('materials.upload');
             Route::delete('/materials/{id}', [TeacherClassController::class, 'deleteMaterial'])->name('materials.delete');
-            
+
             // Assignments
             Route::get('/{class}/assignments', [ClassController::class, 'classAssignments'])->name('assignments');
             Route::get('/{class}/assignments/create', [ClassController::class, 'createAssignment'])->name('assignments.create');
@@ -135,12 +135,12 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
             Route::get('/{class}/assignments/{assignment}/edit', [ClassController::class, 'editAssignment'])->name('assignments.edit');
             Route::put('/{class}/assignments/{assignment}', [ClassController::class, 'updateAssignment'])->name('assignments.update');
             Route::delete('/{class}/assignments/{assignment}', [ClassController::class, 'deleteAssignment'])->name('assignments.delete');
-            
+
             // Grades
             Route::get('/{class}/grades', [ClassController::class, 'classGrades'])->name('grades');
             Route::post('/{class}/grades/update', [ClassController::class, 'updateGrades'])->name('grades.update');
             Route::get('/{class}/grades/export', [ClassController::class, 'exportGrades'])->name('grades.export');
-            
+
             // Grade Items Management
             Route::prefix('{class_id}/grade-items')->name('grade-items.')->group(function () {
                 Route::get('/', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'index'])->name('index');
@@ -152,7 +152,7 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
                 Route::post('/batch-update', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'batchUpdate'])->name('batch-update');
                 Route::post('/import-test-results', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'importTestResults'])->name('import-test-results');
             });
-            
+
             // Students
             Route::get('/{class}/students', [ClassController::class, 'classStudents'])->name('students');
             Route::get('/{class}/students/{student}', [ClassController::class, 'studentDetail'])->name('students.show');

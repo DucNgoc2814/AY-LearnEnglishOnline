@@ -55,7 +55,7 @@ class MaterialController extends Controller
         }
 
         $exercise = $exercises[$id];
-        
+
         return view('online.exercises.video', compact('exercise'));
     }
 
@@ -105,7 +105,7 @@ class MaterialController extends Controller
         }
 
         $exercise = $exercises[$id];
-        
+
         return view('online.exercises.audio', compact('exercise'));
     }
 
@@ -144,7 +144,7 @@ class MaterialController extends Controller
         }
 
         $exercise = $exercises[$id];
-        
+
         return view('online.exercises.grammar', compact('exercise'));
     }
 
@@ -202,7 +202,7 @@ class MaterialController extends Controller
         }
 
         $seriesData = $series[$id];
-        
+
         return view('online.exercises.video-series', compact('seriesData'));
     }
 
@@ -280,7 +280,7 @@ class MaterialController extends Controller
         }
 
         $collectionData = $collections[$id];
-        
+
         return view('online.exercises.audio-collection', compact('collectionData'));
     }
 
@@ -364,7 +364,7 @@ class MaterialController extends Controller
         }
 
         $gameData = $games[$id];
-        
+
         return view('online.exercises.vocabulary-games', compact('gameData'));
     }
 
@@ -387,7 +387,7 @@ class MaterialController extends Controller
         $answers = $request->input('answers');
         $correct = 0;
         $total = count($answers);
-        
+
         // Mock correct answers for the demo
         $correctAnswers = [
             1 => ['London', 'study', 'listening', 'name', 'from'],
@@ -404,7 +404,7 @@ class MaterialController extends Controller
 
         // Calculate score
         $score = ($total > 0) ? ($correct / $total) * 100 : 0;
-        
+
         // Return results
         return redirect()->back()->with([
             'result' => [
@@ -435,7 +435,7 @@ class MaterialController extends Controller
         $answers = $request->input('answers');
         $correct = 0;
         $total = count($answers);
-        
+
         // Mock correct answers for the demo
         $correctAnswers = [
             1 => ['fine', 'meeting', 'prepared', 'start'],
@@ -452,7 +452,7 @@ class MaterialController extends Controller
 
         // Calculate score
         $score = ($total > 0) ? ($correct / $total) * 100 : 0;
-        
+
         // Return results
         return redirect()->back()->with([
             'result' => [
@@ -483,7 +483,7 @@ class MaterialController extends Controller
         $answers = $request->input('answers');
         $correct = 0;
         $total = count($answers);
-        
+
         // Mock correct answers for the demo
         $correctAnswers = [
             1 => [
@@ -510,7 +510,7 @@ class MaterialController extends Controller
 
         // Calculate score
         $score = ($total > 0) ? ($correct / $total) * 100 : 0;
-        
+
         // Return results
         return redirect()->back()->with([
             'result' => [
@@ -521,4 +521,4 @@ class MaterialController extends Controller
             ]
         ]);
     }
-} 
+}

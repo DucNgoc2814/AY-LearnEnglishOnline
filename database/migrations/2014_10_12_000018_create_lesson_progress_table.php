@@ -26,4 +26,4 @@ class CreateLessonProgressTable extends Migration
     {
         Schema::dropIfExists('lesson_progress');
     }
-} 
+}

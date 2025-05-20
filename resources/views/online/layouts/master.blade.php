@@ -30,6 +30,8 @@
     <link rel="stylesheet" href="{{ asset('themes/client/assets/frontend/default-new/css/owl.carousel.min.css') }}">
     <link rel="stylesheet" href="{{ asset('themes/client/assets/frontend/default-new/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('themes/online/css/style.css') }}">
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <style>
         :root {
             --sidebar-width: 250px;
@@ -427,6 +429,10 @@
             });
         });
     </script>
+    <script src="{{ asset('themes/client/assets/frontend/default-new/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('themes/client/assets/frontend/default-new/js/owl.carousel.min.js') }}"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @stack('scripts')
 </body>
 

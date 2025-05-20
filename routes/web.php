@@ -14,6 +14,11 @@ use App\Http\Controllers\Client\AttendanceController;
 use App\Http\Controllers\Online\NewsController;
 use App\Http\Controllers\OxfordController;
 use App\Http\Controllers\DictationController;
+use App\Http\Controllers\VideoExerciseController;
+use App\Http\Controllers\ReflectionExerciseController;
+use App\Http\Controllers\VideoHandoutController;
+use App\Http\Controllers\VideoShadowingController;
+use App\Http\Controllers\VocabularyListeningController;
 
 /*
 |--------------------------------------------------------------------------
@@ -182,4 +187,10 @@ Route::prefix('api/oxford')->middleware('web')->group(function () {
     Route::post('/process-text', [OxfordController::class, 'processText'])->withoutMiddleware(['csrf']);
     Route::get('/word-info', [OxfordController::class, 'getWordInfo'])->withoutMiddleware(['csrf']);
 });
+
+Route::get('/video-exercise/{id}', [VideoExerciseController::class, 'show'])->name('video-exercise.show');
+Route::get('/reflection-exercise/{id}', [ReflectionExerciseController::class, 'show'])->name('reflection-exercise.show');
+Route::get('/video-handout', [VideoHandoutController::class, 'show'])->name('video-handout.show');
+Route::get('/video-shadowing', [VideoShadowingController::class, 'show'])->name('video-shadowing.show');
+Route::get('/vocabulary-listening', [VocabularyListeningController::class, 'show'])->name('vocabulary-listening.show');
 
