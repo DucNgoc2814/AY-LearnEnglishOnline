@@ -14,6 +14,13 @@ use App\Http\Controllers\Client\AttendanceController;
 use App\Http\Controllers\Online\NewsController;
 use App\Http\Controllers\OxfordController;
 use App\Http\Controllers\DictationController;
+use App\Http\Controllers\VideoExerciseController;
+use App\Http\Controllers\ReflectionExerciseController;
+use App\Http\Controllers\VideoHandoutController;
+use App\Http\Controllers\VideoShadowingController;
+use App\Http\Controllers\VocabularyListeningController;
+use App\Http\Controllers\VideoDubbingController;
+use App\Http\Controllers\ExerciseProgressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -169,9 +176,22 @@ Route::get('/dictionary', function () {
 
 // Routes cho bài tập dictation
 Route::prefix('exercises')->group(function () {
-    Route::get('/dictation/{id}', [DictationController::class, 'show'])->name('exercises.dictation');
-    Route::post('/dictation/check', [DictationController::class, 'check'])->name('exercises.dictation.check');
-    Route::get('/dictation/{id}/script', [DictationController::class, 'getScript'])->name('exercises.dictation.script');
+    Route::prefix('dictation')->group(function () {
+        Route::get('/', [DictationController::class, 'index'])->name('exercises.dictation.index');
+        Route::get('/{id}', [DictationController::class, 'show'])->name('exercises.dictation');
+        Route::post('/check', [DictationController::class, 'check'])->name('dictation.check');
+        Route::get('/{id}/script', [DictationController::class, 'getScript'])->name('dictation.script');
+    });
+
+    Route::prefix('video-dubbing')->group(function () {
+        Route::get('/', [VideoDubbingController::class, 'index'])->name('exercises.video-dubbing.index');
+        Route::get('/{id}', [VideoDubbingController::class, 'show'])->name('exercises.video-dubbing.show');
+    });
+
+    // Route cập nhật tiến độ
+    Route::post('/progress/update', [ExerciseProgressController::class, 'update'])
+        ->name('exercises.progress.update')
+        ->middleware('auth');
 });
 
 // API routes
@@ -179,4 +199,10 @@ Route::prefix('api/oxford')->middleware('web')->group(function () {
     Route::post('/process-text', [OxfordController::class, 'processText'])->withoutMiddleware(['csrf']);
     Route::get('/word-info', [OxfordController::class, 'getWordInfo'])->withoutMiddleware(['csrf']);
 });
+
+Route::get('/video-exercise/{id}', [VideoExerciseController::class, 'show'])->name('video-exercise.show');
+Route::get('/reflection-exercise/{id}', [ReflectionExerciseController::class, 'show'])->name('reflection-exercise.show');
+Route::get('/video-handout', [VideoHandoutController::class, 'show'])->name('video-handout.show');
+Route::get('/video-shadowing', [VideoShadowingController::class, 'show'])->name('video-shadowing.show');
+Route::get('/vocabulary-listening', [VocabularyListeningController::class, 'show'])->name('vocabulary-listening.show');
 

@@ -2,34 +2,85 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Lesson extends Model
+class Lesson extends BaseModel
 {
-    use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'course_id',
-        'name',
-        'slug',
-        'description',
-        'order_number',
-        'is_preview',
-        'total_view',
-        'total_comment'
-    ];
+    public static function getBaseRules($id = null)
+    {
+        return [
+            'course_id' => 'required|exists:courses,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'order_number' => 'required|integer|min:1',
+            'is_preview' => 'nullable|boolean',
+        ];
+    }
+    public static function getFields()
+    {
+        return [
+            'course_id' => [
+                'label' => 'Khóa học',
+                'type' => 'select',
+                'options' => Course::pluck('title', 'id')->toArray(),
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'name' => [
+                'label' => 'Tên bài học',
+                'type' => 'text',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'description' => [
+                'label' => 'Mô tả',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ],
+            'order_number' => [
+                'label' => 'Thứ tự',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'is_preview' => [
+                'label' => 'Xem thử',
+                'type' => 'boolean',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ]
+        ];
+    }
+    /**
+     * Get fields for form (create/edit)
+     */
+    public static function getFormFields()
+    {
+        $fields = [];
+        foreach (self::getFields() as $key => $field) {
+            if (!isset($field['editable']) || $field['editable']) {
+                $fields[$key] = $field;
+            }
+        }
+        return $fields;
+    }
 
-    protected $casts = [
-        'is_preview' => 'boolean',
-        'total_view' => 'integer',
-        'total_comment' => 'integer'
-    ];
-
+    /**
+     * Get fields for listing
+     */
+    public static function getListFields()
+    {
+        return self::getFields();
+    }
     /**
      * Lấy khóa học của bài học
      */
@@ -220,12 +271,12 @@ class Lesson extends Model
     public function totalVideoDuration()
     {
         $totalSeconds = $this->videoLessons->sum('duration');
-        
+
         // Properly convert to HH:MM:SS
         $hours = floor($totalSeconds / 3600);
         $minutes = floor(($totalSeconds % 3600) / 60);
         $seconds = $totalSeconds % 60;
-        
+
         return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
     }
 

@@ -2,36 +2,86 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Dictation extends Model
+class Dictation extends BaseModel
 {
-    use HasFactory, SoftDeletes;
-
-    protected $fillable = [
-        'audio_url',
-        'content'
-    ];
-
-    protected $casts = [
-        'is_active' => 'boolean',
-        'order' => 'integer'
-    ];
-    /**
-     * Get all active dictations ordered by order.
-     */
-    public function scopeActive($query)
+    public static function mediaFields(): array
     {
-        return $query->where('is_active', true)->orderBy('order');
+        return [
+            'audio_url' => [
+                'type' => 'audio',
+                'max_size' => 2048, // 2MB
+                'mimes' => 'mp3,wav,ogg',
+                'label' => 'Audio'
+            ],
+        ];
+    }
+
+    public function getAudioUrlAttribute($value)
+    {
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            return $value;
+        }
+        return config('filesystems.disks.s3.url') . '/' . ltrim($value, '/');
+    }
+
+    public static function getBaseRules($id = null)
+    {
+        return [
+            'audio_url' => 'required|string|max:255',
+            'content' => 'nullable|string',
+        ];
+    }
+
+    public static function getFields()
+    {
+        $fields = [
+            'content' => [
+                'label' => 'Nội dung',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ],
+        ];
+
+        // Thêm các trường media vào fields
+        foreach (static::mediaFields() as $field => $config) {
+            $fields[$field] = [
+                'label' => $config['label'],
+                'type' => 'file',
+                'accept' => $config['type'] === 'image' ? 'image/*' : 'audio/*',
+                'max_size' => $config['max_size'],
+                'editable' => true
+            ];
+        }
+
+        return $fields;
     }
 
     /**
-     * Get dictations by level.
+     * Get fields for form (create/edit)
      */
-    public function scopeByLevel($query, $level)
+    public static function getFormFields()
     {
-        return $query->where('level', $level);
+        $fields = [];
+        foreach (self::getFields() as $key => $field) {
+            if (!isset($field['editable']) || $field['editable']) {
+                $fields[$key] = $field;
+            }
+        }
+        return $fields;
+    }
+
+    /**
+     * Get fields for listing
+     */
+    public static function getListFields()
+    {
+        return self::getFields();
+    }
+    protected static function bootHasSlug()
+    {
+        // Override to disable slug generation
     }
 }

@@ -107,12 +107,11 @@
                                     <h6 class="card-title">Dictation Practice - Listen and Write</h6>
                                     <p class="card-text small">Luyện nghe và viết theo các đoạn hội thoại, cải thiện kỹ năng nghe và chính tả.</p>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="badge bg-secondary">15 bài tập</span>
-                                        <small class="text-muted">30 phút</small>
+                                        <span class="badge bg-secondary">{{ \App\Models\Dictation::count() }} bài tập</span>
                                     </div>
                                 </div>
                                 <div class="card-footer bg-transparent">
-                                    <a href="{{ route('exercises.dictation', ['id' => 1]) }}" class="btn btn-primary btn-sm d-block">Học ngay</a>
+                                    <a href="{{ route('exercises.dictation.index') }}" class="btn btn-primary btn-sm d-block">Học ngay</a>
                                 </div>
                             </div>
                         </div>

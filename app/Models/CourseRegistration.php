@@ -25,8 +25,8 @@ class CourseRegistration extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'student_id',
         'class_id',
+        'student_id',
         'status',
         'fee_amount',
         'payment_status',
@@ -45,9 +45,9 @@ class CourseRegistration extends Model
      */
     protected $casts = [
         'fee_amount' => 'decimal:2',
-        'payment_date' => 'datetime',
-        'enrollment_date' => 'datetime',
-        'completion_date' => 'datetime'
+        'payment_date' => 'date',
+        'enrollment_date' => 'date',
+        'completion_date' => 'date',
     ];
 
     // Định nghĩa các giá trị cho status
@@ -77,19 +77,29 @@ class CourseRegistration extends Model
     ];
 
     /**
-     * Get the student that owns the registration.
+     * Lấy thông tin học viên
      */
-    public function student()
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
     }
 
     /**
-     * Get the class that owns the registration.
+     * Lấy danh sách các lớp học viên đã được xếp vào
      */
-    public function class()
+    public function classAssignments(): HasMany
     {
-        return $this->belongsTo(Classes::class);
+        return $this->hasMany(ClassStudent::class, 'registration_id');
+    }
+
+    /**
+     * Lấy lớp học hiện tại của học viên (nếu có)
+     */
+    public function currentClass()
+    {
+        return $this->classAssignments()
+            ->where('status', ClassStudent::STATUS_ACTIVE)
+            ->first();
     }
 
     /**
@@ -142,4 +152,4 @@ class CourseRegistration extends Model
     {
         return $query->where('payment_status', $status);
     }
-} 
+}

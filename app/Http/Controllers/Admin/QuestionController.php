@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\BaseController;
-use App\Services\Interfaces\QuestionServiceInterface;
-use App\Services\Interfaces\AnswerServiceInterface;
-use App\Http\Requests\Admin\Question\StoreRequest;
-use App\Http\Requests\Admin\Question\UpdateRequest;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
+use App\Models\Answer;
+use App\Models\Question;
+use Illuminate\Http\Request;
 
 /**
  * @package App\Http\Controllers\Admin
@@ -17,423 +13,81 @@ use Illuminate\Support\Facades\DB;
  */
 class QuestionController extends BaseController
 {
-    protected $questionService;
-    protected $answerService;
-    protected const VIEW_PATH = 'admin.components.questions.';
+    protected $pageTitle = 'Danh sách câu hỏi';
+    public function __construct()
+    {
+        $this->model = Question::class;
+        $this->viewPath = 'admin.crud';
+        $this->route = 'admin.questions';
 
-    public function __construct(
-        QuestionServiceInterface $questionService,
-        AnswerServiceInterface $answerService
-    ) {
-        $this->questionService = $questionService;
-        $this->answerService = $answerService;
+        // Cấu hình các model liên quan
+        // $this->relatedModels = [
+        //     'Câu trả lời' => Answer::class,
+        // ];
+
+        parent::__construct();
     }
 
-    /**
-     * Hiển thị danh sách câu hỏi
-     *
-     * @return \Illuminate\View\View
-     */
-    public function index()
+    public function store(Request $request)
     {
-        try {
-            $list = $this->questionService->getList();
-            $trashList = $this->questionService->getTrashList();
+        $validated = $request->validate($this->model::rules());
 
-            return view(self::VIEW_PATH . 'index', [
-                'questions' => $list['data'],
-                'pagination' => $list['pagination'],
-                'trashList' => $trashList['data'],
-                'trashPagination' => $trashList['pagination'],
-            ]);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra');
+        // Tạo instance mới
+        $product = $this->model::create($validated);
+
+        // Xử lý upload tất cả các trường media
+        foreach ($product::mediaFields() as $field => $config) {
+            if ($request->hasFile($field)) {
+                $path = $product->handleMediaUpload($field, $request->file($field));
+                $product->update([$field => $path]);
+            }
         }
+
+        // Xử lý các model liên quan
+        $this->handleRelatedModels($request, $product);
+
+        return redirect()->route($this->route . '.index')
+            ->with('success', 'Sản phẩm đã được tạo thành công');
     }
 
-    /**
-     * Lưu câu hỏi mới
-     *
-     * @param StoreRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(StoreRequest $request)
+    public function update(Request $request, $id)
     {
-        try {
-            $data = $request->validated();
-            DB::beginTransaction();
+        $item = $this->model::withTrashed()->findOrFail($id);
+        $validated = $request->validate($this->model::rules($item->id));
 
-            // Xử lý file media dựa vào loại câu hỏi
-            if ($request->hasFile('media_file')) {
-                $mediaFile = $request->file('media_file');
-                $type = $request->input('type');
+        // Cập nhật thông tin cơ bản
+        $item->update($validated);
 
-                Log::info('Processing media file upload', [
-                    'type' => $type,
-                    'file_name' => $mediaFile->getClientOriginalName(),
-                    'file_size' => $mediaFile->getSize(),
-                    'mime_type' => $mediaFile->getMimeType()
-                ]);
-
-                // Kiểm tra file có hợp lệ không
-                if (!$mediaFile->isValid()) {
-                    throw new \Exception('Invalid media file');
-                }
-
-                // Xử lý kiểm tra định dạng file
-                $mediaType = '';
-                switch ($type) {
-                    case 'image':
-                        $mediaType = 'images';
-                        $validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                        $maxSize = 5 * 1024 * 1024; // 5MB
-                        break;
-                    case 'video':
-                        $mediaType = 'videos';
-                        $validExtensions = ['mp4', 'mov', 'avi', 'wmv', 'webm'];
-                        $maxSize = 50 * 1024 * 1024; // 50MB
-                        break;
-                    case 'audio':
-                        $mediaType = 'sounds';
-                        $validExtensions = ['mp3', 'wav', 'ogg', 'm4a'];
-                        $maxSize = 10 * 1024 * 1024; // 10MB
-                        break;
-                    default:
-                        throw new \Exception('Unsupported media type');
-                }
-
-                // Kiểm tra kích thước file
-                if ($mediaFile->getSize() > $maxSize) {
-                    throw new \Exception('File size exceeds maximum allowed size');
-                }
-
-                // Kiểm tra phần mở rộng file
-                $extension = strtolower($mediaFile->getClientOriginalExtension());
-                if (!in_array($extension, $validExtensions)) {
-                    throw new \Exception('File type not allowed. Allowed types: ' . implode(', ', $validExtensions));
-                }
-
-                // Upload file
-                try {
-                    $mediaUrl = $this->questionService->handleMediaUpload($mediaFile, $mediaType);
-                    if ($mediaUrl) {
-                        $data['media_url'] = $mediaUrl;
-                    } else {
-                        throw new \Exception('Failed to upload media file');
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Media upload error in controller', [
-                        'error' => $e->getMessage(),
-                        'type' => $type,
-                        'file_name' => $mediaFile->getClientOriginalName()
-                    ]);
-                    throw new \Exception('Error uploading media: ' . $e->getMessage());
-                }
+        // Xử lý upload tất cả các trường media
+        foreach ($item::mediaFields() as $field => $config) {
+            if ($request->hasFile($field)) {
+                $path = $item->handleMediaUpload($field, $request->file($field));
+                $item->update([$field => $path]);
             }
-
-            // Tạo câu hỏi
-            $question = $this->questionService->create($data);
-
-            // Kiểm tra xem $question có phải là mảng không
-            if (is_array($question) && isset($question['data'])) {
-                $question = $question['data'];
+            // Nếu không có file mới và có request xóa file cũ
+            elseif ($request->has("remove_{$field}")) {
+                $item->deleteMedia($item->$field);
+                $item->update([$field => null]);
             }
-
-            // Xử lý câu trả lời
-            if ($request->has('answers')) {
-                $answers = $request->input('answers');
-                $answerType = $request->input('answer_type', 'single');
-
-                // Nếu là single choice, chỉ cho phép một đáp án đúng
-                if ($answerType === 'single') {
-                    $correctAnswerIndex = $request->input('correct_answer');
-                    // Đảm bảo tất cả đáp án đều có giá trị is_correct
-                    foreach ($answers as $index => &$answer) {
-                        // Set is_correct = true cho đáp án được chọn, false cho các đáp án khác
-                        $answer['is_correct'] = ($index == $correctAnswerIndex);
-                        Log::info('Setting is_correct for answer', [
-                            'index' => $index,
-                            'is_correct' => $answer['is_correct'],
-                            'correct_index' => $correctAnswerIndex
-                        ]);
-                    }
-                }
-
-                // Lưu các câu trả lời
-                foreach ($answers as $index => $answer) {
-                    // Đảm bảo có question_id cho câu trả lời
-                    $answer['question_id'] = $question->id;
-                    // Đảm bảo có type cho câu trả lời
-                    $answer['type'] = $answerType;
-
-                    // Xử lý upload file cho câu trả lời nếu có
-                    if ($request->hasFile("answers.{$index}.url")) {
-                        try {
-                            $file = $request->file("answers.{$index}.url");
-
-                            // Kiểm tra và xác định loại file
-                            $mimeType = $file->getMimeType();
-                            $fileType = 'files';
-
-                            if (strpos($mimeType, 'image/') === 0) {
-                                $fileType = 'images';
-                                // Kiểm tra kích thước file
-                                if ($file->getSize() > 5 * 1024 * 1024) { // 5MB
-                                    throw new \Exception('Image size should not exceed 5MB');
-                                }
-                                // Kiểm tra phần mở rộng
-                                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                                if (!in_array(strtolower($file->getClientOriginalExtension()), $allowedExtensions)) {
-                                    throw new \Exception('Invalid image format. Allowed formats: ' . implode(', ', $allowedExtensions));
-                                }
-                            }
-
-                            // Upload file
-                            $filePath = $this->answerService->handleFileUpload($file, $fileType);
-                            if ($filePath) {
-                                $answer['url'] = $filePath;
-                                Log::info('Answer file uploaded successfully', [
-                                    'question_id' => $question->id,
-                                    'answer_index' => $index,
-                                    'file_path' => $filePath
-                                ]);
-                            } else {
-                                throw new \Exception('Failed to upload answer file');
-                            }
-                        } catch (\Exception $e) {
-                            Log::error('Failed to upload file for answer', [
-                                'error' => $e->getMessage(),
-                                'answer_index' => $index,
-                                'question_id' => $question->id
-                            ]);
-                            throw new \Exception('Error uploading answer file: ' . $e->getMessage());
-                        }
-                    }
-
-                    // Ghi log để debug
-                    Log::info('Creating answer for question', [
-                        'question_id' => $question->id,
-                        'answer_data' => $answer
-                    ]);
-
-                    $this->answerService->create($answer);
-                }
+            // Nếu không có file mới nhưng có file cũ và đang edit
+            elseif ($request->has("{$field}_current")) {
+                $item->update([$field => $request->input("{$field}_current")]);
             }
-
-            DB::commit();
-
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Tạo mới thành công',
-                    'data' => $question
-                ]);
-            }
-
-            return redirect()->route('admin.questions.index')->with('success', 'Tạo mới thành công');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Question creation error:', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-                ], 422);
-            }
-
-            return redirect()->back()->withErrors(['message' => 'Có lỗi xảy ra: ' . $e->getMessage()])->withInput();
         }
+
+        // Xử lý các model liên quan
+        $this->handleRelatedModels($request, $item, true);
+
+        return redirect()->route($this->route . '.index')
+            ->with('success', 'Sản phẩm đã được cập nhật thành công');
     }
 
-    /**
-     * Hiển thị chi tiết câu hỏi
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show($id)
-    {
-        $result = $this->questionService->findById($id);
-        return response()->json($result);
-    }
-
-    /**
-     * Cập nhật câu hỏi
-     *
-     * @param UpdateRequest $request
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function update(UpdateRequest $request, $id)
-    {
-        try {
-            // Lấy tất cả dữ liệu đã validate
-            $data = $request->validated();
-
-            // Lấy thông tin câu hỏi hiện tại
-            $question = $this->questionService->findById($id);
-            if (!$question) {
-                throw new \Exception('Không tìm thấy câu hỏi');
-            }
-
-            // Log thông tin chi tiết về request
-            Log::info('Question update request detail:', [
-                'id' => $id,
-                'all_files' => $request->allFiles(),
-                'has_media_file' => $request->hasFile('media_file'),
-                'remove_media' => $request->has('remove_media'),
-                'question_type' => $data['type']
-            ]);
-
-            // Xử lý xóa media
-            if ($request->has('remove_media') && $request->input('remove_media') == '1') {
-                $data['media_url'] = null; // Đánh dấu xóa media
-                Log::info('Marking media for removal');
-            }
-            // Xử lý upload media mới
-            else if ($request->hasFile('media_file')) {
-                $mediaFile = $request->file('media_file');
-                $type = $data['type']; // Sử dụng loại câu hỏi từ dữ liệu đã validate
-
-                // Xử lý file theo loại
-                switch ($type) {
-                    case 'image':
-                        $mediaUrl = $this->questionService->handleMediaUpload($mediaFile, 'images');
-                        break;
-                    case 'video':
-                        $mediaUrl = $this->questionService->handleMediaUpload($mediaFile, 'videos');
-                        break;
-                    case 'audio':
-                        $mediaUrl = $this->questionService->handleMediaUpload($mediaFile, 'sounds');
-                        break;
-                    default:
-                        $mediaUrl = null;
-                }
-
-                if ($mediaUrl) {
-                    // Xóa file cũ nếu có
-                    if (!empty($question->media_url)) {
-                        $this->questionService->deleteMedia($question->media_url);
-                    }
-                    $data['media_url'] = $mediaUrl;
-                }
-            }
-
-            // Gọi service để cập nhật
-            $result = $this->questionService->update($data, $id);
-
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Cập nhật thành công',
-                    'data' => $result
-                ]);
-            }
-
-            return redirect()->route('admin.questions.index')->with('success', 'Cập nhật thành công');
-        } catch (\Exception $e) {
-            Log::error('Question update error:', [
-                'id' => $id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-                ], 422);
-            }
-
-            return redirect()->back()->withErrors(['message' => 'Có lỗi xảy ra: ' . $e->getMessage()])->withInput();
-        }
-    }
-
-    /**
-     * Xóa câu hỏi
-     *
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function destroy($id)
     {
-        $result = $this->questionService->delete($id);
-        return $this->redirectResponse($result);
-    }
+        $item = $this->model::findOrFail($id);
+        $item->delete();
 
-    /**
-     * Khôi phục danh mục đã xóa
-     *
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function restore($id)
-    {
-        $result = $this->questionService->restore($id);
-        return $this->redirectResponse($result);
-    }
-
-    /**
-     * Lấy thông tin câu hỏi để chỉnh sửa
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function edit($id)
-    {
-        try {
-            $question = $this->questionService->findWithFullUrls($id);
-
-            Log::info('Question edit data:', [
-                'question_id' => $id,
-                'has_answers' => $question->answers->count(),
-                'media_url' => $question->media_url,
-                'full_media_url' => $question->full_media_url ?? null
-            ]);
-
-            return response()->json([
-                'status' => true,
-                'data' => $question
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Question edit error:', [
-                'id' => $id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return response()->json([
-                'status' => false,
-                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Lấy danh sách câu trả lời của một câu hỏi
-     *
-     * @param int $questionId
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getAnswersByQuestion($questionId)
-    {
-        try {
-            $result = $this->questionService->getAnswersByQuestion($questionId);
-            return response()->json($result);
-        } catch (\Exception $e) {
-            Log::error('Error in QuestionController getAnswersByQuestion: ' . $e->getMessage(), [
-                'question_id' => $questionId,
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra khi lấy danh sách câu trả lời'
-            ], 500);
-        }
+        return redirect()->route($this->route . '.index')
+            ->with('success', 'Sản phẩm đã được chuyển vào thùng rác');
     }
 }

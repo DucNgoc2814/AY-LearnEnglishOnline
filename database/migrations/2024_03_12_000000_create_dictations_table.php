@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('audio_url')->comment('Đường dẫn file audio');
             $table->text('content')->comment('Nội dung của audio');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

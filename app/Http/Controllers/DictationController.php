@@ -2,30 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dictation;
 use Illuminate\Http\Request;
-use App\Models\DictationExercise;
+use Illuminate\Support\Facades\Log;
 use App\Services\FreeDictionaryService;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class DictationController extends Controller
 {
     protected $dictionaryService;
+    protected $translator;
 
     public function __construct(FreeDictionaryService $dictionaryService)
     {
         $this->dictionaryService = $dictionaryService;
+        $this->translator = new GoogleTranslate('vi');
+    }
+
+    public function index()
+    {
+        $dictations = Dictation::orderBy('id', 'asc')->get();
+        return view('online.exercises.dictation-list', compact('dictations'));
     }
 
     public function show($id)
     {
-        // TODO: Get exercise data from database
-        $exercise = [
-            'id' => $id,
-            'audio_url' => '/audio/sample.mp3',
-            'correct_text' => 'What is your hobby?',
-            'translation' => 'Sở thích của bạn là gì?',
-        ];
+        $exercise = Dictation::findOrFail($id);
+        $total = Dictation::count();
 
-        return view('online.exercises.dictation', compact('exercise'));
+        return view('online.exercises.dictation', compact('exercise', 'total'));
     }
 
     public function check(Request $request)
@@ -35,34 +40,68 @@ class DictationController extends Controller
             'user_text' => 'required|string',
         ]);
 
-        // TODO: Get correct text from database
-        $correctText = 'What is your hobby?';
-
-        $isCorrect = strtolower(trim($request->user_text)) === strtolower(trim($correctText));
+        $exercise = Dictation::findOrFail($request->exercise_id);
+        $isCorrect = strtolower(trim($request->user_text)) === strtolower(trim($exercise->content));
 
         return response()->json([
             'success' => true,
             'is_correct' => $isCorrect,
-            'message' => $isCorrect ? 'You are correct!' : 'Incorrect. Try again!',
+            'message' => $isCorrect ? 'Chính xác!' : 'Chưa chính xác. Hãy thử lại!',
         ]);
     }
 
-    public function getScript(Request $request)
+    public function getScript(Request $request, $id)
     {
-        $request->validate([
-            'exercise_id' => 'required|integer',
-        ]);
+        try {
+            $exercise = Dictation::findOrFail($id);
 
-        // TODO: Get script data from database
-        $script = [
-            'text' => 'What is your hobby?',
-            'translation' => 'Sở thích của bạn là gì?',
-            'words' => ['What', 'is', 'your', 'hobby'],
-        ];
+            // Get translation
+            $translation = $this->translator->translate($exercise->content);
 
-        return response()->json([
-            'success' => true,
-            'data' => $script,
-        ]);
+            // Split content into words and get pronunciation for each
+            $words = explode(' ', $exercise->content);
+            $pronunciations = [];
+            foreach ($words as $word) {
+                $wordInfo = $this->dictionaryService->getWordInfo($word);
+                $pronunciations[] = [
+                    'word' => $word,
+                    'phonetic' => $wordInfo['phonetic'] ?? '',
+                    'audio_url' => $wordInfo['audio_url'] ?? '',
+                    'definitions' => $wordInfo['definitions'] ?? []
+                ];
+            }
+
+            $script = [
+                'text' => $exercise->content,
+                'translation' => $translation,
+                'audio_url' => $exercise->audio_url,
+                'words' => $words,
+                'pronunciations' => $pronunciations
+            ];
+
+            return response()->json([
+                'success' => true,
+                'data' => $script,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error getting script: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi tải script: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    protected function getPronunciation($word)
+    {
+        try {
+            $wordInfo = $this->dictionaryService->getWordInfo($word);
+            if (!empty($wordInfo) && isset($wordInfo['phonetic'])) {
+                return $wordInfo['phonetic'];
+            }
+        } catch (\Exception $e) {
+            Log::error('Error getting pronunciation: ' . $e->getMessage());
+        }
+        return '';
     }
 }

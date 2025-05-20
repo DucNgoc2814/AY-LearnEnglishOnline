@@ -3,294 +3,482 @@
 @section('title', 'Dictation Exercise')
 
 @section('styles')
-<style>
-    .dictation-container {
-        max-width: 800px;
-        margin: 0 auto;
-    }
+    <style>
+        .dictation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
 
-    .audio-container {
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
+        .exercise-header {
+            background: linear-gradient(135deg, #0061f2 0%, #6e00ff 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-    .input-container textarea {
-        width: 100%;
-        padding: 15px;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        font-size: 1rem;
-        min-height: 100px;
-        resize: vertical;
-        transition: all 0.2s ease;
-    }
+        .exercise-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
 
-    .input-container textarea:focus {
-        border-color: #80bdff;
-        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.15);
-        outline: none;
-    }
+        .exercise-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
 
-    .result-container {
-        padding: 15px;
-        border-radius: 8px;
-        margin-top: 20px;
-        display: none;
-    }
+        .audio-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+        }
 
-    .result-container.correct {
-        background-color: #d4edda;
-        border: 1px solid #c3e6cb;
-        color: #155724;
-    }
+        .audio-container audio {
+            width: 100%;
+            height: 48px;
+        }
 
-    .result-container.incorrect {
-        background-color: #f8d7da;
-        border: 1px solid #f5c6cb;
-        color: #721c24;
-    }
+        .input-container {
+            margin-bottom: 1.5rem;
+        }
 
-    .script-container {
-        display: none;
-        background: #fff;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        padding: 20px;
-        margin-top: 20px;
-    }
+        .input-container textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            min-height: 120px;
+            resize: vertical;
+            transition: all 0.3s ease;
+            background: white;
+            color: #1f2937;
+        }
 
-    .word-item {
-        display: inline-flex;
-        align-items: center;
-        padding: 6px 12px;
-        background: #f8f9fa;
-        border-radius: 4px;
-        cursor: pointer;
-        margin: 4px;
-        transition: all 0.2s ease;
-    }
+        .input-container textarea:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
 
-    .word-item:hover {
-        background: #e9ecef;
-    }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
 
-    .phonetic-popup {
-        display: none;
-        position: absolute;
-        background: white;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        padding: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        z-index: 1000;
-    }
-</style>
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            transform: translateY(-1px);
+        }
+
+        .result-container {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+            font-weight: 500;
+        }
+
+        .result-container.correct {
+            background-color: #ecfdf5;
+            border: 1px solid #6ee7b7;
+            color: #065f46;
+        }
+
+        .result-container.incorrect {
+            background-color: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        .script-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+        }
+
+        .script-header {
+            background: #6366f1;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px 12px 0 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .script-body {
+            padding: 1.5rem;
+        }
+
+        .translation-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 0.75rem;
+        }
+
+        .word-pronunciation {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            margin: 0.25rem;
+            background: #f3f4f6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #4b5563;
+            text-decoration: none;
+            border: 1px solid #e5e7eb;
+        }
+
+        .word-pronunciation:hover {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .phonetic-popup {
+            position: absolute;
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+            z-index: 1000;
+            min-width: 240px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .pronunciation-button {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #4b5563;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pronunciation-button:hover {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .word-definition {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .ipa-text {
+            font-family: monospace;
+            color: #6b7280;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .dictation-container {
+                padding: 1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
 @endsection
 
 @section('content')
-<div class="container py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex align-items-center mb-4">
-                <h2 class="mb-0">Dictation Exercise</h2>
-                <span class="badge bg-primary ms-2">1/21</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-body">
-                    <!-- Audio Player -->
-                    <div class="audio-container">
-                        <audio id="dictationAudio" controls class="w-100">
-                            <source src="{{ $exercise['audio_url'] }}" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio>
-                    </div>
-
-                    <!-- Input Area -->
-                    <div class="input-container">
-                        <textarea id="userInput"
-                                class="form-control"
-                                placeholder="Type what you hear..."></textarea>
-                    </div>
-
-                    <!-- Buttons -->
-                    <div class="mt-3">
-                        <button id="checkButton" class="btn btn-primary me-2">
-                            <i class="fas fa-check me-1"></i> Check
-                        </button>
-                        <button id="scriptButton" class="btn btn-secondary">
-                            <i class="fas fa-file-alt me-1"></i> Script
-                        </button>
-                    </div>
-
-                    <!-- Results -->
-                    <div id="resultContainer" class="result-container"></div>
-                </div>
+    <div class="dictation-container">
+        <!-- Exercise Header -->
+        <div class="exercise-header">
+            <div class="d-flex align-items-center justify-content-between">
+                <h2>Dictation Exercise</h2>
+                <span class="exercise-badge">{{ $exercise->id }}/{{ $total }}</span>
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div id="scriptContainer" class="card d-none">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Script</h5>
-                </div>
-                <div class="card-body">
-                    <div class="translation-container mb-4">
-                        <h6>Translation</h6>
-                        <p id="translationText" class="mb-0"></p>
+        <div class="row g-4">
+            <!-- Main Exercise Area -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <!-- Audio Player -->
+                        <div class="audio-container">
+                            <audio id="dictationAudio" controls controlsList="nodownload" class="w-100">
+                                <source src="{{ $exercise->audio_url }}" type="audio/mpeg">
+                                <p class="text-danger">Trình duyệt của bạn không hỗ trợ phát audio.</p>
+                            </audio>
+                            <div id="audioError" class="alert alert-danger mt-3 d-none">
+                                Không thể tải file audio. Vui lòng thử lại sau.
+                            </div>
+                        </div>
+
+                        <!-- Input Area -->
+                        <div class="input-container">
+                            <textarea id="userInput" class="form-control"
+                                placeholder="Nhập những gì bạn nghe được..."
+                                rows="4"></textarea>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="button-group">
+                            <button id="checkButton" class="btn btn-primary">
+                                <i class="fas fa-check"></i>
+                                Kiểm tra
+                            </button>
+                            <button id="scriptButton" class="btn btn-secondary">
+                                <i class="fas fa-file-alt"></i>
+                                Xem kết quả
+                            </button>
+                        </div>
+
+                        <!-- Results -->
+                        <div id="resultContainer" class="result-container"></div>
                     </div>
-                    <div class="pronunciation-container">
-                        <h6>Pronunciation</h6>
-                        <div id="pronunciationWords" class="mt-2">
-                            <!-- Words will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Script Area -->
+            <div class="col-lg-4">
+                <div id="scriptContainer" class="script-card d-none">
+                    <div class="script-header">
+                        Script
+                    </div>
+                    <div class="script-body">
+                        <div class="translation-section">
+                            <h6 class="section-title">Translation</h6>
+                            <p id="translationText" class="mb-0"></p>
+                        </div>
+                        <div class="pronunciation-section">
+                            <h6 class="section-title">Pronunciation</h6>
+                            <div id="pronunciationText" class="pronunciation-text"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Phonetic Popup -->
-<div id="phoneticPopup" class="phonetic-popup"></div>
+    <!-- Phonetic Popup -->
+    <div id="phoneticPopup" class="phonetic-popup" style="display: none;"></div>
 @endsection
 
 @push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const exerciseId = {{ $exercise['id'] }};
-    const audio = document.getElementById('dictationAudio');
-    const userInput = document.getElementById('userInput');
-    const checkButton = document.getElementById('checkButton');
-    const scriptButton = document.getElementById('scriptButton');
-    const resultContainer = document.getElementById('resultContainer');
-    const scriptContainer = document.getElementById('scriptContainer');
-    const translationText = document.getElementById('translationText');
-    const pronunciationWords = document.getElementById('pronunciationWords');
-    const phoneticPopup = document.getElementById('phoneticPopup');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const exerciseId = {{ $exercise->id }};
+            const audio = document.getElementById('dictationAudio');
+            const audioError = document.getElementById('audioError');
+            const userInput = document.getElementById('userInput');
+            const checkButton = document.getElementById('checkButton');
+            const scriptButton = document.getElementById('scriptButton');
+            const resultContainer = document.getElementById('resultContainer');
+            const scriptContainer = document.getElementById('scriptContainer');
+            const translationText = document.getElementById('translationText');
+            const pronunciationText = document.getElementById('pronunciationText');
+            const phoneticPopup = document.getElementById('phoneticPopup');
 
-    // Check button click handler
-    checkButton.addEventListener('click', async function() {
-        const userText = userInput.value.trim();
-
-        if (!userText) {
-            showResult('incorrect', 'Bạn cần nhập điều bạn nghe được');
-            return;
-        }
-
-        try {
-            const response = await fetch('/exercises/dictation/check', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    exercise_id: exerciseId,
-                    user_text: userText
-                })
+            // Handle audio errors
+            audio.addEventListener('error', function(e) {
+                console.error('Audio error:', e);
+                audioError.classList.remove('d-none');
             });
 
-            const data = await response.json();
-
-            if (data.success) {
-                showResult(data.is_correct ? 'correct' : 'incorrect', data.message);
-            }
-        } catch (error) {
-            console.error('Error checking answer:', error);
-            showResult('incorrect', 'An error occurred while checking your answer');
-        }
-    });
-
-    // Script button click handler
-    scriptButton.addEventListener('click', async function() {
-        try {
-            const response = await fetch(`/exercises/dictation/${exerciseId}/script`);
-            const data = await response.json();
-
-            if (data.success) {
-                scriptContainer.classList.remove('d-none');
-                translationText.textContent = data.data.translation;
-
-                // Clear previous words
-                pronunciationWords.innerHTML = '';
-
-                // Add words with pronunciation
-                data.data.words.forEach(word => {
-                    const wordElement = document.createElement('div');
-                    wordElement.className = 'word-item';
-                    wordElement.innerHTML = `
-                        ${word}
-                        <i class="fas fa-volume-up ms-2 text-primary"></i>
-                    `;
-
-                    wordElement.addEventListener('click', () => showPhonetics(word));
-                    pronunciationWords.appendChild(wordElement);
-                });
-            }
-        } catch (error) {
-            console.error('Error fetching script:', error);
-        }
-    });
-
-    // Show result message
-    function showResult(type, message) {
-        resultContainer.className = `result-container ${type}`;
-        resultContainer.innerHTML = message;
-        resultContainer.style.display = 'block';
-    }
-
-    // Show phonetics popup
-    async function showPhonetics(word) {
-        try {
-            const response = await fetch('/api/oxford/process-text', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ text: word })
+            // Handle audio load success
+            audio.addEventListener('loadeddata', function() {
+                audioError.classList.add('d-none');
             });
 
-            const data = await response.json();
+            function showResult(type, message) {
+                resultContainer.className = `result-container ${type}`;
+                resultContainer.textContent = message;
+                resultContainer.style.display = 'block';
+            }
 
-            if (data.success && data.data[0]) {
-                const wordInfo = data.data[0];
-                phoneticPopup.innerHTML = `
-                    <div class="fw-bold mb-1">${word}</div>
-                    <div class="text-primary">/${wordInfo.phonetic}/</div>
-                    ${wordInfo.audio_url ? `
-                        <button onclick="new Audio('${wordInfo.audio_url}').play()"
-                                class="btn btn-sm btn-link text-primary p-0 mt-2">
-                            <i class="fas fa-volume-up"></i>
-                        </button>
-                    ` : ''}
+            // Check button click handler
+            checkButton.addEventListener('click', async function() {
+                const userText = userInput.value.trim();
+
+                if (!userText) {
+                    showResult('incorrect', 'Bạn cần nhập điều bạn nghe được');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/exercises/dictation/check', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            exercise_id: exerciseId,
+                            user_text: userText
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        showResult(data.is_correct ? 'correct' : 'incorrect', data.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showResult('incorrect', 'Có lỗi xảy ra. Vui lòng thử lại.');
+                }
+            });
+
+            // Script button click handler
+            scriptButton.addEventListener('click', async function() {
+                try {
+                    const response = await fetch(`/exercises/dictation/${exerciseId}/script`, {
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        // Display translation
+                        translationText.textContent = data.data.translation;
+
+                        // Display pronunciation
+                        let pronunciationHtml = '';
+                        data.data.pronunciations.forEach((item, index) => {
+                            pronunciationHtml += `<span class="word-pronunciation"
+                                data-word="${item.word}"
+                                data-phonetic="${item.phonetic || ''}"
+                                data-audio="${item.audio_url || ''}"
+                                data-definitions='${JSON.stringify(item.definitions || []).replace(/'/g, "&apos;")}'
+                            >${item.word}</span>`;
+                            if (index < data.data.pronunciations.length - 1) {
+                                pronunciationHtml += ' ';
+                            }
+                        });
+                        pronunciationText.innerHTML = pronunciationHtml;
+
+                        // Add click handlers for pronunciation
+                        document.querySelectorAll('.word-pronunciation').forEach(word => {
+                            word.addEventListener('click', function() {
+                                const wordData = {
+                                    word: this.dataset.word,
+                                    phonetic: this.dataset.phonetic,
+                                    audio: this.dataset.audio,
+                                    definitions: JSON.parse(this.dataset.definitions.replace(/&apos;/g, "'"))
+                                };
+                                showPhonetics(wordData, this);
+                            });
+                        });
+
+                        scriptContainer.classList.remove('d-none');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showResult('incorrect', 'Có lỗi xảy ra khi tải script.');
+                }
+            });
+
+            function showPhonetics(wordData, element) {
+                const rect = element.getBoundingClientRect();
+                let definitions;
+                try {
+                    definitions = JSON.parse(wordData.definitions.replace(/&apos;/g, "'"));
+                } catch (e) {
+                    definitions = [];
+                    console.error('Error parsing definitions:', e);
+                }
+
+                let content = `
+                    <div class="mb-2">
+                        <strong>${wordData.word}</strong>
+                        <div class="ipa-text">${wordData.phonetic || ''}</div>
+                    </div>
                 `;
 
-                // Position popup near the clicked word
-                const rect = event.target.getBoundingClientRect();
-                phoneticPopup.style.top = `${rect.bottom + window.scrollY + 5}px`;
-                phoneticPopup.style.left = `${rect.left + window.scrollX}px`;
-                phoneticPopup.style.display = 'block';
-            }
-        } catch (error) {
-            console.error('Error fetching phonetics:', error);
-        }
-    }
+                if (wordData.audio) {
+                    content += `
+                        <div class="pronunciation-buttons">
+                            <button class="pronunciation-button" onclick="new Audio('${wordData.audio}').play()">
+                                <i class="fas fa-volume-up"></i> Play
+                            </button>
+                        </div>
+                    `;
+                }
 
-    // Close phonetics popup when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!event.target.closest('.word-item') && !event.target.closest('.phonetic-popup')) {
-            phoneticPopup.style.display = 'none';
-        }
-    });
-});
-</script>
+                if (definitions && definitions.length > 0) {
+                    content += `
+                        <div class="word-definition">
+                            ${definitions.map((def, index) =>
+                                `${index + 1}. ${def}`
+                            ).join('<br>')}
+                        </div>
+                    `;
+                }
+
+                phoneticPopup.innerHTML = content;
+                phoneticPopup.style.left = `${rect.left}px`;
+                phoneticPopup.style.top = `${rect.bottom + 5}px`;
+                phoneticPopup.style.display = 'block';
+
+                // Close popup when clicking outside
+                document.addEventListener('click', function closePopup(e) {
+                    if (!phoneticPopup.contains(e.target) && !element.contains(e.target)) {
+                        phoneticPopup.style.display = 'none';
+                        document.removeEventListener('click', closePopup);
+                    }
+                });
+            }
+        });
+    </script>
 @endpush

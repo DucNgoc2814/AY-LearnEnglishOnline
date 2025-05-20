@@ -1,75 +1,194 @@
 <?php
 
 namespace App\Models;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Classes extends Model
+class Classes extends BaseModel
 {
-    use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'name',
-        'code',
-        'category_id',
-        'teacher_id',
-        'start_date',
-        'end_date',
-        'enrollment_deadline',
-        'max_students',
-        'min_students',
-        'current_students',
-        'status',
-        'description',
-        'schedule',
-        'is_active'
-    ];
+    public static function getBaseRules($id = null)
+    {
+        return [
+            'category_id' => [
+                'required',
+                'exists:categories,id',
+            ],
+            'name' => ['required', 'string', 'max:255'],
+            'code' => ['required', 'string', 'max:255', 'unique:classes,code'],
+            'teacher_id' => [
+                'required',
+                'exists:employees,id',
+            ],
+            'start_date' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+            ],
+            'end_date' => [
+                'required',
+                'date',
+                'after:start_date',
+            ],
+            'enrollment_deadline' => [
+                'required',
+                'date',
+                'before_or_equal:start_date',
+            ],
+            'max_students' => [
+                'required',
+                'integer',
+                'min:1',
+                'gte:min_students',
+            ],
+            'min_students' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
+            'status' => [
+                'required',
+                'string',
+                'in:pending,active,completed,cancelled',
+            ],
+            'description' => ['nullable', 'string'],
+            'schedule' => ['nullable', 'json'],
+            'is_active' => ['boolean'],
+        ];
+    }
 
-    protected $casts = [
-        'start_date' => 'datetime',
-        'end_date' => 'datetime',
-        'enrollment_deadline' => 'date',
-        'max_students' => 'integer',
-        'min_students' => 'integer',
-        'current_students' => 'integer',
-        'schedule' => 'json',
-        'is_active' => 'boolean',
-        'class_type' => 'string'
-    ];
+    public static function getFields()
+    {
+        return [
+            'category_id' => [
+                'label' => 'Danh mục',
+                'type' => 'select',
+                'options' => Category::pluck('name', 'id')->toArray(),
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'name' => [
+                'label' => 'Tên lớp học',
+                'type' => 'text',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'code' => [
+                'label' => 'Mã lớp',
+                'type' => 'text',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'teacher_id' => [
+                'label' => 'Giáo viên',
+                'type' => 'select',
+                'options' => Employee::pluck('name', 'id')->toArray(),
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'start_date' => [
+                'label' => 'Ngày bắt đầu',
+                'type' => 'date',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'end_date' => [
+                'label' => 'Ngày kết thúc',
+                'type' => 'date',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'enrollment_deadline' => [
+                'label' => 'Ngày đăng ký',
+                'type' => 'date',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'max_students' => [
+                'label' => 'Số lượng học viên',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'min_students' => [
+                'label' => 'Số lượng học viên tối thiểu',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'status' => [
+                'label' => 'Trạng thái',
+                'type' => 'select',
+                'options' => [
+                    'pending' => 'Chưa bắt đầu',
+                    'active' => 'Đang diễn ra',
+                    'completed' => 'Đã hoàn tất',
+                    'cancelled' => 'Đã hủy bỏ'
+                ],
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'description' => [
+                'label' => 'Mô tả',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ],
+            'schedule' => [
+                'label' => 'Lịch trình',
+                'type' => 'json_editor',
+                'searchable' => false,
+                'sortable' => false,
+                'editable' => false
+            ],
+            'is_active' => [
+                'label' => 'Hoạt động',
+                'type' => 'checkbox',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+        ];
+    }
 
-    // Định nghĩa các giá trị cho class_type
-    const TYPE_ONLINE = 'online';
-    const TYPE_OFFLINE = 'offline';
-    const TYPE_HYBRID = 'hybrid';
+    /**
+     * Get fields for form (create/edit)
+     */
+    public static function getFormFields()
+    {
+        $fields = [];
+        foreach (self::getFields() as $key => $field) {
+            if (!isset($field['editable']) || $field['editable']) {
+                $fields[$key] = $field;
+            }
+        }
+        return $fields;
+    }
 
-    // Các class_type có thể có
-    public static $types = [
-        self::TYPE_ONLINE,
-        self::TYPE_OFFLINE,
-        self::TYPE_HYBRID
-    ];
-
-    // Định nghĩa các giá trị enum cho status
-    const STATUS_PENDING = 'pending';
-    const STATUS_ACTIVE = 'active';
-    const STATUS_COMPLETED = 'completed';
-    const STATUS_CANCELLED = 'cancelled';
-
-    // Các status có thể có
-    public static $statuses = [
-        self::STATUS_PENDING,
-        self::STATUS_ACTIVE,
-        self::STATUS_COMPLETED,
-        self::STATUS_CANCELLED
-    ];
-
+    /**
+     * Get fields for listing
+     */
+    public static function getListFields()
+    {
+        return self::getFields();
+    }
+    protected static function bootHasSlug()
+    {
+        // Override to disable slug generation
+    }
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
