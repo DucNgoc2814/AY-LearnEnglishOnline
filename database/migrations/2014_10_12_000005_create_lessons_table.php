@@ -15,9 +15,6 @@ class CreateLessonsTable extends Migration
             $table->string('slug')->unique()->comment('Slug bài học');
             $table->text('description')->nullable();
             $table->integer('order_number')->default(0)->comment('Thứ tự bài học trong khóa học');
-            $table->boolean('is_preview')->default(false)->comment('Bài học xem thử');
-            $table->integer('total_view')->default(0)->comment('Tổng số lượt xem');
-            $table->integer('total_comment')->default(0)->comment('Tổng số bình luận');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,4 +24,4 @@ class CreateLessonsTable extends Migration
     {
         Schema::dropIfExists('lessons');
     }
-} 
+}
