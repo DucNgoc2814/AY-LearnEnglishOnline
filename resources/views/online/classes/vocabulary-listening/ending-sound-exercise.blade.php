@@ -189,7 +189,7 @@
                                 <div class="phonetic-container">
                                     <span class="base-phonetic">{{ $word['base_phonetic'] }}</span>
                                     <div class="ending-dropzone-with-s"
-                                        data-correct="{{ $word['full_phonetic_with_ending'] }}"
+                                        data-correct="{{ $word['ending_phonetic'] }}"
                                         data-word-id="{{ $index }}">
                                         <span class="placeholder">Kéo thả âm đuôi vào đây</span>
                                     </div>

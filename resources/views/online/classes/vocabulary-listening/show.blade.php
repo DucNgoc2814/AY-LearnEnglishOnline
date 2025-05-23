@@ -582,6 +582,34 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const tabsWrapper = document.querySelector('.tabs-wrapper');
                 const tabsNav = document.querySelector('.nav-tabs');
+                const tabs = document.querySelectorAll('.nav-link');
+
+                // Restore active tab from localStorage
+                const activeTabId = localStorage.getItem('activeTab');
+                if (activeTabId) {
+                    const tabToActivate = document.querySelector(activeTabId);
+                    if (tabToActivate) {
+                        document.querySelectorAll('.nav-link').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+                        document.querySelectorAll('.tab-pane').forEach(pane => {
+                            pane.classList.remove('show', 'active');
+                        });
+
+                        tabToActivate.classList.add('active');
+                        const targetPane = document.querySelector(tabToActivate.getAttribute('data-bs-target'));
+                        if (targetPane) {
+                            targetPane.classList.add('show', 'active');
+                        }
+                    }
+                }
+
+                // Save active tab to localStorage when changed
+                tabs.forEach(tab => {
+                    tab.addEventListener('shown.bs.tab', function(e) {
+                        localStorage.setItem('activeTab', '#' + e.target.id);
+                    });
+                });
 
                 // Function to update scroll indicators
                 function updateScrollIndicators() {
