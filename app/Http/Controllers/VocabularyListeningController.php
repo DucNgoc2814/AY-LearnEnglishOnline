@@ -130,45 +130,7 @@ class VocabularyListeningController extends Controller
                     'title' => 'GRAMMAR (Trạng từ + Tính từ)',
                     'description' => 'Kéo thả từ trong hộp để di chuyển đáp án lên câu hỏi',
                     'grammar_exercise' => [
-                        'questions' => [
-                            [
-                                'text' => 'My hometown is a khá rộng _______ town',
-                                'answer' => 'fairly large'
-                            ],
-                            [
-                                'text' => 'The fresh food from the farms is cực kì ngon _______.',
-                                'answer' => 'extremely delicious'
-                            ],
-                            [
-                                'text' => 'It\'s a thực sự căng thẳng _______ place.',
-                                'answer' => 'really stressful'
-                            ],
-                            [
-                                'text' => 'My hometown is a khá nhàm chán _______ village.',
-                                'answer' => 'pretty boring'
-                            ],
-                            [
-                                'text' => 'It\'s hơi đắt _______ in my hometown.',
-                                'answer' => 'somewhat expensive'
-                            ],
-                            [
-                                'text' => 'The cost of living is thực sự cao_______.',
-                                'answer' => 'really high'
-                            ],
-                            [
-                                'text' => 'Banbury\'s nice, but sometimes I find it hơi tẻ nhạt _______',
-                                'answer' => 'a bit boring'
-                            ],
-                            [
-                                'text' => 'The locals here are cực kì hiếu khách _______.',
-                                'answer' => 'extremely hospitable'
-                            ],
-                            [
-                                'text' => 'It has tuyệt đẹp _______ beaches.',
-                                'answer' => 'stunningly beautiful'
-                            ]
-                        ],
-                        'answers' => [
+                        'word_bank' => [
                             'fairly large',
                             'really stressful',
                             'somewhat expensive',
@@ -179,6 +141,53 @@ class VocabularyListeningController extends Controller
                             'really high',
                             'extremely hospitable',
                             'really pleasant'
+                        ],
+                        'questions' => [
+                            [
+                                'sentence' => 'My hometown is a khá rộng town',
+                                'vietnamese_word' => 'khá rộng',
+                                'correct_synonym' => 'fairly large'
+                            ],
+                            [
+                                'sentence' => 'The fresh food from the farms is cực kì ngon',
+                                'vietnamese_word' => 'cực kì ngon',
+                                'correct_synonym' => 'extremely delicious'
+                            ],
+                            [
+                                'sentence' => 'It\'s a thực sự căng thẳng place',
+                                'vietnamese_word' => 'thực sự căng thẳng',
+                                'correct_synonym' => 'really stressful'
+                            ],
+                            [
+                                'sentence' => 'My hometown is a khá nhàm chán village',
+                                'vietnamese_word' => 'khá nhàm chán',
+                                'correct_synonym' => 'pretty boring'
+                            ],
+                            [
+                                'sentence' => 'It\'s hơi đắt in my hometown',
+                                'vietnamese_word' => 'hơi đắt',
+                                'correct_synonym' => 'somewhat expensive'
+                            ],
+                            [
+                                'sentence' => 'The cost of living is thực sự cao',
+                                'vietnamese_word' => 'thực sự cao',
+                                'correct_synonym' => 'really high'
+                            ],
+                            [
+                                'sentence' => 'Banbury\'s nice, but sometimes I find it hơi tẻ nhạt',
+                                'vietnamese_word' => 'hơi tẻ nhạt',
+                                'correct_synonym' => 'a bit boring'
+                            ],
+                            [
+                                'sentence' => 'The locals here are cực kì hiếu khách',
+                                'vietnamese_word' => 'cực kì hiếu khách',
+                                'correct_synonym' => 'extremely hospitable'
+                            ],
+                            [
+                                'sentence' => 'It has tuyệt đẹp beaches',
+                                'vietnamese_word' => 'tuyệt đẹp',
+                                'correct_synonym' => 'stunningly beautiful'
+                            ]
                         ]
                     ]
                 ],

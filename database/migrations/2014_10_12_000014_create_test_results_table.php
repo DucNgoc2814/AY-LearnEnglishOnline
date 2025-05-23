@@ -26,7 +26,6 @@ class CreateTestResultsTable extends Migration
                 'timeout',        // Hết thời gian làm bài
                 'abandoned'       // Bỏ dở
             ])->default('in_progress');
-            $table->json('meta_data')->nullable()->comment('Dữ liệu bổ sung (thời gian làm từng câu, IP...)');
             $table->timestamps();
         });
     }
@@ -35,4 +34,4 @@ class CreateTestResultsTable extends Migration
     {
         Schema::dropIfExists('test_results');
     }
-} 
+}

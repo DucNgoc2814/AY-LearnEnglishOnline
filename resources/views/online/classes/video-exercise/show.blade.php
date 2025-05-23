@@ -65,7 +65,20 @@
                 </div>
 
                 <div class="tab-pane fade" id="step2" role="tabpanel" aria-labelledby="step2-tab">
-                    <div class="card shadow-sm">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="ratio ratio-16x9 mb-3">
+                                <iframe
+                                    src="https://tienganh-abc.com/videos/tuoi-tho-ba-djao-cua-sheldon-2017=66735f66cd8dc73b802af882/tap-1"
+                                    title="Video Exercise"
+                                    allowfullscreen
+                                    class="rounded shadow-sm"
+                                ></iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mt-4">
                         <div class="card-body">
                             <h5 class="card-title mb-4">
                                 <i class="fas fa-tasks me-2"></i>Bài tập điền từ

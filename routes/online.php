@@ -38,7 +38,7 @@ Route::middleware(['web'])->group(function () {
 // Protected Routes - Require JWT Authentication
 Route::middleware(['web', 'jwt.role'])->group(function () {
     // Logout Route
-    Route::get('/online/teacher/classes/show/{id}', [TeacherClassController::class, 'show'])->name('show');
+    // Removed duplicate route
 
     Route::post('/logout', [LoginController::class, 'logout'])
         ->name('online.logout');
@@ -101,61 +101,28 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
 
     // Teacher Routes (for both teachers and teaching assistants)
     Route::middleware(['jwt.role:teacher,teaching_assistant'])->group(function () {
-        // Teacher Schedule - Sử dụng controller mới
+        // Teacher Schedule
         Route::get('/teacher/schedule', [TeacherScheduleController::class, 'index'])
             ->name('online.teacher.schedule');
 
-        // Class Sessions Management
-        Route::prefix('teacher/sessions')->name('online.teacher.sessions.')->group(function () {
-            Route::get('/{id}', [App\Http\Controllers\Online\Teacher\SessionController::class, 'show'])->name('show');
-            Route::get('/{id}/attendance', [App\Http\Controllers\Online\Teacher\SessionController::class, 'attendance'])->name('attendance');
-            Route::post('/add-material', [App\Http\Controllers\Online\Teacher\SessionController::class, 'addMaterial'])->name('add-material');
-            Route::put('/update', [App\Http\Controllers\Online\Teacher\SessionController::class, 'update'])->name('update');
-            Route::get('/detail', [App\Http\Controllers\Online\Teacher\SessionController::class, 'getDetail'])->name('detail');
-            Route::get('/get', [App\Http\Controllers\Online\Teacher\SessionController::class, 'getSession'])->name('get');
-        });
-
-        // Class Management - Sử dụng controller mới
+        // Class Management
         Route::prefix('teacher/classes')->name('online.teacher.classes.')->group(function () {
             Route::get('/', [TeacherClassController::class, 'index'])->name('index');
             Route::get('/{id}', [TeacherClassController::class, 'show'])->name('show');
-
-            // Attendance
             Route::get('/{id}/attendance', [TeacherClassController::class, 'attendance'])->name('attendance');
+
+            // Progress Routes
+            Route::prefix('{id}/progress')->name('progress.')->group(function () {
+                Route::get('/video-exercise', [TeacherClassController::class, 'videoExerciseProgress'])->name('video-exercise');
+                Route::get('/vocabulary', [TeacherClassController::class, 'vocabularyProgress'])->name('vocabulary');
+                Route::get('/handout', [TeacherClassController::class, 'handoutProgress'])->name('handout');
+                Route::get('/shadowing', [TeacherClassController::class, 'shadowingProgress'])->name('shadowing');
+                Route::get('/reflection', [TeacherClassController::class, 'reflectionProgress'])->name('reflection');
+            });
 
             // Materials
             Route::post('/{id}/materials/upload', [TeacherClassController::class, 'uploadMaterial'])->name('materials.upload');
             Route::delete('/materials/{id}', [TeacherClassController::class, 'deleteMaterial'])->name('materials.delete');
-
-            // Assignments
-            Route::get('/{class}/assignments', [ClassController::class, 'classAssignments'])->name('assignments');
-            Route::get('/{class}/assignments/create', [ClassController::class, 'createAssignment'])->name('assignments.create');
-            Route::post('/{class}/assignments', [ClassController::class, 'storeAssignment'])->name('assignments.store');
-            Route::get('/{class}/assignments/{assignment}', [ClassController::class, 'showAssignment'])->name('assignments.show');
-            Route::get('/{class}/assignments/{assignment}/edit', [ClassController::class, 'editAssignment'])->name('assignments.edit');
-            Route::put('/{class}/assignments/{assignment}', [ClassController::class, 'updateAssignment'])->name('assignments.update');
-            Route::delete('/{class}/assignments/{assignment}', [ClassController::class, 'deleteAssignment'])->name('assignments.delete');
-
-            // Grades
-            Route::get('/{class}/grades', [ClassController::class, 'classGrades'])->name('grades');
-            Route::post('/{class}/grades/update', [ClassController::class, 'updateGrades'])->name('grades.update');
-            Route::get('/{class}/grades/export', [ClassController::class, 'exportGrades'])->name('grades.export');
-
-            // Grade Items Management
-            Route::prefix('{class_id}/grade-items')->name('grade-items.')->group(function () {
-                Route::get('/', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'index'])->name('index');
-                Route::post('/', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'store'])->name('store');
-                Route::get('/{id}', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'show'])->name('show');
-                Route::put('/{id}', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'update'])->name('update');
-                Route::delete('/{id}', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'destroy'])->name('delete');
-                Route::get('/tests', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'getAvailableTests'])->name('tests');
-                Route::post('/batch-update', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'batchUpdate'])->name('batch-update');
-                Route::post('/import-test-results', [App\Http\Controllers\Online\Teacher\GradeItemController::class, 'importTestResults'])->name('import-test-results');
-            });
-
-            // Students
-            Route::get('/{class}/students', [ClassController::class, 'classStudents'])->name('students');
-            Route::get('/{class}/students/{student}', [ClassController::class, 'studentDetail'])->name('students.show');
         });
 
         // Teacher Grades Management

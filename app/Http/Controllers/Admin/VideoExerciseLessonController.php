@@ -1,0 +1,85 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Models\VideoExerciseLesson;
+use App\Models\VideoExerciseQuestion;
+use Illuminate\Http\Request;
+
+class VideoExerciseLessonController extends BaseController
+{
+    protected $pageTitle = 'Danh sách bài tập video';
+    public function __construct()
+    {
+        $this->model = VideoExerciseLesson::class;
+        $this->viewPath = 'admin.crud';
+        $this->route = 'admin.video-exercise-lessons';
+        $this->relatedModels = [
+            'Danh sách bài tập theo video' => VideoExerciseQuestion::class,
+        ];
+        parent::__construct();
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate($this->model::rules());
+
+        // Tạo instance mới
+        $product = $this->model::create($validated);
+
+        // Xử lý upload tất cả các trường media
+        foreach ($product::mediaFields() as $field => $config) {
+            if ($request->hasFile($field)) {
+                $path = $product->handleMediaUpload($field, $request->file($field));
+                $product->update([$field => $path]);
+            }
+        }
+
+        // Xử lý các model liên quan
+        $this->handleRelatedModels($request, $product);
+
+        return redirect()->route($this->route . '.index')
+            ->with('success', 'Sản phẩm đã được tạo thành công');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $item = $this->model::withTrashed()->findOrFail($id);
+        $validated = $request->validate($this->model::rules($item->id));
+
+        // Cập nhật thông tin cơ bản
+        $item->update($validated);
+
+        // Xử lý upload tất cả các trường media
+        foreach ($item::mediaFields() as $field => $config) {
+            if ($request->hasFile($field)) {
+                $path = $item->handleMediaUpload($field, $request->file($field));
+                $item->update([$field => $path]);
+            }
+            // Nếu không có file mới và có request xóa file cũ
+            elseif ($request->has("remove_{$field}")) {
+                $item->deleteMedia($item->$field);
+                $item->update([$field => null]);
+            }
+            // Nếu không có file mới nhưng có file cũ và đang edit
+            elseif ($request->has("{$field}_current")) {
+                $item->update([$field => $request->input("{$field}_current")]);
+            }
+        }
+
+        // Xử lý các model liên quan
+        $this->handleRelatedModels($request, $item, true);
+
+        return redirect()->route($this->route . '.index')
+            ->with('success', 'Sản phẩm đã được cập nhật thành công');
+    }
+
+    public function destroy($id)
+    {
+        $item = $this->model::findOrFail($id);
+        $item->delete();
+
+        return redirect()->route($this->route . '.index')
+            ->with('success', 'Sản phẩm đã được chuyển vào thùng rác');
+    }
+}
