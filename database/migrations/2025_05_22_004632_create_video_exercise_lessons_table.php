@@ -17,15 +17,9 @@ return new class extends Migration
             $table->string('title')->comment('Tiêu đề bài tập video');
             $table->string('video_url')->comment('URL của video bài học');
             $table->text('description')->nullable()->comment('Mô tả bài tập');
-            $table->string('section')->default('before_class')->comment('Phần học (before_class, during_class, after_class)');
-            $table->boolean('is_active')->default(true)->comment('Trạng thái kích hoạt');
-            $table->integer('order')->default(0)->comment('Thứ tự hiển thị');
             $table->timestamps();
             $table->softDeletes();
 
-            // Indexes
-            $table->index('lesson_id');
-            $table->index(['section', 'order']);
         });
     }
 

@@ -28,6 +28,12 @@
 @endphp
 
 <div class="ending-sound-exercise">
+    <div class="d-flex justify-content-end mb-4">
+        <a href="#" class="btn btn-info">
+            <i class="fas fa-book me-2"></i>Mở từ điển Oxford
+        </a>
+    </div>
+
     <div class="exercise-header mb-4">
         <h5 class="mb-2">
             <i class="fas fa-music me-2"></i>{{ $step['title'] }}

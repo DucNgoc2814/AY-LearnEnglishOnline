@@ -14,7 +14,7 @@ class LessonAndTestSeeder extends Seeder
     public function run()
     {
         $courses = Course::all();
-        
+
         foreach ($courses as $course) {
             // Create exactly 10 lessons per course
             for ($i = 1; $i <= 10; $i++) {
@@ -47,7 +47,7 @@ class LessonAndTestSeeder extends Seeder
                     $videoName = "Phần $v: " . $lessonName;
                     // Create unique video slug
                     $videoSlug = 'lesson-' . $lesson->id . '-video-' . $v . '-' . Str::slug($videoName);
-                    
+
                     LessonVideo::create([
                         'lesson_id' => $lesson->id,
                         'name' => $videoName,
@@ -60,7 +60,7 @@ class LessonAndTestSeeder extends Seeder
 
                 // Create lesson test for each lesson with unique slug
                 $testSlug = 'lesson-' . $lesson->id . '-test-' . Str::slug($lessonName);
-                
+
                 Test::create([
                     'lesson_id' => $lesson->id,
                     'name' => "Bài kiểm tra: " . $lessonName,
@@ -72,14 +72,10 @@ class LessonAndTestSeeder extends Seeder
                     'is_required' => true,
                     'total_attempt' => 0,
                     'max_attempt' => 3,
-                    'type' => 'lesson_test',
-                    'settings' => json_encode([
-                        'show_result' => true,
-                        'randomize_questions' => true
-                    ])
+                    'type' => 'course_test'
                 ]);
             }
 
         }
     }
-} 
+}

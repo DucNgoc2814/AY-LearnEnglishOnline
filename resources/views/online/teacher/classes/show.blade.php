@@ -1,6 +1,6 @@
 @extends('online.layouts.master')
 
-@section('title', 'Chi tiết lớp học - ' . $class->name)
+@section('title', 'Chi tiết lớp học')
 
 @push('styles')
 <style>
@@ -9,65 +9,88 @@
         margin-bottom: 1rem;
         transition: transform 0.2s;
     }
-    
+
     .stats-card:hover {
         transform: translateY(-3px);
     }
-    
+
     .tab-content {
         padding: 1rem;
     }
-    
+
     .progress {
         height: 20px;
     }
-    
+
     .progress-bar {
         line-height: 20px;
         font-size: 0.875rem;
     }
-    
+
     .student-attendance {
         width: 100px;
     }
-    
-    .debug-box {
-        background: #ffffd0;
-        border: 1px dashed #ccc;
-        padding: 10px;
-        margin-bottom: 15px;
-        font-family: monospace;
-        font-size: 12px;
+
+    .materials-container .accordion-button {
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+    .materials-container .accordion-button:focus {
+        box-shadow: none !important;
+        border-color: rgba(0,0,0,.125) !important;
+    }
+    /* Style cho Lesson */
+    .materials-container .lesson-item > .accordion-header > .accordion-button {
+        background-color: #fff !important;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    /* Style cho Before/During/After */
+    .materials-container .level-1 {
+        margin-left: 1.5rem;
+        border-left: 2px solid #e9ecef;
+    }
+    .materials-container .level-1 > .accordion-header > .accordion-button {
+        background-color: #e3f2fd !important;
+        font-weight: 600;
+    }
+    /* Style cho các mục con trong Before/During/After */
+    .materials-container .level-2 {
+        margin-left: 3rem;
+        border-left: 2px solid #e9ecef;
+    }
+    .materials-container .level-2 > .accordion-header > .accordion-button {
+        background-color: #f8f9fa !important;
+    }
+    .materials-container .level-3 {
+        margin-left: 4.5rem;
+    }
+    .materials-container .accordion-item {
+        border: none;
+    }
+    .materials-container .list-group-item {
+        border-left: none;
+        border-right: none;
+    }
+    .student-progress {
+        width: 150px;
+    }
+    .student-list th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+    .student-list td {
+        vertical-align: middle;
     }
 </style>
 @endpush
 
 @section('content')
 <div class="container-fluid px-4">
-    <!-- Debug Info (only visible in debug mode) -->
-    @if(session('debug_class_show') || session('debug_info') || request()->has('debug'))
-    <div class="debug-box">
-        <h6>Debug Info:</h6>
-        <ul>
-            <li>Route: {{ request()->route()->getName() }}</li>
-            <li>Controller: {{ request()->route()->getActionName() }}</li>
-            <li>URL: {{ request()->url() }}</li>
-            <li>Class ID: {{ $class->id ?? 'Not found' }}</li>
-            <li>Teacher ID: {{ $class->teacher_id ?? 'N/A' }}</li>
-            <li>Session User ID: {{ session('user_id') ?? 'Not set' }}</li>
-            <li>Debug Mode: {{ session('debug_class_show') ? 'Yes' : 'No' }}</li>
-            <li>Time: {{ now() }}</li>
-        </ul>
-        @if(session('debug_class_show'))
-        <pre>{{ json_encode(session('debug_class_show'), JSON_PRETTY_PRINT) }}</pre>
-        @endif
-    </div>
-    @endif
-
-    <h1 class="mt-4">{{ $class->name }}</h1>
+    <h1 class="mt-4">Lớp IELTS 7.0</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a href="{{ route('online.teacher.classes.index') }}">Danh sách lớp</a></li>
-        <li class="breadcrumb-item active">{{ $class->name }}</li>
+        <li class="breadcrumb-item active">Lớp IELTS 7.0</li>
     </ol>
 
     <!-- Thông tin cơ bản về lớp học -->
@@ -80,16 +103,14 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h5 class="card-title mb-0">{{ $class->name }}</h5>
-                        <span class="badge {{ $class->status == 'active' ? 'bg-success' : ($class->status == 'pending' ? 'bg-warning' : 'bg-secondary') }}">
-                            {{ $class->status == 'active' ? 'Đang hoạt động' : ($class->status == 'pending' ? 'Sắp khai giảng' : 'Đã kết thúc') }}
-                        </span>
+                        <h5 class="card-title mb-0">Lớp IELTS 7.0</h5>
+                        <span class="badge bg-success">Đang hoạt động</span>
                     </div>
-                    <p><strong>Mã lớp:</strong> {{ $class->code }}</p>
-                    <p><strong>Khóa học:</strong> {{ $class->course->name ?? 'N/A' }}</p>
-                    <p><strong>Thời gian:</strong> {{ $class->start_date->format('d/m/Y') }} - {{ $class->end_date->format('d/m/Y') }}</p>
-                    <p><strong>Lịch học:</strong> {{ $class->formatted_schedule ?? 'Chưa có lịch cụ thể' }}</p>
-                    <p><strong>Số học viên:</strong> {{ $class->students->count() }}/{{ $class->max_students }}</p>
+                    <p><strong>Mã lớp:</strong> IELTS70-01</p>
+                    <p><strong>Khóa học:</strong> IELTS Target 7.0</p>
+                    <p><strong>Thời gian:</strong> 01/01/2024 - 30/06/2024</p>
+                    <p><strong>Lịch học:</strong> Thứ 2, Thứ 4, Thứ 6</p>
+                    <p><strong>Số học viên:</strong> 15/20</p>
                 </div>
             </div>
         </div>
@@ -104,7 +125,7 @@
                         <div class="col-md-3 mb-3">
                             <div class="card bg-primary text-white">
                                 <div class="card-body py-3">
-                                    <h5 class="mb-0">{{ $class->stats['total_students'] ?? 0 }}</h5>
+                                    <h5 class="mb-0">15</h5>
                                     <div>Học viên</div>
                                 </div>
                             </div>
@@ -112,7 +133,7 @@
                         <div class="col-md-3 mb-3">
                             <div class="card bg-success text-white">
                                 <div class="card-body py-3">
-                                    <h5 class="mb-0">{{ $class->stats['total_sessions'] ?? 0 }}</h5>
+                                    <h5 class="mb-0">24</h5>
                                     <div>Buổi học</div>
                                 </div>
                             </div>
@@ -120,7 +141,7 @@
                         <div class="col-md-3 mb-3">
                             <div class="card bg-info text-white">
                                 <div class="card-body py-3">
-                                    <h5 class="mb-0">{{ $class->stats['attendance_rate'] ?? 0 }}%</h5>
+                                    <h5 class="mb-0">85%</h5>
                                     <div>Tỷ lệ điểm danh</div>
                                 </div>
                             </div>
@@ -128,28 +149,10 @@
                         <div class="col-md-3 mb-3">
                             <div class="card bg-warning text-white">
                                 <div class="card-body py-3">
-                                    <h5 class="mb-0">{{ $class->stats['attendance_rate'] ?? 0 }}%</h5>
+                                    <h5 class="mb-0">75%</h5>
                                     <div>Hoàn thành</div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Tỷ lệ hoàn thành:</span>
-                            <span>{{ $class->stats['attendance_rate'] ?? 0 }}%</span>
-                        </div>
-                        <div class="progress mb-4">
-                            <div class="progress-bar" role="progressbar" style="width: {{ $class->stats['attendance_rate'] ?? 0 }}%" 
-                                aria-valuenow="{{ $class->stats['attendance_rate'] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Tỷ lệ điểm danh:</span>
-                            <span>{{ $class->stats['attendance_rate'] ?? 0 }}%</span>
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: {{ $class->stats['attendance_rate'] ?? 0 }}%" 
-                                aria-valuenow="{{ $class->stats['attendance_rate'] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -157,254 +160,182 @@
         </div>
     </div>
 
-    <!-- Tabs -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <ul class="nav nav-tabs card-header-tabs" id="classTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $activeTab == 'overview' ? 'active' : '' }}" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="{{ $activeTab == 'overview' }}">
-                        <i class="fas fa-home me-1"></i> Tổng quan
+    <!-- Materials Section with Student Progress -->
+    <div class="materials-container">
+        <div class="accordion" id="lessonsAccordion">
+            <!-- Lesson 1 -->
+            <div class="accordion-item mb-3">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#lesson1" aria-expanded="true">
+                        <i class="fas fa-book me-2"></i> Lesson 1: Introduction to English
                     </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $activeTab == 'attendance' ? 'active' : '' }}" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button" role="tab" aria-controls="attendance" aria-selected="{{ $activeTab == 'attendance' }}">
-                        <i class="fas fa-clipboard-check me-1"></i> Điểm danh
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $activeTab == 'sessions' ? 'active' : '' }}" id="sessions-tab" data-bs-toggle="tab" data-bs-target="#sessions" type="button" role="tab" aria-controls="sessions" aria-selected="{{ $activeTab == 'sessions' }}">
-                        <i class="fas fa-calendar-alt me-1"></i> Buổi học
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $activeTab == 'materials' ? 'active' : '' }}" id="materials-tab" data-bs-toggle="tab" data-bs-target="#materials" type="button" role="tab" aria-controls="materials" aria-selected="{{ $activeTab == 'materials' }}">
-                        <i class="fas fa-book me-1"></i> Tài liệu
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $activeTab == 'grades' ? 'active' : '' }}" id="grades-tab" data-bs-toggle="tab" data-bs-target="#grades" type="button" role="tab" aria-controls="grades" aria-selected="{{ $activeTab == 'grades' }}">
-                        <i class="fas fa-graduation-cap me-1"></i> Đầu điểm
-                    </button>
-                </li>
-            </ul>
-        </div>
-        <div class="card-body">
-            <div class="tab-content" id="classTabContent">
-                <!-- Tab Tổng quan -->
-                <div class="tab-pane fade {{ $activeTab == 'overview' ? 'show active' : '' }}" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h4 class="mb-3">Danh sách học viên</h4>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover" id="studentsTable">
-                                    <thead>
-                                        <tr>
-                                            <th>STT</th>
-                                            <th>Mã HV</th>
-                                            <th>Họ tên</th>
-                                            <th>Số điện thoại</th>
-                                            <th>Email</th>
-                                            <th>Ngày đăng ký</th>
-                                            <th>Tỷ lệ tham gia</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($class->students as $index => $student)
-                                        <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $student->student_code }}</td>
-                                            <td>{{ $student->full_name }}</td>
-                                            <td>{{ $student->phone }}</td>
-                                            <td>{{ $student->email }}</td>
-                                            <td>{{ $student->pivot->enrollment_date ? date('d/m/Y', strtotime($student->pivot->enrollment_date)) : 'N/A' }}</td>
-                                            <td>
-                                                @php
-                                                    $attendanceCount = 0;
-                                                    $totalSessions = $class->sessions->count();
-                                                    if ($totalSessions > 0) {
-                                                        foreach ($class->sessions as $session) {
-                                                            $attendance = $session->attendances->where('student_id', $student->id)->first();
-                                                            if ($attendance && in_array($attendance->status, ['present', 'late'])) {
-                                                                $attendanceCount++;
-                                                            }
-                                                        }
-                                                        $attendanceRate = ($attendanceCount / $totalSessions) * 100;
-                                                    } else {
-                                                        $attendanceRate = 0;
-                                                    }
-                                                @endphp
-                                                <div class="progress">
-                                                    <div class="progress-bar {{ $attendanceRate < 80 ? 'bg-warning' : 'bg-success' }}" role="progressbar" 
-                                                        style="width: {{ $attendanceRate }}%" 
-                                                        aria-valuenow="{{ $attendanceRate }}" aria-valuemin="0" aria-valuemax="100">
-                                                        {{ round($attendanceRate) }}%
+                </h2>
+                <div id="lesson1" class="accordion-collapse collapse show" data-bs-parent="#lessonsAccordion">
+                    <div class="accordion-body p-0">
+                        <div class="accordion" id="lesson1Materials">
+                            <!-- Before Class Materials -->
+                            <div class="accordion-item mb-3 level-1">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#beforeClassMaterials" aria-expanded="true">
+                                        <i class="fas fa-hourglass-start me-2"></i> Before Class Materials
+                                    </button>
+                                </h2>
+                                <div id="beforeClassMaterials" class="accordion-collapse collapse show" data-bs-parent="#lesson1Materials">
+                                    <div class="accordion-body p-0">
+                                        <div class="accordion" id="beforeLessonsAccordion">
+                                            <!-- Video Exercise Progress -->
+                                            <div class="accordion-item level-2">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#videoProgress">
+                                                        <i class="fas fa-film me-2"></i> Video Exercise Progress
+                                                    </button>
+                                                </h2>
+                                                <div id="videoProgress" class="accordion-collapse collapse show">
+                                                    <div class="list-group list-group-flush level-3">
+                                                        <div class="list-group-item">
+                                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                <h6 class="mb-0">Student Progress</h6>
+                                                                <a href="{{ route('online.teacher.classes.progress.video-exercise', ['id' => $class->id]) }}" class="btn btn-sm btn-primary">
+                                                                    <i class="fas fa-list"></i> Xem danh sách
+                                                                </a>
+                                                            </div>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-success" style="width: 75%">
+                                                                    75% Completed
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <h4 class="mb-3">Buổi học gần đây</h4>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Ngày</th>
-                                            <th>Thời gian</th>
-                                            <th>Chủ đề</th>
-                                            <th>Trạng thái</th>
-                                            <th>Tỷ lệ điểm danh</th>
-                                            <th>Thao tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($class->sessions->take(5) as $session)
-                                        <tr>
-                                            <td>{{ $session->session_date->format('d/m/Y') }}</td>
-                                            <td>{{ $session->start_time->format('H:i') }} - {{ $session->end_time->format('H:i') }}</td>
-                                            <td>{{ $session->topic ?: 'Chưa có chủ đề' }}</td>
-                                            <td>
-                                                @if($session->status == 'completed')
-                                                    <span class="badge bg-success">Đã kết thúc</span>
-                                                @elseif($session->status == 'in_progress')
-                                                    <span class="badge bg-primary">Đang diễn ra</span>
-                                                @elseif($session->status == 'cancelled')
-                                                    <span class="badge bg-danger">Đã hủy</span>
-                                                @else
-                                                    <span class="badge bg-warning">Sắp diễn ra</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @php
-                                                    // Tính toán tỷ lệ điểm danh trực tiếp
-                                                    $presentCount = $session->attendances->whereIn('status', ['present', 'late'])->count();
-                                                    $totalStudents = $class->students->count();
-                                                    $attendanceRate = $totalStudents > 0 ? round(($presentCount / $totalStudents) * 100) : 0;
-                                                @endphp
-                                                <div class="progress">
-                                                    <div class="progress-bar {{ $attendanceRate < 80 ? 'bg-warning' : 'bg-success' }}" role="progressbar" 
-                                                        style="width: {{ $attendanceRate }}%" 
-                                                        aria-valuenow="{{ $attendanceRate }}" aria-valuemin="0" aria-valuemax="100">
-                                                        {{ $attendanceRate }}%
+                                            </div>
+
+                                            <!-- Vocabulary Progress -->
+                                            <div class="accordion-item level-2">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#vocabProgress">
+                                                        <i class="fas fa-book me-2"></i> Vocabulary Progress
+                                                    </button>
+                                                </h2>
+                                                <div id="vocabProgress" class="accordion-collapse collapse">
+                                                    <div class="list-group list-group-flush level-3">
+                                                        <div class="list-group-item">
+                                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                <h6 class="mb-0">Student Progress</h6>
+                                                                <a href="{{ route('online.teacher.classes.progress.vocabulary', ['id' => $class->id]) }}" class="btn btn-sm btn-primary">
+                                                                    <i class="fas fa-list"></i> Xem danh sách
+                                                                </a>
+                                                            </div>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-success" style="width: 60%">
+                                                                    60% Completed
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                @php
-                                                    $routeExists = false;
-                                                    try {
-                                                        route('online.teacher.sessions.show', $session->id);
-                                                        $routeExists = true;
-                                                    } catch (\Exception $e) {
-                                                        $routeExists = false;
-                                                    }
-                                                @endphp
-                                                
-                                                @if ($routeExists)
-                                                <a href="{{ route('online.teacher.sessions.show', $session->id) }}" class="btn btn-sm btn-primary">
-                                                    <i class="fas fa-eye"></i> Chi tiết
-                                                </a>
-                                                @else
-                                                <button class="btn btn-sm btn-primary" onclick="alert('Tính năng đang phát triển')">
-                                                    <i class="fas fa-eye"></i> Chi tiết
-                                                </button>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center">Chưa có buổi học nào</td>
-                                        </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Tab Điểm danh -->
-                <div class="tab-pane fade {{ $activeTab == 'attendance' ? 'show active' : '' }}" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">
-                    @include('online.teacher.classes.partials.attendance_tab', ['class' => $class])
-                </div>
-                
-                <!-- Tab Buổi học -->
-                <div class="tab-pane fade {{ $activeTab == 'sessions' ? 'show active' : '' }}" id="sessions" role="tabpanel" aria-labelledby="sessions-tab">
-                    @if($selectedSession)
-                        <div class="mb-4">
-                            <h4>Chi tiết buổi học</h4>
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h5>Thông tin buổi học</h5>
-                                            <table class="table">
-                                                <tr>
-                                                    <th>Ngày học:</th>
-                                                    <td>{{ $selectedSession->session_date->format('d/m/Y') }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Thời gian:</th>
-                                                    <td>{{ $selectedSession->start_time->format('H:i') }} - {{ $selectedSession->end_time->format('H:i') }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Chủ đề:</th>
-                                                    <td>{{ $selectedSession->topic ?? 'Chưa có chủ đề' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Trạng thái:</th>
-                                                    <td>
-                                                        @if($selectedSession->status == 'completed')
-                                                            <span class="badge bg-success">Đã hoàn thành</span>
-                                                        @elseif($selectedSession->status == 'scheduled')
-                                                            <span class="badge bg-warning">Đã lên lịch</span>
-                                                        @elseif($selectedSession->status == 'in_progress')
-                                                            <span class="badge bg-primary">Đang diễn ra</span>
-                                                        @else
-                                                            <span class="badge bg-secondary">{{ $selectedSession->status }}</span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            </table>
+                                            </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <h5>Thống kê điểm danh</h5>
-                                            <div class="row">
-                                                <div class="col-sm-6 mb-3">
-                                                    <div class="card bg-primary text-white">
-                                                        <div class="card-body">
-                                                            <h6 class="card-title">Tổng số học viên</h6>
-                                                            <h2 class="mb-0">{{ $selectedSession->stats['total_students'] }}</h2>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- During Class Materials -->
+                            <div class="accordion-item mb-3 level-1">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#duringClassMaterials">
+                                        <i class="fas fa-clock me-2"></i> During Class Materials
+                                    </button>
+                                </h2>
+                                <div id="duringClassMaterials" class="accordion-collapse collapse" data-bs-parent="#lesson1Materials">
+                                    <div class="accordion-body p-0">
+                                        <div class="accordion" id="duringLessonsAccordion">
+                                            <!-- Handout Progress -->
+                                            <div class="accordion-item level-2">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#handoutProgress">
+                                                        <i class="fas fa-file-alt me-2"></i> Handout Progress
+                                                    </button>
+                                                </h2>
+                                                <div id="handoutProgress" class="accordion-collapse collapse">
+                                                    <div class="list-group list-group-flush level-3">
+                                                        <div class="list-group-item">
+                                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                <h6 class="mb-0">Student Progress</h6>
+                                                                <a href="{{ route('online.teacher.classes.progress.handout', ['id' => $class->id]) }}" class="btn btn-sm btn-primary">
+                                                                    <i class="fas fa-list"></i> Xem danh sách
+                                                                </a>
+                                                            </div>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-success" style="width: 80%">
+                                                                    80% Completed
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-6 mb-3">
-                                                    <div class="card bg-success text-white">
-                                                        <div class="card-body">
-                                                            <h6 class="card-title">Có mặt</h6>
-                                                            <h2 class="mb-0">{{ $selectedSession->stats['present_students'] }}</h2>
+                                            </div>
+
+                                            <!-- Shadowing Progress -->
+                                            <div class="accordion-item level-2">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#shadowingProgress">
+                                                        <i class="fas fa-microphone me-2"></i> Shadowing Progress
+                                                    </button>
+                                                </h2>
+                                                <div id="shadowingProgress" class="accordion-collapse collapse">
+                                                    <div class="list-group list-group-flush level-3">
+                                                        <div class="list-group-item">
+                                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                <h6 class="mb-0">Student Progress</h6>
+                                                                <a href="{{ route('online.teacher.classes.progress.shadowing', ['id' => $class->id]) }}" class="btn btn-sm btn-primary">
+                                                                    <i class="fas fa-list"></i> Xem danh sách
+                                                                </a>
+                                                            </div>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-success" style="width: 70%">
+                                                                    70% Completed
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-6 mb-3">
-                                                    <div class="card bg-danger text-white">
-                                                        <div class="card-body">
-                                                            <h6 class="card-title">Vắng mặt</h6>
-                                                            <h2 class="mb-0">{{ $selectedSession->stats['absent_students'] }}</h2>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6 mb-3">
-                                                    <div class="card bg-info text-white">
-                                                        <div class="card-body">
-                                                            <h6 class="card-title">Tỷ lệ điểm danh</h6>
-                                                            <h2 class="mb-0">{{ $selectedSession->stats['attendance_rate'] }}%</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- After Class Materials -->
+                            <div class="accordion-item mb-3 level-1">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#afterClassMaterials">
+                                        <i class="fas fa-hourglass-end me-2"></i> After Class Materials
+                                    </button>
+                                </h2>
+                                <div id="afterClassMaterials" class="accordion-collapse collapse" data-bs-parent="#lesson1Materials">
+                                    <div class="accordion-body p-0">
+                                        <div class="accordion" id="afterLessonsAccordion">
+                                            <!-- Reflection Progress -->
+                                            <div class="accordion-item level-2">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#reflectionProgress">
+                                                        <i class="fas fa-pen-fancy me-2"></i> Reflection Progress
+                                                    </button>
+                                                </h2>
+                                                <div id="reflectionProgress" class="accordion-collapse collapse">
+                                                    <div class="list-group list-group-flush level-3">
+                                                        <div class="list-group-item">
+                                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                <h6 class="mb-0">Student Progress</h6>
+                                                                <a href="{{ route('online.teacher.classes.progress.reflection', ['id' => $class->id]) }}" class="btn btn-sm btn-primary">
+                                                                    <i class="fas fa-list"></i> Xem danh sách
+                                                                </a>
+                                                            </div>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-success" style="width: 65%">
+                                                                    65% Completed
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -414,45 +345,142 @@
                                 </div>
                             </div>
                         </div>
-                    @endif
-                    @include('online.teacher.classes.partials.sessions_tab')
+                    </div>
                 </div>
-                
-                <!-- Tab Tài liệu -->
-                <div class="tab-pane fade {{ $activeTab == 'materials' ? 'show active' : '' }}" id="materials" role="tabpanel" aria-labelledby="materials-tab">
-                    @include('online.teacher.classes.partials.materials_tab', ['class' => $class])
+            </div>
+
+            <!-- Lesson 2 -->
+            <div class="accordion-item mb-3">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#lesson2">
+                        <i class="fas fa-book me-2"></i> Lesson 2: Basic Communication
+                    </button>
+                </h2>
+                <div id="lesson2" class="accordion-collapse collapse" data-bs-parent="#lessonsAccordion">
+                    <div class="accordion-body p-0">
+                        <div class="accordion" id="lesson2Materials">
+                            <!-- Before Class Materials -->
+                            <div class="accordion-item mb-3 level-1">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#beforeClassMaterials2">
+                                        <i class="fas fa-hourglass-start me-2"></i> Before Class Materials
+                                    </button>
+                                </h2>
+                                <div id="beforeClassMaterials2" class="accordion-collapse collapse" data-bs-parent="#lesson2Materials">
+                                    <div class="accordion-body p-0">
+                                        <div class="accordion" id="beforeLessonsAccordion2">
+                                            <!-- Video Exercise Progress -->
+                                            <div class="accordion-item level-2">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#videoProgress2">
+                                                        <i class="fas fa-film me-2"></i> Video Exercise Progress
+                                                    </button>
+                                                </h2>
+                                                <div id="videoProgress2" class="accordion-collapse collapse">
+                                                    <div class="list-group list-group-flush level-3">
+                                                        <div class="list-group-item">
+                                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                <h6 class="mb-0">Student Progress</h6>
+                                                                <a href="{{ route('online.teacher.classes.progress.video-exercise', ['id' => 2]) }}" class="btn btn-sm btn-primary">
+                                                                    <i class="fas fa-list"></i> Xem danh sách
+                                                                </a>
+                                                            </div>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-warning" style="width: 45%">
+                                                                    45% Completed
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Similar structure for other activities -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Similar structure for During and After sections -->
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- Tab Đầu điểm -->
-                <div class="tab-pane fade {{ $activeTab == 'grades' ? 'show active' : '' }}" id="grades" role="tabpanel" aria-labelledby="grades-tab">
-                    @include('online.teacher.classes.partials.grades_tab', ['class' => $class])
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Progress List Modal -->
+    <div class="modal fade" id="studentProgressModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Danh sách tiến độ học viên</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered student-list">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px">#</th>
+                                    <th>Học viên</th>
+                                    <th>Email</th>
+                                    <th style="width: 120px">Trạng thái</th>
+                                    <th style="width: 150px">Tiến độ</th>
+                                    <th style="width: 180px">Hoạt động cuối</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Nguyễn Văn A</td>
+                                    <td>nguyenvana@gmail.com</td>
+                                    <td><span class="badge bg-success">Đã hoàn thành</span></td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" style="width: 100%">100%</div>
+                                        </div>
+                                    </td>
+                                    <td>15/03/2024 14:30</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Trần Thị B</td>
+                                    <td>tranthib@gmail.com</td>
+                                    <td><span class="badge bg-warning">Đang học</span></td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-warning" style="width: 60%">60%</div>
+                                        </div>
+                                    </td>
+                                    <td>15/03/2024 15:45</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Lê Văn C</td>
+                                    <td>levanc@gmail.com</td>
+                                    <td><span class="badge bg-danger">Chưa học</span></td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-danger" style="width: 0%">0%</div>
+                                        </div>
+                                    </td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
 
 @push('scripts')
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 <script>
-    $(document).ready(function () {
-        // Kích hoạt DataTables cho bảng học viên
-        $('#studentsTable').DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/vi.json'
-            },
-            responsive: true,
-            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Tất cả"]],
-            pageLength: 10
-        });
-        
-        // Xử lý chuyển tab
-        $('#classTab button').on('click', function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-    });
+$(document).ready(function() {
+    // Remove the modal show functionality since we're using direct links now
+});
 </script>
-@endpush 
+@endpush
+@endsection

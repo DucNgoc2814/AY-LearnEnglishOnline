@@ -37,10 +37,28 @@
                                     @switch($index)
                                         @case(0)
                                             <!-- Video Tutorial -->
-                                            <div class="text-center">
-                                                <a href="{{ $step['video_url'] }}" target="_blank" class="btn btn-primary">
-                                                    <i class="fas fa-play-circle me-2"></i>Xem video hướng dẫn
-                                                </a>
+                                            <div class="video-container">
+                                                <div class="ratio ratio-16x9 mb-4">
+                                                    @php
+                                                        // Convert YouTube URL to embed URL
+                                                        $videoUrl = $step['video_url'];
+                                                        $videoId = '';
+                                                        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $videoUrl, $match)) {
+                                                            $videoId = $match[1];
+                                                        }
+                                                        $embedUrl = "https://www.youtube.com/embed/" . $videoId;
+                                                    @endphp
+                                                    <iframe
+                                                        src="{{ $embedUrl }}"
+                                                        title="YouTube video player"
+                                                        frameborder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowfullscreen>
+                                                    </iframe>
+                                                </div>
+                                                <div class="text-center">
+                                                    <p class="text-muted">Xem video hướng dẫn về phương pháp Active Listening</p>
+                                                </div>
                                             </div>
                                         @break
 
