@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\TestController;
 use App\Http\Controllers\Admin\VideoExerciseLessonController;
 use App\Http\Controllers\Admin\VideoLessonController;
+use App\Http\Controllers\Admin\VocabularyListeningVideoController;
 use App\Http\Controllers\Admin\ZoomSessionController;
 
 /*
@@ -48,28 +49,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::put('/{user}', 'update')->name('update');
             Route::delete('/{user}', 'destroy')->name('destroy');
         });
-        Route::prefix('classes')->name('classes.')->group(function () {
-            // Hiển thị danh sách
-            Route::get('/', [ClassController::class, 'index'])->name('index');
+    Route::prefix('classes')->name('classes.')->group(function () {
+        // Hiển thị danh sách
+        Route::get('/', [ClassController::class, 'index'])->name('index');
 
-            // Form tạo mới
-            Route::get('/create', [ClassController::class, 'create'])->name('create');
+        // Form tạo mới
+        Route::get('/create', [ClassController::class, 'create'])->name('create');
 
-            // Lưu dữ liệu mới
-            Route::post('/', [ClassController::class, 'store'])->name('store');
+        // Lưu dữ liệu mới
+        Route::post('/', [ClassController::class, 'store'])->name('store');
 
-            // Form chỉnh sửa
-            Route::get('/{id}/edit', [ClassController::class, 'edit'])->name('edit');
+        // Form chỉnh sửa
+        Route::get('/{id}/edit', [ClassController::class, 'edit'])->name('edit');
 
-            // Cập nhật dữ liệu
-            Route::put('/{id}', [ClassController::class, 'update'])->name('update');
+        // Cập nhật dữ liệu
+        Route::put('/{id}', [ClassController::class, 'update'])->name('update');
 
-            // Xóa mềm
-            Route::delete('/{id}', [ClassController::class, 'destroy'])->name('destroy');
+        // Xóa mềm
+        Route::delete('/{id}', [ClassController::class, 'destroy'])->name('destroy');
 
-            // Khôi phục từ thùng rác
-            Route::put('/{id}/restore', [ClassController::class, 'restore'])->name('restore');
-        });
+        // Khôi phục từ thùng rác
+        Route::put('/{id}/restore', [ClassController::class, 'restore'])->name('restore');
+    });
     Route::controller(UserController::class)
         ->prefix('users')
         ->name('users.')
@@ -135,50 +136,50 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/{id}/restore', 'restore')->name('restore');
         });
     // Categories Management
-        Route::prefix('categories')->name('categories.')->group(function () {
-            // Hiển thị danh sách
-            Route::get('/', [CategoryController::class, 'index'])->name('index');
+    Route::prefix('categories')->name('categories.')->group(function () {
+        // Hiển thị danh sách
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
 
-            // Form tạo mới
-            Route::get('/create', [CategoryController::class, 'create'])->name('create');
+        // Form tạo mới
+        Route::get('/create', [CategoryController::class, 'create'])->name('create');
 
-            // Lưu dữ liệu mới
-            Route::post('/', [CategoryController::class, 'store'])->name('store');
+        // Lưu dữ liệu mới
+        Route::post('/', [CategoryController::class, 'store'])->name('store');
 
-            // Form chỉnh sửa
-            Route::get('/{id}/edit', [CategoryController::class, 'edit'])->name('edit');
+        // Form chỉnh sửa
+        Route::get('/{id}/edit', [CategoryController::class, 'edit'])->name('edit');
 
-            // Cập nhật dữ liệu
-            Route::put('/{id}', [CategoryController::class, 'update'])->name('update');
+        // Cập nhật dữ liệu
+        Route::put('/{id}', [CategoryController::class, 'update'])->name('update');
 
-            // Xóa mềm
-            Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+        // Xóa mềm
+        Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
 
-            // Khôi phục từ thùng rác
-            Route::put('/{id}/restore', [CategoryController::class, 'restore'])->name('restore');
-        });
-        Route::prefix('tests')->name('tests.')->group(function () {
-            // Hiển thị danh sách
-            Route::get('/', [TestController::class, 'index'])->name('index');
+        // Khôi phục từ thùng rác
+        Route::put('/{id}/restore', [CategoryController::class, 'restore'])->name('restore');
+    });
+    Route::prefix('tests')->name('tests.')->group(function () {
+        // Hiển thị danh sách
+        Route::get('/', [TestController::class, 'index'])->name('index');
 
-            // Form tạo mới
-            Route::get('/create', [TestController::class, 'create'])->name('create');
+        // Form tạo mới
+        Route::get('/create', [TestController::class, 'create'])->name('create');
 
-            // Lưu dữ liệu mới
-            Route::post('/', [TestController::class, 'store'])->name('store');
+        // Lưu dữ liệu mới
+        Route::post('/', [TestController::class, 'store'])->name('store');
 
-            // Form chỉnh sửa
-            Route::get('/{id}/edit', [TestController::class, 'edit'])->name('edit');
+        // Form chỉnh sửa
+        Route::get('/{id}/edit', [TestController::class, 'edit'])->name('edit');
 
-            // Cập nhật dữ liệu
-            Route::put('/{id}', [TestController::class, 'update'])->name('update');
+        // Cập nhật dữ liệu
+        Route::put('/{id}', [TestController::class, 'update'])->name('update');
 
-            // Xóa mềm
-            Route::delete('/{id}', [TestController::class, 'destroy'])->name('destroy');
+        // Xóa mềm
+        Route::delete('/{id}', [TestController::class, 'destroy'])->name('destroy');
 
-            // Khôi phục từ thùng rác
-            Route::put('/{id}/restore', [TestController::class, 'restore'])->name('restore');
-        });
+        // Khôi phục từ thùng rác
+        Route::put('/{id}/restore', [TestController::class, 'restore'])->name('restore');
+    });
     // Questions Management
     Route::prefix('questions')->name('questions.')->group(function () {
         // Hiển thị danh sách
@@ -308,7 +309,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
     // Banners Management
 
-        Route::controller(BannerController::class)
+    Route::controller(BannerController::class)
         ->prefix('banners')
         ->name('banners.')
         ->group(function () {
@@ -336,27 +337,50 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Employees Management
     Route::resource('employees', EmployeeController::class);
 
-        // Video Exercise Lessons Management
-        Route::prefix('video-exercise-lessons')->name('video-exercise-lessons.')->group(function () {
-            // Hiển thị danh sách
-            Route::get('/', [VideoExerciseLessonController::class, 'index'])->name('index');
+    // Video Exercise Lessons Management
+    Route::prefix('video-exercise-lessons')->name('video-exercise-lessons.')->group(function () {
+        // Hiển thị danh sách
+        Route::get('/', [VideoExerciseLessonController::class, 'index'])->name('index');
 
-            // Form tạo mới
-            Route::get('/create', [VideoExerciseLessonController::class, 'create'])->name('create');
+        // Form tạo mới
+        Route::get('/create', [VideoExerciseLessonController::class, 'create'])->name('create');
 
-            // Lưu dữ liệu mới
-            Route::post('/', [VideoExerciseLessonController::class, 'store'])->name('store');
+        // Lưu dữ liệu mới
+        Route::post('/', [VideoExerciseLessonController::class, 'store'])->name('store');
 
-            // Form chỉnh sửa
-            Route::get('/{id}/edit', [VideoExerciseLessonController::class, 'edit'])->name('edit');
+        // Form chỉnh sửa
+        Route::get('/{id}/edit', [VideoExerciseLessonController::class, 'edit'])->name('edit');
 
-            // Cập nhật dữ liệu
-            Route::put('/{id}', [VideoExerciseLessonController::class, 'update'])->name('update');
+        // Cập nhật dữ liệu
+        Route::put('/{id}', [VideoExerciseLessonController::class, 'update'])->name('update');
 
-            // Xóa mềm
-            Route::delete('/{id}', [VideoExerciseLessonController::class, 'destroy'])->name('destroy');
+        // Xóa mềm
+        Route::delete('/{id}', [VideoExerciseLessonController::class, 'destroy'])->name('destroy');
 
-            // Khôi phục từ thùng rác
-            Route::put('/{id}/restore', [VideoExerciseLessonController::class, 'restore'])->name('restore');
-        });
+        // Khôi phục từ thùng rác
+        Route::put('/{id}/restore', [VideoExerciseLessonController::class, 'restore'])->name('restore');
+    });
+    // Video Exercise Lessons Management
+    Route::prefix('vocabulary-listening-videos')->name('vocabulary-listening-videos.')->group(function () {
+        // Hiển thị danh sách
+        Route::get('/', [VocabularyListeningVideoController::class, 'index'])->name('index');
+
+        // Form tạo mới
+        Route::get('/create', [VocabularyListeningVideoController::class, 'create'])->name('create');
+
+        // Lưu dữ liệu mới
+        Route::post('/', [VocabularyListeningVideoController::class, 'store'])->name('store');
+
+        // Form chỉnh sửa
+        Route::get('/{id}/edit', [VocabularyListeningVideoController::class, 'edit'])->name('edit');
+
+        // Cập nhật dữ liệu
+        Route::put('/{id}', [VocabularyListeningVideoController::class, 'update'])->name('update');
+
+        // Xóa mềm
+        Route::delete('/{id}', [VocabularyListeningVideoController::class, 'destroy'])->name('destroy');
+
+        // Khôi phục từ thùng rác
+        Route::put('/{id}/restore', [VocabularyListeningVideoController::class, 'restore'])->name('restore');
+    });
 });

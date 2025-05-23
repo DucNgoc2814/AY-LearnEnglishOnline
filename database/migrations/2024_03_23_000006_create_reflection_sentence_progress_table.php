@@ -12,10 +12,12 @@ return new class extends Migration
             $table->id()->comment('ID của tiến độ');
             $table->foreignId('user_id')->comment('ID của học viên')
                 ->constrained()
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->name('ref_sentence_progress_user_fk');
             $table->foreignId('reflection_sentence_structure_id')->comment('ID của mẫu câu')
                 ->constrained()
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->name('ref_sentence_progress_structure_fk');
             $table->text('practice_text')->nullable()->comment('Câu học viên đã viết');
             $table->boolean('is_completed')->default(false)->comment('Đã hoàn thành chưa');
             $table->timestamp('completed_at')->nullable()->comment('Thời gian hoàn thành');
