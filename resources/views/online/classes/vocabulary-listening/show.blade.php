@@ -43,15 +43,18 @@
                                                         // Convert YouTube URL to embed URL
                                                         $videoUrl = $step['video_url'];
                                                         $videoId = '';
-                                                        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $videoUrl, $match)) {
+                                                        if (
+                                                            preg_match(
+                                                                '/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/',
+                                                                $videoUrl,
+                                                                $match,
+                                                            )
+                                                        ) {
                                                             $videoId = $match[1];
                                                         }
-                                                        $embedUrl = "https://www.youtube.com/embed/" . $videoId;
+                                                        $embedUrl = 'https://www.youtube.com/embed/' . $videoId;
                                                     @endphp
-                                                    <iframe
-                                                        src="{{ $embedUrl }}"
-                                                        title="YouTube video player"
-                                                        frameborder="0"
+                                                    <iframe src="{{ $embedUrl }}" title="YouTube video player" frameborder="0"
                                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                         allowfullscreen>
                                                     </iframe>
@@ -71,6 +74,37 @@
                                                 <a href="{{ $step['guide_url'] }}" target="_blank" class="btn btn-info">
                                                     <i class="fas fa-question-circle me-2"></i>Xem hướng dẫn sử dụng
                                                 </a>
+
+                                                <!-- Quizlet Feature Checklist -->
+                                                <div class="quizlet-checklist mt-4">
+                                                    <h6 class="mb-3">Đánh dấu các tính năng bạn đã hoàn thành:</h6>
+                                                    <div class="d-flex gap-4 flex-wrap">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="flashcards">
+                                                            <label class="form-check-label" for="flashcards">
+                                                                <i class="fas fa-clone me-2"></i>Học với Flashcards
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="learn">
+                                                            <label class="form-check-label" for="learn">
+                                                                <i class="fas fa-graduation-cap me-2"></i>Học (Learn)
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="write">
+                                                            <label class="form-check-label" for="write">
+                                                                <i class="fas fa-pencil-alt me-2"></i>Viết (Write)
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="test">
+                                                            <label class="form-check-label" for="test">
+                                                                <i class="fas fa-tasks me-2"></i>Kiểm tra (Test)
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         @break
 
@@ -110,6 +144,14 @@
                                                         @endforeach
                                                     </div>
                                                 @endforeach
+
+                                                <!-- Save Progress Button -->
+                                                <div class="text-center mt-4">
+                                                    <button class="btn btn-success save-dictation-progress"
+                                                        onclick="saveDictationProgress()">
+                                                        <i class="fas fa-save me-2"></i>Lưu tiến độ
+                                                    </button>
+                                                </div>
                                             </div>
                                         @break
 
@@ -130,9 +172,35 @@
                                                                     data-complete="{{ $phrase['english']['complete'] }}">
                                                                     <td>
                                                                         <div class="d-flex flex-column gap-2">
-                                                                            <input type="text" class="form-control phrase-input"
-                                                                                value="{{ $phrase['english']['incomplete'] }}"
-                                                                                placeholder="Fill in the blanks...">
+                                                                            <div
+                                                                                class="phrase-content d-flex align-items-center flex-wrap gap-2">
+                                                                                @php
+                                                                                    $parts = preg_split(
+                                                                                        '/([a-z]_+)/',
+                                                                                        $phrase['english'][
+                                                                                            'incomplete'
+                                                                                        ],
+                                                                                        -1,
+                                                                                        PREG_SPLIT_DELIM_CAPTURE,
+                                                                                    );
+                                                                                    $parts = array_filter($parts);
+                                                                                    $blanks =
+                                                                                        $phrase['english']['blanks'] ??
+                                                                                        [];
+                                                                                @endphp
+
+                                                                                @foreach ($parts as $index => $part)
+                                                                                    @if (strpos($part, '_') !== false)
+                                                                                        <input type="text"
+                                                                                            class="form-control form-control-sm d-inline-block blank-input"
+                                                                                            style="width: 120px; min-width: 80px;"
+                                                                                            data-answer="{{ $blanks[floor($index / 2)] ?? '' }}"
+                                                                                            placeholder="Type here...">
+                                                                                    @else
+                                                                                        <span>{{ $part }}</span>
+                                                                                    @endif
+                                                                                @endforeach
+                                                                            </div>
                                                                             <div class="answer-feedback" style="display: none;">
                                                                                 <span class="text-success">
                                                                                     <i class="fas fa-check-circle me-1"></i>
@@ -150,6 +218,10 @@
                                                 <div class="text-center mt-4">
                                                     <button class="btn btn-primary" id="checkPhrases" onclick="checkPhrases()">
                                                         <i class="fas fa-check me-2"></i>Check with the answer
+                                                    </button>
+                                                    <button class="btn btn-success ms-2 save-phrases-progress"
+                                                        onclick="savePhrasesProgress()">
+                                                        <i class="fas fa-save me-2"></i>Lưu tiến độ
                                                     </button>
                                                 </div>
                                             </div>
@@ -189,6 +261,12 @@
                                                         </div>
                                                     </div>
                                                 @endforeach
+                                                <!-- Save Progress Button -->
+                                                <div class="text-center mt-4">
+                                                    <button class="btn btn-success save-sentence-progress" onclick="saveSentenceProgress()">
+                                                        <i class="fas fa-save me-2"></i>Lưu tiến độ
+                                                    </button>
+                                                </div>
                                             </div>
                                         @break
 
@@ -594,6 +672,7 @@
                         });
                     });
                 });
+
             });
 
             function getDragAfterElement(container, x) {
@@ -688,29 +767,39 @@
 
             function checkPhrases() {
                 const rows = document.querySelectorAll('.phrase-row');
+                let allCorrect = true;
 
                 rows.forEach(row => {
-                    const input = row.querySelector('.phrase-input');
+                    const inputs = row.querySelectorAll('.blank-input');
+                    let rowCorrect = true;
+
+                    inputs.forEach(input => {
+                        const userAnswer = input.value.trim().toLowerCase();
+                        const correctAnswer = input.dataset.answer.toLowerCase();
+
+                        if (userAnswer === correctAnswer) {
+                            input.classList.add('is-valid');
+                            input.classList.remove('is-invalid');
+                        } else {
+                            input.classList.add('is-invalid');
+                            input.classList.remove('is-valid');
+                            rowCorrect = false;
+                            allCorrect = false;
+                        }
+                    });
+
                     const feedback = row.querySelector('.answer-feedback');
-                    const correctAnswer = row.dataset.complete;
-                    const userAnswer = input.value.trim();
-
-                    // Show the feedback
-                    feedback.style.display = 'block';
-
-                    // Disable the input
-                    input.disabled = true;
-
-                    // Add visual feedback
-                    if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
-                        input.classList.add('is-valid');
-                    } else {
-                        input.classList.add('is-invalid');
+                    if (rowCorrect) {
+                        feedback.style.display = 'block';
+                        inputs.forEach(input => {
+                            input.disabled = true;
+                        });
                     }
                 });
 
-                // Disable the check button
-                document.getElementById('checkPhrases').disabled = true;
+                if (allCorrect) {
+                    document.getElementById('checkPhrases').disabled = true;
+                }
             }
         </script>
     @endpush

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->string('vietnamese_phrase')->comment('Nghĩa tiếng Việt');
             $table->string('incomplete_phrase')->comment('Cụm từ có chỗ trống để điền');
             $table->string('correct_answer')->comment('Đáp án đúng');
+            $table->integer('max_retries')->default(3)->comment('Số lần tối đa được làm lại');
+            $table->decimal('min_required_score', 5, 2)->default(80)->comment('Điểm số tối thiểu cần đạt (%)');
             $table->timestamps();
             $table->softDeletes();
         });

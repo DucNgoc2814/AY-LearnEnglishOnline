@@ -16,6 +16,8 @@ return new class extends Migration
             $table->text('correct_text')->comment('Văn bản đúng của bài dictation');
             $table->text('display_text')->comment('Văn bản hiển thị với các khoảng trống');
             $table->json('blank_words')->comment('Danh sách các từ bị ẩn');
+            $table->integer('max_retries')->default(3)->comment('Số lần tối đa được làm lại');
+            $table->decimal('min_required_score', 5, 2)->default(80)->comment('Điểm số tối thiểu cần đạt (%)');
             $table->timestamps();
             $table->softDeletes();
         });

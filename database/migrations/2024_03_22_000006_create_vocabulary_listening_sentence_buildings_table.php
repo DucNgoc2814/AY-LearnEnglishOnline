@@ -13,6 +13,8 @@ return new class extends Migration
             $table->foreignId('lesson_id')->comment('ID của bài học')->constrained('lessons')->onDelete('cascade');
             $table->string('sentence_number')->comment('Số thứ tự câu');
             $table->string('correct_sentence')->comment('Câu đúng sau khi sắp xếp');
+            $table->integer('max_retries')->default(3)->comment('Số lần tối đa được làm lại mỗi câu');
+            $table->decimal('min_required_score', 5, 2)->default(80)->comment('Điểm số tối thiểu cần đạt (%)');
             $table->timestamps();
             $table->softDeletes();
         });
