@@ -215,14 +215,35 @@
 
 <script>
     // Function to play audio pronunciation
-    function playAudio(word) {
-        // Here you would integrate with a text-to-speech API or load pre-recorded audio
-        console.log(`Playing pronunciation for: ${word}`);
-        // Example implementation with browser's speech synthesis
-        if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(word);
-            utterance.lang = 'en-US';
-            speechSynthesis.speak(utterance);
+    async function playAudio(word) {
+        try {
+            // Gọi Free Dictionary API để lấy thông tin phát âm
+            const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+            const data = await response.json();
+
+            // Lấy URL audio từ kết quả API
+            const audioUrl = data[0]?.phonetics?.find(p => p.audio)?.audio;
+
+            if (audioUrl) {
+                // Phát âm thanh nếu tìm thấy
+                const audio = new Audio(audioUrl);
+                await audio.play();
+            } else {
+                // Fallback về speech synthesis nếu không có audio
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(word);
+                    utterance.lang = 'en-US';
+                    speechSynthesis.speak(utterance);
+                }
+            }
+        } catch (error) {
+            console.error('Error playing pronunciation:', error);
+            // Fallback về speech synthesis nếu có lỗi
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'en-US';
+                speechSynthesis.speak(utterance);
+            }
         }
     }
 
