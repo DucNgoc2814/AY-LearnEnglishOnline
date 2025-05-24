@@ -10,22 +10,20 @@ return new class extends Migration
     {
         Schema::create('reflection_sentence_progress', function (Blueprint $table) {
             $table->id()->comment('ID của tiến độ');
-            $table->foreignId('user_id')->comment('ID của học viên')
-                ->constrained()
-                ->onDelete('cascade')
-                ->name('ref_sentence_progress_user_fk');
+            $table->foreignId('student_id')->comment('ID của học viên')
+                ->constrained('students')
+                ->onDelete('cascade');
             $table->foreignId('reflection_sentence_structure_id')->comment('ID của mẫu câu')
                 ->constrained()
                 ->onDelete('cascade')
                 ->name('ref_sentence_progress_structure_fk');
             $table->text('practice_text')->nullable()->comment('Câu học viên đã viết');
-            $table->boolean('is_completed')->default(false)->comment('Đã hoàn thành chưa');
             $table->timestamp('completed_at')->nullable()->comment('Thời gian hoàn thành');
             $table->timestamps();
             $table->softDeletes();
 
             // Đảm bảo mỗi học viên chỉ có một tiến độ cho mỗi mẫu câu
-            $table->unique(['user_id', 'reflection_sentence_structure_id'], 'unique_sentence_progress');
+            $table->unique(['student_id', 'reflection_sentence_structure_id'], 'unique_sentence_progress');
         });
     }
 

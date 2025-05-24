@@ -2,27 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
-class VocabularyListeningGrammar extends Model
+class VocabularyListeningGrammar extends BaseModel
 {
-    use HasFactory, SoftDeletes;
-
-    protected $fillable = [
-        'lesson_id',
-        'sentence',
-        'vietnamese_word',
-        'correct_synonym',
-        'max_retries',
-        'min_required_score',
-    ];
-
-    protected $casts = [
-        'min_required_score' => 'decimal:2',
-    ];
-
     public static function getBaseRules($id = null)
     {
         return [

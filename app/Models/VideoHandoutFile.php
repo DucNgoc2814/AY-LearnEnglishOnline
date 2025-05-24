@@ -3,30 +3,27 @@
 namespace App\Models;
 
 
-class VocabularyListeningDictation extends BaseModel
+class VideoHandoutFile extends BaseModel
 {
     public static function mediaFields(): array
     {
         return [
-            'audio_url' => [
-                'type' => 'audio',
+            'file_path' => [
+                'type' => 'image',
                 'max_size' => 102400,
-                'mimes' => 'mp3,wav,ogg',
-                'label' => 'Audio'
+                'mimes' => 'pdf',
+                'label' => 'File PDF'
             ],
         ];
     }
+
     public static function getBaseRules($id = null)
     {
         return [
-            'lesson_id' => 'required|exists:lessons,id',
+            'lesson_id' => 'required|exists:video_handout_lessons,id',
             'title' => 'required|string|max:255',
-            'audio_url' => 'required|string|max:255',
-            'correct_text' => 'required|string',
-            'display_text' => 'required|string',
-            'blank_words' => 'required|array',
-            'max_retries' => 'required|integer|min:1',
-            'min_required_score' => 'required|numeric|min:0|max:100',
+            'description' => 'nullable|string',
+            'file_path' => 'required|string|max:255',
         ];
     }
 
@@ -36,7 +33,7 @@ class VocabularyListeningDictation extends BaseModel
             'lesson_id' => [
                 'label' => 'Bài học',
                 'type' => 'select',
-                'options' => Lesson::pluck('name', 'id')->toArray(),
+                'options' => VideoHandoutLesson::pluck('title', 'id')->toArray(),
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
@@ -48,49 +45,23 @@ class VocabularyListeningDictation extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'audio_url' => [
-                'label' => 'URL Audio',
-                'type' => 'text',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'correct_text' => [
-                'label' => 'Văn bản đúng',
+            'description' => [
+                'label' => 'Mô tả',
                 'type' => 'textarea',
                 'searchable' => true,
                 'sortable' => false,
                 'editable' => true
             ],
-            'display_text' => [
-                'label' => 'Văn bản hiển thị',
-                'type' => 'textarea',
-                'searchable' => true,
-                'sortable' => false,
-                'editable' => true
-            ],
-            'blank_words' => [
-                'label' => 'Từ cần điền',
-                'type' => 'tags',
-                'searchable' => false,
-                'sortable' => false,
-                'editable' => true
-            ],
-            'max_retries' => [
-                'label' => 'Số lần làm lại tối đa',
-                'type' => 'number',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'min_required_score' => [
-                'label' => 'Điểm tối thiểu (%)',
-                'type' => 'number',
+            'file_path' => [
+                'label' => 'File PDF',
+                'type' => 'file',
+                'accept' => '.pdf',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
         ];
+        // Thêm các trường media vào fields
         foreach (static::mediaFields() as $field => $config) {
             $fields[$field] = [
                 'label' => $config['label'],
@@ -122,6 +93,6 @@ class VocabularyListeningDictation extends BaseModel
 
     public function lesson()
     {
-        return $this->belongsTo(Lesson::class);
+        return $this->belongsTo(VideoHandoutLesson::class);
     }
 }

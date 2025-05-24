@@ -3,40 +3,38 @@
 namespace App\Models;
 
 
-class VocabularyListeningDictation extends BaseModel
+class VideoHandoutLesson extends BaseModel
 {
     public static function mediaFields(): array
     {
         return [
-            'audio_url' => [
-                'type' => 'audio',
+            'video_url' => [
+                'type' => 'video',
                 'max_size' => 102400,
-                'mimes' => 'mp3,wav,ogg',
-                'label' => 'Audio'
-            ],
+                'mimes' => 'mp4,webm,ogg',
+                'label' => 'Video khóa học'
+            ]
         ];
     }
     public static function getBaseRules($id = null)
     {
         return [
-            'lesson_id' => 'required|exists:lessons,id',
+            'unit_id' => 'required|exists:video_handout_units,id',
             'title' => 'required|string|max:255',
-            'audio_url' => 'required|string|max:255',
-            'correct_text' => 'required|string',
-            'display_text' => 'required|string',
-            'blank_words' => 'required|array',
-            'max_retries' => 'required|integer|min:1',
-            'min_required_score' => 'required|numeric|min:0|max:100',
+            'description' => 'nullable|string',
+            'video_url' => 'required|string|max:255',
+            'order' => 'required|integer|min:0',
+            'is_active' => 'required|boolean',
         ];
     }
 
     public static function getFields()
     {
-        $fields = [
-            'lesson_id' => [
-                'label' => 'Bài học',
+        $fields =  [
+            'unit_id' => [
+                'label' => 'Unit',
                 'type' => 'select',
-                'options' => Lesson::pluck('name', 'id')->toArray(),
+                'options' => VideoHandoutUnit::pluck('name', 'id')->toArray(),
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
@@ -48,49 +46,36 @@ class VocabularyListeningDictation extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'audio_url' => [
-                'label' => 'URL Audio',
+            'description' => [
+                'label' => 'Mô tả',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ],
+            'video_url' => [
+                'label' => 'URL Video',
                 'type' => 'text',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
-            'correct_text' => [
-                'label' => 'Văn bản đúng',
-                'type' => 'textarea',
-                'searchable' => true,
-                'sortable' => false,
-                'editable' => true
-            ],
-            'display_text' => [
-                'label' => 'Văn bản hiển thị',
-                'type' => 'textarea',
-                'searchable' => true,
-                'sortable' => false,
-                'editable' => true
-            ],
-            'blank_words' => [
-                'label' => 'Từ cần điền',
-                'type' => 'tags',
-                'searchable' => false,
-                'sortable' => false,
-                'editable' => true
-            ],
-            'max_retries' => [
-                'label' => 'Số lần làm lại tối đa',
+            'order' => [
+                'label' => 'Thứ tự hiển thị',
                 'type' => 'number',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
-            'min_required_score' => [
-                'label' => 'Điểm tối thiểu (%)',
-                'type' => 'number',
+            'is_active' => [
+                'label' => 'Kích hoạt',
+                'type' => 'boolean',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
         ];
+        // Thêm các trường media vào fields
         foreach (static::mediaFields() as $field => $config) {
             $fields[$field] = [
                 'label' => $config['label'],
@@ -120,8 +105,13 @@ class VocabularyListeningDictation extends BaseModel
         return self::getFields();
     }
 
-    public function lesson()
+    public function unit()
     {
-        return $this->belongsTo(Lesson::class);
+        return $this->belongsTo(VideoHandoutUnit::class);
+    }
+
+    public function files()
+    {
+        return $this->hasMany(VideoHandoutFile::class, 'lesson_id');
     }
 }

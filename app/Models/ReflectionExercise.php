@@ -2,31 +2,27 @@
 
 namespace App\Models;
 
-
-class VocabularyListeningDictation extends BaseModel
+class ReflectionExercise extends BaseModel
 {
     public static function mediaFields(): array
     {
         return [
-            'audio_url' => [
-                'type' => 'audio',
+            'video_url' => [
+                'type' => 'video',
                 'max_size' => 102400,
-                'mimes' => 'mp3,wav,ogg',
-                'label' => 'Audio'
-            ],
+                'mimes' => 'mp4,webm,ogg',
+                'label' => 'Video cách làm Reflection'
+            ]
         ];
     }
+
     public static function getBaseRules($id = null)
     {
         return [
             'lesson_id' => 'required|exists:lessons,id',
             'title' => 'required|string|max:255',
-            'audio_url' => 'required|string|max:255',
-            'correct_text' => 'required|string',
-            'display_text' => 'required|string',
-            'blank_words' => 'required|array',
-            'max_retries' => 'required|integer|min:1',
-            'min_required_score' => 'required|numeric|min:0|max:100',
+            'description' => 'nullable|string',
+            'video_url' => 'nullable|url|max:255',
         ];
     }
 
@@ -48,44 +44,16 @@ class VocabularyListeningDictation extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'audio_url' => [
-                'label' => 'URL Audio',
+            'description' => [
+                'label' => 'Mô tả',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ],
+            'video_url' => [
+                'label' => 'URL bài làm mẫu',
                 'type' => 'text',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'correct_text' => [
-                'label' => 'Văn bản đúng',
-                'type' => 'textarea',
-                'searchable' => true,
-                'sortable' => false,
-                'editable' => true
-            ],
-            'display_text' => [
-                'label' => 'Văn bản hiển thị',
-                'type' => 'textarea',
-                'searchable' => true,
-                'sortable' => false,
-                'editable' => true
-            ],
-            'blank_words' => [
-                'label' => 'Từ cần điền',
-                'type' => 'tags',
-                'searchable' => false,
-                'sortable' => false,
-                'editable' => true
-            ],
-            'max_retries' => [
-                'label' => 'Số lần làm lại tối đa',
-                'type' => 'number',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'min_required_score' => [
-                'label' => 'Điểm tối thiểu (%)',
-                'type' => 'number',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
@@ -120,8 +88,13 @@ class VocabularyListeningDictation extends BaseModel
         return self::getFields();
     }
 
-    public function lesson()
+    public function questions()
     {
-        return $this->belongsTo(Lesson::class);
+        return $this->hasMany(ReflectionExerciseQuestion::class);
+    }
+
+    public function studentAnswers()
+    {
+        return $this->hasMany(ReflectionStudentAnswer::class);
     }
 }

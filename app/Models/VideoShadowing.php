@@ -2,23 +2,32 @@
 
 namespace App\Models;
 
-class VocabularyListeningSentenceBuilding extends BaseModel
+class VideoShadowing extends BaseModel
 {
-
+    public static function mediaFields(): array
+    {
+        return [
+            'video_url' => [
+                'type' => 'video',
+                'max_size' => 102400,
+                'mimes' => 'mp4,webm,ogg',
+                'label' => 'Video Shadowing'
+            ]
+        ];
+    }
     public static function getBaseRules($id = null)
     {
         return [
             'lesson_id' => 'required|exists:lessons,id',
-            'sentence_number' => 'required|string|max:255',
-            'correct_sentence' => 'required|string|max:255',
-            'max_retries' => 'required|integer|min:1',
-            'min_required_score' => 'required|numeric|min:0|max:100',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'video_url' => 'required|string|max:255',
         ];
     }
 
     public static function getFields()
     {
-        return [
+        $fields = [
             'lesson_id' => [
                 'label' => 'Bài học',
                 'type' => 'select',
@@ -27,35 +36,39 @@ class VocabularyListeningSentenceBuilding extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'sentence_number' => [
-                'label' => 'Số thứ tự câu',
+            'title' => [
+                'label' => 'Tiêu đề',
                 'type' => 'text',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
-            'correct_sentence' => [
-                'label' => 'Câu đúng',
+            'description' => [
+                'label' => 'Mô tả',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ],
+            'video_url' => [
+                'label' => 'URL Video',
                 'type' => 'text',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'max_retries' => [
-                'label' => 'Số lần làm lại tối đa',
-                'type' => 'number',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'min_required_score' => [
-                'label' => 'Điểm tối thiểu (%)',
-                'type' => 'number',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
         ];
+        foreach (static::mediaFields() as $field => $config) {
+            $fields[$field] = [
+                'label' => $config['label'],
+                'type' => 'file',
+                'accept' => $config['type'] === 'image' ? 'image/*' : 'video/*',
+                'max_size' => $config['max_size'],
+                'editable' => true
+            ];
+        }
+
+        return $fields;
     }
 
     public static function getFormFields()
@@ -77,5 +90,10 @@ class VocabularyListeningSentenceBuilding extends BaseModel
     public function lesson()
     {
         return $this->belongsTo(Lesson::class);
+    }
+
+    public function segments()
+    {
+        return $this->hasMany(VideoShadowingSegment::class);
     }
 }
