@@ -169,7 +169,9 @@
                             </td>
                             <td>
                                 <div class="phonetic-container">
-                                    <span class="base-phonetic">{{ $word['base_phonetic'] }}</span>
+                                    <span class="base-phonetic">
+                                        /{{ trim($word['base_phonetic'], '/') }}/
+                                    </span>
                                     <div class="ending-dropzone" data-correct="{{ $word['ending_phonetic'] }}"
                                         data-word-id="{{ $index }}">
                                         <span class="placeholder">Kéo thả âm đuôi vào đây</span>
@@ -187,7 +189,9 @@
                             </td>
                             <td>
                                 <div class="phonetic-container">
-                                    <span class="base-phonetic">{{ $word['base_phonetic'] }}</span>
+                                    <span class="base-phonetic">
+                                        /{{ trim($word['base_phonetic'], '/') }}/
+                                    </span>
                                     <div class="ending-dropzone-with-s"
                                         data-correct="{{ $word['ending_phonetic'] }}"
                                         data-word-id="{{ $index }}">
@@ -611,31 +615,25 @@
         // Clear existing content
         this.innerHTML = '';
 
-        // Create new ending item
+        // Create new ending item with slashes
         const endingItem = document.createElement('div');
         endingItem.className = 'ending-item';
-        endingItem.textContent = droppedEnding;
+        // Ensure the displayed ending has slashes
+        const displayEnding = '/' + droppedEnding.replace(/[\/\s]/g, '') + '/';
+        endingItem.textContent = displayEnding;
         this.appendChild(endingItem);
 
         // Check if correct after normalization
         if (normalizedDropped === normalizedCorrect) {
             this.classList.add('correct');
             this.classList.remove('incorrect');
-
-            // Optional: Add success feedback
             endingItem.style.backgroundColor = '#d1e7dd';
             endingItem.style.borderColor = '#198754';
         } else {
             this.classList.add('incorrect');
             this.classList.remove('correct');
-
-            // Optional: Add error feedback
             endingItem.style.backgroundColor = '#f8d7da';
             endingItem.style.borderColor = '#dc3545';
         }
-
-        // Log for debugging
-        console.log('Dropped:', normalizedDropped);
-        console.log('Correct:', normalizedCorrect);
     }
 </script>
