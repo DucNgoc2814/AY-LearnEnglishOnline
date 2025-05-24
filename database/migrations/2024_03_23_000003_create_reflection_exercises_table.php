@@ -10,13 +10,10 @@ return new class extends Migration
     {
         Schema::create('reflection_exercises', function (Blueprint $table) {
             $table->id()->comment('ID của bài tập reflection');
+            $table->foreignId('lesson_id')->comment('ID của bài học')->constrained('lessons')->onDelete('cascade');
             $table->string('title')->comment('Tiêu đề bài tập');
             $table->text('description')->nullable()->comment('Mô tả về bài tập');
-            $table->string('padlet_url')->nullable()->comment('URL của Padlet để nộp bài');
-            $table->string('oxford_dictionary_url')->nullable()->comment('URL từ điển Oxford');
-            $table->string('sample_answer_url')->nullable()->comment('URL bài làm mẫu');
-            $table->boolean('is_active')->default(true)->comment('Trạng thái hiển thị của bài tập');
-            $table->integer('order')->default(0)->comment('Thứ tự hiển thị');
+            $table->string('video_url')->nullable()->comment('Video cách làm Reflection');
             $table->timestamps();
             $table->softDeletes();
         });

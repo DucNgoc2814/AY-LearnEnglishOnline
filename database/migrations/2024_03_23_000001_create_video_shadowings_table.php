@@ -8,18 +8,19 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('video_shadowing', function (Blueprint $table) {
+        Schema::create('video_shadowings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lesson_id')->comment('ID của bài học')->constrained('lessons')->onDelete('cascade');
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('video_url');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('video_shadowing');
+        Schema::dropIfExists('video_shadowings');
     }
 };

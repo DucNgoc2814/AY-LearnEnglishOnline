@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('vocabulary_listening_sentence_building_progress', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->comment('ID của học viên')->constrained('students')->onDelete('cascade');
-            $table->foreignId('sentence_building_id')->comment('ID của bài sentence building')->constrained('vocabulary_listening_sentence_buildings')->onDelete('cascade');
+            $table->foreignId('student_id')->comment('ID của học viên')->constrained('students')->onDelete('cascade')->name('vl_sb_progress_student_fk');
+            $table->foreignId('sentence_building_id')->comment('ID của bài sentence building')->constrained('vocabulary_listening_sentence_buildings')->onDelete('cascade')->name('vl_sb_progress_sentence_fk');
             $table->decimal('progress', 5, 2)->default(0)->comment('Tiến độ làm bài sắp xếp câu (%)');
             $table->integer('retries')->default(0)->comment('Số lần đã làm lại toàn bộ bài tập');
             $table->integer('current_position')->default(0)->comment('Vị trí câu hiện tại đang làm');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['student_id', 'sentence_building_id']);
+            $table->unique(['student_id', 'sentence_building_id'], 'vl_sentence_building_progress_unique');
         });
     }
 

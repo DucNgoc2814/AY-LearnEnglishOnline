@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('video_shadowing_recordings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('video_shadowing_id')->constrained('video_shadowing')->onDelete('cascade');
+            $table->foreignId('video_shadowing_id')->constrained('video_shadowings')->onDelete('cascade');
             $table->foreignId('segment_id')->constrained('video_shadowing_segments')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('recording_url'); // URL đến file ghi âm

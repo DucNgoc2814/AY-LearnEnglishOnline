@@ -10,24 +10,22 @@ return new class extends Migration
     {
         Schema::create('reflection_exercise_progress', function (Blueprint $table) {
             $table->id()->comment('ID của tiến độ');
-            $table->foreignId('user_id')->comment('ID của học viên')
-                ->constrained()
+            $table->foreignId('student_id')->comment('ID của học viên')
+                ->constrained('students')
                 ->onDelete('cascade');
             $table->foreignId('reflection_exercise_id')->comment('ID của bài tập reflection')
                 ->constrained()
                 ->onDelete('cascade');
             $table->boolean('has_watched_video')->default(false)->comment('Đã xem video hướng dẫn chưa');
-            $table->boolean('has_completed_sentences')->default(false)->comment('Đã hoàn thành phần mẫu câu chưa');
-            $table->boolean('has_submitted_reflection')->default(false)->comment('Đã nộp bài reflection chưa');
-            $table->integer('total_questions')->default(0)->comment('Tổng số câu hỏi');
-            $table->integer('completed_questions')->default(0)->comment('Số câu hỏi đã làm');
-            $table->timestamp('started_at')->nullable()->comment('Thời gian bắt đầu làm bài');
-            $table->timestamp('completed_at')->nullable()->comment('Thời gian hoàn thành');
+            $table->timestamp('last_watched_at')->nullable()->comment('Thời gian xem video gần nhất');
+            $table->integer('last_video_position')->default(0)->comment('Vị trí xem video gần nhất (tính bằng giây)');
+            $table->boolean('has_completed_video')->default(false)->comment('Đã xem hết video chưa');
+            $table->timestamp('completed_at')->nullable()->comment('Thời gian hoàn thành xem video');
             $table->timestamps();
             $table->softDeletes();
 
             // Đảm bảo mỗi học viên chỉ có một tiến độ cho mỗi bài tập
-            $table->unique(['user_id', 'reflection_exercise_id'], 'unique_exercise_progress');
+            $table->unique(['student_id', 'reflection_exercise_id'], 'unique_exercise_progress');
         });
     }
 

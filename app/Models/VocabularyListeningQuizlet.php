@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-class VocabularyListeningVideo extends BaseModel
+use Illuminate\Database\Eloquent\Model;
+
+class VocabularyListeningQuizlet extends Model
 {
     public static function getBaseRules($id = null)
     {
         return [
             'lesson_id' => 'required|exists:lessons,id',
-            'video_url' => 'nullable|string|max:255',
-            'video_title' => 'required|string',
-            'video_description' => 'nullable|string|max:255',
+            'title' => 'required|string|max:255',
+            'quizlet_url' => 'required|url|max:255',
+            'guide_url' => 'nullable|url|max:255',
         ];
     }
 
@@ -25,33 +27,30 @@ class VocabularyListeningVideo extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'video_title' => [
-                'label' => 'Tên bài tập',
+            'title' => [
+                'label' => 'Tiêu đề',
                 'type' => 'text',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
-            'video_url' => [
-                'label' => 'Video bài tập',
+            'quizlet_url' => [
+                'label' => 'URL Quizlet',
                 'type' => 'text',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
-            'video_description' => [
-                'label' => 'Mô tả chi tiết',
-                'type' => 'textarea',
+            'guide_url' => [
+                'label' => 'URL hướng dẫn',
+                'type' => 'text',
                 'searchable' => true,
-                'sortable' => false,
+                'sortable' => true,
                 'editable' => true
             ],
         ];
     }
 
-    /**
-     * Get fields for form (create/edit)
-     */
     public static function getFormFields()
     {
         $fields = [];
@@ -62,13 +61,12 @@ class VocabularyListeningVideo extends BaseModel
         }
         return $fields;
     }
-    /**
-     * Get fields for listing
-     */
+
     public static function getListFields()
     {
         return self::getFields();
     }
+
     public function lesson()
     {
         return $this->belongsTo(Lesson::class);

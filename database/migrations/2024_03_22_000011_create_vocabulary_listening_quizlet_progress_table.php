@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['student_id', 'quizlet_id']);
+            $table->unique(['student_id', 'quizlet_id'], 'vl_quizlet_progress_unique');
         });
     }
 

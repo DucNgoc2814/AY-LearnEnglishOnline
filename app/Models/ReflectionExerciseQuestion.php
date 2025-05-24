@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-class VocabularyListeningVideo extends BaseModel
+class ReflectionExerciseQuestion extends BaseModel
 {
+
     public static function getBaseRules($id = null)
     {
         return [
             'lesson_id' => 'required|exists:lessons,id',
-            'video_url' => 'nullable|string|max:255',
-            'video_title' => 'required|string',
-            'video_description' => 'nullable|string|max:255',
+            'reflection_exercise_id' => 'required|exists:reflection_exercises,id',
+            'question_text' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'order' => 'required|integer|min:0',
         ];
     }
 
@@ -25,33 +27,38 @@ class VocabularyListeningVideo extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'video_title' => [
-                'label' => 'Tên bài tập',
+            'reflection_exercise_id' => [
+                'label' => 'Bài tập Reflection',
+                'type' => 'select',
+                'options' => ReflectionExercise::pluck('title', 'id')->toArray(),
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'question_text' => [
+                'label' => 'Nội dung câu hỏi',
                 'type' => 'text',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
-            'video_url' => [
-                'label' => 'Video bài tập',
-                'type' => 'text',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'video_description' => [
-                'label' => 'Mô tả chi tiết',
+            'description' => [
+                'label' => 'Mô tả',
                 'type' => 'textarea',
                 'searchable' => true,
                 'sortable' => false,
                 'editable' => true
             ],
+            'order' => [
+                'label' => 'Thứ tự hiển thị',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
         ];
     }
 
-    /**
-     * Get fields for form (create/edit)
-     */
     public static function getFormFields()
     {
         $fields = [];
@@ -62,15 +69,19 @@ class VocabularyListeningVideo extends BaseModel
         }
         return $fields;
     }
-    /**
-     * Get fields for listing
-     */
+
     public static function getListFields()
     {
         return self::getFields();
     }
-    public function lesson()
+
+    public function reflectionExercise()
     {
-        return $this->belongsTo(Lesson::class);
+        return $this->belongsTo(ReflectionExercise::class);
+    }
+
+    public function studentAnswers()
+    {
+        return $this->hasMany(ReflectionStudentAnswer::class);
     }
 }

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['student_id', 'grammar_id']);
+            $table->unique(['student_id', 'grammar_id'], 'vl_grammar_progress_unique');
         });
     }
 

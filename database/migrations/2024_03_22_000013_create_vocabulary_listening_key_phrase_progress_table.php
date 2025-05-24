@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['student_id', 'key_phrase_id']);
+            $table->unique(['student_id', 'key_phrase_id'], 'vl_key_phrase_progress_unique');
         });
     }
 

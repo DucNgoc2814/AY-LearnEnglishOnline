@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
-class VocabularyListeningVideo extends BaseModel
+
+class VideoHandoutUnit extends BaseModel
 {
+
     public static function getBaseRules($id = null)
     {
         return [
             'lesson_id' => 'required|exists:lessons,id',
-            'video_url' => 'nullable|string|max:255',
-            'video_title' => 'required|string',
-            'video_description' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'order' => 'required|integer|min:0',
+            'is_active' => 'required|boolean',
         ];
     }
 
@@ -25,33 +28,37 @@ class VocabularyListeningVideo extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'video_title' => [
-                'label' => 'Tên bài tập',
+            'name' => [
+                'label' => 'Tên unit',
                 'type' => 'text',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
-            'video_url' => [
-                'label' => 'Video bài tập',
-                'type' => 'text',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'video_description' => [
-                'label' => 'Mô tả chi tiết',
+            'description' => [
+                'label' => 'Mô tả',
                 'type' => 'textarea',
                 'searchable' => true,
                 'sortable' => false,
                 'editable' => true
             ],
+            'order' => [
+                'label' => 'Thứ tự hiển thị',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'is_active' => [
+                'label' => 'Kích hoạt',
+                'type' => 'boolean',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
         ];
     }
 
-    /**
-     * Get fields for form (create/edit)
-     */
     public static function getFormFields()
     {
         $fields = [];
@@ -62,15 +69,19 @@ class VocabularyListeningVideo extends BaseModel
         }
         return $fields;
     }
-    /**
-     * Get fields for listing
-     */
+
     public static function getListFields()
     {
         return self::getFields();
     }
+
     public function lesson()
     {
         return $this->belongsTo(Lesson::class);
+    }
+
+    public function lessons()
+    {
+        return $this->hasMany(VideoHandoutLesson::class, 'unit_id');
     }
 }

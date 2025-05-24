@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-class VocabularyListeningVideo extends BaseModel
+class VocabularyListeningSentenceBuilding extends BaseModel
 {
+
     public static function getBaseRules($id = null)
     {
         return [
             'lesson_id' => 'required|exists:lessons,id',
-            'video_url' => 'nullable|string|max:255',
-            'video_title' => 'required|string',
-            'video_description' => 'nullable|string|max:255',
+            'sentence_number' => 'required|string|max:255',
+            'correct_sentence' => 'required|string|max:255',
+            'max_retries' => 'required|integer|min:1',
+            'min_required_score' => 'required|numeric|min:0|max:100',
         ];
     }
 
@@ -25,33 +27,37 @@ class VocabularyListeningVideo extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'video_title' => [
-                'label' => 'Tên bài tập',
+            'sentence_number' => [
+                'label' => 'Số thứ tự câu',
                 'type' => 'text',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
-            'video_url' => [
-                'label' => 'Video bài tập',
+            'correct_sentence' => [
+                'label' => 'Câu đúng',
                 'type' => 'text',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
-            'video_description' => [
-                'label' => 'Mô tả chi tiết',
-                'type' => 'textarea',
+            'max_retries' => [
+                'label' => 'Số lần làm lại tối đa',
+                'type' => 'number',
                 'searchable' => true,
-                'sortable' => false,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'min_required_score' => [
+                'label' => 'Điểm tối thiểu (%)',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
                 'editable' => true
             ],
         ];
     }
 
-    /**
-     * Get fields for form (create/edit)
-     */
     public static function getFormFields()
     {
         $fields = [];
@@ -62,13 +68,12 @@ class VocabularyListeningVideo extends BaseModel
         }
         return $fields;
     }
-    /**
-     * Get fields for listing
-     */
+
     public static function getListFields()
     {
         return self::getFields();
     }
+
     public function lesson()
     {
         return $this->belongsTo(Lesson::class);

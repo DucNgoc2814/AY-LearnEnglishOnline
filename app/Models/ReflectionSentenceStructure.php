@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
-class VocabularyListeningVideo extends BaseModel
+class ReflectionSentenceStructure extends BaseModel
 {
     public static function getBaseRules($id = null)
     {
         return [
             'lesson_id' => 'required|exists:lessons,id',
-            'video_url' => 'nullable|string|max:255',
-            'video_title' => 'required|string',
-            'video_description' => 'nullable|string|max:255',
+            'pattern_text' => 'required|string|max:255',
+            'pattern_translation' => 'required|string|max:255',
+            'example' => 'required|string|max:255',
+            'order' => 'required|integer|min:0',
         ];
     }
 
@@ -25,33 +26,37 @@ class VocabularyListeningVideo extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'video_title' => [
-                'label' => 'Tên bài tập',
+            'pattern_text' => [
+                'label' => 'Mẫu câu tiếng Anh',
                 'type' => 'text',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
-            'video_url' => [
-                'label' => 'Video bài tập',
+            'pattern_translation' => [
+                'label' => 'Bản dịch tiếng Việt',
                 'type' => 'text',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
-            'video_description' => [
-                'label' => 'Mô tả chi tiết',
-                'type' => 'textarea',
+            'example' => [
+                'label' => 'Ví dụ',
+                'type' => 'text',
                 'searchable' => true,
-                'sortable' => false,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'order' => [
+                'label' => 'Thứ tự hiển thị',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
                 'editable' => true
             ],
         ];
     }
 
-    /**
-     * Get fields for form (create/edit)
-     */
     public static function getFormFields()
     {
         $fields = [];
@@ -62,15 +67,9 @@ class VocabularyListeningVideo extends BaseModel
         }
         return $fields;
     }
-    /**
-     * Get fields for listing
-     */
+
     public static function getListFields()
     {
         return self::getFields();
-    }
-    public function lesson()
-    {
-        return $this->belongsTo(Lesson::class);
     }
 }
