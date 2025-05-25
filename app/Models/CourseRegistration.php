@@ -2,54 +2,192 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class CourseRegistration extends Model
+class CourseRegistration extends BaseModel
 {
-    use HasFactory, SoftDeletes;
+    public static function getBaseRules($id = null)
+    {
+        return [
+            'course_id' => [
+                'required',
+                'exists:courses,id',
+            ],
+            'student_ids' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+            'student_ids.*' => [
+                'required',
+                'exists:students,id',
+            ],
+            'status' => [
+                'required',
+                'in:pending,active,completed,cancelled',
+            ],
+            'fee_amount' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
+            'payment_status' => [
+                'required',
+                'in:pending,paid,refunded',
+            ],
+            'payment_method' => [
+                'required',
+                'string',
+            ],
+            'payment_date' => [
+                'nullable',
+                'date',
+            ],
+            'invoice_number' => [
+                'nullable',
+                'string',
+            ],
+            'enrollment_date' => [
+                'required',
+                'date',
+            ],
+            'completion_date' => [
+                'nullable',
+                'date',
+                'after:enrollment_date',
+            ],
+            'notes' => [
+                'nullable',
+                'string',
+            ],
+        ];
+    }
+
+    public static function getFields()
+    {
+        return [
+            'course_id' => [
+                'label' => 'Khóa học',
+                'type' => 'select',
+                'options' => Course::pluck('title', 'id')->toArray(),
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'student_ids' => [
+                'label' => 'Học viên',
+                'type' => 'select',
+                'options' => Student::pluck('full_name', 'id')->toArray(),
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true,
+                'multiple' => true,
+                'relation' => 'students',
+                'display_fields' => ['student_code', 'full_name'], //Chọn các trường cần hiển thị
+                'badge_color' => 'blue', // Tùy chỉnh màu sắc badge
+                'separator' => ' - ', //Tùy chỉnh ký tự ngăn cách
+                'help' => 'Có thể chọn nhiều học viên cùng lúc'
+            ],
+            'status' => [
+                'label' => 'Trạng thái',
+                'type' => 'select',
+                'options' => [
+                    'pending' => 'Chờ xử lý',
+                    'active' => 'Đang học',
+                    'completed' => 'Đã hoàn thành',
+                    'cancelled' => 'Đã hủy'
+                ],
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'fee_amount' => [
+                'label' => 'Học phí',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'payment_status' => [
+                'label' => 'Trạng thái thanh toán',
+                'type' => 'select',
+                'options' => [
+                    'pending' => 'Chờ thanh toán',
+                    'paid' => 'Đã thanh toán',
+                    'refunded' => 'Đã hoàn tiền'
+                ],
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'payment_method' => [
+                'label' => 'Phương thức thanh toán',
+                'type' => 'text',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'payment_date' => [
+                'label' => 'Ngày thanh toán',
+                'type' => 'date',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'invoice_number' => [
+                'label' => 'Số hóa đơn',
+                'type' => 'text',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'enrollment_date' => [
+                'label' => 'Ngày đăng ký',
+                'type' => 'date',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'completion_date' => [
+                'label' => 'Ngày hoàn thành',
+                'type' => 'date',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'notes' => [
+                'label' => 'Ghi chú',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ],
+        ];
+    }
+    public static function getFormFields()
+    {
+        $fields = [];
+        foreach (self::getFields() as $key => $field) {
+            if (!isset($field['editable']) || $field['editable']) {
+                $fields[$key] = $field;
+            }
+        }
+        return $fields;
+    }
 
     /**
-     * The table associated with the model.
-     *
-     * @var string
+     * Get fields for listing
      */
-    protected $table = 'course_registrations';
+    public static function getListFields()
+    {
+        return self::getFields();
+    }
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'class_id',
-        'student_id',
-        'status',
-        'fee_amount',
-        'payment_status',
-        'payment_method',
-        'payment_date',
-        'invoice_number',
-        'enrollment_date',
-        'completion_date',
-        'notes'
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'fee_amount' => 'decimal:2',
-        'payment_date' => 'date',
-        'enrollment_date' => 'date',
-        'completion_date' => 'date',
-    ];
-
+    protected static function bootHasSlug()
+    {
+        // Override to disable slug generation
+    }
     // Định nghĩa các giá trị cho status
     const STATUS_PENDING = 'pending';
     const STATUS_ACTIVE = 'active';
@@ -79,9 +217,10 @@ class CourseRegistration extends Model
     /**
      * Lấy thông tin học viên
      */
-    public function student(): BelongsTo
+    public function students()
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsToMany(Student::class, 'course_registration_student')
+                    ->withTimestamps();
     }
 
     /**

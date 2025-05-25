@@ -379,4 +379,13 @@ class Student extends Authenticatable implements JWTSubject
             'student_code' => $this->student_code
         ];
     }
+
+    /**
+     * Lấy danh sách đăng ký khóa học của học viên
+     */
+    public function courseRegistrations(): BelongsToMany
+    {
+        return $this->belongsToMany(CourseRegistration::class, 'course_registration_student')
+                    ->withTimestamps();
+    }
 }

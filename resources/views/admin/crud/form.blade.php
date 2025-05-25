@@ -45,16 +45,24 @@
 
                                 @case('select')
                                     <select
-                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline {{ isset($options['multiple']) && $options['multiple'] ? 'select2-multiple' : '' }}"
                                         id="{{ $field }}"
-                                        name="{{ $field }}"
+                                        name="{{ $field }}{{ isset($options['multiple']) && $options['multiple'] ? '[]' : '' }}"
+                                        {{ isset($options['multiple']) && $options['multiple'] ? 'multiple' : '' }}
                                     >
                                         @foreach($options['options'] ?? [] as $value => $label)
-                                            <option value="{{ $value }}" {{ old($field, isset($item) ? $item->$field : '') == $value ? 'selected' : '' }}>
+                                            <option value="{{ $value }}"
+                                                {{ isset($options['multiple']) && $options['multiple']
+                                                    ? (is_array(old($field, isset($item) ? $item->$field : [])) && in_array($value, old($field, isset($item) ? $item->$field : [])) ? 'selected' : '')
+                                                    : (old($field, isset($item) ? $item->$field : '') == $value ? 'selected' : '')
+                                                }}>
                                                 {{ $label }}
                                             </option>
                                         @endforeach
                                     </select>
+                                    @if(isset($options['help']))
+                                        <p class="mt-1 text-sm text-gray-500">{{ $options['help'] }}</p>
+                                    @endif
                                     @break
 
                                 @case('file')
@@ -399,7 +407,17 @@
 </div>
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script>
+    $(document).ready(function() {
+        $('.select2-multiple').select2({
+            theme: 'classic',
+            placeholder: 'Select items...',
+            allowClear: true,
+            width: '100%'
+        });
+    });
     // Store temporary files
     let tempFiles = {};
 

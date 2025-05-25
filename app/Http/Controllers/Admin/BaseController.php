@@ -113,8 +113,17 @@ abstract class BaseController extends Controller
     {
         $validated = $request->validate($this->model::rules());
 
+        // Remove student_ids from validated data as it's not a direct field
+        $studentIds = $validated['student_ids'] ?? null;
+        unset($validated['student_ids']);
+
         // Tạo instance chính
         $item = $this->model::create($validated);
+
+        // Attach students if present
+        if ($studentIds && method_exists($item, 'students')) {
+            $item->students()->attach($studentIds);
+        }
 
         // Xử lý upload media
         $this->handleMediaUploads($request, $item);
@@ -165,8 +174,17 @@ abstract class BaseController extends Controller
         $item = $this->model::withTrashed()->findOrFail($id);
         $validated = $request->validate($this->model::rules($item->id));
 
+        // Remove student_ids from validated data as it's not a direct field
+        $studentIds = $validated['student_ids'] ?? null;
+        unset($validated['student_ids']);
+
         // Cập nhật thông tin
         $item->update($validated);
+
+        // Sync students if present
+        if ($studentIds !== null && method_exists($item, 'students')) {
+            $item->students()->sync($studentIds);
+        }
 
         // Xử lý upload media
         $this->handleMediaUploads($request, $item);
@@ -260,33 +278,27 @@ abstract class BaseController extends Controller
             $relationDataKey = "related_{$relation}";
 
             if ($isMultiple) {
-                // Quan hệ 1-n
                 if ($request->has($relationDataKey)) {
                     $relatedData = $request->input($relationDataKey);
 
                     if ($isUpdate) {
-                        // Cập nhật: xóa dữ liệu cũ trước
                         $item->$relation()->delete();
                     }
 
-                    // Thêm mới từng item
                     foreach ($relatedData as $data) {
-                        if (!empty(array_filter($data))) { // Bỏ qua dữ liệu trống
+                        if (!empty(array_filter($data))) {
                             $item->$relation()->create($data);
                         }
                     }
                 }
             } else {
-                // Quan hệ 1-1
                 if ($request->has($relationDataKey)) {
                     $relatedData = $request->input($relationDataKey);
 
                     if (!empty(array_filter($relatedData))) {
                         if ($isUpdate && $item->$relation) {
-                            // Cập nhật
                             $item->$relation->update($relatedData);
                         } else {
-                            // Thêm mới
                             $item->$relation()->create($relatedData);
                         }
                     }

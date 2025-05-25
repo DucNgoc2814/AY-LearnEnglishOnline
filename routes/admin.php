@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\LessonController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\ClassController;
+use App\Http\Controllers\Admin\ClassStudentController;
+use App\Http\Controllers\Admin\CourseRegistrationController;
 use App\Http\Controllers\Admin\DictationController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\VoucherController;
@@ -337,18 +339,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('/{id}/restore', 'restore')->name('restore');
         });
 
-    // Classes Management
-    Route::controller(ClassController::class)
-        ->prefix('classes')
-        ->name('classes.')
-        ->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::post('/', 'store')->name('store');
-            Route::get('/{id}/edit', 'edit')->name('edit');
-            Route::put('/{id}', 'update')->name('update');
-            Route::delete('/{id}', 'destroy')->name('destroy');
-            Route::post('/{id}/restore', 'restore')->name('restore');
-        });
 
     // Employees Management
     Route::resource('employees', EmployeeController::class);
@@ -727,5 +717,71 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Khôi phục từ thùng rác
         Route::put('/{id}/restore', [ReflectionExerciseQuestionController::class, 'restore'])->name('restore');
+    });
+    Route::prefix('class-students')->name('class-students.')->group(function () {
+        // Hiển thị danh sách
+        Route::get('/', [ClassStudentController::class, 'index'])->name('index');
+
+        // Form tạo mới
+        Route::get('/create', [ClassStudentController::class, 'create'])->name('create');
+
+        // Lưu dữ liệu mới
+        Route::post('/', [ClassStudentController::class, 'store'])->name('store');
+
+        // Form chỉnh sửa
+        Route::get('/{id}/edit', [ClassStudentController::class, 'edit'])->name('edit');
+
+        // Cập nhật dữ liệu
+        Route::put('/{id}', [ClassStudentController::class, 'update'])->name('update');
+
+        // Xóa mềm
+        Route::delete('/{id}', [ClassStudentController::class, 'destroy'])->name('destroy');
+
+        // Khôi phục từ thùng rác
+        Route::put('/{id}/restore', [ClassStudentController::class, 'restore'])->name('restore');
+    });
+    Route::prefix('classes')->name('classes.')->group(function () {
+        // Hiển thị danh sách
+        Route::get('/', [ClassController::class, 'index'])->name('index');
+
+        // Form tạo mới
+        Route::get('/create', [ClassController::class, 'create'])->name('create');
+
+        // Lưu dữ liệu mới
+        Route::post('/', [ClassController::class, 'store'])->name('store');
+
+        // Form chỉnh sửa
+        Route::get('/{id}/edit', [ClassController::class, 'edit'])->name('edit');
+
+        // Cập nhật dữ liệu
+        Route::put('/{id}', [ClassController::class, 'update'])->name('update');
+
+        // Xóa mềm
+        Route::delete('/{id}', [ClassController::class, 'destroy'])->name('destroy');
+
+        // Khôi phục từ thùng rác
+        Route::put('/{id}/restore', [ClassController::class, 'restore'])->name('restore');
+    });
+    Route::prefix('course-registrations')->name('course-registrations.')->group(function () {
+        // Hiển thị danh sách
+        Route::get('/', [CourseRegistrationController::class, 'index'])->name('index');
+
+        // Form tạo mới
+        Route::get('/create', [CourseRegistrationController::class, 'create'])->name('create');
+
+        // Lưu dữ liệu mới
+        Route::post('/', [CourseRegistrationController::class, 'store'])->name('store');
+
+        // Form chỉnh sửa
+        Route::get('/{id}/edit', [CourseRegistrationController::class, 'edit'])->name('edit');
+
+        // Cập nhật dữ liệu
+        Route::put('/{id}', [CourseRegistrationController::class, 'update'])->name('update');
+
+        // Xóa mềm
+        Route::delete('/{id}', [CourseRegistrationController::class, 'destroy'])->name('destroy');
+
+        // Khôi phục từ thùng rác
+        Route::put('/{id}/restore', [CourseRegistrationController::class, 'restore'])->name('restore');
     });
 });

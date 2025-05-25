@@ -12,9 +12,9 @@ class Classes extends BaseModel
     public static function getBaseRules($id = null)
     {
         return [
-            'category_id' => [
+            'course_id' => [
                 'required',
-                'exists:categories,id',
+                'exists:courses,id',
             ],
             'name' => ['required', 'string', 'max:255'],
             'code' => ['required', 'string', 'max:255', 'unique:classes,code'],
@@ -62,10 +62,10 @@ class Classes extends BaseModel
     public static function getFields()
     {
         return [
-            'category_id' => [
-                'label' => 'Danh mục',
+            'course_id' => [
+                'label' => 'Khóa học',
                 'type' => 'select',
-                'options' => Category::pluck('name', 'id')->toArray(),
+                'options' => Course::pluck('title', 'id')->toArray(),
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
