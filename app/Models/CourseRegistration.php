@@ -83,7 +83,7 @@ class CourseRegistration extends BaseModel
                 'sortable' => true,
                 'editable' => true,
                 'multiple' => true,
-                'relation' => 'students',
+                'relation' => 'students', // Quan hệ với bảng students
                 'display_fields' => ['student_code', 'full_name'], //Chọn các trường cần hiển thị
                 'badge_color' => 'blue', // Tùy chỉnh màu sắc badge
                 'separator' => ' - ', //Tùy chỉnh ký tự ngăn cách

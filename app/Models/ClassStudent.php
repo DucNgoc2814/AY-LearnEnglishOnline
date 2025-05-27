@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class ClassStudent extends BaseModel
 {
@@ -15,6 +16,18 @@ class ClassStudent extends BaseModel
     const STATUS_TRANSFERRED = 'transferred';
     const STATUS_DROPPED = 'dropped';
 
+    protected $appends = ['student_name', 'invoice_number'];
+
+    public function getStudentNameAttribute()
+    {
+        return $this->student ? $this->student->full_name : 'N/A';
+    }
+
+    public function getInvoiceNumberAttribute()
+    {
+        return $this->registration ? $this->registration->invoice_number : 'N/A';
+    }
+
     public static function getBaseRules($id = null)
     {
         return [
@@ -24,8 +37,32 @@ class ClassStudent extends BaseModel
             ],
             'registration_id' => [
                 'required',
-                'exists:course_registrations,id',
-                'unique:class_students,registration_id,' . $id . ',id,deleted_at,NULL'
+                function ($attribute, $value, $fail) {
+                    // Extract registration_id from the composite key if needed
+                    $registrationId = explode('-', $value)[0] ?? $value;
+
+                    if (!is_numeric($registrationId)) {
+                        $fail('The registration ID must be a valid number.');
+                        return;
+                    }
+
+                    if (!CourseRegistration::where('id', $registrationId)->exists()) {
+                        $fail('The selected registration does not exist.');
+                    }
+                },
+                function ($attribute, $value, $fail) use ($id) {
+                    // Extract registration_id from the composite key if needed
+                    $registrationId = explode('-', $value)[0] ?? $value;
+
+                    $exists = ClassStudent::where('registration_id', $registrationId)
+                        ->where('id', '!=', $id)
+                        ->whereNull('deleted_at')
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('This registration is already assigned to a class.');
+                    }
+                }
             ],
             'status' => [
                 'required',
@@ -58,57 +95,23 @@ class ClassStudent extends BaseModel
                 'options' => Classes::pluck('name', 'id')->toArray(),
                 'searchable' => true,
                 'sortable' => true,
-                'editable' => true
+                'editable' => true,
+                'display_field' => 'name'
             ],
-            'registration_id' => [
+            'student_name' => [
                 'label' => 'Học viên',
-                'type' => 'select',
-                'options' => function ($formData) {
-                    if (empty($formData['class_id'])) {
-                        return [];
-                    }
-
-                    $class = Classes::find($formData['class_id']);
-                    if (!$class) {
-                        return [];
-                    }
-
-                    // Lấy tất cả học viên đã đăng ký khóa học
-                    $registrations = CourseRegistration::where('course_id', $class->course_id)
-                        ->with(['students' => function($query) {
-                            $query->select('students.id', 'students.full_name');
-                        }])
-                        ->get();
-
-                    $options = [];
-                    foreach ($registrations as $registration) {
-                        foreach ($registration->students as $student) {
-                            // Kiểm tra xem học viên đã được xếp vào lớp nào chưa
-                            $currentClass = ClassStudent::where('registration_id', $registration->id)
-                                ->where('status', 'active')
-                                ->first();
-
-                            $classInfo = $currentClass
-                                ? " (Đang học lớp: {$currentClass->class->name})"
-                                : " (Chưa xếp lớp)";
-
-                            $options[$registration->id] = sprintf(
-                                "%s - HD%s%s",
-                                $student->full_name,
-                                $registration->invoice_number,
-                                $classInfo
-                            );
-
-                        }
-                    }
-
-                    return $options;
-                },
-                'depends' => ['class_id'],
+                'type' => 'text',
                 'searchable' => true,
                 'sortable' => true,
-                'editable' => true,
-                'placeholder' => 'Chọn lớp học trước'
+                'editable' => false
+            ],
+            'invoice_number' => [
+                'label' => 'Mã hóa đơn',
+                'type' => 'text',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => false,
+                'prefix' => 'HD'
             ],
             'status' => [
                 'label' => 'Trạng thái',
@@ -147,13 +150,87 @@ class ClassStudent extends BaseModel
     }
     public static function getFormFields()
     {
-        $fields = [];
-        foreach (self::getFields() as $key => $field) {
-            if (!isset($field['editable']) || $field['editable']) {
-                $fields[$key] = $field;
-            }
-        }
-        return $fields;
+        $fields = parent::getFormFields();
+
+        // Thêm trường registration_id cho form
+        $fields['registration_id'] = [
+            'label' => 'Học viên',
+            'type' => 'select',
+            'options' => function ($formData) {
+                if (empty($formData['class_id'])) {
+                    return [];
+                }
+
+                $class = Classes::find($formData['class_id']);
+                if (!$class) {
+                    Log::info('Không tìm thấy lớp học: ' . $formData['class_id']);
+                    return [];
+                }
+
+                Log::info('Tìm học viên cho khóa học: ' . $class->course_id);
+
+                // Lấy tất cả học viên đã đăng ký khóa học
+                $registrations = CourseRegistration::where('course_id', $class->course_id)
+                    ->with(['students' => function($query) {
+                        $query->select('students.*');
+                    }])
+                    ->get();
+
+                Log::info('Số lượng đăng ký tìm thấy: ' . $registrations->count());
+
+                $options = [];
+                foreach ($registrations as $registration) {
+                    // Lấy danh sách học viên từ bảng trung gian
+                    $students = DB::table('course_registration_student')
+                        ->join('students', 'students.id', '=', 'course_registration_student.student_id')
+                        ->where('course_registration_student.course_registration_id', $registration->id)
+                        ->whereNull('students.deleted_at')
+                        ->select('students.*', 'course_registration_student.course_registration_id')
+                        ->get();
+
+                    foreach ($students as $student) {
+                        // Tạo key duy nhất cho mỗi học viên
+                        $key = $registration->id;
+
+                        // Kiểm tra xem học viên đã được xếp vào lớp nào chưa
+                        $currentClass = ClassStudent::where('registration_id', $registration->id)
+                            ->where('status', 'active')
+                            ->first();
+
+                        $classInfo = $currentClass
+                            ? " (Đang học lớp: {$currentClass->class->name})"
+                            : " (Chưa xếp lớp)";
+
+                        $options[$key] = sprintf(
+                            "%s - HD%s%s",
+                            $student->full_name,
+                            $registration->invoice_number,
+                            $classInfo
+                        );
+                    }
+                }
+
+                return $options;
+            },
+            'depends' => ['class_id'],
+            'searchable' => true,
+            'sortable' => true,
+            'editable' => true,
+            'placeholder' => 'Chọn lớp học trước',
+            'help' => 'Chọn học viên đã đăng ký khóa học'
+        ];
+
+        // Sắp xếp lại các trường
+        $orderedFields = [
+            'class_id' => $fields['class_id'],
+            'registration_id' => $fields['registration_id'],
+            'status' => $fields['status'],
+            'start_date' => $fields['start_date'],
+            'end_date' => $fields['end_date'],
+            'notes' => $fields['notes']
+        ];
+
+        return $orderedFields;
     }
 
     /**
@@ -162,6 +239,22 @@ class ClassStudent extends BaseModel
     public static function getListFields()
     {
         return self::getFields();
+    }
+    protected static function bootHasSlug()
+    {
+        // Override to disable slug generation
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            // If registration_id contains a hyphen, extract only the registration_id part
+            if (is_string($model->registration_id) && str_contains($model->registration_id, '-')) {
+                $model->registration_id = explode('-', $model->registration_id)[0];
+            }
+        });
     }
 
     /**
@@ -187,11 +280,26 @@ class ClassStudent extends BaseModel
     {
         return $this->hasOneThrough(
             Student::class,
-            CourseRegistration::class,
-            'id', // Khóa ngoại trên bảng trung gian (course_registrations)
+            CourseRegistrationStudent::class,
+            'course_registration_id', // Khóa ngoại trên bảng trung gian (course_registration_student)
             'id', // Khóa chính của bảng đích (students)
             'registration_id', // Khóa ngoại trên bảng hiện tại (class_students)
             'student_id' // Khóa ngoại trên bảng trung gian trỏ đến bảng đích
+        );
+    }
+
+    /**
+     * Lấy thông tin học viên thông qua bảng trung gian
+     */
+    public function students()
+    {
+        return $this->hasManyThrough(
+            Student::class,
+            CourseRegistrationStudent::class,
+            'course_registration_id',
+            'id',
+            'registration_id',
+            'student_id'
         );
     }
 
