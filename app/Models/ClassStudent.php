@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
 
 class ClassStudent extends BaseModel
 {
@@ -57,8 +58,7 @@ class ClassStudent extends BaseModel
                 'options' => Classes::pluck('name', 'id')->toArray(),
                 'searchable' => true,
                 'sortable' => true,
-                'editable' => true,
-                'onchange' => 'updateRegistrationOptions'
+                'editable' => true
             ],
             'registration_id' => [
                 'label' => 'Học viên',
@@ -73,28 +73,36 @@ class ClassStudent extends BaseModel
                         return [];
                     }
 
-                    // Lấy tất cả học viên đã đăng ký và thanh toán khóa học
-                    return CourseRegistration::where('course_id', $class->course_id)
-                        ->where('status', 'active')
-                        ->where('payment_status', 'paid')
-                        ->with(['student' => function($query) {
-                            $query->select('id', 'name', 'code');
+                    // Lấy tất cả học viên đã đăng ký khóa học
+                    $registrations = CourseRegistration::where('course_id', $class->course_id)
+                        ->with(['students' => function($query) {
+                            $query->select('students.id', 'students.full_name');
                         }])
-                        ->get()
-                        ->mapWithKeys(function ($registration) {
+                        ->get();
+
+                    $options = [];
+                    foreach ($registrations as $registration) {
+                        foreach ($registration->students as $student) {
                             // Kiểm tra xem học viên đã được xếp vào lớp nào chưa
-                            $currentClass = $registration->classStudent()
+                            $currentClass = ClassStudent::where('registration_id', $registration->id)
                                 ->where('status', 'active')
                                 ->first();
 
-                            $classInfo = $currentClass ? " (Đang học lớp: {$currentClass->class->name})" : " (Chưa xếp lớp)";
+                            $classInfo = $currentClass
+                                ? " (Đang học lớp: {$currentClass->class->name})"
+                                : " (Chưa xếp lớp)";
 
-                            return [
-                                $registration->id =>
-                                    "[{$registration->student->code}] {$registration->student->name} - {$registration->invoice_number}{$classInfo}"
-                            ];
-                        })
-                        ->toArray();
+                            $options[$registration->id] = sprintf(
+                                "%s - HD%s%s",
+                                $student->full_name,
+                                $registration->invoice_number,
+                                $classInfo
+                            );
+
+                        }
+                    }
+
+                    return $options;
                 },
                 'depends' => ['class_id'],
                 'searchable' => true,

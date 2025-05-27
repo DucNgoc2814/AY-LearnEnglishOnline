@@ -224,9 +224,9 @@ class CourseRegistration extends BaseModel
     }
 
     /**
-     * Lấy danh sách các lớp học viên đã được xếp vào
+     * Lấy danh sách các lớp học của học viên
      */
-    public function classAssignments(): HasMany
+    public function classStudents(): HasMany
     {
         return $this->hasMany(ClassStudent::class, 'registration_id');
     }
@@ -236,7 +236,7 @@ class CourseRegistration extends BaseModel
      */
     public function currentClass()
     {
-        return $this->classAssignments()
+        return $this->classStudents()
             ->where('status', ClassStudent::STATUS_ACTIVE)
             ->first();
     }

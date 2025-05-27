@@ -739,6 +739,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Khôi phục từ thùng rác
         Route::put('/{id}/restore', [ClassStudentController::class, 'restore'])->name('restore');
+
+        // API lấy danh sách học viên theo lớp
+        Route::get('/get-students', [ClassStudentController::class, 'getStudents'])
+            ->name('get-students');
     });
     Route::prefix('classes')->name('classes.')->group(function () {
         // Hiển thị danh sách
