@@ -30,7 +30,7 @@
                         <div class="col-md-8">
                             <div class="ratio ratio-16x9 mb-3">
                                 <iframe
-                                    src="https://tienganh-abc.com/videos/tuoi-tho-ba-djao-cua-sheldon-2017=66735f66cd8dc73b802af882/tap-1"
+                                    src="{{ $lesson->video_url }}"
                                     title="Video Exercise"
                                     allowfullscreen
                                     class="rounded shadow-sm"
@@ -69,7 +69,7 @@
                         <div class="col-md-12">
                             <div class="ratio ratio-16x9 mb-3">
                                 <iframe
-                                    src="https://tienganh-abc.com/videos/tuoi-tho-ba-djao-cua-sheldon-2017=66735f66cd8dc73b802af882/tap-1"
+                                    src="{{ $lesson->video_url }}"
                                     title="Video Exercise"
                                     allowfullscreen
                                     class="rounded shadow-sm"
@@ -162,7 +162,7 @@
                                         <div class="card-body p-0">
                                             <div class="ratio ratio-16x9">
                                                 <iframe
-                                                    src="https://tienganh-abc.com/videos/tuoi-tho-ba-djao-cua-sheldon-2017=66735f66cd8dc73b802af882/tap-1"
+                                                    src="{{ $lesson->video_url }}"
                                                     title="Video Exercise"
                                                     allowfullscreen
                                                     class="rounded"

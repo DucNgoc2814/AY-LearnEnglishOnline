@@ -214,6 +214,32 @@
                                                 No file
                                             </span>
                                         @endif
+                                    @elseif(isset($options['multiple']) && $options['multiple'])
+                                        @php
+                                            $relation = $options['relation'] ?? Str::plural(str_replace('_ids', '', $field));
+                                            $displayFields = $options['display_fields'] ?? ['name'];
+                                            $badgeColor = $options['badge_color'] ?? 'blue';
+                                            $separator = $options['separator'] ?? ' - ';
+                                        @endphp
+
+                                        <div class="flex flex-wrap gap-1 justify-center">
+                                            @if($item->$relation && $item->$relation->count() > 0)
+                                                @foreach($item->$relation as $relatedItem)
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $badgeColor }}-100 text-{{ $badgeColor }}-800">
+                                                        @foreach($displayFields as $index => $displayField)
+                                                            {{ $relatedItem->$displayField }}
+                                                            @if($index < count($displayFields) - 1)
+                                                                {{ $separator }}
+                                                            @endif
+                                                        @endforeach
+                                                    </span>
+                                                @endforeach
+                                            @else
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                                    No {{ str_replace('_', ' ', Str::plural(str_replace('_ids', '', $field))) }} assigned
+                                                </span>
+                                            @endif
+                                        </div>
                                     @else
                                         <span class="flex justify-center">{{ $item->$field }}</span>
                                     @endif

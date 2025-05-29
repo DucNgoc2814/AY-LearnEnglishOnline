@@ -23,6 +23,18 @@ return new class extends Migration
             $table->date('resignation_date')->nullable()->comment('Ngày nghỉ việc');
             $table->enum('role', ['teacher', 'teaching_assistant', 'admin', 'staff'])->nullable()->comment('Vai trò');
             $table->text('note')->nullable()->comment('Ghi chú');
+
+            // Authentication fields
+            $table->string('device_id')->nullable();
+            $table->string('browser_id')->nullable();
+            $table->timestamp('last_active_at')->nullable();
+            $table->text('active_token')->nullable();
+            $table->text('refresh_token')->nullable();
+            $table->boolean('is_testing')->default(false);
+            $table->string('login_lock')->nullable();
+            $table->timestamp('login_lock_expires_at')->nullable();
+
+            $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();
         });

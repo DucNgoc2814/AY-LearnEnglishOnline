@@ -24,6 +24,19 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->text('bio')->nullable();
 
+            // Authentication fields
+            $table->enum('auth_type', ['email', 'google'])->default('google');
+            $table->string('activation_token')->nullable();
+            $table->timestamp('activated_at')->nullable();
+            $table->string('device_id')->nullable();
+            $table->string('browser_id')->nullable();
+            $table->timestamp('last_active_at')->nullable();
+            $table->text('active_token')->nullable();
+            $table->text('refresh_token')->nullable();
+            $table->boolean('is_testing')->default(false);
+            $table->string('login_lock')->nullable();
+            $table->timestamp('login_lock_expires_at')->nullable();
+
             // Thông tin phụ huynh 1
             $table->string('parent1_name')->nullable();
             $table->enum('parent1_relationship', ['father', 'mother', 'guardian', 'other'])->nullable();
@@ -41,6 +54,7 @@ return new class extends Migration
             $table->boolean('parent2_is_emergency_contact')->default(false);
 
             $table->boolean('is_active')->default(true);
+            $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
         });

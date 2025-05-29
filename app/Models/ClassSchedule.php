@@ -2,42 +2,196 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Carbon\Carbon;
 
-class ClassSchedule extends Model
+class ClassSchedule extends BaseModel
 {
-    use HasFactory, SoftDeletes;
+    public static function getBaseRules($id = null)
+    {
+        return [
+            'class_id' => [
+                'required',
+                'exists:classes,id',
+            ],
+            'day_of_week' => [
+                'required',
+                'integer',
+                'min:1',
+                'max:7'
+            ],
+            'start_time' => [
+                'required',
+                'date_format:H:i:s'
+            ],
+            'end_time' => [
+                'required',
+                'date_format:H:i:s',
+                'after:start_time'
+            ],
+            'start_date' => [
+                'required',
+                'date',
+                'before_or_equal:end_date'
+            ],
+            'end_date' => [
+                'required',
+                'date',
+                'after_or_equal:start_date'
+            ],
+            'room_number' => [
+                'nullable',
+                'string',
+                'max:50',
+                'required_if:is_online,false'
+            ],
+            'meeting_url' => [
+                'nullable',
+                'string',
+                'url',
+                'max:255',
+                'required_if:is_online,true'
+            ],
+            'notes' => [
+                'nullable',
+                'string',
+                'max:1000'
+            ],
+            'is_repeating' => [
+                'required',
+                'boolean'
+            ],
+            'is_active' => [
+                'required',
+                'boolean'
+            ],
+            'is_online' => [
+                'required',
+                'boolean'
+            ]
+        ];
+    }
 
-    protected $fillable = [
-        'class_id',
-        'lesson_id',
-        'day_of_week',
-        'start_time',
-        'end_time',
-        'start_date',
-        'end_date',
-        'room_number',
-        'meeting_url',
-        'notes',
-        'is_repeating',
-        'is_active',
-        'is_online'
-    ];
+    public static function getFields()
+    {
+        return [
+            'class_id' => [
+                'label' => 'Lớp học',
+                'type' => 'select',
+                'options' => Classes::pluck('name', 'id')->toArray(),
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'day_of_week' => [
+                'label' => 'Thứ trong tuần',
+                'type' => 'select',
+                'options' => [
+                    1 => 'Thứ Hai',
+                    2 => 'Thứ Ba',
+                    3 => 'Thứ Tư',
+                    4 => 'Thứ Năm',
+                    5 => 'Thứ Sáu',
+                    6 => 'Thứ Bảy',
+                    7 => 'Chủ Nhật'
+                ],
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'start_time' => [
+                'label' => 'Giờ bắt đầu',
+                'type' => 'time',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'end_time' => [
+                'label' => 'Giờ kết thúc',
+                'type' => 'time',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'start_date' => [
+                'label' => 'Ngày bắt đầu',
+                'type' => 'date',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'end_date' => [
+                'label' => 'Ngày kết thúc',
+                'type' => 'date',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'is_online' => [
+                'label' => 'Học trực tuyến',
+                'type' => 'checkbox',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'room_number' => [
+                'label' => 'Phòng học',
+                'type' => 'text',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true,
+                'depends' => [
+                    'is_online' => false
+                ]
+            ],
+            'meeting_url' => [
+                'label' => 'Link học trực tuyến',
+                'type' => 'url',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true,
+                'depends' => [
+                    'is_online' => true
+                ]
+            ],
+            'is_repeating' => [
+                'label' => 'Lặp lại hàng tuần',
+                'type' => 'checkbox',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'is_active' => [
+                'label' => 'Đang hoạt động',
+                'type' => 'checkbox',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
+            'notes' => [
+                'label' => 'Ghi chú',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true
+            ]
+        ];
+    }
 
-    protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
-        'is_repeating' => 'boolean',
-        'is_active' => 'boolean',
-        'is_online' => 'boolean'
-    ];
+    /**
+     * Get fields for form (create/edit)
+     */
+    public static function getFormFields()
+    {
+        $fields = [];
+        foreach (self::getFields() as $key => $field) {
+            if (!isset($field['editable']) || $field['editable']) {
+                $fields[$key] = $field;
+            }
+        }
+        return $fields;
+    }
 
     /**
      * Lấy lớp học của lịch học
@@ -58,7 +212,7 @@ class ClassSchedule extends Model
     public function lesson(): BelongsTo
     {
         return $this->belongsTo(Lesson::class, 'lesson_id');
-    }   
+    }
     /**
      * Lấy ngày trong tuần dạng text
      */
@@ -93,11 +247,11 @@ class ClassSchedule extends Model
         $duration = $this->getDuration();
         $hours = floor($duration / 60);
         $minutes = $duration % 60;
-        
+
         if ($hours > 0) {
             return sprintf('%d giờ %d phút', $hours, $minutes);
         }
-        
+
         return sprintf('%d phút', $minutes);
     }
 
@@ -108,35 +262,35 @@ class ClassSchedule extends Model
     {
         $now = Carbon::now();
         $targetDay = $this->day_of_week;
-        
+
         // Nếu lịch học đã kết thúc
         if ($this->end_date && $now->greaterThan($this->end_date)) {
             return null;
         }
-        
+
         // Tìm ngày kế tiếp có cùng thứ
         $nextDate = $now->copy();
         while ($nextDate->dayOfWeek != $targetDay) {
             $nextDate->addDay();
         }
-        
+
         // Nếu đã qua thời gian học trong ngày, thêm 1 tuần
         $classTime = Carbon::parse($this->start_time);
         $todayClassTime = $nextDate->copy()->setHour($classTime->hour)->setMinute($classTime->minute)->setSecond(0);
-        
+
         if ($now->greaterThan($todayClassTime) && $now->dayOfWeek == $targetDay) {
             $nextDate->addWeek();
         }
-        
+
         // Kiểm tra xem ngày kế tiếp có nằm trong khoảng thời gian lịch học không
         if ($this->end_date && $nextDate->greaterThan($this->end_date)) {
             return null;
         }
-        
+
         if ($this->start_date && $nextDate->lessThan($this->start_date)) {
             return Carbon::parse($this->start_date);
         }
-        
+
         return $nextDate;
     }
 
@@ -148,21 +302,21 @@ class ClassSchedule extends Model
         $sessions = [];
         $current = $startDate->copy();
         $targetDay = $this->day_of_week;
-        
+
         // Đảm bảo ngày bắt đầu và kết thúc nằm trong khoảng thời gian lịch học
         if ($this->start_date && $startDate->lessThan($this->start_date)) {
             $current = Carbon::parse($this->start_date);
         }
-        
+
         if ($this->end_date && $endDate->greaterThan($this->end_date)) {
             $endDate = Carbon::parse($this->end_date);
         }
-        
+
         // Tìm ngày đầu tiên có cùng thứ
         while ($current->dayOfWeek != $targetDay && $current->lessThan($endDate)) {
             $current->addDay();
         }
-        
+
         // Tạo các buổi học
         while ($current->lessThanOrEqualTo($endDate)) {
             $session = ClassSession::create([
@@ -176,13 +330,13 @@ class ClassSchedule extends Model
                 'topic' => 'Buổi học theo lịch',
                 'status' => 'scheduled'
             ]);
-            
+
             $sessions[] = $session;
-            
+
             // Thêm 1 tuần cho buổi học kế tiếp
             $current->addWeek();
         }
-        
+
         return $sessions;
     }
 
@@ -258,4 +412,4 @@ class ClassSchedule extends Model
             ]);
         }
     }
-} 
+}

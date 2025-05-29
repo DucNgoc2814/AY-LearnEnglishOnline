@@ -27,15 +27,17 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'phone_number',
         'birth_date',
-        'auth_google_id',
+        'auth_facebook_id',
+        'auth_type',
         'role',
-        'role_token',
-        'refresh_token',
         'device_id',
+        'browser_id',
+        'last_active_at',
         'active_token',
-        'last_login_at',
+        'refresh_token',
+        'is_testing',
         'login_lock',
-        'login_lock_expires_at',
+        'login_lock_expires_at'
     ];
 
     /**
@@ -46,9 +48,8 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
-        'role_token',
-        'refresh_token',
         'active_token',
+        'refresh_token'
     ];
 
     /**
@@ -59,7 +60,9 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
         'birth_date' => 'datetime',
-        'password' => 'hashed',
+        'last_active_at' => 'datetime',
+        'login_lock_expires_at' => 'datetime',
+        'is_testing' => 'boolean'
     ];
 
     // Relationships
@@ -139,8 +142,6 @@ class User extends Authenticatable implements JWTSubject
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
      */
     public function getJWTIdentifier()
     {
@@ -149,16 +150,83 @@ class User extends Authenticatable implements JWTSubject
 
     /**
      * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
      */
     public function getJWTCustomClaims()
     {
         return [
-            'user_id' => $this->id,
-            'user_type' => $this->role,
-            'email' => $this->email,
-            'name' => $this->name
+            'user_type' => 'user',
+            'role' => $this->role,
+            'email' => $this->email
         ];
+    }
+
+    /**
+     * Check if user is locked
+     */
+    public function isLocked(): bool
+    {
+        if (!$this->login_lock || !$this->login_lock_expires_at) {
+            return false;
+        }
+
+        return $this->login_lock_expires_at->isFuture();
+    }
+
+    /**
+     * Check if user can login from device
+     */
+    public function canLoginFromDevice(string $deviceId): bool
+    {
+        if (!$this->device_id) {
+            return true;
+        }
+
+        return $this->device_id === $deviceId;
+    }
+
+    /**
+     * Lock user for login
+     */
+    public function lock(string $lockId, int $seconds = 10): void
+    {
+        $this->update([
+            'login_lock' => $lockId,
+            'login_lock_expires_at' => now()->addSeconds($seconds)
+        ]);
+    }
+
+    /**
+     * Unlock user
+     */
+    public function unlock(): void
+    {
+        $this->update([
+            'login_lock' => null,
+            'login_lock_expires_at' => null
+        ]);
+    }
+
+    /**
+     * Register device for user
+     */
+    public function registerDevice(string $deviceId, string $token): void
+    {
+        $this->update([
+            'device_id' => $deviceId,
+            'active_token' => $token,
+            'last_active_at' => now()
+        ]);
+    }
+
+    /**
+     * Unregister device
+     */
+    public function unregisterDevice(): void
+    {
+        $this->update([
+            'device_id' => null,
+            'active_token' => null,
+            'last_active_at' => null
+        ]);
     }
 }

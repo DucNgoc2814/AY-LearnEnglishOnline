@@ -21,6 +21,7 @@ use App\Http\Controllers\VideoShadowingController;
 use App\Http\Controllers\VocabularyListeningController;
 use App\Http\Controllers\VideoDubbingController;
 use App\Http\Controllers\ExerciseProgressController;
+use App\Http\Controllers\Client\Auth\SocialLoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -205,4 +206,8 @@ Route::get('/reflection-exercise/{id}', [ReflectionExerciseController::class, 's
 Route::get('/video-handout', [VideoHandoutController::class, 'show'])->name('video-handout.show');
 Route::get('/video-shadowing', [VideoShadowingController::class, 'show'])->name('video-shadowing.show');
 Route::get('/vocabulary-listening', [VocabularyListeningController::class, 'show'])->name('vocabulary-listening.show');
+
+// Facebook Login Routes
+Route::get('auth/facebook', [SocialLoginController::class, 'redirectToFacebook'])->name('auth.facebook');
+Route::get('auth/facebook/callback', [SocialLoginController::class, 'handleFacebookCallback'])->name('auth.facebook.callback');
 

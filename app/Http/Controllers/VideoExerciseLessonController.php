@@ -15,10 +15,8 @@ class VideoExerciseLessonController extends Controller
 
     public function show($id)
     {
-        $lesson = VideoExerciseLesson::with(['questions', 'clips'])->findOrFail($id);
-        $userProgress = $lesson->getUserProgress(auth()->id());
-
-        return view('video-exercises.show', compact('lesson', 'userProgress'));
+        $lesson = VideoExerciseLesson::findOrFail($id);
+        return view('online.classes.video-exercise.show', compact('lesson'));
     }
 
     public function store(Request $request)

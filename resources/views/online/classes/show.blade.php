@@ -281,9 +281,9 @@
             </a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="tests-tab" data-bs-toggle="tab" href="#tests" role="tab">
-                <i class="fas fa-tasks"></i>
-                Bài test
+            <a class="nav-link" id="amazing-talk-tab" data-bs-toggle="tab" href="#amazing-talk" role="tab">
+                <i class="fas fa-comments"></i>
+                Amazing Talk
             </a>
         </li>
         <li class="nav-item" role="presentation">
@@ -307,8 +307,8 @@
         <div class="tab-pane fade" id="zoom" role="tabpanel">
             @include('online.classes.partials.zoom', ['class' => $class])
         </div>
-        <div class="tab-pane fade" id="tests" role="tabpanel">
-            @include('online.classes.partials.tests', ['class' => $class])
+        <div class="tab-pane fade" id="amazing-talk" role="tabpanel">
+            @include('online.classes.partials.amazing-talk', ['class' => $class])
         </div>
         <div class="tab-pane fade" id="resources" role="tabpanel">
             @include('online.classes.partials.resources', ['class' => $class])

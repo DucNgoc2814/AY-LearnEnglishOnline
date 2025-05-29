@@ -76,7 +76,7 @@
 
 <div class="ending-sound-exercise">
     <div class="d-flex justify-content-end mb-4">
-        <a href="#" class="btn btn-info">
+        <a href="https://www.oxfordlearnersdictionaries.com/wordlist//" target="_blank" class="btn btn-info">
             <i class="fas fa-book me-2"></i>Mở từ điển Oxford
         </a>
     </div>
@@ -169,7 +169,9 @@
                             </td>
                             <td>
                                 <div class="phonetic-container">
-                                    <span class="base-phonetic">{{ $word['base_phonetic'] }}</span>
+                                    <span class="base-phonetic">
+                                        /{{ trim($word['base_phonetic'], '/') }}/
+                                    </span>
                                     <div class="ending-dropzone" data-correct="{{ $word['ending_phonetic'] }}"
                                         data-word-id="{{ $index }}">
                                         <span class="placeholder">Kéo thả âm đuôi vào đây</span>
@@ -187,7 +189,9 @@
                             </td>
                             <td>
                                 <div class="phonetic-container">
-                                    <span class="base-phonetic">{{ $word['base_phonetic'] }}</span>
+                                    <span class="base-phonetic">
+                                        /{{ trim($word['base_phonetic'], '/') }}/
+                                    </span>
                                     <div class="ending-dropzone-with-s"
                                         data-correct="{{ $word['ending_phonetic'] }}"
                                         data-word-id="{{ $index }}">
@@ -498,11 +502,35 @@
 
 <script>
     // Function to play audio pronunciation
-    function playAudio(word) {
-        if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(word);
-            utterance.lang = 'en-US';
-            speechSynthesis.speak(utterance);
+    async function playAudio(word) {
+        try {
+            // Gọi Free Dictionary API để lấy thông tin phát âm
+            const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+            const data = await response.json();
+
+            // Lấy URL audio từ kết quả API
+            const audioUrl = data[0]?.phonetics?.find(p => p.audio)?.audio;
+
+            if (audioUrl) {
+                // Phát âm thanh nếu tìm thấy
+                const audio = new Audio(audioUrl);
+                await audio.play();
+            } else {
+                // Fallback về speech synthesis nếu không có audio
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(word);
+                    utterance.lang = 'en-US';
+                    speechSynthesis.speak(utterance);
+                }
+            }
+        } catch (error) {
+            console.error('Error playing pronunciation:', error);
+            // Fallback về speech synthesis nếu có lỗi
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'en-US';
+                speechSynthesis.speak(utterance);
+            }
         }
     }
 
@@ -587,31 +615,25 @@
         // Clear existing content
         this.innerHTML = '';
 
-        // Create new ending item
+        // Create new ending item with slashes
         const endingItem = document.createElement('div');
         endingItem.className = 'ending-item';
-        endingItem.textContent = droppedEnding;
+        // Ensure the displayed ending has slashes
+        const displayEnding = '/' + droppedEnding.replace(/[\/\s]/g, '') + '/';
+        endingItem.textContent = displayEnding;
         this.appendChild(endingItem);
 
         // Check if correct after normalization
         if (normalizedDropped === normalizedCorrect) {
             this.classList.add('correct');
             this.classList.remove('incorrect');
-
-            // Optional: Add success feedback
             endingItem.style.backgroundColor = '#d1e7dd';
             endingItem.style.borderColor = '#198754';
         } else {
             this.classList.add('incorrect');
             this.classList.remove('correct');
-
-            // Optional: Add error feedback
             endingItem.style.backgroundColor = '#f8d7da';
             endingItem.style.borderColor = '#dc3545';
         }
-
-        // Log for debugging
-        console.log('Dropped:', normalizedDropped);
-        console.log('Correct:', normalizedCorrect);
     }
 </script>
