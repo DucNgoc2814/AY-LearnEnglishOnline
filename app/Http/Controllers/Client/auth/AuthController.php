@@ -56,7 +56,7 @@ class AuthController extends Controller
     {
         // Regenerate session ID for security
         $request->session()->regenerate();
-        
+
         $request = $this->sanitizeRequest($request);
 
         try {
@@ -146,6 +146,13 @@ class AuthController extends Controller
             // Tìm người dùng theo email
             $userRecord = DB::table('users')->where('email', $request->email)->first();
 
+            // Log thông tin debug
+            Log::debug('Login attempt', [
+                'email' => $request->email,
+                'user_found' => (bool)$userRecord,
+                'password_check' => $userRecord ? Hash::check($request->password, $userRecord->password) : false
+            ]);
+
             if (!$userRecord || !Hash::check($request->password, $userRecord->password)) {
                 return back()->withInput(['email' => $request->email])
                     ->with('notification', [
@@ -201,8 +208,8 @@ class AuthController extends Controller
                     // Khóa đã bị thay đổi, có thể có người đang đăng nhập cùng lúc
                     return back()->withInput(['email' => $request->email])
                         ->with('notification', [
-                            'message' => 'Có người khác đang đăng nhập vào tài khoản này. Vui lòng thử lại sau.',
-                            'type' => 'error'
+                            'message' => 'Có một yêu cầu đăng nhập khác đang được xử lý. Vui lòng thử lại sau.',
+                            'type' => 'warning'
                         ]);
                 }
 
@@ -933,5 +940,38 @@ class AuthController extends Controller
         $request->replace($sanitizedInputs);
 
         return $request;
+    }
+
+    /**
+     * Refresh JWT token
+     *
+     * @return JsonResponse
+     */
+    public function refresh(): JsonResponse
+    {
+        try {
+            $token = JWTAuth::parseToken()->refresh();
+            session(['jwt_token' => $token]);
+
+            return response()->json([
+                'status' => 'success',
+                'token' => $token
+            ]);
+        } catch (TokenExpiredException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Token đã hết hạn'
+            ], 401);
+        } catch (TokenInvalidException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Token không hợp lệ'
+            ], 401);
+        } catch (JWTException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Token không tồn tại'
+            ], 401);
+        }
     }
 }
