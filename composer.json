@@ -14,6 +14,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.21",
         "laravel/tinker": "^2.8",
+        "lcobucci/jwt": "4.0",
         "league/flysystem-aws-s3-v3": "^3.29",
         "masbug/flysystem-google-drive-ext": "^2.4",
         "stichoza/google-translate-php": "*",
