@@ -16,6 +16,7 @@ use App\Http\Controllers\Online\TestController;
 use App\Http\Controllers\Online\MaterialController;
 use App\Http\Controllers\Online\Teacher\ClassController as TeacherClassController;
 use App\Http\Controllers\Online\Teacher\ScheduleController as TeacherScheduleController;
+use App\Http\Controllers\Online\ClassStudentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,10 +67,10 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
     Route::middleware(['jwt.role:student'])->group(function () {
         // Classes
         Route::prefix('classes')->name('online.classes.')->group(function () {
-            Route::get('/', [ClassController::class, 'index'])->name('index');
-            Route::get('/{id}', [ClassController::class, 'show'])->name('show');
+            Route::get('/', [ClassStudentController::class, 'index'])->name('index');
+            Route::get('/{id}', [ClassStudentController::class, 'show'])->name('show');
             Route::get('/{class_id}/tests', [TestController::class, 'index'])->name('tests');
-            Route::get('/quiz/{quiz}', [ClassController::class, 'quiz'])->name('quiz');
+            Route::get('/quiz/{quiz}', [ClassStudentController::class, 'quiz'])->name('quiz');
         });
 
         // Sessions
