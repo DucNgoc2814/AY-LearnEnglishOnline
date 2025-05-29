@@ -56,6 +56,7 @@ class ClassStudent extends BaseModel
 
                     $exists = ClassStudent::where('registration_id', $registrationId)
                         ->where('id', '!=', $id)
+                        ->where('status', 'active')
                         ->whereNull('deleted_at')
                         ->exists();
 
@@ -150,74 +151,23 @@ class ClassStudent extends BaseModel
     }
     public static function getFormFields()
     {
-        $fields = parent::getFormFields();
+        $fields = self::getFields();
 
         // Thêm trường registration_id cho form
         $fields['registration_id'] = [
             'label' => 'Học viên',
             'type' => 'select',
-            'options' => function ($formData) {
-                if (empty($formData['class_id'])) {
-                    return [];
-                }
-
-                $class = Classes::find($formData['class_id']);
-                if (!$class) {
-                    Log::info('Không tìm thấy lớp học: ' . $formData['class_id']);
-                    return [];
-                }
-
-                Log::info('Tìm học viên cho khóa học: ' . $class->course_id);
-
-                // Lấy tất cả học viên đã đăng ký khóa học
-                $registrations = CourseRegistration::where('course_id', $class->course_id)
-                    ->with(['students' => function($query) {
-                        $query->select('students.*');
-                    }])
-                    ->get();
-
-                Log::info('Số lượng đăng ký tìm thấy: ' . $registrations->count());
-
-                $options = [];
-                foreach ($registrations as $registration) {
-                    // Lấy danh sách học viên từ bảng trung gian
-                    $students = DB::table('course_registration_student')
-                        ->join('students', 'students.id', '=', 'course_registration_student.student_id')
-                        ->where('course_registration_student.course_registration_id', $registration->id)
-                        ->whereNull('students.deleted_at')
-                        ->select('students.*', 'course_registration_student.course_registration_id')
-                        ->get();
-
-                    foreach ($students as $student) {
-                        // Tạo key duy nhất cho mỗi học viên
-                        $key = $registration->id;
-
-                        // Kiểm tra xem học viên đã được xếp vào lớp nào chưa
-                        $currentClass = ClassStudent::where('registration_id', $registration->id)
-                            ->where('status', 'active')
-                            ->first();
-
-                        $classInfo = $currentClass
-                            ? " (Đang học lớp: {$currentClass->class->name})"
-                            : " (Chưa xếp lớp)";
-
-                        $options[$key] = sprintf(
-                            "%s - HD%s%s",
-                            $student->full_name,
-                            $registration->invoice_number,
-                            $classInfo
-                        );
-                    }
-                }
-
-                return $options;
-            },
-            'depends' => ['class_id'],
+            'options' => [],  // Options sẽ được load động qua AJAX
             'searchable' => true,
             'sortable' => true,
             'editable' => true,
+            'depends' => ['class_id'],
             'placeholder' => 'Chọn lớp học trước',
-            'help' => 'Chọn học viên đã đăng ký khóa học'
+            'help' => 'Chọn học viên đã đăng ký khóa học',
+            'ajax' => [
+                'url' => '/admin/class-students/get-students',
+                'depends' => 'class_id'
+            ]
         ];
 
         // Sắp xếp lại các trường
@@ -252,7 +202,8 @@ class ClassStudent extends BaseModel
         static::saving(function ($model) {
             // If registration_id contains a hyphen, extract only the registration_id part
             if (is_string($model->registration_id) && str_contains($model->registration_id, '-')) {
-                $model->registration_id = explode('-', $model->registration_id)[0];
+                $parts = explode('-', $model->registration_id);
+                $model->registration_id = $parts[0];
             }
         });
     }
