@@ -17,6 +17,7 @@ use App\Http\Controllers\Online\MaterialController;
 use App\Http\Controllers\Online\Teacher\ClassController as TeacherClassController;
 use App\Http\Controllers\Online\Teacher\ScheduleController as TeacherScheduleController;
 use App\Http\Controllers\Online\ClassStudentController;
+use App\Http\Controllers\Online\Auth\GoogleLoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -199,3 +200,7 @@ Route::middleware(['web', 'jwt.role'])->group(function () {
             ->name('super.test');
     });
 });
+
+// Google Login Routes
+Route::get('auth/google', [GoogleLoginController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [GoogleLoginController::class, 'handleGoogleCallback'])->name('auth.google.callback');

@@ -15,15 +15,18 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('phone_number')->nullable();
             $table->dateTime('birth_date')->nullable();
-            $table->string('auth_google_id')->nullable();
-            $table->enum('role', ['admin', 'user'])->default('user')->comment('Vai trò người dùng');
-            $table->string('role_token')->nullable();
-            $table->string('refresh_token')->nullable();
+            $table->string('auth_facebook_id')->nullable();
+            $table->enum('auth_type', ['email', 'facebook'])->default('email');
+            $table->enum('role', ['admin', 'user'])->default('user');
             $table->string('device_id')->nullable();
+            $table->string('browser_id')->nullable();
+            $table->timestamp('last_active_at')->nullable();
             $table->text('active_token')->nullable();
-            $table->timestamp('last_login_at')->nullable();
+            $table->text('refresh_token')->nullable();
+            $table->boolean('is_testing')->default(false);
             $table->string('login_lock')->nullable();
             $table->timestamp('login_lock_expires_at')->nullable();
+            $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -33,4 +36,4 @@ class CreateUsersTable extends Migration
     {
         Schema::dropIfExists('users');
     }
-} 
+}

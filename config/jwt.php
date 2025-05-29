@@ -131,7 +131,7 @@ return [
     |
     */
 
-    'algo' => env('JWT_ALGO', Tymon\JWTAuth\Providers\JWT\Provider::ALGO_HS256),
+    'algo' => env('JWT_ALGO', 'HS256'),
 
     /*
     |--------------------------------------------------------------------------
@@ -265,6 +265,18 @@ return [
 
         /*
         |--------------------------------------------------------------------------
+        | User Provider
+        |--------------------------------------------------------------------------
+        |
+        | Specify the provider that is used to find the user based
+        | on the subject claim
+        |
+        */
+
+        'user' => 'Tymon\JWTAuth\Providers\User\EloquentUserAdapter',
+
+        /*
+        |--------------------------------------------------------------------------
         | JWT Provider
         |--------------------------------------------------------------------------
         |
@@ -272,7 +284,7 @@ return [
         |
         */
 
-        'jwt' => Tymon\JWTAuth\Providers\JWT\Lcobucci::class,
+        'jwt' => 'Tymon\JWTAuth\Providers\JWT\Namshi',
 
         /*
         |--------------------------------------------------------------------------
@@ -283,18 +295,18 @@ return [
         |
         */
 
-        'auth' => Tymon\JWTAuth\Providers\Auth\Illuminate::class,
+        'auth' => 'Tymon\JWTAuth\Providers\Auth\Illuminate',
 
         /*
         |--------------------------------------------------------------------------
         | Storage Provider
         |--------------------------------------------------------------------------
         |
-        | Specify the provider that is used to store tokens in the blacklist.
+        | Specify the provider that is used to store tokens in the blacklist
         |
         */
 
-        'storage' => Tymon\JWTAuth\Providers\Storage\Illuminate::class,
+        'storage' => 'Tymon\JWTAuth\Providers\Storage\Illuminate',
 
     ],
 

@@ -12,10 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Laravel\Sanctum\HasApiTokens;
 
 class Student extends Authenticatable implements JWTSubject
 {
-    use Notifiable, HasFactory, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     protected $table = 'students';
 
@@ -24,24 +25,30 @@ class Student extends Authenticatable implements JWTSubject
         'password',
         'full_name',
         'email',
-        'password',
         'date_of_birth',
         'gender',
         'phone',
         'address',
         'avatar',
         'bio',
-        'avatar',
-        'bio',
+        'auth_type',
+        'activation_token',
+        'activated_at',
+        'device_id',
+        'browser_id',
+        'last_active_at',
+        'active_token',
+        'refresh_token',
+        'is_testing',
+        'login_lock',
+        'login_lock_expires_at',
         'parent1_name',
-        'parent1_relationship',
         'parent1_relationship',
         'parent1_phone',
         'parent1_email',
         'parent1_occupation',
         'parent1_is_emergency_contact',
         'parent2_name',
-        'parent2_relationship',
         'parent2_relationship',
         'parent2_phone',
         'parent2_email',
@@ -50,14 +57,20 @@ class Student extends Authenticatable implements JWTSubject
         'is_active'
     ];
 
-
     protected $hidden = [
         'password',
         'remember_token',
+        'active_token',
+        'refresh_token',
+        'activation_token'
     ];
 
     protected $casts = [
         'date_of_birth' => 'date',
+        'activated_at' => 'datetime',
+        'last_active_at' => 'datetime',
+        'login_lock_expires_at' => 'datetime',
+        'is_testing' => 'boolean',
         'parent1_is_emergency_contact' => 'boolean',
         'parent2_is_emergency_contact' => 'boolean',
         'is_active' => 'boolean'
@@ -376,7 +389,8 @@ class Student extends Authenticatable implements JWTSubject
     {
         return [
             'user_type' => 'student',
-            'student_code' => $this->student_code
+            'student_code' => $this->student_code,
+            'email' => $this->email
         ];
     }
 
@@ -387,5 +401,94 @@ class Student extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(CourseRegistration::class, 'course_registration_student')
                     ->withTimestamps();
+    }
+
+    /**
+     * Check if student is locked
+     */
+    public function isLocked(): bool
+    {
+        if (!$this->login_lock || !$this->login_lock_expires_at) {
+            return false;
+        }
+
+        return $this->login_lock_expires_at->isFuture();
+    }
+
+    /**
+     * Check if student can login from device
+     */
+    public function canLoginFromDevice(string $deviceId): bool
+    {
+        if (!$this->device_id) {
+            return true;
+        }
+
+        return $this->device_id === $deviceId;
+    }
+
+    /**
+     * Lock student for login
+     */
+    public function lock(string $lockId, int $seconds = 10): void
+    {
+        $this->update([
+            'login_lock' => $lockId,
+            'login_lock_expires_at' => now()->addSeconds($seconds)
+        ]);
+    }
+
+    /**
+     * Unlock student
+     */
+    public function unlock(): void
+    {
+        $this->update([
+            'login_lock' => null,
+            'login_lock_expires_at' => null
+        ]);
+    }
+
+    /**
+     * Register device for student
+     */
+    public function registerDevice(string $deviceId, string $token): void
+    {
+        $this->update([
+            'device_id' => $deviceId,
+            'active_token' => $token,
+            'last_active_at' => now()
+        ]);
+    }
+
+    /**
+     * Unregister device
+     */
+    public function unregisterDevice(): void
+    {
+        $this->update([
+            'device_id' => null,
+            'active_token' => null,
+            'last_active_at' => null
+        ]);
+    }
+
+    /**
+     * Check if student is activated
+     */
+    public function isActivated(): bool
+    {
+        return $this->activated_at !== null;
+    }
+
+    /**
+     * Activate student account
+     */
+    public function activate(): void
+    {
+        $this->update([
+            'activation_token' => null,
+            'activated_at' => now()
+        ]);
     }
 }

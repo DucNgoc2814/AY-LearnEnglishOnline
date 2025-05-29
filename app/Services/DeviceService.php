@@ -3,40 +3,75 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
-use WhichBrowser\Parser;
+use Jenssegers\Agent\Agent;
 
 class DeviceService
 {
     /**
-     * Get a unique identifier for the current device
-     *
-     * @param Request $request
-     * @return string
+     * Get a unique device identifier
      */
     public function getDeviceIdentifier(Request $request): string
     {
-        $userAgent = $request->header('User-Agent');
+        // Get browser fingerprint from header or generate new one
+        $browserId = $request->header('X-Browser-ID');
+        if (!$browserId) {
+            $browserId = $this->generateBrowserFingerprint($request);
+        }
+
+        return $browserId;
+    }
+
+    /**
+     * Generate a browser fingerprint
+     */
+    private function generateBrowserFingerprint(Request $request): string
+    {
+        $agent = new Agent();
+
+        // Collect browser information
+        $browser = $agent->browser();
+        $version = $agent->version($browser);
+        $platform = $agent->platform();
+        $device = $agent->device();
+
+        // Get IP address
         $ip = $request->ip();
-        $acceptLanguage = $request->header('Accept-Language') ?? '';
-        $acceptEncoding = $request->header('Accept-Encoding') ?? '';
 
-        // Get browser fingerprint details
-        $parser = new Parser($userAgent);
+        // Get user agent
+        $userAgent = $request->userAgent();
 
-        // Create a unique device ID with more browser-specific information
-        $deviceInfo = [
-            'browser' => $parser->browser->toString(),
-            'browser_version' => $parser->browser->version->toString(),
-            'os' => $parser->os->toString(),
-            'os_version' => $parser->os->version->toString(),
-            'device' => $parser->device->toString(),
-            'accept_language' => $acceptLanguage,
-            'accept_encoding' => $acceptEncoding,
-            'ip' => $ip,
-        ];
+        // Combine all information
+        $fingerprint = implode('|', [
+            $browser,
+            $version,
+            $platform,
+            $device,
+            $ip,
+            $userAgent
+        ]);
 
-        // Create a unique hash from device info
-        return hash('sha256', json_encode($deviceInfo));
+        // Generate hash
+        return hash('sha256', $fingerprint);
+    }
+
+    /**
+     * Validate if the device is allowed to access
+     */
+    public function validateDevice($user, Request $request): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        $currentDeviceId = $this->getDeviceIdentifier($request);
+
+        // If no device is registered yet
+        if (!$user->device_id) {
+            return true;
+        }
+
+        // Check if current device matches registered device
+        return $user->device_id === $currentDeviceId;
     }
 
     /**
