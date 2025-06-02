@@ -268,12 +268,14 @@ return [
         | User Provider
         |--------------------------------------------------------------------------
         |
-        | Specify the provider that is used to find the user based
-        | on the subject claim
+        | Specify the provider that is used to find the user based on the JWT
+        | subject. Providers must implement the Tymon\JWTAuth\Contracts\Providers\User
+        | interface.
         |
         */
 
         'user' => 'Tymon\JWTAuth\Providers\User\EloquentUserAdapter',
+
 
         /*
         |--------------------------------------------------------------------------

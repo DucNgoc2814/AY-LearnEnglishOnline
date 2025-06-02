@@ -50,7 +50,7 @@ class EmployeePermission extends Model
     {
         // Lấy nhân viên được cấp trực tiếp quyền này
         $directEmployees = $this->employees()->wherePivot('is_granted', true)->get();
-        
+
         // Lấy nhân viên có quyền thông qua vai trò
         $roleEmployeeIds = $this->roles()
             ->with('employees')
@@ -59,9 +59,9 @@ class EmployeePermission extends Model
             ->flatten()
             ->pluck('id')
             ->unique();
-        
+
         $roleEmployees = Employee::whereIn('id', $roleEmployeeIds)->get();
-        
+
         // Kết hợp hai tập hợp và loại bỏ trùng lặp
         return $directEmployees->merge($roleEmployees)->unique('id');
     }
@@ -89,4 +89,4 @@ class EmployeePermission extends Model
     {
         return $query->where('action', $action);
     }
-} 
+}

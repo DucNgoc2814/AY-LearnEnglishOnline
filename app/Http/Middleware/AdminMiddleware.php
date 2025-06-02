@@ -13,8 +13,8 @@ class AdminMiddleware
         // if (auth()->check() && auth()->user()->is_admin) {
         //     return $next($request);
         // }
-        
+
         // return redirect('/')->with('error', 'Unauthorized access');
         return $next($request);
     }
-} 
+}
