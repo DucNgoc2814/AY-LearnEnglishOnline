@@ -33,6 +33,9 @@ Route::prefix('online')->name('online.')->group(function () {
     // Guest Routes (No Authentication Required)
     Route::middleware(['web', 'guest'])->group(function () {
         Route::get('/', function() {
+            if (session('jwt_token')) {
+                return redirect()->route('online.dashboard');
+            }
             return redirect()->route('online.login');
         });
 
@@ -45,12 +48,12 @@ Route::prefix('online')->name('online.')->group(function () {
     });
 
     // Protected Routes - Require Authentication
-    Route::middleware(['web', 'auth:employee', 'jwt.role'])->group(function () {
+    Route::middleware(['web', 'jwt'])->group(function () {
+        // Dashboard Route (default landing page after login)
+        Route::get('/dashboard', [NewsController::class, 'index'])->name('dashboard');
+
         // Logout Route
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-        // Dashboard Route
-        Route::get('/dashboard', [NewsController::class, 'index'])->name('dashboard');
 
         // Exercise Routes
         Route::prefix('exercises')->name('exercises.')->group(function () {

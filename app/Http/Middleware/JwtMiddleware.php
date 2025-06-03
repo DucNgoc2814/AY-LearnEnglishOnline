@@ -10,6 +10,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Support\Facades\Log;
 
 class JwtMiddleware extends BaseMiddleware
 {
@@ -17,14 +18,17 @@ class JwtMiddleware extends BaseMiddleware
     {
         try {
             // Skip authentication for login routes
-            if ($request->routeIs('online.login') || $request->routeIs('online.auth.login')) {
+            if ($request->routeIs('online.login') || $request->routeIs('online.login.post')) {
                 return $next($request);
             }
 
             // Check if token exists in session
             $token = session('jwt_token');
+            Log::info('JWT Token check:', ['token_exists' => !empty($token)]);
+
             if (!$token) {
-                return $this->handleUnauthenticated('Không tìm thấy token xác thực.');
+                Log::warning('No JWT token found in session');
+                return $this->handleUnauthenticated('Vui lòng đăng nhập để tiếp tục.');
             }
 
             try {
@@ -33,24 +37,30 @@ class JwtMiddleware extends BaseMiddleware
                 $user = JWTAuth::authenticate();
 
                 if (!$user) {
+                    Log::warning('No user found for JWT token');
                     return $this->handleUnauthenticated('Không tìm thấy thông tin người dùng.');
                 }
+
+                Log::info('User authenticated successfully', [
+                    'user_id' => $user->id,
+                    'user_type' => $user->getTable()
+                ]);
 
                 // Try to refresh token if it's close to expiring
                 $payload = JWTAuth::getPayload();
                 $exp = $payload->get('exp');
+                $userType = $payload->get('user_type');
 
                 // If token will expire in the next 30 minutes, refresh it
                 if ($exp - time() < 1800) {
                     try {
                         $newToken = JWTAuth::refresh();
                         session(['jwt_token' => $newToken]);
+                        Log::info('JWT token refreshed successfully');
                     } catch (\Exception $e) {
+                        Log::warning('Failed to refresh token', ['error' => $e->getMessage()]);
                     }
                 }
-
-                // Get user type from token claims
-                $userType = $payload->get('user_type');
 
                 // Add user info to request
                 $request->attributes->add([
@@ -61,6 +71,7 @@ class JwtMiddleware extends BaseMiddleware
                 return $next($request);
 
             } catch (TokenExpiredException $e) {
+                Log::info('Token expired, attempting refresh');
                 try {
                     $newToken = JWTAuth::refresh();
                     session(['jwt_token' => $newToken]);
@@ -75,32 +86,41 @@ class JwtMiddleware extends BaseMiddleware
                             'user' => $user,
                             'user_type' => $payload->get('user_type')
                         ]);
+                        Log::info('Successfully refreshed expired token');
                         return $next($request);
                     }
                 } catch (\Exception $refreshError) {
-                    return $this->handleUnauthenticated('Phiên đăng nhập đã hết hạn.');
+                    Log::error('Failed to refresh expired token', ['error' => $refreshError->getMessage()]);
+                    return $this->handleUnauthenticated('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
                 }
             }
 
         } catch (TokenInvalidException $e) {
-            return $this->handleUnauthenticated('Token không hợp lệ.');
+            Log::error('Invalid token', ['error' => $e->getMessage()]);
+            return $this->handleUnauthenticated('Token không hợp lệ. Vui lòng đăng nhập lại.');
         } catch (JWTException $e) {
-            return $this->handleUnauthenticated('Lỗi xác thực.');
+            Log::error('JWT error', ['error' => $e->getMessage()]);
+            return $this->handleUnauthenticated('Lỗi xác thực. Vui lòng đăng nhập lại.');
         } catch (\Exception $e) {
-
-            return $this->handleUnauthenticated();
+            Log::error('Unexpected error in JWT middleware', ['error' => $e->getMessage()]);
+            return $this->handleUnauthenticated('Có lỗi xảy ra. Vui lòng đăng nhập lại.');
         }
 
-        return $this->handleUnauthenticated('Không thể xác thực người dùng.');
+        Log::warning('Reached end of middleware without successful authentication');
+        return $this->handleUnauthenticated('Không thể xác thực người dùng. Vui lòng đăng nhập lại.');
     }
 
-    protected function handleUnauthenticated($message = null)
+    protected function handleUnauthenticated($message = 'Vui lòng đăng nhập để tiếp tục.')
     {
-        session()->forget('jwt_token');
+        session()->forget(['jwt_token', 'user_type', 'user_display_name']);
+
+        if (request()->expectsJson()) {
+            return response()->json(['message' => $message], 401);
+        }
 
         return redirect()->route('online.login')
             ->with('notification', [
-                'message' => 'Vui lòng đăng nhập để tiếp tục.',
+                'message' => $message,
                 'type' => 'error'
             ]);
     }

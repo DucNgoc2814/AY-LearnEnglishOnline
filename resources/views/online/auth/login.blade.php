@@ -20,7 +20,7 @@
 
                 <form method="POST" action="{{ route('online.login') }}">
                     @csrf
-                    
+
                     <div class="mb-4">
                         <label class="form-label" for="user_type">Bạn là?</label>
                         <select class="form-select @error('user_type') is-invalid @enderror" id="user_type" name="user_type" required>
@@ -35,8 +35,8 @@
 
                     <div class="mb-4">
                         <label class="form-label" for="username">Mã số</label>
-                        <input type="text" class="form-control @error('username') is-invalid @enderror" 
-                            id="username" name="username" value="{{ old('username') }}" 
+                        <input type="text" class="form-control @error('username') is-invalid @enderror"
+                            id="username" name="username" value="{{ old('username') }}"
                             placeholder="Nhập mã học viên hoặc mã nhân viên" required>
                         @error('username')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -45,7 +45,7 @@
 
                     <div class="mb-4">
                         <label class="form-label" for="password">Mật khẩu</label>
-                        <input type="password" class="form-control @error('password') is-invalid @enderror" 
+                        <input type="password" class="form-control @error('password') is-invalid @enderror"
                             id="password" name="password" placeholder="Nhập mật khẩu" required>
                         @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -67,4 +67,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection
