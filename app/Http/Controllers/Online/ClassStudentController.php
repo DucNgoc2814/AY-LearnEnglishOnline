@@ -9,41 +9,64 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ClassStudentController extends Controller
 {
     public function index()
     {
-        // Lấy thông tin user đang đăng nhập
-        $studentUser = Auth::guard('online')->user();
-        Log::info('Online guard user:', ['user_id' => $studentUser ? $studentUser->id : null]);
-
-        // Lấy user ID từ guard online
-        $userId = Auth::guard('online')->id();
-        Log::info('Using student ID:', ['id' => $userId]);
-
-        if (!$userId) {
-            Log::error('No authenticated student found');
-            return view('online.classes.index', [
-                'upcomingClasses' => collect(),
-                'currentClasses' => collect(),
-                'completedClasses' => collect(),
-                'error' => 'Vui lòng đăng nhập để xem thông tin lớp học.'
-            ]);
-        }
-
         try {
-            // Get course registrations for the current user with eager loading
-            $registrations = CourseRegistration::with([
-                'students',
-                'classStudents.class.teacher',
-                'classStudents.attendances'
-            ])->whereHas('students', function($query) use ($userId) {
-                $query->where('students.id', $userId);
-            })->get();
+            // Lấy token từ session
+            $token = session('jwt_token');
+            if (!$token) {
+                Log::error('No JWT token found in session');
+                return view('online.classes.index', [
+                    'upcomingClasses' => collect(),
+                    'currentClasses' => collect(),
+                    'completedClasses' => collect(),
+                    'error' => 'Vui lòng đăng nhập để xem thông tin lớp học.'
+                ]);
+            }
 
-            Log::info('Found registrations: ', [
+            // Xác thực token và lấy user
+            JWTAuth::setToken($token);
+            $user = JWTAuth::authenticate();
+
+            if (!$user) {
+                Log::error('Failed to authenticate JWT token');
+                return view('online.classes.index', [
+                    'upcomingClasses' => collect(),
+                    'currentClasses' => collect(),
+                    'completedClasses' => collect(),
+                    'error' => 'Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.'
+                ]);
+            }
+
+            // Lấy payload để kiểm tra user type
+            $payload = JWTAuth::getPayload();
+            $userType = $payload->get('user_type');
+
+            if (!in_array($userType, ['users', 'student'])) {
+                Log::error('Invalid user type for class access', ['user_type' => $userType]);
+                return view('online.classes.index', [
+                    'upcomingClasses' => collect(),
+                    'currentClasses' => collect(),
+                    'completedClasses' => collect(),
+                    'error' => 'Bạn không có quyền truy cập vào trang này.'
+                ]);
+            }
+
+            Log::info('Processing classes for user:', [
+                'user_id' => $user->id,
+                'user_type' => $userType
+            ]);
+
+            // Get course registrations for the current user
+            $registrations = CourseRegistration::whereHas('students', function($query) use ($user) {
+                $query->where('students.id', $user->id);
+            })->with(['classStudents.class.teacher'])->get();
+
+            Log::info('Found registrations:', [
                 'count' => $registrations->count(),
                 'registration_ids' => $registrations->pluck('id')->toArray()
             ]);
@@ -54,11 +77,6 @@ class ClassStudentController extends Controller
             $completedClasses = collect();
 
             foreach ($registrations as $registration) {
-                Log::info('Processing registration: ', [
-                    'registration_id' => $registration->id,
-                    'class_students_count' => $registration->classStudents->count()
-                ]);
-
                 foreach ($registration->classStudents as $classStudent) {
                     $class = $classStudent->class;
                     if (!$class) {
@@ -67,9 +85,9 @@ class ClassStudentController extends Controller
                     }
 
                     // Calculate attendance statistics
-                    $totalSessions = $classStudent->attendances->count();
-                    $attendedSessions = $classStudent->attendances->where('status', 'present')->count();
-                    $attendanceRate = $totalSessions > 0 ? ($attendedSessions / $totalSessions) * 100 : 0;
+                    $totalSessions = 0; // Tạm thời set mặc định
+                    $attendedSessions = 0; // Tạm thời set mặc định
+                    $attendanceRate = 0;
 
                     // Add registration and payment status to class object
                     $class->stats = [
@@ -86,7 +104,7 @@ class ClassStudentController extends Controller
                         ? Carbon::parse($classStudent->end_date)
                         : Carbon::parse($class->end_date);
 
-                    Log::info('Processing class: ', [
+                    Log::info('Processing class:', [
                         'class_id' => $class->id,
                         'start_date' => $startDate->format('Y-m-d'),
                         'end_date' => $endDate->format('Y-m-d'),
@@ -103,7 +121,7 @@ class ClassStudentController extends Controller
                 }
             }
 
-            Log::info('Final counts: ', [
+            Log::info('Final class counts:', [
                 'upcoming' => $upcomingClasses->count(),
                 'current' => $currentClasses->count(),
                 'completed' => $completedClasses->count()
@@ -117,8 +135,9 @@ class ClassStudentController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Error in ClassStudentController@index: ' . $e->getMessage(), [
-                'exception' => $e
+            Log::error('Error in ClassStudentController@index:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
 
             return view('online.classes.index', [
