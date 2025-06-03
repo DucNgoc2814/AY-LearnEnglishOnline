@@ -44,7 +44,7 @@ Route::get('/', function () {
     return view('client.index');
 });
 
-Route::get('/trang-chu', [HomeController::class, 'index'])->name('home');
+Route::get('/trang-chu', [HomeController::class, 'index'])->name('client.home');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Video proxy route - completely public, outside of all middleware groups
