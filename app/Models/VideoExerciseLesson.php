@@ -2,52 +2,70 @@
 
 namespace App\Models;
 
-
 class VideoExerciseLesson extends BaseModel
 {
+
+    public static function mediaFields(): array
+    {
+        return [
+            'video_url' => [
+                'type' => 'video',
+                'max_size' => 102400,
+                'mimes' => 'mp4,webm,ogg',
+                'label' => 'Video bài học'
+            ]
+        ];
+    }
+
     public static function getBaseRules($id = null)
     {
         return [
             'lesson_id' => 'required|exists:lessons,id',
-            'title' => 'nullable|string|max:255',
+            'title' => 'required|string|max:255',
             'video_url' => 'required|string',
-            'description' => 'nullable|string|max:255',
+            'description' => 'nullable|string'
         ];
     }
 
     public static function getFields()
     {
-        return [
+        $fields = [
             'lesson_id' => [
                 'label' => 'Bài học',
                 'type' => 'select',
-                'options' => Lesson::pluck('name', 'id')->toArray(),
                 'searchable' => true,
                 'sortable' => true,
-                'editable' => true
+                'editable' => true,
+                'options' => function() {
+                    return Lesson::pluck('title', 'id')->toArray();
+                }
             ],
             'title' => [
-                'label' => 'Tên bài tập',
+                'label' => 'Tiêu đề',
                 'type' => 'text',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
             ],
             'video_url' => [
-                'label' => 'Video bài tập',
-                'type' => 'text',
-                'searchable' => true,
-                'sortable' => true,
+                'label' => 'Video bài học',
+                'type' => 'file',
+                'accept' => 'video/*',
+                'max_size' => 102400,
+                'searchable' => false,
+                'sortable' => false,
                 'editable' => true
             ],
             'description' => [
-                'label' => 'Mô tả chi tiết',
+                'label' => 'Mô tả',
                 'type' => 'textarea',
                 'searchable' => true,
                 'sortable' => false,
                 'editable' => true
-            ],
+            ]
         ];
+
+        return $fields;
     }
 
     /**
@@ -78,13 +96,13 @@ class VideoExerciseLesson extends BaseModel
     }
 
     // Relationship với bảng questions
-    public function questions()
+    public function videoExerciseQuestions()
     {
         return $this->hasMany(VideoExerciseQuestion::class);
     }
 
     // Relationship với bảng clips
-    public function clips()
+    public function videoExerciseClips()
     {
         return $this->hasMany(VideoExerciseClip::class);
     }

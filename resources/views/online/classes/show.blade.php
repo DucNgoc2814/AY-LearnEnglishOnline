@@ -221,7 +221,7 @@
 @section('content')
 <div class="container py-4">
     <div class="class-header">
-        <h1 class="class-title">{{ $class->name }} ({{ $class->code }})</h1>
+        <h1 class="class-title">{{ $class->class->name }} ({{ $class->class->code }})</h1>
         <div class="class-meta">
             <div class="meta-item">
                 <i class="fas fa-user-tie"></i>
@@ -250,19 +250,19 @@
 
     <div class="quick-stats">
         <div class="stat-card">
-            <div class="stat-value">{{ $stats['total_sessions'] }}</div>
+            <div class="stat-value">{{ $stats['total_sessions'] ?? 0 }}</div>
             <div class="stat-label">Tổng số buổi học</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value">{{ $stats['completed_sessions'] }}</div>
+            <div class="stat-value">{{ $stats['completed_sessions'] ?? 0 }}</div>
             <div class="stat-label">Buổi đã học</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value">{{ $stats['attendance_rate'] }}%</div>
+            <div class="stat-value">{{ $stats['attendance_rate'] ?? 0 }}%</div>
             <div class="stat-label">Tỷ lệ điểm danh</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value">{{ $stats['assignment_count'] }}</div>
+            <div class="stat-value">{{ $stats['assignment_count'] ?? 0 }}</div>
             <div class="stat-label">Bài tập</div>
         </div>
     </div>
