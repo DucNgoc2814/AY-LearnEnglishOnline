@@ -11,8 +11,6 @@ use App\Http\Controllers\Client\CommentController;
 use App\Http\Controllers\Client\TestResultController;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Client\AttendanceController;
-use App\Http\Controllers\Online\NewsController;
-use App\Http\Controllers\OxfordController;
 use App\Http\Controllers\DictationController;
 use App\Http\Controllers\VideoExerciseController;
 use App\Http\Controllers\ReflectionExerciseController;
@@ -22,6 +20,7 @@ use App\Http\Controllers\VocabularyListeningController;
 use App\Http\Controllers\VideoDubbingController;
 use App\Http\Controllers\ExerciseProgressController;
 use App\Http\Controllers\Client\Auth\SocialLoginController;
+use App\Http\Controllers\OxfordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,11 +39,7 @@ Route::get('/stream-video/{videoId}', [CourseController::class, 'streamVideo'])-
 // Direct video retrieval route with simple headers
 Route::get('/direct-video/{videoId}', [CourseController::class, 'directVideo'])->name('direct.video');
 
-Route::get('/', function () {
-    return view('client.index');
-});
-
-Route::get('/trang-chu', [HomeController::class, 'index'])->name('home');
+Route::get('/trang-chu', [HomeController::class, 'index'])->name('client.home');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Video proxy route - completely public, outside of all middleware groups
@@ -89,7 +84,6 @@ Route::middleware('web')->group(function () {
         });
 
         Route::prefix('hoc-khoa-hoc')->group(function () {
-
             // Route mặc định
             Route::get('/{courseSlug}', [CourseController::class, 'learning'])
                 ->name('course.learning');
@@ -105,15 +99,15 @@ Route::middleware('web')->group(function () {
 
         // Comment routes
         Route::middleware(['auth'])->group(function () {
-            Route::post('/comments', [App\Http\Controllers\Client\CommentController::class, 'store'])->name('client.comments.store');
-            Route::post('/comments/{comment}/reply', [App\Http\Controllers\Client\CommentController::class, 'reply'])->name('client.comments.reply');
+            Route::post('/comments', [CommentController::class, 'store'])->name('client.comments.store');
+            Route::post('/comments/{comment}/reply', [CommentController::class, 'reply'])->name('client.comments.reply');
 
             // Rating routes
-            Route::post('/ratings', [App\Http\Controllers\Client\CommentController::class, 'storeRating'])->name('client.ratings.store');
+            Route::post('/ratings', [CommentController::class, 'storeRating'])->name('client.ratings.store');
         });
 
         // Route lấy comments của khóa học
-        Route::get('/courses/{courseId}/comments', [App\Http\Controllers\Client\CommentController::class, 'getCourseComments'])->name('client.courses.comments');
+        Route::get('/courses/{courseId}/comments', [CommentController::class, 'getCourseComments'])->name('client.courses.comments');
 
         Route::post('/test/{test}/submit', [TestResultController::class, 'submit'])->name('test.submit');
         Route::get('/test/{test}/retry', [TestResultController::class, 'retry'])->name('test.retry');
@@ -128,12 +122,6 @@ Route::middleware('web')->group(function () {
             return view('lessons.view', compact('lessonId', 'enrollmentId'));
         })->name('lessons.view');
     });
-});
-
-Route::prefix('online')->name('online.')->middleware(['auth'])->group(function () {
-    // News & Announcements Routes
-    Route::get('/news', [NewsController::class, 'index'])->name('news.index');
-    Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
 });
 
 /*

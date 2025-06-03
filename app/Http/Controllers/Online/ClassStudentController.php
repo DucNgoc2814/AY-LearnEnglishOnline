@@ -15,9 +15,9 @@ class ClassStudentController extends Controller
 {
     public function index()
     {
-        // Thử lấy user từ guard 'online'
+        // Lấy thông tin user đang đăng nhập
         $studentUser = Auth::guard('online')->user();
-        Log::info('Online guard user:', ['user' => $studentUser ? $studentUser->toArray() : null]);
+        Log::info('Online guard user:', ['user_id' => $studentUser ? $studentUser->id : null]);
 
         // Lấy user ID từ guard online
         $userId = Auth::guard('online')->id();
@@ -33,71 +33,101 @@ class ClassStudentController extends Controller
             ]);
         }
 
-        // Get course registrations for the current user
-        $registrations = CourseRegistration::whereHas('students', function($query) use ($userId) {
-            $query->where('students.id', $userId);
-        })->with(['classStudents.class.teacher'])->get();
+        try {
+            // Get course registrations for the current user with eager loading
+            $registrations = CourseRegistration::with([
+                'students',
+                'classStudents.class.teacher',
+                'classStudents.attendances'
+            ])->whereHas('students', function($query) use ($userId) {
+                $query->where('students.id', $userId);
+            })->get();
 
-        Log::info('Found registrations: ', [
-            'count' => $registrations->count(),
-            'registrations' => $registrations->toArray()
-        ]);
-
-        // Initialize collections
-        $upcomingClasses = collect();
-        $currentClasses = collect();
-        $completedClasses = collect();
-
-        foreach ($registrations as $registration) {
-            Log::info('Processing registration: ', [
-                'registration_id' => $registration->id,
-                'class_students_count' => $registration->classStudents->count()
+            Log::info('Found registrations: ', [
+                'count' => $registrations->count(),
+                'registration_ids' => $registrations->pluck('id')->toArray()
             ]);
 
-            foreach ($registration->classStudents as $classStudent) {
-                $class = $classStudent->class;
-                if (!$class) {
-                    Log::warning('No class found for class student: ' . $classStudent->id);
-                    continue;
-                }
+            // Initialize collections
+            $upcomingClasses = collect();
+            $currentClasses = collect();
+            $completedClasses = collect();
 
-                // Add registration and payment status to class object
-                $class->stats = [
-                    'registration_status' => $registration->status,
-                    'payment_status' => $registration->payment_status,
-                    'attended_sessions' => 0, // You can calculate this from your attendance table
-                    'total_sessions' => 0, // You can calculate this from your sessions table
-                    'attendance_rate' => 0 // You can calculate this from attendance/total sessions
-                ];
-
-                $now = Carbon::now();
-                $startDate = Carbon::parse($classStudent->start_date);
-                $endDate = $classStudent->end_date ? Carbon::parse($classStudent->end_date) : Carbon::parse($class->end_date);
-
-                Log::info('Processing class: ', [
-                    'class_id' => $class->id,
-                    'start_date' => $startDate,
-                    'end_date' => $endDate,
-                    'status' => $classStudent->status
+            foreach ($registrations as $registration) {
+                Log::info('Processing registration: ', [
+                    'registration_id' => $registration->id,
+                    'class_students_count' => $registration->classStudents->count()
                 ]);
 
-                if ($startDate->isFuture()) {
-                    $upcomingClasses->push($class);
-                } elseif ($now->between($startDate, $endDate) && $classStudent->status === 'active') {
-                    $currentClasses->push($class);
-                } else {
-                    $completedClasses->push($class);
+                foreach ($registration->classStudents as $classStudent) {
+                    $class = $classStudent->class;
+                    if (!$class) {
+                        Log::warning('No class found for class student: ' . $classStudent->id);
+                        continue;
+                    }
+
+                    // Calculate attendance statistics
+                    $totalSessions = $classStudent->attendances->count();
+                    $attendedSessions = $classStudent->attendances->where('status', 'present')->count();
+                    $attendanceRate = $totalSessions > 0 ? ($attendedSessions / $totalSessions) * 100 : 0;
+
+                    // Add registration and payment status to class object
+                    $class->stats = [
+                        'registration_status' => $registration->status,
+                        'payment_status' => $registration->payment_status,
+                        'attended_sessions' => $attendedSessions,
+                        'total_sessions' => $totalSessions,
+                        'attendance_rate' => $attendanceRate
+                    ];
+
+                    $now = Carbon::now();
+                    $startDate = Carbon::parse($classStudent->start_date);
+                    $endDate = $classStudent->end_date
+                        ? Carbon::parse($classStudent->end_date)
+                        : Carbon::parse($class->end_date);
+
+                    Log::info('Processing class: ', [
+                        'class_id' => $class->id,
+                        'start_date' => $startDate->format('Y-m-d'),
+                        'end_date' => $endDate->format('Y-m-d'),
+                        'status' => $classStudent->status
+                    ]);
+
+                    if ($startDate->isFuture()) {
+                        $upcomingClasses->push($class);
+                    } elseif ($now->between($startDate, $endDate) && $classStudent->status === 'active') {
+                        $currentClasses->push($class);
+                    } else {
+                        $completedClasses->push($class);
+                    }
                 }
             }
+
+            Log::info('Final counts: ', [
+                'upcoming' => $upcomingClasses->count(),
+                'current' => $currentClasses->count(),
+                'completed' => $completedClasses->count()
+            ]);
+
+            return view('online.classes.index', [
+                'upcomingClasses' => $upcomingClasses,
+                'currentClasses' => $currentClasses,
+                'completedClasses' => $completedClasses,
+                'hasClasses' => $upcomingClasses->isNotEmpty() || $currentClasses->isNotEmpty() || $completedClasses->isNotEmpty()
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error in ClassStudentController@index: ' . $e->getMessage(), [
+                'exception' => $e
+            ]);
+
+            return view('online.classes.index', [
+                'upcomingClasses' => collect(),
+                'currentClasses' => collect(),
+                'completedClasses' => collect(),
+                'error' => 'Có lỗi xảy ra khi tải thông tin lớp học. Vui lòng thử lại sau.'
+            ]);
         }
-
-        Log::info('Final counts: ', [
-            'upcoming' => $upcomingClasses->count(),
-            'current' => $currentClasses->count(),
-            'completed' => $completedClasses->count()
-        ]);
-
-        return view('online.classes.index', compact('upcomingClasses', 'currentClasses', 'completedClasses'));
     }
 
     public function show($id)

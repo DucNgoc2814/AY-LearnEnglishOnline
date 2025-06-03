@@ -380,7 +380,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <div class="filter-section"></div>
+                <div class="filter-section">
                     <div class="filter-buttons">
                         <button class="filter-btn active" data-filter="all">Tất cả lớp học</button>
                         <button class="filter-btn" data-filter="upcoming">Sắp diễn ra</button>
@@ -390,13 +390,17 @@
                 </div>
 
                 <div class="class-list">
-                    @if(isset($upcomingClasses) && isset($currentClasses) && isset($completedClasses) && $upcomingClasses->isEmpty() && $currentClasses->isEmpty() && $completedClasses->isEmpty())
+                    @if(isset($error))
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>{{ $error }}
+                        </div>
+                    @elseif(!isset($hasClasses) || !$hasClasses)
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>Bạn chưa đăng ký lớp học nào.
                         </div>
                     @else
                         <!-- Lớp sắp diễn ra -->
-                        @if(isset($upcomingClasses))
+                        @if(isset($upcomingClasses) && $upcomingClasses->isNotEmpty())
                             @foreach($upcomingClasses as $class)
                                 <div class="class-card" data-type="upcoming">
                                     <div class="class-header">
@@ -422,7 +426,7 @@
                                             <strong>Ngày bắt đầu:</strong> {{ \Carbon\Carbon::parse($class->start_date)->format('d/m/Y') }}
                                         </div>
                                         <div class="mb-3">
-                                            <strong>Trạng thái đăng ký:</strong> 
+                                            <strong>Trạng thái đăng ký:</strong>
                                             <span class="badge {{ $class->stats['registration_status'] == 'active' ? 'bg-success' : 'bg-warning' }}">
                                                 {{ $class->stats['registration_status'] == 'active' ? 'Đã xác nhận' : 'Chờ xác nhận' }}
                                             </span>
@@ -455,7 +459,7 @@
                         @endif
 
                         <!-- Lớp đang học -->
-                        @if(isset($currentClasses))
+                        @if(isset($currentClasses) && $currentClasses->isNotEmpty())
                             @foreach($currentClasses as $class)
                                 <div class="class-card" data-type="{{ \Carbon\Carbon::now()->gt(\Carbon\Carbon::parse($class->end_date)) ? 'completed' : 'current' }}">
                                     <div class="class-header">
@@ -488,10 +492,10 @@
                                                 <span>{{ $class->stats['attended_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} buổi</span>
                                             </div>
                                             <div class="progress">
-                                                <div class="progress-bar" role="progressbar" 
-                                                    style="width: {{ $class->stats['attendance_rate'] ?? 0 }}%" 
-                                                    aria-valuenow="{{ $class->stats['attendance_rate'] ?? 0 }}" 
-                                                    aria-valuemin="0" 
+                                                <div class="progress-bar" role="progressbar"
+                                                    style="width: {{ $class->stats['attendance_rate'] ?? 0 }}%"
+                                                    aria-valuenow="{{ $class->stats['attendance_rate'] ?? 0 }}"
+                                                    aria-valuemin="0"
                                                     aria-valuemax="100">
                                                 </div>
                                             </div>
@@ -518,7 +522,7 @@
                         @endif
 
                         <!-- Lớp đã hoàn thành -->
-                        @if(isset($completedClasses))
+                        @if(isset($completedClasses) && $completedClasses->isNotEmpty())
                             @foreach($completedClasses as $class)
                                 <div class="class-card" data-type="completed">
                                     <div class="class-header">
@@ -553,10 +557,10 @@
                                                 @endif
                                             </div>
                                             <div class="progress">
-                                                <div class="progress-bar" role="progressbar" 
-                                                    style="width: {{ $isEnded ? 100 : ($class->stats['attendance_rate'] ?? 0) }}%" 
-                                                    aria-valuenow="{{ $isEnded ? 100 : ($class->stats['attendance_rate'] ?? 0) }}" 
-                                                    aria-valuemin="0" 
+                                                <div class="progress-bar" role="progressbar"
+                                                    style="width: {{ $isEnded ? 100 : ($class->stats['attendance_rate'] ?? 0) }}%"
+                                                    aria-valuenow="{{ $isEnded ? 100 : ($class->stats['attendance_rate'] ?? 0) }}"
+                                                    aria-valuemin="0"
                                                     aria-valuemax="100">
                                                 </div>
                                             </div>
@@ -582,7 +586,7 @@
                             @endforeach
                         @endif
                     @endif
-                </div>      
+                </div>
             </div>
         </div>
     </div>
