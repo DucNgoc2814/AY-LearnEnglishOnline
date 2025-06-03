@@ -60,7 +60,10 @@ class AuthController extends Controller
         $request = $this->sanitizeRequest($request);
 
         try {
-            DB::table('users')->insert([
+            DB::beginTransaction();
+
+            // Create new user
+            $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone_number' => $request->phone_number,
@@ -69,13 +72,40 @@ class AuthController extends Controller
                 'updated_at' => now()
             ]);
 
-            return redirect()->route('login')
-                ->with('notification', [
-                    'message' => 'Đăng ký thành công! Vui lòng đăng nhập.',
-                    'type' => 'success'
-                ]);
+            // Generate JWT token
+            try {
+                $token = JWTAuth::fromUser($user);
+
+                // Register device
+                $deviceId = $this->deviceService->getDeviceIdentifier($request);
+                $user->registerDevice($deviceId, $token);
+
+                // Store token in session
+                session(['jwt_token' => $token]);
+
+                DB::commit();
+
+                return redirect()->route('home')
+                    ->with('notification', [
+                        'message' => 'Đăng ký thành công!',
+                        'type' => 'success'
+                    ]);
+
+            } catch (JWTException $e) {
+                DB::rollBack();
+                Log::error('JWT token generation failed', ['error' => $e->getMessage()]);
+
+                return redirect()->route('login')
+                    ->with('notification', [
+                        'message' => 'Đăng ký thành công! Vui lòng đăng nhập.',
+                        'type' => 'success'
+                    ]);
+            }
+
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Đăng ký thất bại', ['error' => $e->getMessage()]);
+
             return back()->withInput()
                 ->with('notification', [
                     'message' => 'Đăng ký thất bại. Vui lòng thử lại.',
@@ -115,200 +145,64 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): RedirectResponse
     {
-        // Lưu token CSRF hiện tại
-        $currentToken = $request->session()->token();
-
-        // Đặt lại CSRF token mới
-        $request->session()->regenerateToken();
-
-        // Nếu đã đăng nhập (có JWT token), chuyển hướng về trang chủ
-        if (session('jwt_token')) {
-            try {
-                // Validate token
-                JWTAuth::setToken(session('jwt_token'))->authenticate();
-                return redirect()->route('home');
-            } catch (\Exception $e) {
-                // Token is invalid, clear session and continue
-                Session::flush();
-            }
-        }
-
-        // Reset các khóa hết hạn
-        DB::table('users')
-            ->whereNotNull('login_lock_expires_at')
-            ->where('login_lock_expires_at', '<', now())
-            ->update([
-                'login_lock' => null,
-                'login_lock_expires_at' => null
-            ]);
-
         try {
-            // Tìm người dùng theo email
-            $userRecord = DB::table('users')->where('email', $request->email)->first();
+            // Validate credentials
+            $credentials = $request->only('email', 'password');
 
-            // Log thông tin debug
-            Log::debug('Login attempt', [
-                'email' => $request->email,
-                'user_found' => (bool)$userRecord,
-                'password_check' => $userRecord ? Hash::check($request->password, $userRecord->password) : false
-            ]);
-
-            if (!$userRecord || !Hash::check($request->password, $userRecord->password)) {
+            if (!$token = JWTAuth::attempt($credentials)) {
                 return back()->withInput(['email' => $request->email])
                     ->with('notification', [
-                        'message' => 'Email hoặc mật khẩu không chính xác',
+                        'message' => 'Email hoặc mật khẩu không chính xác.',
                         'type' => 'error'
                     ]);
             }
 
-            // Tạo khóa đăng nhập
-            $lockId = Str::uuid()->toString();
+            // Get authenticated user
+            $user = JWTAuth::user();
 
-            // Kiểm tra xem người dùng có đang đăng nhập ở nơi khác không
-            $existingLock = DB::table('users')
-                ->where('id', $userRecord->id)
-                ->where(function ($query) {
-                    $query->whereNotNull('login_lock')
-                          ->where('login_lock_expires_at', '>', now());
-                })
-                ->first();
+            // Get device identifier
+            $deviceId = $this->deviceService->getDeviceIdentifier($request);
 
-            if ($existingLock) {
+            // Check if user is already logged in on another device
+            if ($user->device_id && $user->device_id !== $deviceId) {
+                // Provide option for force logout
+                $forceLogoutToken = Str::random(40);
+                session([
+                    'force_logout_token' => $forceLogoutToken,
+                    'temp_password' => $request->password
+                ]);
+
                 return back()->withInput(['email' => $request->email])
+                    ->with('force_logout_option', true)
                     ->with('notification', [
-                        'message' => 'Có một yêu cầu đăng nhập khác đang được xử lý. Vui lòng thử lại sau.',
+                        'message' => 'Tài khoản này đang được đăng nhập trên thiết bị khác.',
                         'type' => 'warning'
                     ]);
             }
 
-            // Check for force logout option
-            $forceLogout = $request->boolean('force_logout');
-            $forceLogoutToken = $request->input('force_logout_token');
+            // Register device and store token
+            $user->registerDevice($deviceId, $token);
+            session(['jwt_token' => $token]);
 
-            // If has force logout token from session but not from request
-            if (session('force_logout_token') && !$forceLogoutToken) {
-                $forceLogoutToken = session('force_logout_token');
-            }
+            // Clear any previous force logout data
+            session()->forget([
+                'force_logout_option',
+                'force_logout_token',
+                'temp_password'
+            ]);
 
-            // Đặt khóa đăng nhập trong 10 giây
-            DB::table('users')
-                ->where('id', $userRecord->id)
-                ->update([
-                    'login_lock' => $lockId,
-                    'login_lock_expires_at' => now()->addSeconds(10)
+            return redirect()->route('home')
+                ->with('notification', [
+                    'message' => 'Đăng nhập thành công!',
+                    'type' => 'success'
                 ]);
-
-            try {
-                // Lấy device identifier
-                $deviceId = $this->deviceService->getDeviceIdentifier($request);
-
-                // Kiểm tra lại xem người dùng có đang đăng nhập ở nơi khác không
-                $latestUser = DB::table('users')->where('id', $userRecord->id)->first();
-                if ($latestUser->login_lock !== $lockId) {
-                    // Khóa đã bị thay đổi, có thể có người đang đăng nhập cùng lúc
-                    return back()->withInput(['email' => $request->email])
-                        ->with('notification', [
-                            'message' => 'Có một yêu cầu đăng nhập khác đang được xử lý. Vui lòng thử lại sau.',
-                            'type' => 'warning'
-                        ]);
-                }
-
-                // Kiểm tra thiết bị hiện tại với thiết bị đã đăng nhập
-                if (!$forceLogout && $latestUser->device_id && $latestUser->device_id !== $deviceId) {
-                    // Xác thực token hiện tại
-                    try {
-                        $tokenValid = $latestUser->active_token ?
-                            JWTAuth::setToken($latestUser->active_token)->check() : false;
-
-                        if ($tokenValid) {
-                            // Provide option for force logout
-                            $forceLogoutToken = Str::random(40);
-                            session(['force_logout_token' => $forceLogoutToken]);
-                            session(['temp_password' => $request->password]);
-
-                            return back()->withInput(['email' => $request->email])
-                                ->with('force_logout_option', true)
-                                ->with('notification', [
-                                    'message' => 'Tài khoản này đang được đăng nhập trên thiết bị khác.',
-                                    'type' => 'warning'
-                                ]);
-                        }
-                    } catch (\Exception $e) {
-                        // Token không hợp lệ, tiếp tục đăng nhập
-                        Log::info('Token không hợp lệ, tiếp tục đăng nhập mới', [
-                            'user_id' => $latestUser->id,
-                            'error' => $e->getMessage()
-                        ]);
-                    }
-                }
-
-                // Vô hiệu hóa token cũ nếu có
-                if ($latestUser->active_token) {
-                    try {
-                        JWTAuth::setToken($latestUser->active_token)->invalidate();
-                    } catch (\Exception $e) {
-                        Log::error('Lỗi vô hiệu hóa token cũ', ['error' => $e->getMessage()]);
-                    }
-                }
-
-                // Lấy đối tượng User cho JWT
-                $user = User::find($latestUser->id);
-                if (!$user) {
-                    throw new \Exception("Không tìm thấy người dùng id: {$latestUser->id}");
-                }
-
-                // Tạo JWT token mới
-                $token = JWTAuth::fromUser($user);
-
-                // Cập nhật thông tin thiết bị và token
-                DB::table('users')
-                    ->where('id', $latestUser->id)
-                    ->update([
-                        'device_id' => $deviceId,
-                        'login_lock' => null,
-                        'login_lock_expires_at' => null,
-                        'active_token' => $token,
-                        'last_login_at' => now()
-                    ]);
-
-                // Lưu token vào session
-                session(['jwt_token' => $token]);
-
-                // Xóa khóa phiên cũ
-                session()->forget([
-                    'force_logout_option',
-                    'force_logout_token',
-                    'temp_password'
-                ]);
-
-                // Kiểm tra xem có URL dự định không
-                $intendedUrl = session('intended_url');
-                if ($intendedUrl) {
-                    session()->forget('intended_url');
-                    return redirect()->to($intendedUrl);
-                }
-
-                return redirect()->route('home')
-                    ->with('notification', [
-                        'message' => 'Đăng nhập thành công!',
-                        'type' => 'success'
-                    ]);
-
-            } catch (\Exception $e) {
-                // Xóa khóa trong trường hợp có lỗi
-                DB::table('users')
-                    ->where('id', $userRecord->id)
-                    ->where('login_lock', $lockId)
-                    ->update([
-                        'login_lock' => null,
-                        'login_lock_expires_at' => null
-                    ]);
-
-                throw $e;
-            }
 
         } catch (\Exception $e) {
-            Log::error('Đăng nhập thất bại', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            Log::error('Đăng nhập thất bại', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return back()->withInput(['email' => $request->email])
                 ->with('notification', [
                     'message' => 'Đăng nhập thất bại. Vui lòng thử lại.',
@@ -365,16 +259,23 @@ class AuthController extends Controller
                 Cookie::queue(Cookie::forget('remember_token'));
             }
 
+            // Lưu CSRF token hiện tại
+            $currentToken = $request->session()->token();
+
             // Xóa tất cả dữ liệu session
             Session::flush();
 
-            // Xóa dữ liệu trình duyệt và chuyển hướng đến URL tuyệt đối
+            // Tạo session mới
+            $request->session()->regenerate();
+
+            // Tạo script để xóa dữ liệu trình duyệt
             $loginUrl = route('login');
             $script = "
                 <script nonce=\"".csrf_token()."\">
                     localStorage.clear();
                     sessionStorage.clear();
                     sessionStorage.setItem('auto_logout', '1');
+                    sessionStorage.setItem('saved_csrf_token', '".$currentToken."');
                     window.location.replace('".e($loginUrl)."');
                 </script>
             ";

@@ -77,4 +77,4 @@ class EmployeeRole extends Model
         $this->permissions()->sync($permissionIds);
         return $this;
     }
-} 
+}

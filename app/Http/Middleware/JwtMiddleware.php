@@ -39,7 +39,7 @@ class JwtMiddleware extends BaseMiddleware
                 // Try to refresh token if it's close to expiring
                 $payload = JWTAuth::getPayload();
                 $exp = $payload->get('exp');
-                
+
                 // If token will expire in the next 30 minutes, refresh it
                 if ($exp - time() < 1800) {
                     try {
@@ -64,11 +64,11 @@ class JwtMiddleware extends BaseMiddleware
                 try {
                     $newToken = JWTAuth::refresh();
                     session(['jwt_token' => $newToken]);
-                    
+
                     // Retry authentication with new token
                     JWTAuth::setToken($newToken);
                     $user = JWTAuth::authenticate();
-                    
+
                     if ($user) {
                         $payload = JWTAuth::getPayload();
                         $request->attributes->add([
@@ -97,7 +97,7 @@ class JwtMiddleware extends BaseMiddleware
     protected function handleUnauthenticated($message = null)
     {
         session()->forget('jwt_token');
-        
+
         return redirect()->route('online.login')
             ->with('notification', [
                 'message' => 'Vui lòng đăng nhập để tiếp tục.',

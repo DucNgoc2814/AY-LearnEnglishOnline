@@ -226,7 +226,7 @@ class CourseRegistration extends BaseModel
     /**
      * Lấy danh sách các lớp học của học viên
      */
-    public function classStudents(): HasMany
+    public function classStudents()
     {
         return $this->hasMany(ClassStudent::class, 'registration_id');
     }
@@ -290,5 +290,10 @@ class CourseRegistration extends BaseModel
     public function scopePaymentStatus($query, $status)
     {
         return $query->where('payment_status', $status);
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
     }
 }

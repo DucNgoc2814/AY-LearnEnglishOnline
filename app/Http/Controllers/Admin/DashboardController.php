@@ -18,7 +18,7 @@ class DashboardController extends BaseController
         $totalCourses = Course::count();
         $totalLessons = Lesson::count();
         $totalOrders = Order::count();
-        
+
         $recentOrders = Order::with(['user', 'course'])
             ->orderBy('created_at', 'desc')
             ->limit(5)

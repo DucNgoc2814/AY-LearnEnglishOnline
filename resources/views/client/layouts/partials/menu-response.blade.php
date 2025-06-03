@@ -147,12 +147,10 @@
                                                     </a>
                                                 </li>
                                                 <li class="user-dropdown-menu-item">
-                                                    <form action="{{ route('logout') }}" method="POST"
-                                                        class="d-inline">
+                                                    <form action="{{ route('logout') }}" method="POST" class="d-inline" id="logout-form">
                                                         @csrf
-                                                        <a href="javascript:void(0)"
-                                                            onclick="this.closest('form').submit()"
-                                                            class="d-flex align-items-center">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                        <a href="javascript:void(0)" onclick="handleLogout(event)" class="d-flex align-items-center">
                                                             <i class="fas fa-sign-out-alt me-2"></i>
                                                             <span class="text-cat">Đăng xuất</span>
                                                         </a>
@@ -216,9 +214,10 @@
                     <div class="offcanves-btn">
                         @if (Auth::check())
                             <a href="{{ route('profile.index') }}" class="signUp-btn">Tài khoản</a>
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline" id="logout-form">
                                 @csrf
-                                <a href="javascript:void(0)" onclick="this.closest('form').submit()" class="logIn-btn">Đăng xuất</a>
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <a href="javascript:void(0)" onclick="handleLogout(event)" class="logIn-btn">Đăng xuất</a>
                             </form>
                         @else
                             <a href="{{ route('register') }}" class="signUp-btn">Đăng ký</a>
@@ -377,7 +376,7 @@
             display: block;
             animation: fadeIn 0.3s ease;
         }
-        
+
         /* CSS cho menu mobile */
         @media (max-width: 991.98px) {
             /* Style cho các nút trong menu mobile */
@@ -387,35 +386,35 @@
                 text-align: left;
                 transition: all 0.3s ease;
             }
-            
+
             .btn-toggle-list:hover, .btn-toggle:hover {
                 color: #ff6600 !important;
                 background-color: #f8f9fa;
             }
-            
+
             .btn-toggle-list.active, .btn-toggle.active {
                 color: #ff6600 !important;
             }
-            
+
             /* Ẩn các hình ảnh không cần thiết trên mobile */
             .mobile-view-offcanves img,
             .mobile-view-offcanves svg:not(.fa-*) {
                 display: none !important;
             }
-            
+
             /* Cải thiện menu mobile - loại bỏ khoảng cách thừa */
             .offcanvas-body .flex-shrink-0 {
                 margin-top: 0 !important;
             }
-            
+
             .offcanvas-body ul.list-unstyled {
                 padding: 0 !important;
             }
-            
+
             .offcanvas-body .list-unstyled li {
                 margin-bottom: 5px;
             }
-            
+
             /* Cải thiện dropdown trong mobile */
             .offcanvas-body .collapse {
                 padding-left: 15px;
@@ -423,4 +422,13 @@
         }
     </style>
 @endpush
+<script>
+    function handleLogout(event) {
+        event.preventDefault();
+        // Save current CSRF token to session storage
+        sessionStorage.setItem('saved_csrf_token', document.querySelector('meta[name="csrf-token"]').content);
+        // Submit form
+        document.getElementById('logout-form').submit();
+    }
+</script>
 

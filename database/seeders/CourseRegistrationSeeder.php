@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Classes;
+use App\Models\Course;
 use App\Models\Student;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -44,10 +44,10 @@ class CourseRegistrationSeeder extends Seeder
                 return;
             }
 
-            // Lấy tất cả lớp học
-            $classes = Classes::all();
-            if ($classes->isEmpty()) {
-                Log::warning("Không có lớp học nào trong hệ thống!");
+            // Lấy tất cả khóa học
+            $courses = Course::all();
+            if ($courses->isEmpty()) {
+                Log::warning("Không có khóa học nào trong hệ thống!");
                 return;
             }
 
@@ -59,12 +59,12 @@ class CourseRegistrationSeeder extends Seeder
             echo "Bắt đầu tạo {$maxRegistrations} đăng ký khóa học...\n";
 
             // Tạo đăng ký cho đến khi đủ số lượng
-            while ($count < $maxRegistrations) {
+            while ($count < $maxRegistrations && !$courses->isEmpty() && !$students->isEmpty()) {
                 $student = $students->random();
-                $class = $classes->random();
-                $pairKey = $student->id . '-' . $class->id;
+                $course = $courses->random();
+                $pairKey = $student->id . '-' . $course->id;
 
-                // Kiểm tra xem cặp student-class này đã tồn tại chưa
+                // Kiểm tra xem cặp student-course này đã tồn tại chưa
                 if (!isset($existingPairs[$pairKey])) {
                     $existingPairs[$pairKey] = true;
 
@@ -72,8 +72,7 @@ class CourseRegistrationSeeder extends Seeder
                     $status = rand(1, 10) > 8 ? 'completed' : 'active';
 
                     $registrations[] = [
-                        'student_id' => $student->id,
-                        'class_id' => $class->id,
+                        'course_id' => $course->id,
                         'status' => $status,
                         'fee_amount' => rand(500000, 5000000),
                         'payment_status' => rand(1, 10) > 2 ? 'paid' : 'pending',
