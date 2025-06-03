@@ -31,14 +31,7 @@ use App\Http\Controllers\Online\Auth\GoogleLoginController;
 // Base route for online platform
 Route::prefix('online')->name('online.')->group(function () {
     // Guest Routes (No Authentication Required)
-    Route::middleware(['web', 'guest'])->group(function () {
-        Route::get('/', function() {
-            if (session('jwt_token')) {
-                return redirect()->route('online.dashboard');
-            }
-            return redirect()->route('online.login');
-        });
-
+    Route::middleware(['web'])->group(function () {
         Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
@@ -48,30 +41,20 @@ Route::prefix('online')->name('online.')->group(function () {
     });
 
     // Protected Routes - Require Authentication
-    Route::middleware(['web', 'jwt'])->group(function () {
+    Route::middleware(['online'])->group(function () {
+        // Root route
+        Route::get('/', function() {
+            return redirect()->route('online.dashboard');
+        });
+
         // Dashboard Route (default landing page after login)
         Route::get('/dashboard', [NewsController::class, 'index'])->name('dashboard');
 
         // Logout Route
         Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-        // Exercise Routes
-        Route::prefix('exercises')->name('exercises.')->group(function () {
-            Route::get('/video/{id}', [MaterialController::class, 'videoExercise'])->name('video');
-            Route::get('/audio/{id}', [MaterialController::class, 'audioExercise'])->name('audio');
-            Route::get('/grammar/{id}', [MaterialController::class, 'grammarExercise'])->name('grammar');
-            Route::get('/video-series/{id}', [MaterialController::class, 'videoSeries'])->name('video-series');
-            Route::get('/audio-collection/{id}', [MaterialController::class, 'audioCollection'])->name('audio-collection');
-            Route::get('/games/{id}', [MaterialController::class, 'vocabularyGames'])->name('games');
-
-            // Submit exercise routes
-            Route::post('/video/{id}/submit', [MaterialController::class, 'submitVideoExercise'])->name('video.submit');
-            Route::post('/audio/{id}/submit', [MaterialController::class, 'submitAudioExercise'])->name('audio.submit');
-            Route::post('/grammar/{id}/submit', [MaterialController::class, 'submitGrammarExercise'])->name('grammar.submit');
-        });
-
         // Student Routes
-        Route::middleware(['jwt.role:student'])->group(function () {
+        Route::group([], function () {
             // Classes
             Route::prefix('classes')->name('classes.')->group(function () {
                 Route::get('/', [ClassStudentController::class, 'index'])->name('index');
