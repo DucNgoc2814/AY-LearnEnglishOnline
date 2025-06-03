@@ -30,7 +30,7 @@
                         <div class="col-md-8">
                             <div class="ratio ratio-16x9 mb-3">
                                 <iframe
-                                    src="{{ $lesson->video_url }}"
+                                    src="{{ $lesson->video_url ?? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }}"
                                     title="Video Exercise"
                                     allowfullscreen
                                     class="rounded shadow-sm"
@@ -69,7 +69,7 @@
                         <div class="col-md-12">
                             <div class="ratio ratio-16x9 mb-3">
                                 <iframe
-                                    src="{{ $lesson->video_url }}"
+                                    src="{{ $lesson->video_url ?? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }}"
                                     title="Video Exercise"
                                     allowfullscreen
                                     class="rounded shadow-sm"
@@ -162,7 +162,7 @@
                                         <div class="card-body p-0">
                                             <div class="ratio ratio-16x9">
                                                 <iframe
-                                                    src="{{ $lesson->video_url }}"
+                                                    src="{{ $lesson->video_url ?? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }}"
                                                     title="Video Exercise"
                                                     allowfullscreen
                                                     class="rounded"

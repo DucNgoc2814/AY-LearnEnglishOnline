@@ -39,6 +39,8 @@ use App\Http\Controllers\Admin\VocabularyListeningTranscriptionController;
 use App\Http\Controllers\Admin\VocabularyListeningVideoController;
 use App\Http\Controllers\Admin\ZoomSessionController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\VideoExerciseClipController;
+use App\Http\Controllers\Admin\VideoExerciseQuestionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -353,30 +355,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Employees Management
         Route::resource('employees', EmployeeController::class);
-
-        // Video Exercise Lessons Management
-        Route::prefix('video-exercise-lessons')->name('video-exercise-lessons.')->group(function () {
-            // Hiển thị danh sách
-            Route::get('/', [VideoExerciseLessonController::class, 'index'])->name('index');
-
-            // Form tạo mới
-            Route::get('/create', [VideoExerciseLessonController::class, 'create'])->name('create');
-
-            // Lưu dữ liệu mới
-            Route::post('/', [VideoExerciseLessonController::class, 'store'])->name('store');
-
-            // Form chỉnh sửa
-            Route::get('/{id}/edit', [VideoExerciseLessonController::class, 'edit'])->name('edit');
-
-            // Cập nhật dữ liệu
-            Route::put('/{id}', [VideoExerciseLessonController::class, 'update'])->name('update');
-
-            // Xóa mềm
-            Route::delete('/{id}', [VideoExerciseLessonController::class, 'destroy'])->name('destroy');
-
-            // Khôi phục từ thùng rác
-            Route::put('/{id}/restore', [VideoExerciseLessonController::class, 'restore'])->name('restore');
-        });
         Route::prefix('vocabulary-listening-videos')->name('vocabulary-listening-videos.')->group(function () {
             // Hiển thị danh sách
             Route::get('/', [VocabularyListeningVideoController::class, 'index'])->name('index');
@@ -798,6 +776,72 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
             // Khôi phục từ thùng rác
             Route::put('/{id}/restore', [CourseRegistrationController::class, 'restore'])->name('restore');
+        });
+        Route::prefix('video-exercise-clips')->name('video-exercise-clips.')->group(function () {
+            // Hiển thị danh sách
+            Route::get('/', [VideoExerciseClipController::class, 'index'])->name('index');
+
+            // Form tạo mới
+            Route::get('/create', [VideoExerciseClipController::class, 'create'])->name('create');
+
+            // Lưu dữ liệu mới
+            Route::post('/', [VideoExerciseClipController::class, 'store'])->name('store');
+
+            // Form chỉnh sửa
+            Route::get('/{id}/edit', [VideoExerciseClipController::class, 'edit'])->name('edit');
+
+            // Cập nhật dữ liệu
+            Route::put('/{id}', [VideoExerciseClipController::class, 'update'])->name('update');
+
+            // Xóa mềm
+            Route::delete('/{id}', [VideoExerciseClipController::class, 'destroy'])->name('destroy');
+
+            // Khôi phục từ thùng rác
+            Route::put('/{id}/restore', [VideoExerciseClipController::class, 'restore'])->name('restore');
+        });
+        Route::prefix('video-exercise-questions')->name('video-exercise-questions.')->group(function () {
+            // Hiển thị danh sách
+            Route::get('/', [VideoExerciseQuestionController::class, 'index'])->name('index');
+
+            // Form tạo mới
+            Route::get('/create', [VideoExerciseQuestionController::class, 'create'])->name('create');
+
+            // Lưu dữ liệu mới
+            Route::post('/', [VideoExerciseQuestionController::class, 'store'])->name('store');
+
+            // Form chỉnh sửa
+            Route::get('/{id}/edit', [VideoExerciseQuestionController::class, 'edit'])->name('edit');
+
+            // Cập nhật dữ liệu
+            Route::put('/{id}', [VideoExerciseQuestionController::class, 'update'])->name('update');
+
+            // Xóa mềm
+            Route::delete('/{id}', [VideoExerciseQuestionController::class, 'destroy'])->name('destroy');
+
+            // Khôi phục từ thùng rác
+            Route::put('/{id}/restore', [VideoExerciseQuestionController::class, 'restore'])->name('restore');
+        });
+        Route::prefix('video-exercise-lessons')->name('video-exercise-lessons.')->group(function () {
+            // Hiển thị danh sách
+            Route::get('/', [VideoExerciseLessonController::class, 'index'])->name('index');
+
+            // Form tạo mới
+            Route::get('/create', [VideoExerciseLessonController::class, 'create'])->name('create');
+
+            // Lưu dữ liệu mới
+            Route::post('/', [VideoExerciseLessonController::class, 'store'])->name('store');
+
+            // Form chỉnh sửa
+            Route::get('/{id}/edit', [VideoExerciseLessonController::class, 'edit'])->name('edit');
+
+            // Cập nhật dữ liệu
+            Route::put('/{id}', [VideoExerciseLessonController::class, 'update'])->name('update');
+
+            // Xóa mềm
+            Route::delete('/{id}', [VideoExerciseLessonController::class, 'destroy'])->name('destroy');
+
+            // Khôi phục từ thùng rác
+            Route::put('/{id}/restore', [VideoExerciseLessonController::class, 'restore'])->name('restore');
         });
     });
 });

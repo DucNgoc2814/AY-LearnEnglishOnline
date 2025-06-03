@@ -1,87 +1,82 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\VideoExerciseClip;
-use App\Models\VideoExerciseProgress;
 use Illuminate\Http\Request;
 
-class VideoExerciseClipController extends Controller
+class VideoExerciseClipController extends BaseController
 {
-    public function index($lessonId)
+    protected $pageTitle = 'Danh sách video exercise clip';
+    public function __construct()
     {
-        $clips = VideoExerciseClip::where('video_exercise_lesson_id', $lessonId)
-            ->orderBy('start_time')
-            ->get();
+        $this->model = VideoExerciseClip::class;
+        $this->viewPath = 'admin.crud';
+        $this->route = 'admin.video-exercise-clips';
 
-        return response()->json($clips);
+        parent::__construct();
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'video_exercise_lesson_id' => 'required|exists:video_exercise_lessons,id',
-            'title' => 'required|string|max:255',
-            'start_time' => 'required|integer|min:0',
-            'audio_url' => 'nullable|url',
-            'transcript' => 'required|string',
-            'translation' => 'nullable|string',
-        ]);
+        $validated = $request->validate($this->model::rules());
 
-        $clip = VideoExerciseClip::create($validated);
-        return response()->json($clip);
+        // Tạo instance mới
+        $product = $this->model::create($validated);
+
+        // Xử lý upload tất cả các trường media
+        foreach ($product::mediaFields() as $field => $config) {
+            if ($request->hasFile($field)) {
+                $path = $product->handleMediaUpload($field, $request->file($field));
+                $product->update([$field => $path]);
+            }
+        }
+
+        // Xử lý các model liên quan
+        $this->handleRelatedModels($request, $product);
+
+        return redirect()->route($this->route . '.index')
+            ->with('success', 'Sản phẩm đã được tạo thành công');
     }
 
     public function update(Request $request, $id)
     {
-        $clip = VideoExerciseClip::findOrFail($id);
+        $item = $this->model::withTrashed()->findOrFail($id);
+        $validated = $request->validate($this->model::rules($item->id));
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'start_time' => 'required|integer|min:0',
-            'audio_url' => 'nullable|url',
-            'transcript' => 'required|string',
-            'translation' => 'nullable|string',
-        ]);
+        // Cập nhật thông tin cơ bản
+        $item->update($validated);
 
-        $clip->update($validated);
-        return response()->json($clip);
+        // Xử lý upload tất cả các trường media
+        foreach ($item::mediaFields() as $field => $config) {
+            if ($request->hasFile($field)) {
+                $path = $item->handleMediaUpload($field, $request->file($field));
+                $item->update([$field => $path]);
+            }
+            // Nếu không có file mới và có request xóa file cũ
+            elseif ($request->has("remove_{$field}")) {
+                $item->deleteMedia($item->$field);
+                $item->update([$field => null]);
+            }
+            // Nếu không có file mới nhưng có file cũ và đang edit
+            elseif ($request->has("{$field}_current")) {
+                $item->update([$field => $request->input("{$field}_current")]);
+            }
+        }
+
+        // Xử lý các model liên quan
+        $this->handleRelatedModels($request, $item, true);
+
+        return redirect()->route($this->route . '.index')
+            ->with('success', 'Sản phẩm đã được cập nhật thành công');
     }
 
     public function destroy($id)
     {
-        $clip = VideoExerciseClip::findOrFail($id);
-        $clip->delete();
+        $item = $this->model::findOrFail($id);
+        $item->delete();
 
-        return response()->json(['message' => 'Clip đã được xóa thành công']);
-    }
-
-    public function markAsCompleted($id)
-    {
-        $clip = VideoExerciseClip::findOrFail($id);
-
-        // Cập nhật tiến độ của user
-        $progress = VideoExerciseProgress::firstOrCreate([
-            'user_id' => auth()->id(),
-            'video_exercise_lesson_id' => $clip->video_exercise_lesson_id
-        ]);
-
-        $progress->completeClip($clip->id);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Đã đánh dấu hoàn thành clip',
-            'progress' => $progress->step3_progress
-        ]);
-    }
-
-    public function getClipStatus($id)
-    {
-        $clip = VideoExerciseClip::findOrFail($id);
-        $isCompleted = $clip->isCompletedByUser(auth()->id());
-
-        return response()->json([
-            'completed' => $isCompleted
-        ]);
+        return redirect()->route($this->route . '.index')
+            ->with('success', 'Sản phẩm đã được chuyển vào thùng rác');
     }
 }

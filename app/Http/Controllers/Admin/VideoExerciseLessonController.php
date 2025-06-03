@@ -3,23 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\VideoExerciseLesson;
-use App\Models\VideoExerciseQuestion;
 use Illuminate\Http\Request;
 
 class VideoExerciseLessonController extends BaseController
 {
-    protected $pageTitle = 'Danh sách bài tập video';
+    protected $pageTitle = 'Danh sách video exercise lesson';
     public function __construct()
     {
         $this->model = VideoExerciseLesson::class;
         $this->viewPath = 'admin.crud';
         $this->route = 'admin.video-exercise-lessons';
-        $this->relatedModels = [
-            'Danh sách bài tập theo video' => VideoExerciseQuestion::class,
-        ];
+
         parent::__construct();
     }
-
     public function store(Request $request)
     {
         $validated = $request->validate($this->model::rules());
