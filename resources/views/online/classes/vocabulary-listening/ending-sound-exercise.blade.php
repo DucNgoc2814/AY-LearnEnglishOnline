@@ -4,19 +4,19 @@
             'title' => 'Nhóm 1',
             'sounds' => ['/p/', '/t/', '/k/', '/f/', '/θ/'],
             'description' => 'Các âm cuối vô thanh',
-            'corresponding_sound' => '/s/',
+            'corresponding_sound' => 's',
         ],
         [
             'title' => 'Nhóm 2',
             'sounds' => ['/s/', '/z/', '/ʃ/', '/ʒ/', '/tʃ/', '/dʒ/'],
             'description' => 'Các âm xát và âm tắc xát',
-            'corresponding_sound' => '/ɪz/',
+            'corresponding_sound' => 'ɪz',
         ],
         [
             'title' => 'Nhóm 3',
             'sounds' => ['Other sounds'],
             'description' => 'Các âm khác',
-            'corresponding_sound' => '/z/',
+            'corresponding_sound' => 'z',
         ],
     ];
 
@@ -98,7 +98,9 @@
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <h6 class="rule-title mb-0">{{ $rule['title'] }}</h6>
                             <div class="corresponding-sound">
-                                <span class="sound-badge sound-badge-large">{{ $rule['corresponding_sound'] }}</span>
+                                <div class="ending-item" draggable="true" data-ending="{{ $rule['corresponding_sound'] }}">
+                                    {{ $rule['corresponding_sound'] }}
+                                </div>
                             </div>
                         </div>
                         <div class="rule-sounds mb-3">
@@ -115,34 +117,10 @@
                 </div>
             @endforeach
         </div>
-
-        <!-- Corresponding Sounds Summary -->
-        <div class="corresponding-sounds-header">
-            <h6 class="d-flex align-items-center">
-                <span class="me-3">Âm tương ứng khi thêm "s/es":</span>
-                <div class="d-flex gap-2">
-                    <span class="sound-badge sound-badge-large">/s/</span>
-                    <span class="sound-badge sound-badge-large">/ɪz/</span>
-                    <span class="sound-badge sound-badge-large">/z/</span>
-                </div>
-            </h6>
-        </div>
     </div>
 
     <!-- Practice Table -->
     <div class="practice-section">
-        <!-- Sound Endings Bank -->
-        <div class="endings-bank mb-4">
-            <h6 class="mb-3">Các âm đuôi có sẵn:</h6>
-            <div class="endings-container" id="endingsBank">
-                @foreach ($availableEndings as $ending)
-                    <div class="ending-item" draggable="true" data-ending="{{ $ending }}">
-                        {{ $ending }}
-                    </div>
-                @endforeach
-            </div>
-        </div>
-
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead class="bg-light">
@@ -169,13 +147,7 @@
                             </td>
                             <td>
                                 <div class="phonetic-container">
-                                    <span class="base-phonetic">
-                                        /{{ trim($word['base_phonetic'], '/') }}/
-                                    </span>
-                                    <div class="ending-dropzone" data-correct="{{ $word['ending_phonetic'] }}"
-                                        data-word-id="{{ $index }}">
-                                        <span class="placeholder">Kéo thả âm đuôi vào đây</span>
-                                    </div>
+                                    {{ $word['full_phonetic'] }}
                                 </div>
                             </td>
                             <td>
@@ -190,13 +162,14 @@
                             <td>
                                 <div class="phonetic-container">
                                     <span class="base-phonetic">
-                                        /{{ trim($word['base_phonetic'], '/') }}/
+                                        /{{ trim($word['base_phonetic'], '/') }}
                                     </span>
                                     <div class="ending-dropzone-with-s"
                                         data-correct="{{ $word['ending_phonetic'] }}"
                                         data-word-id="{{ $index }}">
                                         <span class="placeholder">Kéo thả âm đuôi vào đây</span>
                                     </div>
+                                    <span class="ending-slash">/</span>
                                 </div>
                             </td>
                         </tr>
@@ -245,6 +218,10 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
+    .rule-card:hover .ending-item {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
     .rule-title {
         color: #2563eb;
         font-weight: 600;
@@ -252,10 +229,35 @@
     }
 
     .corresponding-sound {
-        background-color: #e3f2fd;
-        padding: 3px 6px;
+        padding: 3px;
         border-radius: 4px;
+    }
+
+    .corresponding-sound .ending-item {
+        background-color: #e3f2fd;
         border: 1px solid #90caf9;
+        border-radius: 4px;
+        padding: 4px 12px;
+        font-size: 0.9rem;
+        color: #1976d2;
+        cursor: move;
+        user-select: none;
+        transition: all 0.2s ease;
+    }
+
+    .corresponding-sound .ending-item:hover {
+        background-color: #bbdefb;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .corresponding-sound .ending-item:active {
+        transform: translateY(0);
+    }
+
+    .corresponding-sound .ending-item.dragging {
+        opacity: 0.5;
+        background-color: #e3f2fd;
     }
 
     .rule-sounds {
@@ -312,6 +314,7 @@
 
     .table td {
         vertical-align: middle;
+        text-align: center;
         font-size: 0.85rem;
         padding: 8px;
     }
@@ -420,7 +423,10 @@
     .phonetic-container {
         display: flex;
         align-items: center;
-        gap: 8px;
+        justify-content: center;
+        gap: 4px;
+        font-family: 'Arial', sans-serif;
+        color: #2563eb;
     }
 
     .base-phonetic {
@@ -428,7 +434,6 @@
         color: #2563eb;
     }
 
-    .ending-dropzone,
     .ending-dropzone-with-s {
         min-width: 70px;
         min-height: 32px;
@@ -440,28 +445,35 @@
         padding: 3px 6px;
         background-color: #fff;
         transition: all 0.3s ease;
+        margin: 0 -2px;
     }
 
-    .ending-dropzone.dragover,
+    .ending-dropzone-with-s .ending-item {
+        margin: 0;
+        padding: 2px 4px;
+    }
+
+    .ending-slash {
+        font-family: 'Arial', sans-serif;
+        color: #2563eb;
+    }
+
     .ending-dropzone-with-s.dragover {
         border-color: #2563eb;
         background-color: #e3f2fd;
     }
 
-    .ending-dropzone .placeholder,
     .ending-dropzone-with-s .placeholder {
         color: #6c757d;
         font-size: 0.75rem;
         font-style: italic;
     }
 
-    .ending-dropzone.correct,
     .ending-dropzone-with-s.correct {
         border-color: #198754;
         background-color: #d1e7dd;
     }
 
-    .ending-dropzone.incorrect,
     .ending-dropzone-with-s.incorrect {
         border-color: #dc3545;
         background-color: #f8d7da;
@@ -497,6 +509,10 @@
 
     .exercise-header p {
         font-size: 0.85rem;
+    }
+
+    .d-flex.align-items-center {
+        justify-content: center;
     }
 </style>
 
@@ -569,7 +585,7 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         const endingItems = document.querySelectorAll('.ending-item');
-        const dropzones = document.querySelectorAll('.ending-dropzone, .ending-dropzone-with-s');
+        const dropzones = document.querySelectorAll('.ending-dropzone-with-s');
 
         endingItems.forEach(item => {
             item.addEventListener('dragstart', handleDragStart);
