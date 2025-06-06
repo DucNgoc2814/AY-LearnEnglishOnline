@@ -18,6 +18,7 @@ use App\Http\Controllers\Online\Teacher\ClassController as TeacherClassControlle
 use App\Http\Controllers\Online\Teacher\ScheduleController as TeacherScheduleController;
 use App\Http\Controllers\Online\ClassStudentController;
 use App\Http\Controllers\Online\Auth\GoogleLoginController;
+use App\Http\Controllers\Online\OnlineClassLessonController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,7 @@ Route::prefix('online')->name('online.')->group(function () {
             Route::prefix('classes')->name('classes.')->group(function () {
                 Route::get('/', [ClassStudentController::class, 'index'])->name('index');
                 Route::get('/{id}', [ClassStudentController::class, 'show'])->name('show');
+                Route::get('/{id}/lessons', [OnlineClassLessonController::class, 'index'])->name('lessons');
                 Route::get('/{class_id}/tests', [TestController::class, 'index'])->name('tests');
                 Route::get('/quiz/{quiz}', [ClassStudentController::class, 'quiz'])->name('quiz');
             });
