@@ -27,7 +27,7 @@
             <div class="tab-content pt-4" id="exerciseTabContent">
                 <div class="tab-pane fade show active" id="step1" role="tabpanel" aria-labelledby="step1-tab">
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-12">
                             <div class="ratio ratio-16x9 mb-3">
                                 <iframe
                                     src="{{ $lesson->video_url ?? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }}"
@@ -43,22 +43,6 @@
                                     <li>Tạm dừng video để ghi chú từ vựng mới</li>
                                     <li>Cố gắng bắt chước cách phát âm của người bản xứ</li>
                                 </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card shadow-sm">
-                                <div class="card-body">
-                                    <h5 class="card-title"><i class="fas fa-tasks me-2"></i>Hướng dẫn Bước 1</h5>
-                                    <div class="card-text">
-                                        <p class="mb-2">Trong quá trình xem video, hãy:</p>
-                                        <ol class="ps-3">
-                                            <li class="mb-2">Xem video lần đầu để nắm nội dung tổng quát</li>
-                                            <li class="mb-2">Xem lại và ghi chú từ vựng, cụm từ mới</li>
-                                            <li class="mb-2">Chú ý cách phát âm và ngữ điệu của người nói</li>
-                                            <li>Ghi lại những cấu trúc câu hữu ích</li>
-                                        </ol>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>

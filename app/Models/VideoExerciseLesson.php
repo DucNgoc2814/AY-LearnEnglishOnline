@@ -5,18 +5,6 @@ namespace App\Models;
 class VideoExerciseLesson extends BaseModel
 {
 
-    public static function mediaFields(): array
-    {
-        return [
-            'video_url' => [
-                'type' => 'video',
-                'max_size' => 102400,
-                'mimes' => 'mp4,webm,ogg',
-                'label' => 'Video bài học'
-            ]
-        ];
-    }
-
     public static function getBaseRules($id = null)
     {
         return [
@@ -29,16 +17,14 @@ class VideoExerciseLesson extends BaseModel
 
     public static function getFields()
     {
-        $fields = [
+        return [
             'lesson_id' => [
                 'label' => 'Bài học',
                 'type' => 'select',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true,
-                'options' => function() {
-                    return Lesson::pluck('title', 'id')->toArray();
-                }
+                'options' => Lesson::pluck('name', 'id')->toArray(),
             ],
             'title' => [
                 'label' => 'Tiêu đề',
@@ -48,10 +34,8 @@ class VideoExerciseLesson extends BaseModel
                 'editable' => true
             ],
             'video_url' => [
-                'label' => 'Video bài học',
-                'type' => 'file',
-                'accept' => 'video/*',
-                'max_size' => 102400,
+                'label' => 'URL video bài học',
+                'type' => 'text',
                 'searchable' => false,
                 'sortable' => false,
                 'editable' => true
@@ -64,8 +48,6 @@ class VideoExerciseLesson extends BaseModel
                 'editable' => true
             ]
         ];
-
-        return $fields;
     }
 
     /**

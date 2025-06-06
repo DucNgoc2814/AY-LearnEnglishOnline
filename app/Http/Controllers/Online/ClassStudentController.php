@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Online;
 use App\Http\Controllers\Controller;
 use App\Models\ClassStudent;
 use App\Models\CourseRegistration;
+use App\Models\Course;
+use App\Models\Lesson;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -158,7 +160,19 @@ class ClassStudentController extends Controller
             })
             ->firstOrFail();
 
-        return view('online.classes.show', compact('class'));
+        // Lấy khóa học tương ứng với lớp học
+        $course = Course::findOrFail($class->class->course_id);
+
+        // Lấy danh sách bài học của khóa học, sắp xếp theo order_number
+        $lessons = Lesson::where('course_id', $course->id)
+            ->orderBy('order_number', 'asc')
+            ->get();
+
+        return view('online.classes.show', [
+            'class' => $class,
+            'course' => $course,
+            'lessons' => $lessons
+        ]);
     }
 
     public function quiz($quiz)

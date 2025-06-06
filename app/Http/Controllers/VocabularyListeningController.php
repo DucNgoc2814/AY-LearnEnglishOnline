@@ -100,8 +100,8 @@ class VocabularyListeningController extends Controller
                     'description' => 'Kéo thả để sắp xếp các từ dưới đây thành một câu đúng',
                     'sentences' => [
                         [
-                            'words' => ['great', 'is', 'but', 'living', 'really', 'of', 'cost', 'Paris', 'high', 'the'],
-                            'answer' => 'Paris is really great but the cost of living is high'
+                            'words' => ['great', 'is', 'but', 'living', 'really', 'of', 'cost', 'Paris', 'high', 'the', ','],
+                            'answer' => 'Paris is really great but , the cost of living is high'
                         ],
                         [
                             'words' => ['boring', 'it', 'a', 'find', 'I', 'bit'],
