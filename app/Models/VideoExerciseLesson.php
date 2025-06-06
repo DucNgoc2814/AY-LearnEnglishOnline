@@ -70,6 +70,10 @@ class VideoExerciseLesson extends BaseModel
     {
         return self::getFields();
     }
+    protected static function bootHasSlug()
+    {
+        // Override to disable slug generation
+    }
 
     // Relationship với bảng lessons
     public function lesson()
