@@ -77,7 +77,12 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="ratio ratio-16x9 mb-3">
-                                <div id="videoPlayer" class="rounded shadow-sm"></div>
+                                <iframe
+                                    src="{{ $lesson->video_url ?? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }}"
+                                    title="Video Exercise"
+                                    allowfullscreen
+                                    class="rounded shadow-sm"
+                                ></iframe>
                             </div>
                             <div class="alert alert-info mb-3">
                                 <h6 class="alert-heading"><i class="fas fa-lightbulb me-2"></i>Mẹo học hiệu quả:</h6>
@@ -189,7 +194,7 @@
                                         <div class="card-body p-0">
                                             <div class="ratio ratio-16x9">
                                                 <iframe
-                                                    src="{{ $lesson->video_url }}"
+                                                    src="{{ $lesson->video_url ?? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }}"
                                                     title="Video Exercise"
                                                     allowfullscreen
                                                     class="rounded"
@@ -371,62 +376,12 @@
     .action-buttons {
         margin-left: 3.5rem;
     }
-    #videoPlayer {
-        width: 100%;
-        height: 100%;
-        background: #000;
-    }
 </style>
 @endpush
 
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Video URL from backend
-    const videoUrl = @json($lesson['video_url'] ?? '');
-
-    // Initialize video player
-    const videoPlayer = document.getElementById('videoPlayer');
-
-    if (videoUrl) {
-        // Create video element
-        const video = document.createElement('video');
-        video.style.width = '100%';
-        video.style.height = '100%';
-        video.controls = true;
-        video.controlsList = "nodownload"; // Prevent downloading
-        video.playsInline = true;
-
-        // Add source
-        const source = document.createElement('source');
-        source.src = videoUrl;
-        source.type = 'video/mp4'; // Assuming MP4 format
-
-        video.appendChild(source);
-        videoPlayer.appendChild(video);
-
-        // Error handling
-        video.addEventListener('error', function() {
-            videoPlayer.innerHTML = `
-                <div class="d-flex align-items-center justify-content-center h-100 text-white">
-                    <div class="text-center">
-                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
-                        <p>Không thể tải video. Vui lòng thử lại sau.</p>
-                    </div>
-                </div>
-            `;
-        });
-    } else {
-        videoPlayer.innerHTML = `
-            <div class="d-flex align-items-center justify-content-center h-100 text-white">
-                <div class="text-center">
-                    <i class="fas fa-video-slash fa-2x mb-3"></i>
-                    <p>Video không khả dụng</p>
-                </div>
-            </div>
-        `;
-    }
-
     const draggables = document.querySelectorAll('.draggable');
     const dropzones = document.querySelectorAll('.dropzone');
     const videoTimeButtons = document.querySelectorAll('.video-time-btn');

@@ -19,7 +19,6 @@ use App\Http\Controllers\Online\Teacher\ScheduleController as TeacherScheduleCon
 use App\Http\Controllers\Online\ClassStudentController;
 use App\Http\Controllers\Online\Auth\GoogleLoginController;
 use App\Http\Controllers\Online\OnlineClassLessonController;
-use App\Http\Controllers\Online\VideoExerciseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,7 +63,6 @@ Route::prefix('online')->name('online.')->group(function () {
                 Route::get('/{id}/lessons', [OnlineClassLessonController::class, 'index'])->name('lessons');
                 Route::get('/{class_id}/tests', [TestController::class, 'index'])->name('tests');
                 Route::get('/quiz/{quiz}', [ClassStudentController::class, 'quiz'])->name('quiz');
-                Route::get('/video-exercise/{id}', [VideoExerciseController::class, 'show'])->name('video-exercise.show');
             });
 
             // Sessions
