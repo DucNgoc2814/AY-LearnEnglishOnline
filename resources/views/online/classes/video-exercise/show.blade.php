@@ -8,7 +8,12 @@
 
             <ul class="nav nav-tabs" id="exerciseTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="step1-tab" data-bs-toggle="tab" data-bs-target="#step1" type="button" role="tab" aria-controls="step1" aria-selected="true">
+                    <button class="nav-link active" id="step0-tab" data-bs-toggle="tab" data-bs-target="#step0" type="button" role="tab" aria-controls="step0" aria-selected="true">
+                        <i class="fas fa-info-circle"></i> Bước 0
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="step1-tab" data-bs-toggle="tab" data-bs-target="#step1" type="button" role="tab" aria-controls="step1" aria-selected="false">
                         <i class="fas fa-1"></i> Bước 1
                     </button>
                 </li>
@@ -25,16 +30,54 @@
             </ul>
 
             <div class="tab-content pt-4" id="exerciseTabContent">
-                <div class="tab-pane fade show active" id="step1" role="tabpanel" aria-labelledby="step1-tab">
+                <div class="tab-pane fade show active" id="step0" role="tabpanel" aria-labelledby="step0-tab">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title mb-4">
+                                <i class="fas fa-info-circle me-2"></i>Hướng dẫn làm bài
+                            </h5>
+
+                            <div class="alert alert-info">
+                                <h6 class="alert-heading"><i class="fas fa-video me-2"></i>Bước 1: Xem video</h6>
+                                <ul class="mb-0">
+                                    <li>Xem video với phụ đề tiếng Anh để hiểu nội dung và ngữ cảnh</li>
+                                    <li>Có thể tạm dừng video để ghi chú từ vựng và cấu trúc câu mới</li>
+                                    <li>Chú ý cách phát âm của người bản xứ</li>
+                                </ul>
+                            </div>
+
+                            <div class="alert alert-warning">
+                                <h6 class="alert-heading"><i class="fas fa-tasks me-2"></i>Bước 2: Làm bài tập</h6>
+                                <ul class="mb-0">
+                                    <li>Hoàn thành bài tập điền từ bằng cách kéo và thả từ vựng vào ô trống</li>
+                                    <li>Kiểm tra đáp án sau khi hoàn thành</li>
+                                    <li>Xem lại video nếu cần thiết để hiểu rõ hơn ngữ cảnh</li>
+                                </ul>
+                            </div>
+
+                            <div class="alert alert-success">
+                                <h6 class="alert-heading"><i class="fas fa-microphone me-2"></i>Bước 3: Luyện nói</h6>
+                                <ul class="mb-0">
+                                    <li>Luyện nói theo từng đoạn clip ngắn</li>
+                                    <li>Sử dụng nút play để nghe lại audio và lặp lại nhiều lần</li>
+                                    <li>Có thể hiện/ẩn phụ đề để hỗ trợ việc luyện tập</li>
+                                </ul>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button class="btn btn-primary" onclick="document.getElementById('step1-tab').click()">
+                                    <i class="fas fa-play me-2"></i>Bắt đầu làm bài
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="step1" role="tabpanel" aria-labelledby="step1-tab">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="ratio ratio-16x9 mb-3">
-                                <iframe
-                                    src="{{ $lesson->video_url ?? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }}"
-                                    title="Video Exercise"
-                                    allowfullscreen
-                                    class="rounded shadow-sm"
-                                ></iframe>
+                                <div id="videoPlayer" class="rounded shadow-sm"></div>
                             </div>
                             <div class="alert alert-info mb-3">
                                 <h6 class="alert-heading"><i class="fas fa-lightbulb me-2"></i>Mẹo học hiệu quả:</h6>
@@ -146,7 +189,7 @@
                                         <div class="card-body p-0">
                                             <div class="ratio ratio-16x9">
                                                 <iframe
-                                                    src="{{ $lesson->video_url ?? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }}"
+                                                    src="{{ $lesson->video_url }}"
                                                     title="Video Exercise"
                                                     allowfullscreen
                                                     class="rounded"
@@ -328,12 +371,62 @@
     .action-buttons {
         margin-left: 3.5rem;
     }
+    #videoPlayer {
+        width: 100%;
+        height: 100%;
+        background: #000;
+    }
 </style>
 @endpush
 
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Video URL from backend
+    const videoUrl = @json($lesson['video_url'] ?? '');
+
+    // Initialize video player
+    const videoPlayer = document.getElementById('videoPlayer');
+
+    if (videoUrl) {
+        // Create video element
+        const video = document.createElement('video');
+        video.style.width = '100%';
+        video.style.height = '100%';
+        video.controls = true;
+        video.controlsList = "nodownload"; // Prevent downloading
+        video.playsInline = true;
+
+        // Add source
+        const source = document.createElement('source');
+        source.src = videoUrl;
+        source.type = 'video/mp4'; // Assuming MP4 format
+
+        video.appendChild(source);
+        videoPlayer.appendChild(video);
+
+        // Error handling
+        video.addEventListener('error', function() {
+            videoPlayer.innerHTML = `
+                <div class="d-flex align-items-center justify-content-center h-100 text-white">
+                    <div class="text-center">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                        <p>Không thể tải video. Vui lòng thử lại sau.</p>
+                    </div>
+                </div>
+            `;
+        });
+    } else {
+        videoPlayer.innerHTML = `
+            <div class="d-flex align-items-center justify-content-center h-100 text-white">
+                <div class="text-center">
+                    <i class="fas fa-video-slash fa-2x mb-3"></i>
+                    <p>Video không khả dụng</p>
+                </div>
+            </div>
+        `;
+    }
+
     const draggables = document.querySelectorAll('.draggable');
     const dropzones = document.querySelectorAll('.dropzone');
     const videoTimeButtons = document.querySelectorAll('.video-time-btn');

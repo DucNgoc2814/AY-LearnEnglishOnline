@@ -6,17 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class VideoExerciseClip extends BaseModel
 {
-    public static function mediaFields(): array
-    {
-        return [
-            'audio_url' => [
-                'type' => 'audio',
-                'max_size' => 102400,
-                'mimes' => 'mp3,wav,ogg',
-                'label' => 'Audio clip'
-            ]
-        ];
-    }
     public static function getBaseRules($id = null)
     {
         return [
@@ -31,13 +20,14 @@ class VideoExerciseClip extends BaseModel
 
     public static function getFields()
     {
-        $fields = [
+        return [
             'video_exercise_lesson_id' => [
                 'label' => 'Bài học video',
                 'type' => 'select',
                 'searchable' => true,
                 'sortable' => true,
-                'editable' => true
+                'editable' => true,
+                'options' => VideoExerciseLesson::pluck('title', 'id')->toArray(),
             ],
             'title' => [
                 'label' => 'Tiêu đề',
@@ -56,10 +46,8 @@ class VideoExerciseClip extends BaseModel
                 'editable' => true
             ],
             'audio_url' => [
-                'label' => 'Video clip',
-                'type' => 'file',
-                'accept' => 'video/*',
-                'max_size' => 102400,
+                'label' => 'URL video clip',
+                'type' => 'text',
                 'searchable' => false,
                 'sortable' => false,
                 'editable' => true
@@ -79,8 +67,6 @@ class VideoExerciseClip extends BaseModel
                 'editable' => true
             ]
         ];
-
-        return $fields;
     }
 
     /**

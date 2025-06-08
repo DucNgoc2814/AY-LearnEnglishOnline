@@ -8,7 +8,12 @@
 
             <ul class="nav nav-tabs" id="exerciseTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="step1-tab" data-bs-toggle="tab" data-bs-target="#step1" type="button" role="tab">
+                    <button class="nav-link active" id="step0-tab" data-bs-toggle="tab" data-bs-target="#step0" type="button" role="tab">
+                        <span class="badge bg-info me-2"><i class="fas fa-info-circle"></i></span>HƯỚNG DẪN
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="step1-tab" data-bs-toggle="tab" data-bs-target="#step1" type="button" role="tab">
                         <span class="badge bg-primary me-2">1</span>XEM VIDEO CÁCH LÀM "REFLECTION"
                     </button>
                 </li>
@@ -25,8 +30,79 @@
             </ul>
 
             <div class="tab-content pt-4" id="exerciseTabContent">
+                <!-- Step 0: Instructions -->
+                <div class="tab-pane fade show active" id="step0" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title mb-4">
+                                <i class="fas fa-info-circle text-info me-2"></i>Hướng dẫn làm bài Reflection
+                            </h4>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="alert alert-info mb-4">
+                                        <h5 class="alert-heading">
+                                            <i class="fas fa-video me-2"></i>Bước 1: Xem Video Hướng Dẫn
+                                        </h5>
+                                        <ul class="mb-0">
+                                            <li>Xem video hướng dẫn cách viết Reflection</li>
+                                            <li>Ghi chú các điểm quan trọng và cấu trúc bài viết</li>
+                                            <li>Chú ý các ví dụ được đưa ra trong video</li>
+                                            <li>Xem lại video nếu cần để nắm rõ yêu cầu</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="alert alert-warning mb-4">
+                                        <h5 class="alert-heading">
+                                            <i class="fas fa-pen me-2"></i>Bước 2: Học Cấu Trúc Câu
+                                        </h5>
+                                        <ul class="mb-0">
+                                            <li>Học và ghi nhớ các cấu trúc câu hữu ích</li>
+                                            <li>Thực hành viết câu với mỗi cấu trúc</li>
+                                            <li>Đảm bảo hiểu rõ cách sử dụng mỗi cấu trúc</li>
+                                            <li>Lưu lại các câu mẫu để tham khảo sau này</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="alert alert-success mb-4">
+                                        <h5 class="alert-heading">
+                                            <i class="fas fa-edit me-2"></i>Bước 3: Viết Reflection
+                                        </h5>
+                                        <ul class="mb-0">
+                                            <li>Trả lời đầy đủ các câu hỏi được đưa ra</li>
+                                            <li>Sử dụng các cấu trúc câu đã học</li>
+                                            <li>Viết chi tiết và cụ thể về trải nghiệm của bản thân</li>
+                                            <li>Kiểm tra lỗi chính tả và ngữ pháp trước khi nộp</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="alert alert-secondary mb-4">
+                                        <h5 class="alert-heading">
+                                            <i class="fas fa-lightbulb me-2"></i>Lưu ý quan trọng
+                                        </h5>
+                                        <ul class="mb-0">
+                                            <li>Sử dụng từ vựng và cụm từ đã học trong Active Listening</li>
+                                            <li>Gạch chân các cụm từ đã học trong bài viết</li>
+                                            <li>Tra cứu phiên âm từ điển Oxford cho các từ chưa chắc chắn</li>
+                                            <li>Tham khảo bài mẫu nhưng không sao chép nguyên văn</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button class="btn btn-primary btn-lg" onclick="document.getElementById('step1-tab').click()">
+                                    <i class="fas fa-play me-2"></i>Bắt đầu làm bài
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Step 1: Watch Video -->
-                <div class="tab-pane fade show active" id="step1" role="tabpanel">
+                <div class="tab-pane fade" id="step1" role="tabpanel">
                     <div class="row">
                         <div class="col-lg-8">
                             <div class="card mb-4">

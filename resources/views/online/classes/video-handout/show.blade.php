@@ -8,7 +8,12 @@
 
             <ul class="nav nav-tabs" id="videoHandoutTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="video-tab" data-bs-toggle="tab" data-bs-target="#video" type="button" role="tab">
+                    <button class="nav-link active" id="instructions-tab" data-bs-toggle="tab" data-bs-target="#instructions" type="button" role="tab">
+                        <span class="badge bg-info me-2"><i class="fas fa-info-circle"></i></span>HƯỚNG DẪN
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="video-tab" data-bs-toggle="tab" data-bs-target="#video" type="button" role="tab">
                         <span class="badge bg-primary me-2">1</span>XEM VIDEO
                     </button>
                 </li>
@@ -25,8 +30,72 @@
             </ul>
 
             <div class="tab-content pt-4" id="videoHandoutTabContent">
+                <!-- Instructions Tab -->
+                <div class="tab-pane fade show active" id="instructions" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title mb-4">
+                                <i class="fas fa-info-circle text-info me-2"></i>Hướng dẫn làm bài
+                            </h4>
+
+                            <div class="alert alert-info mb-4">
+                                <h5 class="alert-heading">
+                                    <i class="fas fa-video me-2"></i>Bước 1: Xem Video
+                                </h5>
+                                <ul class="mb-0">
+                                    <li>Xem video bài học theo thứ tự trong danh sách</li>
+                                    <li>Ghi chú những điểm quan trọng và từ vựng mới</li>
+                                    <li>Có thể tạm dừng video để ghi chép hoặc xem lại các phần chưa rõ</li>
+                                    <li>Chú ý cách phát âm và ngữ điệu của người nói</li>
+                                </ul>
+                            </div>
+
+                            <div class="alert alert-warning mb-4">
+                                <h5 class="alert-heading">
+                                    <i class="fas fa-book me-2"></i>Bước 2: Làm Bài Tập Handout
+                                </h5>
+                                <ul class="mb-0">
+                                    <li>Hoàn thành các bài tập phát âm (Pronunciation)</li>
+                                    <li>Thực hành các bài tập nghe và nói (Listening & Speaking)</li>
+                                    <li>Làm theo hướng dẫn chi tiết trong từng phần</li>
+                                    <li>Kiểm tra kỹ đáp án trước khi nộp bài</li>
+                                </ul>
+                            </div>
+
+                            <div class="alert alert-success mb-4">
+                                <h5 class="alert-heading">
+                                    <i class="fas fa-tasks me-2"></i>Bước 3: Làm Bài Tập Về Nhà
+                                </h5>
+                                <ul class="mb-0">
+                                    <li>Hoàn thành bài tập After Class để củng cố kiến thức</li>
+                                    <li>Thực hiện bài tập Self-Study để nâng cao kỹ năng</li>
+                                    <li>Chuẩn bị bài Before Class cho buổi học tiếp theo</li>
+                                </ul>
+                            </div>
+
+                            <div class="alert alert-secondary mb-4">
+                                <h5 class="alert-heading">
+                                    <i class="fas fa-lightbulb me-2"></i>Lưu ý quan trọng
+                                </h5>
+                                <ul class="mb-0">
+                                    <li>Làm bài tập theo đúng thứ tự các bước</li>
+                                    <li>Lưu lại tiến độ thường xuyên</li>
+                                    <li>Có thể quay lại các bước trước để ôn tập</li>
+                                    <li>Liên hệ giáo viên nếu cần hỗ trợ thêm</li>
+                                </ul>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button class="btn btn-primary btn-lg" onclick="document.getElementById('video-tab').click()">
+                                    <i class="fas fa-play me-2"></i>Bắt đầu học
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Tab 1: Watch Video -->
-                <div class="tab-pane fade show active" id="video" role="tabpanel">
+                <div class="tab-pane fade" id="video" role="tabpanel">
                     <div class="row">
                         <div class="col-lg-8">
                             <!-- Video Player -->
@@ -646,6 +715,37 @@
                                                 </div>
                                                 <div class="card-body">
                                                     <div class="formula-steps">
+                                                        <!-- Step 0 (Instructions) -->
+                                                        <div class="step-card mb-4">
+                                                            <div class="step-header bg-primary text-white p-3 rounded-top">
+                                                                <div class="d-flex align-items-center">
+                                                                    <span class="step-number me-3">0</span>
+                                                                    <h6 class="mb-0">Instructions</h6>
+                                                                </div>
+                                                            </div>
+                                                            <div class="step-content p-3 border border-top-0 rounded-bottom">
+                                                                <div class="mb-3">
+                                                                    <p class="lead text-primary mb-3">
+                                                                        "First off, the thing that I love the most about X is that..."
+                                                                    </p>
+                                                                    <div class="pattern-options">
+                                                                        <div class="pattern bg-light p-3 rounded mb-2">
+                                                                            <div class="d-flex align-items-center mb-2">
+                                                                                <span class="badge bg-primary me-2">Pattern A</span>
+                                                                                <strong>there are/is + ADJECTIVE + NOUN, so + (kết quả)</strong>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="pattern bg-light p-3 rounded">
+                                                                            <div class="d-flex align-items-center mb-2">
+                                                                                <span class="badge bg-primary me-2">Pattern B</span>
+                                                                                <strong>the + NOUN + is + ADJECTIVE because + (lí do)</strong>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                         <!-- Step 1 -->
                                                         <div class="step-card mb-4">
                                                             <div class="step-header bg-primary text-white p-3 rounded-top">

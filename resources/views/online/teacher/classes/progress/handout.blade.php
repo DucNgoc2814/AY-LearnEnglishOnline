@@ -30,34 +30,62 @@
             <!-- Progress Summary -->
             <div class="row mb-4">
                 <div class="col-xl-3 col-md-6">
-                    <div class="card bg-primary text-white mb-4">
+                    <div class="card bg-light mb-4">
                         <div class="card-body">
-                            <h4 class="mb-0">18/20</h4>
-                            <div>Học viên đã xem</div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-dark">
+                                    <div class="small text-muted mb-1">Tổng số bài tập</div>
+                                    <div class="fw-bold h5 mb-0">5</div>
+                                </div>
+                                <div class="text-dark">
+                                    <i class="fas fa-tasks fa-2x"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card bg-success text-white mb-4">
+                    <div class="card bg-light mb-4">
                         <div class="card-body">
-                            <h4 class="mb-0">15</h4>
-                            <div>Đã tải tài liệu</div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-dark">
+                                    <div class="small text-muted mb-1">Đã nộp</div>
+                                    <div class="fw-bold h5 mb-0">3/5</div>
+                                </div>
+                                <div class="text-dark">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card bg-info text-white mb-4">
+                    <div class="card bg-light mb-4">
                         <div class="card-body">
-                            <h4 class="mb-0">90%</h4>
-                            <div>Tỷ lệ hoàn thành</div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-dark">
+                                    <div class="small text-muted mb-1">Tỷ lệ nộp</div>
+                                    <div class="fw-bold h5 mb-0">60.00%</div>
+                                </div>
+                                <div class="text-dark">
+                                    <i class="fas fa-chart-line fa-2x"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card bg-danger text-white mb-4">
+                    <div class="card bg-light mb-4">
                         <div class="card-body">
-                            <h4 class="mb-0">2</h4>
-                            <div>Chưa xem</div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-dark">
+                                    <div class="small text-muted mb-1">Đang diễn ra</div>
+                                    <div class="fw-bold h5 mb-0">1</div>
+                                </div>
+                                <div class="text-dark">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

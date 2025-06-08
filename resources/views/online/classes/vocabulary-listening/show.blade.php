@@ -9,9 +9,15 @@
                 <!-- Nav tabs -->
                 <div class="tabs-wrapper">
                     <ul class="nav nav-tabs mb-4" id="stepTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="step0-tab" data-bs-toggle="tab" data-bs-target="#step0" type="button" role="tab">
+                                <span class="step-number"><i class="fas fa-info-circle"></i></span>
+                                <span class="step-title">Hướng dẫn</span>
+                            </button>
+                        </li>
                         @foreach ($steps as $index => $step)
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link {{ $index === 0 ? 'active' : '' }}" id="{{ $step['id'] }}-tab"
+                                <button class="nav-link" id="{{ $step['id'] }}-tab"
                                     data-bs-toggle="tab" data-bs-target="#{{ $step['id'] }}" type="button"
                                     role="tab">
                                     <span class="step-number">{{ $index + 1 }}</span>
@@ -24,8 +30,69 @@
 
                 <!-- Tab content -->
                 <div class="tab-content" id="stepTabsContent">
+                    <!-- Instructions Tab -->
+                    <div class="tab-pane fade show active" id="step0" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="card-title mb-0">Hướng dẫn làm bài</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info mb-4">
+                                    <h6 class="alert-heading"><i class="fas fa-video me-2"></i>Bước 1: Xem video hướng dẫn</h6>
+                                    <ul class="mb-0">
+                                        <li>Xem video hướng dẫn về phương pháp Active Listening</li>
+                                        <li>Ghi chú các điểm quan trọng và phương pháp học</li>
+                                        <li>Đảm bảo hiểu rõ quy trình học trước khi bắt đầu</li>
+                                    </ul>
+                                </div>
+
+                                <div class="alert alert-warning mb-4">
+                                    <h6 class="alert-heading"><i class="fas fa-graduation-cap me-2"></i>Bước 2: Học từ vựng với Quizlet</h6>
+                                    <ul class="mb-0">
+                                        <li>Sử dụng Quizlet để học và ghi nhớ từ vựng mới</li>
+                                        <li>Thực hành với các chế độ: Flashcards, Learn, Write và Test</li>
+                                        <li>Đánh dấu các tính năng đã hoàn thành trong checklist</li>
+                                    </ul>
+                                </div>
+
+                                <div class="alert alert-success mb-4">
+                                    <h6 class="alert-heading"><i class="fas fa-headphones me-2"></i>Bước 3: Luyện nghe chép chính tả</h6>
+                                    <ul class="mb-0">
+                                        <li>Nghe và ghi lại chính xác nội dung audio</li>
+                                        <li>Kiểm tra bài làm với script có sẵn</li>
+                                        <li>Lưu ý các từ phát âm khó và dễ nhầm lẫn</li>
+                                    </ul>
+                                </div>
+
+                                <div class="alert alert-primary mb-4">
+                                    <h6 class="alert-heading"><i class="fas fa-tasks me-2"></i>Bước 4-8: Hoàn thành các bài tập</h6>
+                                    <ul class="mb-0">
+                                        <li>Làm các bài tập theo thứ tự từ dễ đến khó</li>
+                                        <li>Chú ý làm đúng theo yêu cầu của từng dạng bài</li>
+                                        <li>Kiểm tra kỹ đáp án và ghi nhớ các lỗi sai để cải thiện</li>
+                                    </ul>
+                                </div>
+
+                                <div class="alert alert-secondary mb-4">
+                                    <h6 class="alert-heading"><i class="fas fa-lightbulb me-2"></i>Lưu ý quan trọng:</h6>
+                                    <ul class="mb-0">
+                                        <li>Nên hoàn thành các bước theo đúng thứ tự đề xuất</li>
+                                        <li>Có thể quay lại các bước trước để ôn tập nếu cần</li>
+                                        <li>Nhớ lưu tiến độ sau mỗi phần để theo dõi quá trình học</li>
+                                    </ul>
+                                </div>
+
+                                <div class="text-center mt-4">
+                                    <button class="btn btn-primary" onclick="document.querySelector('#{{ $steps[0]['id'] }}-tab').click()">
+                                        <i class="fas fa-play me-2"></i>Bắt đầu làm bài
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     @foreach ($steps as $index => $step)
-                        <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}" id="{{ $step['id'] }}"
+                        <div class="tab-pane fade" id="{{ $step['id'] }}"
                             role="tabpanel">
                             <div class="card">
                                 <div class="card-header bg-primary text-white">

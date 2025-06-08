@@ -213,7 +213,14 @@
 
     .progress-date {
         font-size: 0.875rem;
-        color: #9ca3af;
+        color: #6b7280;
+        min-width: 100px;
+        text-align: right;
+    }
+
+    .progress-date.completed {
+        color: #059669;
+        font-weight: 500;
     }
 
     .progress-bar-container {
@@ -228,6 +235,16 @@
         background: #4f46e5;
         border-radius: 2px;
         transition: width 0.3s ease;
+    }
+
+    .progress-item.completed {
+        background-color: #f8fafc;
+    }
+
+    .progress-item.completed .progress-checkbox input[type="checkbox"] {
+        background-color: #4f46e5;
+        border-color: #4f46e5;
+        cursor: not-allowed;
     }
 </style>
 @endsection
@@ -262,27 +279,37 @@
     <div class="tab-content" id="exerciseTabsContent">
         <!-- Dictation Exercises Tab -->
         <div class="tab-pane fade show active" id="dictation" role="tabpanel">
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                @foreach($dictations as $dictation)
-                <div class="col">
-                    <div class="exercise-card h-100">
-                        <div class="card-body">
-                            <div class="exercise-number">Bài {{ $dictation->id }}</div>
-                            <div class="mb-3">
-                                <span class="exercise-status status-new">Mới</span>
+            @if($dictations->isEmpty())
+                <div class="alert alert-info text-center p-5 rounded-3">
+                    <div class="mb-4">
+                        <i class="fas fa-info-circle fa-3x text-info"></i>
+                    </div>
+                    <h4 class="alert-heading mb-3">Chưa có bài tập Dictation</h4>
+                    <p class="mb-0">Hiện tại chưa có bài tập Dictation nào được tạo. Vui lòng quay lại sau.</p>
+                </div>
+            @else
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    @foreach($dictations as $dictation)
+                    <div class="col">
+                        <div class="exercise-card h-100">
+                            <div class="card-body">
+                                <div class="exercise-number">Bài {{ $dictation->id }}</div>
+                                <div class="mb-3">
+                                    <span class="exercise-status status-new">Mới</span>
+                                </div>
+                                <p class="text-gray-600 mb-4">
+                                    Luyện nghe và viết theo đoạn hội thoại.
+                                </p>
+                                <a href="{{ route('exercises.dictation', ['id' => $dictation->id]) }}"
+                                   class="btn btn-primary d-block">
+                                    Bắt đầu
+                                </a>
                             </div>
-                            <p class="text-gray-600 mb-4">
-                                Luyện nghe và viết theo đoạn hội thoại.
-                            </p>
-                            <a href="{{ route('exercises.dictation', ['id' => $dictation->id]) }}"
-                               class="btn btn-primary d-block">
-                                Bắt đầu
-                            </a>
                         </div>
                     </div>
+                    @endforeach
                 </div>
-                @endforeach
-            </div>
+            @endif
         </div>
 
         <!-- Video Dubbing Tab -->
@@ -324,18 +351,20 @@
                 </div>
                 <ul class="progress-list">
                     @for($i = 1; $i <= 6; $i++)
-                    <li class="progress-item">
+                    <li class="progress-item {{ in_array($i, [1, 3]) ? 'completed' : '' }}">
                         <label class="progress-checkbox">
                             <input type="checkbox" name="video_progress[]" value="{{ $i }}"
-                                   {{ in_array($i, [1, 3]) ? 'checked' : '' }}
+                                   {{ in_array($i, [1, 3]) ? 'checked disabled' : '' }}
                                    onchange="updateProgress(this)">
                         </label>
                         <div class="progress-info">
                             <div class="progress-name">Video Practice {{ $i }}</div>
                             <div class="progress-description">Xem video và thực hành lồng tiếng theo nhân vật</div>
                         </div>
-                        <div class="progress-date">
-                            {{ in_array($i, [1, 3]) ? '20/03/2024' : '' }}
+                        <div class="progress-date {{ in_array($i, [1, 3]) ? 'completed' : '' }}">
+                            @if(in_array($i, [1, 3]))
+                                <i class="fas fa-calendar-check me-1"></i> 20/03/2024
+                            @endif
                         </div>
                     </li>
                     @endfor
@@ -396,6 +425,8 @@
         const progressType = checkbox.name.includes('video') ? 'video' : 'dictation';
         const exerciseId = checkbox.value;
         const completed = checkbox.checked;
+        const progressItem = checkbox.closest('.progress-item');
+        const dateElement = progressItem.querySelector('.progress-date');
 
         // Gửi AJAX request để cập nhật tiến độ
         fetch('/exercises/progress/update', {
@@ -413,13 +444,21 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Cập nhật UI
-                const dateElement = checkbox.closest('.progress-item').querySelector('.progress-date');
-                if (completed) {
-                    dateElement.textContent = new Date().toLocaleDateString('vi-VN');
-                } else {
-                    dateElement.textContent = '';
-                }
+                // Disable checkbox
+                checkbox.disabled = true;
+
+                // Add completed class to progress item
+                progressItem.classList.add('completed');
+
+                // Update date element
+                const today = new Date();
+                const formattedDate = today.toLocaleDateString('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+                dateElement.innerHTML = `<i class="fas fa-calendar-check me-1"></i> ${formattedDate}`;
+                dateElement.classList.add('completed');
 
                 // Cập nhật progress bar
                 updateProgressBar(progressType);
