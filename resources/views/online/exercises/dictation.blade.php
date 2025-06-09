@@ -393,6 +393,12 @@
                         // Display translation
                         translationText.textContent = data.data.translation;
 
+                        // Fill the input textarea with the correct text
+                        const correctText = data.data.pronunciations.map(item => item.word).join(' ');
+                        userInput.value = correctText;
+                        userInput.style.borderColor = '#6ee7b7'; // Add a success border color
+                        userInput.style.backgroundColor = '#ecfdf5'; // Light green background
+
                         // Display pronunciation
                         let pronunciationHtml = '';
                         data.data.pronunciations.forEach((item, index) => {
@@ -427,6 +433,12 @@
                     console.error('Error:', error);
                     showResult('incorrect', 'Có lỗi xảy ra khi tải script.');
                 }
+            });
+
+            // Add input event listener to reset styles when user starts typing
+            userInput.addEventListener('input', function() {
+                this.style.borderColor = '#e5e7eb'; // Reset border color
+                this.style.backgroundColor = 'white'; // Reset background color
             });
 
             function showPhonetics(wordData, element) {

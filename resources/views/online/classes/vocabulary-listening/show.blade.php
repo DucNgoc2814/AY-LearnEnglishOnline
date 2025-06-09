@@ -36,6 +36,54 @@
 
                                     @switch($index)
                                         @case(0)
+                                            <!-- Instructions and Video Tutorial -->
+                                            <div class="instructions mb-4">
+                                                <div class="alert alert-info mb-4">
+                                                    <h6 class="alert-heading"><i class="fas fa-video me-2"></i>Bước 1: Xem video hướng dẫn</h6>
+                                                    <ul class="mb-0">
+                                                        <li>Xem video hướng dẫn về phương pháp Active Listening</li>
+                                                        <li>Ghi chú các điểm quan trọng và phương pháp học</li>
+                                                        <li>Đảm bảo hiểu rõ quy trình học trước khi bắt đầu</li>
+                                                    </ul>
+                                                </div>
+
+                                                <div class="alert alert-warning mb-4">
+                                                    <h6 class="alert-heading"><i class="fas fa-graduation-cap me-2"></i>Bước 2: Học từ vựng với Quizlet</h6>
+                                                    <ul class="mb-0">
+                                                        <li>Sử dụng Quizlet để học và ghi nhớ từ vựng mới</li>
+                                                        <li>Thực hành với các chế độ: Flashcards, Learn, Write và Test</li>
+                                                        <li>Đánh dấu các tính năng đã hoàn thành trong checklist</li>
+                                                    </ul>
+                                                </div>
+
+                                                <div class="alert alert-success mb-4">
+                                                    <h6 class="alert-heading"><i class="fas fa-headphones me-2"></i>Bước 3: Luyện nghe chép chính tả</h6>
+                                                    <ul class="mb-0">
+                                                        <li>Nghe và ghi lại chính xác nội dung audio</li>
+                                                        <li>Kiểm tra bài làm với script có sẵn</li>
+                                                        <li>Lưu ý các từ phát âm khó và dễ nhầm lẫn</li>
+                                                    </ul>
+                                                </div>
+
+                                                <div class="alert alert-primary mb-4">
+                                                    <h6 class="alert-heading"><i class="fas fa-tasks me-2"></i>Bước 4-8: Hoàn thành các bài tập</h6>
+                                                    <ul class="mb-0">
+                                                        <li>Làm các bài tập theo thứ tự từ dễ đến khó</li>
+                                                        <li>Chú ý làm đúng theo yêu cầu của từng dạng bài</li>
+                                                        <li>Kiểm tra kỹ đáp án và ghi nhớ các lỗi sai để cải thiện</li>
+                                                    </ul>
+                                                </div>
+
+                                                <div class="alert alert-secondary mb-4">
+                                                    <h6 class="alert-heading"><i class="fas fa-lightbulb me-2"></i>Lưu ý quan trọng:</h6>
+                                                    <ul class="mb-0">
+                                                        <li>Nên hoàn thành các bước theo đúng thứ tự đề xuất</li>
+                                                        <li>Có thể quay lại các bước trước để ôn tập nếu cần</li>
+                                                        <li>Nhớ lưu tiến độ sau mỗi phần để theo dõi quá trình học</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+
                                             <!-- Video Tutorial -->
                                             <div class="video-container">
                                                 <div class="ratio ratio-16x9 mb-4">
@@ -110,23 +158,45 @@
 
                                         @case(2)
                                             <!-- Dictation -->
-                                            <div class="dictation-exercise">
-                                                <div class="mb-4">
-                                                    <audio controls class="w-100">
-                                                        <source src="/path/to/audio.mp3" type="audio/mpeg">
-                                                        Your browser does not support the audio element.
-                                                    </audio>
-                                                </div>
+                                            <div class="dictation-exercise" data-dictation-id="{{ $step['dictation_id'] }}">
                                                 @foreach ($step['dictation_exercises'] as $audio)
                                                     <div class="mb-4">
                                                         <h5 class="mb-3">{{ $audio['title'] }}</h5>
                                                         @foreach ($audio['exercises'] as $exercise)
-                                                            <div class="exercise-item mb-4"
-                                                                data-answer="{{ $exercise['answer'] }}">
+                                                            <div class="exercise-item mb-4" data-answer="{{ $exercise['answer'] }}">
+                                                                <div class="mb-4">
+                                                                    @php
+                                                                        $mediaUrl = $exercise['audio_url'];
+                                                                        $fileType = $exercise['file_type'];
+                                                                    @endphp
+
+                                                                    <div class="media-container">
+                                                                        @if($fileType == 'image')
+                                                                            <div class="image-preview rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                                                                                <img src="{{ $mediaUrl }}" alt="Exercise Media" class="w-100 h-auto object-cover">
+                                                                            </div>
+                                                                        @elseif($fileType == 'video')
+                                                                            <div class="video-preview rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                                                                                <video controls class="w-100">
+                                                                                    <source src="{{ $mediaUrl }}" type="video/mp4">
+                                                                                    Your browser does not support the video element.
+                                                                                </video>
+                                                                            </div>
+                                                                        @elseif($fileType == 'audio')
+                                                                            <div class="audio-preview rounded-lg overflow-hidden shadow-sm border border-gray-200 p-3 bg-light">
+
+                                                                                <audio controls class="w-100">
+                                                                                    <source src="{{ $mediaUrl }}" type="audio/mpeg">
+                                                                                    <source src="{{ $mediaUrl }}" type="audio/wav">
+                                                                                    Your browser does not support the audio element.
+                                                                                </audio>
+                                                                            </div>
+                                                                        @endif
+                                                                    </div>
+                                                                </div>
                                                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                                                    <h6 class="mb-0">{{ $exercise['id'] }}</h6>
-                                                                    <button class="btn btn-sm btn-outline-primary check-script"
-                                                                        onclick="checkScript(this)">
+                                                                    <h6 class="mb-0">Exercise {{ $exercise['id'] }}</h6>
+                                                                    <button class="btn btn-sm btn-outline-primary check-script" onclick="checkScript(this)">
                                                                         Check with the script
                                                                     </button>
                                                                 </div>
@@ -135,8 +205,7 @@
                                                                     <div class="answer-feedback" style="display: none;">
                                                                         <div class="alert alert-info">
                                                                             <strong>Correct Answer:</strong>
-                                                                            <p class="mb-0 mt-2" style="white-space: pre-line;">
-                                                                                {{ $exercise['answer'] }}</p>
+                                                                            <p class="mb-0 mt-2" style="white-space: pre-line;">{{ $exercise['answer'] }}</p>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -147,8 +216,7 @@
 
                                                 <!-- Save Progress Button -->
                                                 <div class="text-center mt-4">
-                                                    <button class="btn btn-success save-dictation-progress"
-                                                        onclick="saveDictationProgress()">
+                                                    <button class="btn btn-success save-dictation-progress" onclick="saveDictationProgress()">
                                                         <i class="fas fa-save me-2"></i>Lưu tiến độ
                                                     </button>
                                                 </div>
@@ -724,7 +792,7 @@
                 answerFeedback.style.display = 'block';
 
                 // Compare user input with correct answer
-                const userInput = textarea.value;
+                const userInput = textarea.value.trim();
                 const userWords = userInput.split(/\s+/);
                 const correctWords = correctAnswer.split(/\s+/);
 
@@ -793,6 +861,97 @@
                 if (allCorrect) {
                     document.getElementById('checkPhrases').disabled = true;
                 }
+            }
+
+            function saveDictationProgress() {
+                const exercises = document.querySelectorAll('.exercise-item');
+                let totalExercises = exercises.length;
+                let completedExercises = 0;
+                let completedBlanks = [];
+                let totalScore = 0;
+
+                exercises.forEach((exercise, index) => {
+                    const textarea = exercise.querySelector('textarea');
+                    const answer = exercise.dataset.answer;
+                    const userInput = textarea.value.trim();
+
+                    if (userInput) {
+                        completedExercises++;
+
+                        // Calculate score for this exercise
+                        const score = calculateSimilarity(userInput, answer);
+                        totalScore += score;
+
+                        // Store completed exercise info
+                        completedBlanks.push({
+                            exercise_id: index + 1,
+                            user_input: userInput,
+                            score: score
+                        });
+                    }
+                });
+
+                const progress = (completedExercises / totalExercises) * 100;
+                const averageScore = totalScore / totalExercises;
+
+                // Get dictation ID from the page
+                const dictationId = document.querySelector('.dictation-exercise').dataset.dictationId;
+
+                // Send data to server
+                fetch('/online/classes/vocabulary-listening/dictation/save-progress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        dictation_id: dictationId,
+                        progress: progress,
+                        score: averageScore,
+                        completed_blanks: completedBlanks
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: data.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        throw new Error(data.message);
+                    }
+                })
+                .catch(error => {
+                    // Show error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: error.message || 'Có lỗi xảy ra khi lưu tiến độ',
+                    });
+                });
+            }
+
+            // Helper function to calculate similarity between two strings
+            function calculateSimilarity(str1, str2) {
+                str1 = str1.toLowerCase();
+                str2 = str2.toLowerCase();
+
+                if (str1 === str2) return 100;
+
+                const words1 = str1.split(/\s+/);
+                const words2 = str2.split(/\s+/);
+                let matches = 0;
+
+                words1.forEach(word => {
+                    if (words2.includes(word)) matches++;
+                });
+
+                return (matches / Math.max(words1.length, words2.length)) * 100;
             }
         </script>
     @endpush

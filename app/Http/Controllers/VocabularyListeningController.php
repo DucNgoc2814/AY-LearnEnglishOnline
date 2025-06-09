@@ -2,72 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\VocabularyListeningQuizlet;
+use App\Models\VocabularyListeningDictation;
 
 class VocabularyListeningController extends Controller
 {
     public function show()
     {
+        // Get the first Quizlet from database
+        $quizlet = VocabularyListeningQuizlet::first();
+
+        // Get all dictation exercises grouped by lesson
+        $dictationExercises = VocabularyListeningDictation::with('lesson')
+            ->orderBy('lesson_id')
+            ->get()
+            ->groupBy('lesson_id')
+            ->map(function ($exercises) {
+                $firstExercise = $exercises->first();
+                return [
+                    'title' => $firstExercise->title,
+                    'exercises' => $exercises->map(function ($exercise) {
+                        // Get media URL using the HasMedia trait method
+                        $audioUrl = $exercise->getMediaUrl('audio_url');
+
+                        return [
+                            'id' => $exercise->id,
+                            'text' => $this->generateDisplayText($exercise->display_text, json_decode($exercise->getRawOriginal('blank_words'), true)),
+                            'answer' => $exercise->correct_text,
+                            'audio_url' => $audioUrl,
+                            'audio_file' => $exercise->audio_url,
+                            'file_type' => 'audio' // Force audio type for dictation exercises
+                        ];
+                    })->values()
+                ];
+            })->values();
+
         $data = [
             'title' => 'Vocabulary & Listening Practice',
             'steps' => [
                 [
-                    'id' => 'step0',
-                    'title' => 'XEM VIDEO 6 BƯỚC LÀM "ACTIVE LISTENING"',
-                    'description' => 'Xem video hướng dẫn về phương pháp Active Listening',
-                    'video_url' => 'https://drive.google.com/drive/folders/1oFPtDF8ajwokCpVHEgTew4UZVbOtD7A0?usp=sharing'
-                ],
-                [
                     'id' => 'step1',
-                    'title' => 'QUIZLET',
-                    'description' => 'Học từ mới (Unit 1: Hometown) với 4 tính năng trên quizlet',
-                    'quizlet_url' => 'https://quizlet.com/join/ezqH7nkEv?i=qpkku&x=1bqt',
-                    'guide_url' => 'https://drive.google.com/drive/folders/112lwm_z4CeM8pMi2nMQe8GQ6sMcDg7YO?usp=sharing'
+                    'title' => 'INSTRUCTIONS & VIDEO',
+                    'description' => 'Xem video hướng dẫn về phương pháp học',
+                    'video_url' => 'https://www.youtube.com/watch?v=example'
                 ],
                 [
                     'id' => 'step2',
-                    'title' => 'DICTATION',
-                    'description' => 'Mở audio, nghe & điền từ còn thiếu vào chỗ trống',
-                    'dictation_exercises' => [
-                        [
-                            'title' => 'Audio 1: General information',
-                            'exercises' => [
-                                [
-                                    'id' => '1.1',
-                                    'text' => 'I live in Paris, it\'s the capital city. It\'s ________________ its _________________ such as the Eiffel Tower, Notre Dame Cathedral or the Louvre. It\'s also _________________ its food, of course!',
-                                    'answer' => 'I live in Paris, it\'s the capital city. It\'s famous for its landmarks such as the Eiffel Tower, Notre Dame Cathedral or the Louvre. It\'s also well-known for its food, of course!'
-                                ],
-                                [
-                                    'id' => '1.2',
-                                    'text' => 'I live in Shanghai. It\'s a __________, _______________, _________________ city. People from all over the world live and work there.',
-                                    'answer' => 'I live in Shanghai. It\'s a huge, bustling, international city. People from all over the world live and work there.'
-                                ],
-                                [
-                                    'id' => '1.3',
-                                    'text' => 'I live in a small town called Banbury. I\'ve ______________ there for about five years, since I finished university. It\'s a _________________, to be honest.',
-                                    'answer' => 'I live in a small town called Banbury. I\'ve been living there for about five years, since I finished university. It\'s a pretty sleepy place, to be honest.'
-                                ],
-                                [
-                                    'id' => '1.4',
-                                    'text' => 'Well, I was born in a ______________ outside of Hangzhou, but I also ______________ in Hangzhou. It\'s ______________ from Shanghai.',
-                                    'answer' => 'Well, I was born in a small village outside of Hangzhou, but I also grew up in Hangzhou. It\'s a couple of hours away from Shanghai.'
-                                ],
-                                [
-                                    'id' => '1.5',
-                                    'text' => "Man So tell me about your hometown, Abby.\nAbby Well, not many people live there, but it's actually a ______________town. It has some large farms, a river, two lakes, and even a mountain.\nMan Do you like those kinds of things?\nAbby Oh, yes. I love nature. I think it's ______________. And the ______________ from the farms is delicious.",
-                                    'answer' => "Man So tell me about your hometown, Abby.\nAbby Well, not many people live there, but it's actually a fairly large town. It has some large farms, a river, two lakes, and even a mountain.\nMan Do you like those kinds of things?\nAbby Oh, yes. I love nature. I think it's extremely beautiful. And the fresh food from the farms is delicious."
-                                ],
-                                [
-                                    'id' => '1.6',
-                                    'text' => "Woman Where did you grow up, Christopher?\nChristopher I ______________ a city. So I guess you could say my hometown isn't really a town – it's a city. For me, it's a ______________, though.\nWoman Why do you say that?\nChristopher Well, for one thing, it's too crowded. The streets and the subways are full of people day and night.\nWoman Really? Is it a polluted place?\nChristopher I wouldn't say that. But it's not very clean.\nWoman Like many cities, I guess.\nChristopher Right. And like many cities, it's ______________. My parents still live there, and they always talk about the high prices.",
-                                    'answer' => "Woman Where did you grow up, Christopher?\nChristopher I grew up in a city. So I guess you could say my hometown isn't really a town – it's a city. For me, it's a really stressful place, though.\nWoman Why do you say that?\nChristopher Well, for one thing, it's too crowded. The streets and the subways are full of people day and night.\nWoman Really? Is it a polluted place?\nChristopher I wouldn't say that. But it's not very clean.\nWoman Like many cities, I guess.\nChristopher Right. And like many cities, it's somewhat expensive. My parents still live there, and they always talk about the high prices."
-                                ]
-                            ]
-                        ]
-                    ]
+                    'title' => 'QUIZLET',
+                    'description' => 'Học từ vựng với Quizlet',
+                    'quizlet_url' => $quizlet ? $quizlet->url : '#',
+                    'guide_url' => route('online.guides.show', 'quizlet')
                 ],
                 [
                     'id' => 'step3',
+                    'title' => 'DICTATION',
+                    'description' => 'Luyện nghe và điền từ',
+                    'dictation_id' => $dictationExercises->count() > 0 ? $dictationExercises[0]['exercises'][0]['id'] : null,
+                    'dictation_exercises' => $dictationExercises
+                ],
+                [
+                    'id' => 'step4',
                     'title' => 'KEY PHRASES',
                     'description' => 'Có 2 cột: một cột tiếng Việt & 1 cột tiếng Anh. Cột tiếng Anh để 1 chỗ trống để học viên tự điền',
                     'phrases' => [
@@ -95,7 +89,7 @@ class VocabularyListeningController extends Controller
                     ]
                 ],
                 [
-                    'id' => 'step4',
+                    'id' => 'step5',
                     'title' => 'SENTENCE BUILDING',
                     'description' => 'Kéo thả để sắp xếp các từ dưới đây thành một câu đúng',
                     'sentences' => [
@@ -126,7 +120,7 @@ class VocabularyListeningController extends Controller
                     ]
                 ],
                 [
-                    'id' => 'step5',
+                    'id' => 'step6',
                     'title' => 'GRAMMAR (Trạng từ + Tính từ)',
                     'description' => 'Kéo thả từ trong hộp để di chuyển đáp án lên câu hỏi',
                     'grammar_exercise' => [
@@ -192,18 +186,18 @@ class VocabularyListeningController extends Controller
                     ]
                 ],
                 [
-                    'id' => 'step6',
+                    'id' => 'step7',
                     'title' => 'TRANSCRIPTION',
                     'description' => 'Tra phiên âm NAmE (North American English) của 10 từ',
                     'dictionary_url' => 'https://www.oxfordlearnersdictionaries.com/'
                 ],
                 [
-                    'id' => 'step7',
+                    'id' => 'step8',
                     'title' => 'ENDING SOUND',
                     'description' => 'Thêm âm cuối cho 5 từ theo quy tắc'
                 ],
                 [
-                    'id' => 'step8',
+                    'id' => 'step9',
                     'title' => 'LISTENING & READING – TEST 1',
                     'description' => 'Làm bài test về kỹ năng nghe & đọc trong 10 phút'
                 ]
@@ -211,5 +205,42 @@ class VocabularyListeningController extends Controller
         ];
 
         return view('online.classes.vocabulary-listening.show', $data);
+    }
+
+    /**
+     * Generate display text with blanks for missing words
+     */
+    protected function generateDisplayText($displayText, $blankWords)
+    {
+        if (empty($blankWords)) {
+            return $displayText;
+        }
+
+        $text = $displayText;
+        foreach ($blankWords as $word) {
+            $text = str_replace($word['word'], str_repeat('_', strlen($word['word'])), $text);
+        }
+
+        return $text;
+    }
+
+    /**
+     * Determine file type based on extension
+     */
+    protected function getFileType($filePath)
+    {
+        if (!$filePath) return null;
+
+        $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+
+        if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
+            return 'image';
+        } elseif (in_array($extension, ['mp4', 'mov', 'avi'])) {
+            return 'video';
+        } elseif (in_array($extension, ['mp3', 'wav'])) {
+            return 'audio';
+        }
+
+        return 'other';
     }
 }

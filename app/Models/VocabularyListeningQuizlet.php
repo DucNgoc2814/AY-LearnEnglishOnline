@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class VocabularyListeningQuizlet extends Model
+class VocabularyListeningQuizlet extends BaseModel
 {
     public static function getBaseRules($id = null)
     {
@@ -70,5 +68,9 @@ class VocabularyListeningQuizlet extends Model
     public function lesson()
     {
         return $this->belongsTo(Lesson::class);
+    }
+    protected static function bootHasSlug()
+    {
+        // Override to disable slug generation
     }
 }

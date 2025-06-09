@@ -455,10 +455,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 answers[questionId] = inputs[0].value;
             }
         });
-
-        // For demo purposes, just show the answers in console
-        console.log('Submitted answers:', answers);
-        alert('Bài làm đã được nộp!');
     };
 
     document.getElementById('submitTest').addEventListener('click', submitTest);
