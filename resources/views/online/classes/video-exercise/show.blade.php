@@ -4,7 +4,7 @@
 <div class="container py-4">
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title mb-4">Video Exercise - Basic Introductions</h4>
+            <h4 class="card-title mb-4">{{ $lesson->title ?? 'Video Exercise' }}</h4>
 
             <ul class="nav nav-tabs" id="exerciseTabs" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -78,10 +78,11 @@
                         <div class="col-md-12">
                             <div class="ratio ratio-16x9 mb-3">
                                 <iframe
-                                    src="{{ $lesson->video_url ?? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }}"
-                                    title="Video Exercise"
+                                    src="{{ App\Helpers\VideoHelper::getEmbedUrl($lesson->video_url) }}"
+                                    title="{{ $lesson->title ?? 'Video Exercise' }}"
                                     allowfullscreen
                                     class="rounded shadow-sm"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 ></iframe>
                             </div>
                             <div class="alert alert-info mb-3">
@@ -101,10 +102,11 @@
                         <div class="col-md-12">
                             <div class="ratio ratio-16x9 mb-3">
                                 <iframe
-                                    src="{{ $lesson->video_url ?? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }}"
-                                    title="Video Exercise"
+                                    src="{{ App\Helpers\VideoHelper::getEmbedUrl($lesson->video_url) }}"
+                                    title="{{ $lesson->title ?? 'Video Exercise' }}"
                                     allowfullscreen
                                     class="rounded shadow-sm"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 ></iframe>
                             </div>
                         </div>
@@ -194,8 +196,8 @@
                                         <div class="card-body p-0">
                                             <div class="ratio ratio-16x9">
                                                 <iframe
-                                                    src="{{ $lesson->video_url ?? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }}"
-                                                    title="Video Exercise"
+                                                    src="{{ App\Helpers\VideoHelper::getEmbedUrl($lesson->video_url) }}"
+                                                    title="{{ $lesson->title ?? 'Video Exercise' }}"
                                                     allowfullscreen
                                                     class="rounded"
                                                     id="mainVideo"
