@@ -165,10 +165,34 @@
                                                         @foreach ($audio['exercises'] as $exercise)
                                                             <div class="exercise-item mb-4" data-answer="{{ $exercise['answer'] }}">
                                                                 <div class="mb-4">
-                                                                    <audio controls class="w-100">
-                                                                        <source src="{{ $exercise['audio_url'] }}" type="audio/mpeg">
-                                                                        Your browser does not support the audio element.
-                                                                    </audio>
+                                                                    @php
+                                                                        $mediaUrl = $exercise['audio_url'];
+                                                                        $fileType = $exercise['file_type'];
+                                                                    @endphp
+
+                                                                    <div class="media-container">
+                                                                        @if($fileType == 'image')
+                                                                            <div class="image-preview rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                                                                                <img src="{{ $mediaUrl }}" alt="Exercise Media" class="w-100 h-auto object-cover">
+                                                                            </div>
+                                                                        @elseif($fileType == 'video')
+                                                                            <div class="video-preview rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                                                                                <video controls class="w-100">
+                                                                                    <source src="{{ $mediaUrl }}" type="video/mp4">
+                                                                                    Your browser does not support the video element.
+                                                                                </video>
+                                                                            </div>
+                                                                        @elseif($fileType == 'audio')
+                                                                            <div class="audio-preview rounded-lg overflow-hidden shadow-sm border border-gray-200 p-3 bg-light">
+
+                                                                                <audio controls class="w-100">
+                                                                                    <source src="{{ $mediaUrl }}" type="audio/mpeg">
+                                                                                    <source src="{{ $mediaUrl }}" type="audio/wav">
+                                                                                    Your browser does not support the audio element.
+                                                                                </audio>
+                                                                            </div>
+                                                                        @endif
+                                                                    </div>
                                                                 </div>
                                                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                                                     <h6 class="mb-0">Exercise {{ $exercise['id'] }}</h6>

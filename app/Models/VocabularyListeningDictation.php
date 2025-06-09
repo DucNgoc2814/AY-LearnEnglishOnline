@@ -71,8 +71,9 @@ class VocabularyListeningDictation extends BaseModel
                 'editable' => true
             ],
             'audio_url' => [
-                'label' => 'URL Audio',
-                'type' => 'text',
+                'label' => 'Audio',
+                'type' => 'file',
+                'accept' => 'audio/*',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
@@ -113,15 +114,6 @@ class VocabularyListeningDictation extends BaseModel
                 'editable' => true
             ],
         ];
-        foreach (static::mediaFields() as $field => $config) {
-            $fields[$field] = [
-                'label' => $config['label'],
-                'type' => 'file',
-                'accept' => $config['type'] === 'image' ? 'image/*' : 'video/*',
-                'max_size' => $config['max_size'],
-                'editable' => true
-            ];
-        }
 
         return $fields;
     }

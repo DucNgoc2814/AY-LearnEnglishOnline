@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\VocabularyListeningQuizlet;
 use App\Models\VocabularyListeningDictation;
-use Illuminate\Http\Request;
 
 class VocabularyListeningController extends Controller
 {
@@ -23,11 +22,16 @@ class VocabularyListeningController extends Controller
                 return [
                     'title' => $firstExercise->title,
                     'exercises' => $exercises->map(function ($exercise) {
+                        // Get media URL using the HasMedia trait method
+                        $audioUrl = $exercise->getMediaUrl('audio_url');
+
                         return [
                             'id' => $exercise->id,
                             'text' => $this->generateDisplayText($exercise->display_text, json_decode($exercise->getRawOriginal('blank_words'), true)),
                             'answer' => $exercise->correct_text,
-                            'audio_url' => $exercise->audio_url
+                            'audio_url' => $audioUrl,
+                            'audio_file' => $exercise->audio_url,
+                            'file_type' => 'audio' // Force audio type for dictation exercises
                         ];
                     })->values()
                 ];
@@ -218,5 +222,25 @@ class VocabularyListeningController extends Controller
         }
 
         return $text;
+    }
+
+    /**
+     * Determine file type based on extension
+     */
+    protected function getFileType($filePath)
+    {
+        if (!$filePath) return null;
+
+        $extension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
+
+        if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
+            return 'image';
+        } elseif (in_array($extension, ['mp4', 'mov', 'avi'])) {
+            return 'video';
+        } elseif (in_array($extension, ['mp3', 'wav'])) {
+            return 'audio';
+        }
+
+        return 'other';
     }
 }
