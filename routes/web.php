@@ -189,11 +189,6 @@ Route::prefix('api/oxford')->middleware('web')->group(function () {
     Route::get('/word-info', [OxfordController::class, 'getWordInfo'])->withoutMiddleware(['csrf']);
 });
 
-Route::get('/video-exercise/{id}', [VideoExerciseController::class, 'show'])->name('video-exercise.show');
-Route::get('/reflection-exercise/{id}', [ReflectionExerciseController::class, 'show'])->name('reflection-exercise.show');
-Route::get('/video-handout', [VideoHandoutController::class, 'show'])->name('video-handout.show');
-Route::get('/video-shadowing', [VideoShadowingController::class, 'show'])->name('video-shadowing.show');
-Route::get('/vocabulary-listening', [VocabularyListeningController::class, 'show'])->name('vocabulary-listening.show');
 
 // Facebook Login Routes
 Route::get('auth/facebook', [SocialLoginController::class, 'redirectToFacebook'])->name('auth.facebook');

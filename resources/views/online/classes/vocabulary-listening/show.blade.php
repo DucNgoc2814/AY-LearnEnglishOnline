@@ -159,60 +159,71 @@
                                         @case(2)
                                             <!-- Dictation -->
                                             <div class="dictation-exercise" data-dictation-id="{{ $step['dictation_id'] }}">
-                                                @foreach ($step['dictation_exercises'] as $audio)
-                                                    <div class="mb-4">
-                                                        <h5 class="mb-3">{{ $audio['title'] }}</h5>
-                                                        @foreach ($audio['exercises'] as $exercise)
-                                                            <div class="exercise-item mb-4" data-answer="{{ $exercise['answer'] }}">
-                                                                <div class="mb-4">
-                                                                    @php
-                                                                        $mediaUrl = $exercise['audio_url'];
-                                                                        $fileType = $exercise['file_type'];
-                                                                    @endphp
+                                                @if($step['dictation_exercises']->isEmpty())
+                                                    <div class="alert alert-info">
+                                                        <i class="fas fa-info-circle me-2"></i>
+                                                        @if($current_lesson_id)
+                                                            Hiện tại chưa có bài tập dictation cho bài học này.
+                                                        @else
+                                                            Vui lòng chọn một bài học để xem các bài tập dictation.
+                                                        @endif
+                                                    </div>
+                                                @else
+                                                    @foreach ($step['dictation_exercises'] as $audio)
+                                                        <div class="mb-4">
+                                                            <h5 class="mb-3">{{ $audio['title'] }}</h5>
+                                                            @foreach ($audio['exercises'] as $exercise)
+                                                                <div class="exercise-item mb-4" data-answer="{{ $exercise['answer'] }}">
+                                                                    <div class="mb-4">
+                                                                        @php
+                                                                            $mediaUrl = $exercise['audio_url'];
+                                                                            $fileType = $exercise['file_type'];
+                                                                        @endphp
 
-                                                                    <div class="media-container">
-                                                                        @if($fileType == 'image')
-                                                                            <div class="image-preview rounded-lg overflow-hidden shadow-sm border border-gray-200">
-                                                                                <img src="{{ $mediaUrl }}" alt="Exercise Media" class="w-100 h-auto object-cover">
-                                                                            </div>
-                                                                        @elseif($fileType == 'video')
-                                                                            <div class="video-preview rounded-lg overflow-hidden shadow-sm border border-gray-200">
-                                                                                <video controls class="w-100">
-                                                                                    <source src="{{ $mediaUrl }}" type="video/mp4">
-                                                                                    Your browser does not support the video element.
-                                                                                </video>
-                                                                            </div>
-                                                                        @elseif($fileType == 'audio')
-                                                                            <div class="audio-preview rounded-lg overflow-hidden shadow-sm border border-gray-200 p-3 bg-light">
+                                                                        <div class="media-container">
+                                                                            @if($fileType == 'image')
+                                                                                <div class="image-preview rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                                                                                    <img src="{{ $mediaUrl }}" alt="Exercise Media" class="w-100 h-auto object-cover">
+                                                                                </div>
+                                                                            @elseif($fileType == 'video')
+                                                                                <div class="video-preview rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                                                                                    <video controls class="w-100">
+                                                                                        <source src="{{ $mediaUrl }}" type="video/mp4">
+                                                                                        Your browser does not support the video element.
+                                                                                    </video>
+                                                                                </div>
+                                                                            @elseif($fileType == 'audio')
+                                                                                <div class="audio-preview rounded-lg overflow-hidden shadow-sm border border-gray-200 p-3 bg-light">
 
-                                                                                <audio controls class="w-100">
-                                                                                    <source src="{{ $mediaUrl }}" type="audio/mpeg">
-                                                                                    <source src="{{ $mediaUrl }}" type="audio/wav">
-                                                                                    Your browser does not support the audio element.
-                                                                                </audio>
-                                                                            </div>
-                                                                        @endif
+                                                                                    <audio controls class="w-100">
+                                                                                        <source src="{{ $mediaUrl }}" type="audio/mpeg">
+                                                                                        <source src="{{ $mediaUrl }}" type="audio/wav">
+                                                                                        Your browser does not support the audio element.
+                                                                                    </audio>
+                                                                                </div>
+                                                                            @endif
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                                    <h6 class="mb-0">Exercise {{ $exercise['id'] }}</h6>
-                                                                    <button class="btn btn-sm btn-outline-primary check-script" onclick="checkScript(this)">
-                                                                        Check with the script
-                                                                    </button>
-                                                                </div>
-                                                                <div class="exercise-content">
-                                                                    <textarea class="form-control mb-2" rows="4" placeholder="Type your answer here...">{{ $exercise['text'] }}</textarea>
-                                                                    <div class="answer-feedback" style="display: none;">
-                                                                        <div class="alert alert-info">
-                                                                            <strong>Correct Answer:</strong>
-                                                                            <p class="mb-0 mt-2" style="white-space: pre-line;">{{ $exercise['answer'] }}</p>
+                                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                        <h6 class="mb-0">Exercise {{ $exercise['id'] }}</h6>
+                                                                        <button class="btn btn-sm btn-outline-primary check-script" onclick="checkScript(this)">
+                                                                            Check with the script
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="exercise-content">
+                                                                        <textarea class="form-control mb-2" rows="4" placeholder="Type your answer here...">{{ $exercise['text'] }}</textarea>
+                                                                        <div class="answer-feedback" style="display: none;">
+                                                                            <div class="alert alert-info">
+                                                                                <strong>Correct Answer:</strong>
+                                                                                <p class="mb-0 mt-2" style="white-space: pre-line;">{{ $exercise['answer'] }}</p>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                @endforeach
+                                                            @endforeach
+                                                        </div>
+                                                    @endforeach
+                                                @endif
 
                                                 <!-- Save Progress Button -->
                                                 <div class="text-center mt-4">

@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             ClassSeeder::class,           // Classes (references courses, employees as teachers)
             ClassScheduleSeeder::class,   // Class schedules (references classes)
             ClassSessionSeeder::class,    // Class sessions (generated from schedules)
-            CourseRegistrationSeeder::class, // Course registrations (students to classes)
+            // CourseRegistrationSeeder::class, // Course registrations (students to classes)
             LessonAndTestSeeder::class,  // Online lessons and tests
 
             // 5. Learning Resources - Tests và câu hỏi

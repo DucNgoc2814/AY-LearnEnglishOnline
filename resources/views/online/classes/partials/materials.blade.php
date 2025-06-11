@@ -107,7 +107,7 @@
                                                                 </div>
                                                                 <div class="d-flex flex-column align-items-end">
                                                                     <div class="btn-group">
-                                                                        <a href="{{ route('video-exercise.show', ['id' => $lesson->id]) }}" class="btn btn-sm btn-outline-primary">
+                                                                        <a href="{{ route('online.video-exercise.show', ['id' => $lesson->id]) }}" class="btn btn-sm btn-outline-primary">
                                                                             <i class="fas fa-play"></i> Làm bài
                                                                         </a>
                                                                     </div>
@@ -138,7 +138,7 @@
                                                                 </div>
                                                                 <div class="d-flex flex-column align-items-end">
                                                                     <div class="btn-group">
-                                                                        <a href="{{ route('vocabulary-listening.show') }}" class="btn btn-sm btn-outline-primary">
+                                                                        <a href="{{ route('online.vocabulary-listening.show', ['lesson_id' => $lesson->id]) }}" class="btn btn-sm btn-outline-primary">
                                                                             <i class="fas fa-headphones"></i> Làm bài
                                                                         </a>
                                                                     </div>
@@ -183,7 +183,7 @@
                                                                 </div>
                                                                 <div class="d-flex flex-column align-items-end">
                                                                     <div class="btn-group">
-                                                                        <a href="{{ route('video-handout.show') }}" class="btn btn-sm btn-outline-primary">
+                                                                        <a href="{{ route('online.video-handout.show') }}" class="btn btn-sm btn-outline-primary">
                                                                             <i class="fas fa-play"></i> Xem video và làm bài
                                                                         </a>
                                                                     </div>
@@ -214,7 +214,7 @@
                                                                 </div>
                                                                 <div class="d-flex flex-column align-items-end">
                                                                     <div class="btn-group">
-                                                                        <a href="{{ route('video-shadowing.show') }}" class="btn btn-sm btn-outline-primary">
+                                                                        <a href="{{ route('online.video-shadowing.show') }}" class="btn btn-sm btn-outline-primary">
                                                                             <i class="fas fa-play"></i> Xem video
                                                                         </a>
                                                                     </div>
@@ -259,7 +259,7 @@
                                                                 </div>
                                                                 <div class="d-flex flex-column align-items-end">
                                                                     <div class="btn-group">
-                                                                        <a href="{{ route('reflection-exercise.show', ['id' => $lesson->id]) }}" class="btn btn-sm btn-outline-primary">
+                                                                        <a href="{{ route('online.reflection-exercise.show', ['id' => $lesson->id]) }}" class="btn btn-sm btn-outline-primary">
                                                                             <i class="fas fa-pen"></i> Viết bài
                                                                         </a>
                                                                     </div>

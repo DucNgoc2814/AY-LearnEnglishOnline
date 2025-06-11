@@ -36,16 +36,16 @@ class CourseSeeder extends Seeder
         $levels = ['Basic', 'Intermediate', 'Advanced', 'Master'];
         $usedSlugs = []; // Theo dõi các slug đã sử dụng
 
-        for ($i = 2; $i <= 20; $i++) {
+        for ($i = 2; $i <= 5; $i++) {
             $type = $courseTypes[array_rand($courseTypes)];
             $level = $levels[array_rand($levels)];
             $title = "$type - $level";
             $price = rand(1500000, 3000000);
-            
+
             // Tạo slug duy nhất bằng cách thêm timestamp
             $baseSlug = strtolower(str_replace(' ', '-', $title));
             $slug = $baseSlug . '-' . uniqid();
-            
+
             $courses[] = [
                 'category_id' => rand(1, 3),
                 'title' => $title,

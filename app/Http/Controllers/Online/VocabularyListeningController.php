@@ -1,50 +1,64 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Online;
 
+use App\Http\Controllers\Controller;
 use App\Models\VocabularyListeningQuizlet;
 use App\Models\VocabularyListeningDictation;
+use App\Models\VocabularyListeningKeyPhrase;
 
 class VocabularyListeningController extends Controller
 {
-    public function show($lesson_id = null)
+    public function show($lessonId)
     {
         // Get the first Quizlet from database
         $quizlet = VocabularyListeningQuizlet::first();
 
-        // Get dictation exercises for specific lesson only
-        $dictationQuery = VocabularyListeningDictation::with('lesson')
-            ->orderBy('lesson_id');
+        // Get all dictation exercises for this lesson
+        $dictationExercises = VocabularyListeningDictation::with('lesson')
+            ->where('lesson_id', $lessonId)
+            ->get()
+            ->map(function ($exercise) {
+                // Get media URL using the HasMedia trait method
+                $audioUrl = $exercise->getMediaUrl('audio_url');
 
-        if ($lesson_id) {
-            $dictationQuery->where('lesson_id', $lesson_id);
-        }
-
-        $dictationExercises = $dictationQuery->get()
+                return [
+                    'id' => $exercise->id,
+                    'text' => $this->generateDisplayText($exercise->display_text, json_decode($exercise->getRawOriginal('blank_words'), true)),
+                    'answer' => $exercise->correct_text,
+                    'audio_url' => $audioUrl,
+                    'audio_file' => $exercise->audio_url,
+                    'file_type' => 'audio' // Force audio type for dictation exercises
+                ];
+            })
             ->groupBy('lesson_id')
             ->map(function ($exercises) {
                 $firstExercise = $exercises->first();
                 return [
-                    'title' => $firstExercise->title,
-                    'exercises' => $exercises->map(function ($exercise) {
-                        // Get media URL using the HasMedia trait method
-                        $audioUrl = $exercise->getMediaUrl('audio_url');
-
-                        return [
-                            'id' => $exercise->id,
-                            'text' => $this->generateDisplayText($exercise->display_text, json_decode($exercise->getRawOriginal('blank_words'), true)),
-                            'answer' => $exercise->correct_text,
-                            'audio_url' => $audioUrl,
-                            'audio_file' => $exercise->audio_url,
-                            'file_type' => 'audio' // Force audio type for dictation exercises
-                        ];
-                    })->values()
+                    'title' => $firstExercise->title ?? 'Bài tập ' . $firstExercise->id,
+                    'exercises' => $exercises
                 ];
-            })->values();
+            })
+            ->values();
+
+        // Get key phrases from database for this lesson
+        $keyPhrases = VocabularyListeningKeyPhrase::where('lesson_id', $lessonId)
+            ->get()
+            ->map(function ($phrase) {
+                return [
+                    'english' => [
+                        'incomplete' => $phrase->incomplete_phrase,
+                        'complete' => $phrase->english_phrase,
+                        'blanks' => $this->extractBlanks($phrase->incomplete_phrase, $phrase->english_phrase)
+                    ],
+                    'vietnamese' => $phrase->vietnamese_phrase,
+                    'highlighted_words' => $phrase->highlighted_words
+                ];
+            });
 
         $data = [
             'title' => 'Vocabulary & Listening Practice',
-            'current_lesson_id' => $lesson_id,
+            'lesson_id' => $lessonId,
             'steps' => [
                 [
                     'id' => 'step1',
@@ -70,29 +84,7 @@ class VocabularyListeningController extends Controller
                     'id' => 'step4',
                     'title' => 'KEY PHRASES',
                     'description' => 'Có 2 cột: một cột tiếng Việt & 1 cột tiếng Anh. Cột tiếng Anh để 1 chỗ trống để học viên tự điền',
-                    'phrases' => [
-                        [
-                            'english' => [
-                                'incomplete' => 'It\'s f___, f___ its landmarks',
-                                'complete' => 'It\'s famous for its landmarks'
-                            ],
-                            'vietnamese' => 'Nơi đó nổi tiếng về các địa danh'
-                        ],
-                        [
-                            'english' => [
-                                'incomplete' => 'It\'s also w___ f___ its food',
-                                'complete' => 'It\'s also well-known for its food'
-                            ],
-                            'vietnamese' => 'Nơi đó cũng nổi tiếng về ẩm thực.'
-                        ],
-                        [
-                            'english' => [
-                                'incomplete' => 'It\'s a h___, b___, i___ city',
-                                'complete' => 'It\'s a huge, bustling, international city'
-                            ],
-                            'vietnamese' => 'Đó là một thành phố rộng lớn, hối hả & đa quốc tịch.'
-                        ]
-                    ]
+                    'phrases' => $keyPhrases
                 ],
                 [
                     'id' => 'step5',
@@ -248,5 +240,23 @@ class VocabularyListeningController extends Controller
         }
 
         return 'other';
+    }
+
+    /**
+     * Helper function để trích xuất các từ bị ẩn
+     */
+    private function extractBlanks($incompletePhrases, $completePhrases)
+    {
+        $blanks = [];
+        $incompleteWords = explode(' ', $incompletePhrases);
+        $completeWords = explode(' ', $completePhrases);
+
+        foreach ($incompleteWords as $index => $word) {
+            if (strpos($word, '_') !== false) {
+                $blanks[] = $completeWords[$index];
+            }
+        }
+
+        return $blanks;
     }
 }
