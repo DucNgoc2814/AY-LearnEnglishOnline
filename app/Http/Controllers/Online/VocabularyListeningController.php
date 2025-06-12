@@ -6,59 +6,88 @@ use App\Http\Controllers\Controller;
 use App\Models\VocabularyListeningQuizlet;
 use App\Models\VocabularyListeningDictation;
 use App\Models\VocabularyListeningKeyPhrase;
+use App\Models\VocabularyListeningDictationProgress;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class VocabularyListeningController extends Controller
 {
-    public function show($lessonId)
+    public function show($lesson_id = null)
     {
         // Get the first Quizlet from database
         $quizlet = VocabularyListeningQuizlet::first();
 
-        // Get all dictation exercises for this lesson
-        $dictationExercises = VocabularyListeningDictation::with('lesson')
-            ->where('lesson_id', $lessonId)
-            ->get()
-            ->map(function ($exercise) {
-                // Get media URL using the HasMedia trait method
-                $audioUrl = $exercise->getMediaUrl('audio_url');
+        // Get dictation exercises for specific lesson only
+        $dictationQuery = VocabularyListeningDictation::with('lesson')
+            ->orderBy('lesson_id');
 
-                return [
-                    'id' => $exercise->id,
-                    'text' => $this->generateDisplayText($exercise->display_text, json_decode($exercise->getRawOriginal('blank_words'), true)),
-                    'answer' => $exercise->correct_text,
-                    'audio_url' => $audioUrl,
-                    'audio_file' => $exercise->audio_url,
-                    'file_type' => 'audio' // Force audio type for dictation exercises
-                ];
-            })
+        if ($lesson_id) {
+            $dictationQuery->where('lesson_id', $lesson_id);
+        }
+
+        $dictationExercises = $dictationQuery->get()
             ->groupBy('lesson_id')
             ->map(function ($exercises) {
                 $firstExercise = $exercises->first();
                 return [
-                    'title' => $firstExercise->title ?? 'Bài tập ' . $firstExercise->id,
-                    'exercises' => $exercises
+                    'title' => $firstExercise->title,
+                    'exercises' => $exercises->map(function ($exercise) {
+                        // Get media URL using the HasMedia trait method
+                        $audioUrl = $exercise->getMediaUrl('audio_url');
+
+                        return [
+                            'id' => $exercise->id,
+                            'text' => $this->generateDisplayText($exercise->display_text, json_decode($exercise->getRawOriginal('blank_words'), true)),
+                            'answer' => $exercise->correct_text,
+                            'audio_url' => $audioUrl,
+                            'audio_file' => $exercise->audio_url,
+                            'file_type' => 'audio' // Force audio type for dictation exercises
+                        ];
+                    })->values()
                 ];
-            })
-            ->values();
+            })->values();
 
         // Get key phrases from database for this lesson
-        $keyPhrases = VocabularyListeningKeyPhrase::where('lesson_id', $lessonId)
+        $keyPhrases = VocabularyListeningKeyPhrase::where('lesson_id', $lesson_id)
             ->get()
             ->map(function ($phrase) {
+                // Xử lý highlighted words
+                $highlightedWords = $phrase->highlighted_words;
+
+                // Nếu là chuỗi JSON, decode nó
+                if (is_string($highlightedWords)) {
+                    $decoded = json_decode($highlightedWords, true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $highlightedWords = $decoded;
+                    } else {
+                        // Nếu không phải JSON, xử lý như chuỗi thường
+                        $words = array_map('trim', explode(',', $highlightedWords));
+                        $highlightedWords = array_map(function($word) {
+                            return [
+                                'id' => 0,
+                                'word' => $word,
+                                'position' => 0
+                            ];
+                        }, array_filter($words));
+                    }
+                }
+
                 return [
+                    'id' => $phrase->id,
                     'english' => [
                         'incomplete' => $phrase->incomplete_phrase,
                         'complete' => $phrase->english_phrase,
                         'blanks' => $this->extractBlanks($phrase->incomplete_phrase, $phrase->english_phrase)
                     ],
                     'vietnamese' => $phrase->vietnamese_phrase,
-                    'highlighted_words' => $phrase->highlighted_words
+                    'highlighted_words' => $highlightedWords
                 ];
             });
 
         $data = [
             'title' => 'Vocabulary & Listening Practice',
-            'lesson_id' => $lessonId,
+            'current_lesson_id' => $lesson_id,
             'steps' => [
                 [
                     'id' => 'step1',
@@ -205,6 +234,152 @@ class VocabularyListeningController extends Controller
         return view('online.classes.vocabulary-listening.show', $data);
     }
 
+    public function saveProgress(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'dictation_id' => 'required|exists:vocabulary_listening_dictations,id',
+                'progress' => 'required|numeric|min:0|max:100',
+                'score' => 'required|numeric|min:0|max:100',
+                'completed_blanks' => 'required|array'
+            ]);
+
+            $progress = VocabularyListeningDictationProgress::updateOrCreate(
+                [
+                    'student_id' => Auth::id(),
+                    'dictation_id' => $validatedData['dictation_id']
+                ],
+                [
+                    'progress' => $validatedData['progress'],
+                    'highest_score' => max($validatedData['score'], $this->getCurrentHighestScore($validatedData['dictation_id'])),
+                    'completed_blanks' => $validatedData['completed_blanks'],
+                    'last_activity' => now(),
+                    'retries' => $this->incrementRetries($validatedData['dictation_id']),
+                    'scores_history' => $this->updateScoresHistory($validatedData['dictation_id'], $validatedData['score'])
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tiến độ đã được lưu thành công',
+                'data' => $progress
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi lưu tiến độ: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function savePhrasesProgress(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'key_phrase_id' => 'required|exists:vocabulary_listening_key_phrases,id',
+                'progress' => 'required|numeric|min:0|max:100',
+                'score' => 'required|numeric|min:0|max:100',
+                'completed_items' => 'required|array',
+                'current_position' => 'required|integer|min:0'
+            ]);
+
+            $progress = \App\Models\VocabularyListeningKeyPhraseProgress::updateOrCreate(
+                [
+                    'student_id' => Auth::id(),
+                    'key_phrase_id' => $validatedData['key_phrase_id']
+                ],
+                [
+                    'progress' => $validatedData['progress'],
+                    'highest_score' => max($validatedData['score'], $this->getCurrentKeyPhraseHighestScore($validatedData['key_phrase_id'])),
+                    'completed_items' => $validatedData['completed_items'],
+                    'current_position' => $validatedData['current_position'],
+                    'last_attempt' => now(),
+                    'retries' => $this->incrementKeyPhraseRetries($validatedData['key_phrase_id']),
+                    'scores_history' => $this->updateKeyPhraseScoresHistory($validatedData['key_phrase_id'], $validatedData['score'])
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tiến độ đã được lưu thành công',
+                'data' => $progress
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi lưu tiến độ: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    private function getCurrentHighestScore($dictationId)
+    {
+        $currentProgress = VocabularyListeningDictationProgress::where('student_id', Auth::id())
+            ->where('dictation_id', $dictationId)
+            ->first();
+
+        return $currentProgress ? $currentProgress->highest_score : 0;
+    }
+
+    private function incrementRetries($dictationId)
+    {
+        $currentProgress = VocabularyListeningDictationProgress::where('student_id', Auth::id())
+            ->where('dictation_id', $dictationId)
+            ->first();
+
+        return $currentProgress ? $currentProgress->retries + 1 : 1;
+    }
+
+    private function updateScoresHistory($dictationId, $newScore)
+    {
+        $currentProgress = VocabularyListeningDictationProgress::where('student_id', Auth::id())
+            ->where('dictation_id', $dictationId)
+            ->first();
+
+        $scoresHistory = $currentProgress ? $currentProgress->scores_history ?? [] : [];
+        $scoresHistory[] = [
+            'score' => $newScore,
+            'date' => now()->toDateTimeString()
+        ];
+
+        return $scoresHistory;
+    }
+
+    private function getCurrentKeyPhraseHighestScore($keyPhraseId)
+    {
+        $currentProgress = \App\Models\VocabularyListeningKeyPhraseProgress::where('student_id', Auth::id())
+            ->where('key_phrase_id', $keyPhraseId)
+            ->first();
+
+        return $currentProgress ? $currentProgress->highest_score : 0;
+    }
+
+    private function incrementKeyPhraseRetries($keyPhraseId)
+    {
+        $currentProgress = \App\Models\VocabularyListeningKeyPhraseProgress::where('student_id', Auth::id())
+            ->where('key_phrase_id', $keyPhraseId)
+            ->first();
+
+        return $currentProgress ? $currentProgress->retries + 1 : 1;
+    }
+
+    private function updateKeyPhraseScoresHistory($keyPhraseId, $newScore)
+    {
+        $currentProgress = \App\Models\VocabularyListeningKeyPhraseProgress::where('student_id', Auth::id())
+            ->where('key_phrase_id', $keyPhraseId)
+            ->first();
+
+        $scoresHistory = $currentProgress ? $currentProgress->scores_history ?? [] : [];
+        $scoresHistory[] = [
+            'score' => $newScore,
+            'date' => now()->toDateTimeString()
+        ];
+
+        return $scoresHistory;
+    }
+
     /**
      * Generate display text with blanks for missing words
      */
@@ -220,6 +395,24 @@ class VocabularyListeningController extends Controller
         }
 
         return $text;
+    }
+
+    /**
+     * Helper function để trích xuất các từ bị ẩn
+     */
+    private function extractBlanks($incompletePhrases, $completePhrases)
+    {
+        $blanks = [];
+        $incompleteWords = explode(' ', $incompletePhrases);
+        $completeWords = explode(' ', $completePhrases);
+
+        foreach ($incompleteWords as $index => $word) {
+            if (strpos($word, '_') !== false) {
+                $blanks[] = $completeWords[$index];
+            }
+        }
+
+        return $blanks;
     }
 
     /**
@@ -240,23 +433,5 @@ class VocabularyListeningController extends Controller
         }
 
         return 'other';
-    }
-
-    /**
-     * Helper function để trích xuất các từ bị ẩn
-     */
-    private function extractBlanks($incompletePhrases, $completePhrases)
-    {
-        $blanks = [];
-        $incompleteWords = explode(' ', $incompletePhrases);
-        $completeWords = explode(' ', $completePhrases);
-
-        foreach ($incompleteWords as $index => $word) {
-            if (strpos($word, '_') !== false) {
-                $blanks[] = $completeWords[$index];
-            }
-        }
-
-        return $blanks;
     }
 }

@@ -1,5 +1,15 @@
 <!-- Key Phrases -->
-<div class="key-phrases">
+<div class="key-phrases" data-key-phrase-id="{{ $step['phrases'][0]['id'] ?? '' }}">
+    @if(empty($step['phrases']) || count($step['phrases']) === 0)
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            @if($current_lesson_id)
+                Hiện tại chưa có key phrases cho bài học này.
+            @else
+                Vui lòng chọn một bài học để xem các key phrases.
+            @endif
+        </div>
+    @else
     <div class="alert alert-info mb-4">
         <i class="fas fa-info-circle me-2"></i>
         Hãy dịch các từ được <span class="highlighted-word">highlight</span> sang tiếng Anh
@@ -52,18 +62,29 @@
                         <td class="align-middle">
                             @php
                                 $vietnameseText = $phrase['vietnamese'];
-                                // Highlight các từ cần thiết
-                                $patterns = [
-                                    '/\b(địa danh|landmarks)\b/i' => '[highlight]$1[/highlight]',
-                                    '/\b(ẩm thực|food)\b/i' => '[highlight]$1[/highlight]',
-                                    '/\b(thành phố|city)\b/i' => '[highlight]$1[/highlight]',
-                                    '/\b(nổi tiếng|famous)\b/i' => '[highlight]$1[/highlight]',
-                                    '/\b(rộng lớn|big)\b/i' => '[highlight]$1[/highlight]',
-                                    '/\b(đa quốc tích|multicultural)\b/i' => '[highlight]$1[/highlight]',
-                                ];
+                                $highlightedWords = $phrase['highlighted_words'] ?? [];
 
-                                foreach ($patterns as $pattern => $replacement) {
-                                    $vietnameseText = preg_replace($pattern, $replacement, $vietnameseText);
+                                if (!empty($highlightedWords)) {
+                                    // Nếu là mảng đơn, chuyển thành mảng các phần tử
+                                    if (!is_array(reset($highlightedWords))) {
+                                        $highlightedWords = [$highlightedWords];
+                                    }
+
+                                    // Sắp xếp từ dài nhất đến ngắn nhất
+                                    usort($highlightedWords, function($a, $b) {
+                                        return strlen($b['word']) - strlen($a['word']);
+                                    });
+
+                                    foreach ($highlightedWords as $wordData) {
+                                        if (isset($wordData['word'])) {
+                                            $word = trim($wordData['word']);
+                                            if (!empty($word)) {
+                                                // Thêm boundary và escape các ký tự đặc biệt
+                                                $pattern = '/\b' . preg_quote($word, '/') . '\b/ui';
+                                                $vietnameseText = preg_replace($pattern, '[highlight]$0[/highlight]', $vietnameseText);
+                                            }
+                                        }
+                                    }
                                 }
                             @endphp
 
@@ -86,6 +107,7 @@
             <i class="fas fa-save me-2"></i>Lưu tiến độ
         </button>
     </div>
+    @endif
 </div>
 
 <style>
@@ -122,3 +144,109 @@
         background-color: #f8d7da;
     }
 </style>
+
+@push('scripts')
+<script>
+function savePhrasesProgress() {
+    const rows = document.querySelectorAll('.phrase-row');
+    let totalPhrases = rows.length;
+    let completedPhrases = 0;
+    let completedItems = [];
+    let totalScore = 0;
+
+    // Kiểm tra xem có ít nhất một câu trả lời nào không
+    let hasAnyAnswer = false;
+
+    rows.forEach((row, index) => {
+        const inputs = row.querySelectorAll('.blank-input');
+        let rowAnswers = [];
+        let rowScore = 0;
+        let hasAnswer = false;
+
+        inputs.forEach(input => {
+            const userAnswer = input.value.trim().toLowerCase();
+            if (userAnswer) {
+                hasAnswer = true;
+                hasAnyAnswer = true;
+                const correctAnswer = input.dataset.answer.toLowerCase();
+                rowAnswers.push({
+                    user_answer: userAnswer,
+                    correct_answer: correctAnswer,
+                    is_correct: userAnswer === correctAnswer
+                });
+
+                if (userAnswer === correctAnswer) {
+                    rowScore += 100 / inputs.length;
+                }
+            }
+        });
+
+        // Nếu có ít nhất một câu trả lời trong hàng này
+        if (hasAnswer) {
+            completedPhrases++;
+            completedItems.push({
+                phrase_index: index,
+                answers: rowAnswers,
+                score: rowScore
+            });
+            totalScore += rowScore;
+        }
+    });
+
+    // Nếu không có câu trả lời nào, hiển thị thông báo
+    if (!hasAnyAnswer) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Chưa có câu trả lời!',
+            text: 'Vui lòng điền ít nhất một câu trả lời trước khi lưu tiến độ.',
+        });
+        return;
+    }
+
+    const progress = (completedPhrases / totalPhrases) * 100;
+    const averageScore = completedPhrases > 0 ? totalScore / completedPhrases : 0;
+
+    // Get key_phrase_id from the data attribute
+    const keyPhraseId = document.querySelector('.key-phrases').dataset.keyPhraseId;
+
+    // Send data to server
+    fetch('/online/classes/vocabulary-listening/phrases/save-progress', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            key_phrase_id: keyPhraseId,
+            progress: progress,
+            score: averageScore,
+            completed_items: completedItems,
+            current_position: completedPhrases
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công!',
+                text: data.message,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        } else {
+            throw new Error(data.message);
+        }
+    })
+    .catch(error => {
+        // Show error message
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi!',
+            text: error.message || 'Có lỗi xảy ra khi lưu tiến độ',
+        });
+    });
+}
+</script>
+@endpush

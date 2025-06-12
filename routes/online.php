@@ -24,7 +24,7 @@ use App\Http\Controllers\VideoExerciseController;
 use App\Http\Controllers\ReflectionExerciseController;
 use App\Http\Controllers\VideoHandoutController;
 use App\Http\Controllers\VideoShadowingController;
-use App\Http\Controllers\VocabularyListeningController;
+use App\Http\Controllers\Online\VocabularyListeningController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +73,10 @@ Route::prefix('online')->name('online.')->group(function () {
                 // Add new route for saving dictation progress
                 Route::post('/vocabulary-listening/dictation/save-progress', [VocabularyListeningDictationController::class, 'saveProgress'])
                     ->name('vocabulary-listening.dictation.save-progress');
+
+                // Add new route for saving key phrase progress
+                Route::post('/vocabulary-listening/phrases/save-progress', [VocabularyListeningController::class, 'savePhrasesProgress'])
+                    ->name('vocabulary-listening.phrases.save-progress');
             });
 
             // Sessions
@@ -185,7 +189,7 @@ Route::prefix('online')->name('online.')->group(function () {
             Route::get('/reflection-exercise/{id}', [ReflectionExerciseController::class, 'show'])->name('reflection-exercise.show');
             Route::get('/video-handout', [VideoHandoutController::class, 'show'])->name('video-handout.show');
             Route::get('/video-shadowing', [VideoShadowingController::class, 'show'])->name('video-shadowing.show');
-            Route::get('/vocabulary-listening/{lesson_id?}', [VocabularyListeningController::class, 'show'])->name('vocabulary-listening.show');
+            Route::get('/vocabulary-listening/{lesson_id?}', [\App\Http\Controllers\Online\VocabularyListeningController::class, 'show'])->name('vocabulary-listening.show');
         });
     });
 });

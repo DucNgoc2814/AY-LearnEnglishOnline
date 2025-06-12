@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('lesson_id')->comment('ID của bài học')->constrained('lessons')->onDelete('cascade');
             $table->string('english_phrase')->comment('Cụm từ tiếng Anh');
             $table->string('vietnamese_phrase')->comment('Nghĩa tiếng Việt');
-            $table->string('highlighted_words')->comment('Các từ tiếng Việt cần highlight')->nullable();
+            $table->text('highlighted_words')->comment('Các từ tiếng Việt cần highlight')->nullable();
             $table->string('incomplete_phrase')->comment('Cụm từ có chỗ trống để điền');
             $table->text('correct_answer')->comment('Đáp án đúng');
             $table->integer('max_retries')->default(3)->comment('Số lần tối đa được làm lại');
