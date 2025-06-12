@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\VocabularyListeningGrammar;
+use App\Models\VocabularyListeningGrammarProgress;
+use App\Models\VocabularyListeningTranscription;
+use App\Models\VocabularyListeningTranscriptionProgress;
 
 class VocabularyListeningController extends Controller
 {
@@ -50,6 +54,21 @@ class VocabularyListeningController extends Controller
                     })->values()
                 ];
             })->values();
+
+        // Lấy dữ liệu transcription từ database
+        $transcriptionWords = [];
+        if ($lesson_id) {
+            $transcriptionWords = \App\Models\VocabularyListeningTranscription::where('lesson_id', $lesson_id)
+                ->select('word', 'correct_phonetic')
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'word' => $item->word,
+                        'phonetic' => $item->correct_phonetic
+                    ];
+                })
+                ->toArray();
+        }
 
         // Get key phrases from database for this lesson
         $keyPhrases = VocabularyListeningKeyPhrase::where('lesson_id', $lesson_id)
@@ -125,6 +144,38 @@ class VocabularyListeningController extends Controller
             ];
         }
 
+        // Lấy bài tập grammar từ database
+        $grammarExercises = [];
+        $grammarMessage = null;
+
+        if ($lesson_id) {
+            $grammarExercises = VocabularyListeningGrammar::where('lesson_id', $lesson_id)
+                ->get()
+                ->map(function ($grammar) {
+                    return [
+                        'id' => $grammar->id,
+                        'sentence' => $grammar->sentence,
+                        'vietnamese_word' => $grammar->vietnamese_word,
+                        'correct_synonym' => $grammar->correct_synonym
+                    ];
+                });
+
+            if ($grammarExercises->isEmpty()) {
+                $grammarMessage = [
+                    'type' => 'info',
+                    'message' => 'Hiện tại chưa có bài tập Grammar cho bài học này.'
+                ];
+            }
+        } else {
+            $grammarMessage = [
+                'type' => 'info',
+                'message' => 'Vui lòng chọn một bài học để xem các bài tập Grammar.'
+            ];
+        }
+
+        // Word bank cho grammar exercises
+        $wordBank = $grammarExercises->pluck('correct_synonym')->unique()->values()->toArray();
+
         $data = [
             'title' => 'Vocabulary & Listening Practice',
             'current_lesson_id' => $lesson_id,
@@ -167,72 +218,18 @@ class VocabularyListeningController extends Controller
                     'title' => 'GRAMMAR (Trạng từ + Tính từ)',
                     'description' => 'Kéo thả từ trong hộp để di chuyển đáp án lên câu hỏi',
                     'grammar_exercise' => [
-                        'word_bank' => [
-                            'fairly large',
-                            'really stressful',
-                            'somewhat expensive',
-                            'a bit boring',
-                            'stunningly beautiful',
-                            'extremely delicious',
-                            'pretty boring',
-                            'really high',
-                            'extremely hospitable',
-                            'really pleasant'
-                        ],
-                        'questions' => [
-                            [
-                                'sentence' => 'My hometown is a khá rộng town',
-                                'vietnamese_word' => 'khá rộng',
-                                'correct_synonym' => 'fairly large'
-                            ],
-                            [
-                                'sentence' => 'The fresh food from the farms is cực kì ngon',
-                                'vietnamese_word' => 'cực kì ngon',
-                                'correct_synonym' => 'extremely delicious'
-                            ],
-                            [
-                                'sentence' => 'It\'s a thực sự căng thẳng place',
-                                'vietnamese_word' => 'thực sự căng thẳng',
-                                'correct_synonym' => 'really stressful'
-                            ],
-                            [
-                                'sentence' => 'My hometown is a khá nhàm chán village',
-                                'vietnamese_word' => 'khá nhàm chán',
-                                'correct_synonym' => 'pretty boring'
-                            ],
-                            [
-                                'sentence' => 'It\'s hơi đắt in my hometown',
-                                'vietnamese_word' => 'hơi đắt',
-                                'correct_synonym' => 'somewhat expensive'
-                            ],
-                            [
-                                'sentence' => 'The cost of living is thực sự cao',
-                                'vietnamese_word' => 'thực sự cao',
-                                'correct_synonym' => 'really high'
-                            ],
-                            [
-                                'sentence' => 'Banbury\'s nice, but sometimes I find it hơi tẻ nhạt',
-                                'vietnamese_word' => 'hơi tẻ nhạt',
-                                'correct_synonym' => 'a bit boring'
-                            ],
-                            [
-                                'sentence' => 'The locals here are cực kì hiếu khách',
-                                'vietnamese_word' => 'cực kì hiếu khách',
-                                'correct_synonym' => 'extremely hospitable'
-                            ],
-                            [
-                                'sentence' => 'It has tuyệt đẹp beaches',
-                                'vietnamese_word' => 'tuyệt đẹp',
-                                'correct_synonym' => 'stunningly beautiful'
-                            ]
-                        ]
+                        'grammar_id' => $grammarExercises->isNotEmpty() ? $grammarExercises->first()['id'] : null,
+                        'word_bank' => $wordBank,
+                        'questions' => $grammarExercises,
+                        'message' => $grammarMessage
                     ]
                 ],
                 [
                     'id' => 'step7',
                     'title' => 'TRANSCRIPTION',
                     'description' => 'Tra phiên âm NAmE (North American English) của 10 từ',
-                    'dictionary_url' => 'https://www.oxfordlearnersdictionaries.com/'
+                    'dictionary_url' => 'https://www.oxfordlearnersdictionaries.com/',
+                    'words' => $transcriptionWords
                 ],
                 [
                     'id' => 'step8',
@@ -379,6 +376,137 @@ class VocabularyListeningController extends Controller
         }
     }
 
+    public function saveGrammarProgress(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'grammar_id' => 'required|exists:vocabulary_listening_grammars,id',
+                'progress' => 'required|numeric|min:0|max:100',
+                'score' => 'required|numeric|min:0|max:100',
+                'completed_items' => 'required|array',
+                'current_position' => 'required|integer|min:0'
+            ]);
+
+            // Lấy grammar để kiểm tra điểm tối thiểu
+            $grammar = VocabularyListeningGrammar::find($validatedData['grammar_id']);
+            $minScoreAchieved = $validatedData['score'] >= $grammar->min_required_score;
+
+            $progress = VocabularyListeningGrammarProgress::updateOrCreate(
+                [
+                    'student_id' => Auth::id(),
+                    'grammar_id' => $validatedData['grammar_id']
+                ],
+                [
+                    'progress' => $validatedData['progress'],
+                    'highest_score' => max($validatedData['score'], $this->getGrammarHighestScore($validatedData['grammar_id'])),
+                    'completed_items' => $validatedData['completed_items'],
+                    'current_position' => $validatedData['current_position'],
+                    'last_attempt' => now(),
+                    'retries' => $this->incrementGrammarRetries($validatedData['grammar_id']),
+                    'scores_history' => $this->updateGrammarScoresHistory($validatedData['grammar_id'], $validatedData['score']),
+                    'min_score_achieved' => $minScoreAchieved
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tiến độ đã được lưu thành công',
+                'data' => $progress
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi lưu tiến độ: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function saveTranscriptionProgress(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'lesson_id' => 'required|exists:lessons,id',
+                'progress' => 'required|array',
+                'progress.*.word' => 'required|string',
+                'progress.*.phonetic' => 'required|string'
+            ]);
+
+            $totalWords = count($validatedData['progress']);
+            $correctWords = 0;
+            $completedItems = [];
+            $currentPosition = 0;
+
+            // Lưu tiến độ cho từng từ và tính toán số từ đúng
+            foreach ($validatedData['progress'] as $index => $wordProgress) {
+                $transcription = VocabularyListeningTranscription::where('lesson_id', $validatedData['lesson_id'])
+                    ->where('word', $wordProgress['word'])
+                    ->first();
+
+                if ($transcription) {
+                    // Kiểm tra phiên âm có đúng không
+                    $isCorrect = $wordProgress['phonetic'] === $transcription->correct_phonetic;
+
+                    if ($isCorrect) {
+                        $correctWords++;
+                        $completedItems[] = $wordProgress['word'];
+                    }
+
+                    // Cập nhật vị trí hiện tại (từ cuối cùng được làm)
+                    $currentPosition = $index + 1;
+
+                    // Tính điểm cho từ này
+                    $score = $isCorrect ? 100 : 0;
+
+                    // Lưu tiến độ vào bảng progress
+                    $progress = VocabularyListeningTranscriptionProgress::updateOrCreate(
+                        [
+                            'student_id' => Auth::id(),
+                            'transcription_id' => $transcription->id
+                        ],
+                        [
+                            'progress' => ($currentPosition / $totalWords) * 100,
+                            'highest_score' => DB::raw("GREATEST(COALESCE(highest_score, 0), $score)"),
+                            'completed_items' => $completedItems,
+                            'current_position' => $currentPosition,
+                            'last_attempt' => now(),
+                            'retries' => DB::raw('COALESCE(retries, 0) + 1'),
+                            'scores_history' => DB::raw("JSON_ARRAY_APPEND(
+                                COALESCE(scores_history, '[]'),
+                                '$',
+                                '" . json_encode(['score' => $score, 'date' => now()]) . "'
+                            )"),
+                            'min_score_achieved' => $score >= $transcription->min_required_score
+                        ]
+                    );
+                }
+            }
+
+            // Tính tổng điểm và tiến độ chung
+            $overallScore = ($correctWords / $totalWords) * 100;
+            $overallProgress = ($currentPosition / $totalWords) * 100;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tiến độ đã được lưu thành công',
+                'data' => [
+                    'score' => round($overallScore, 2),
+                    'progress' => round($overallProgress, 2),
+                    'correct_words' => $correctWords,
+                    'total_words' => $totalWords,
+                    'completed_items' => $completedItems
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error saving transcription progress: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi lưu tiến độ: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     private function getCurrentHighestScore($dictationId)
     {
         $currentProgress = VocabularyListeningDictationProgress::where('student_id', Auth::id())
@@ -434,6 +562,39 @@ class VocabularyListeningController extends Controller
     {
         $currentProgress = \App\Models\VocabularyListeningKeyPhraseProgress::where('student_id', Auth::id())
             ->where('key_phrase_id', $keyPhraseId)
+            ->first();
+
+        $scoresHistory = $currentProgress ? $currentProgress->scores_history ?? [] : [];
+        $scoresHistory[] = [
+            'score' => $newScore,
+            'date' => now()->toDateTimeString()
+        ];
+
+        return $scoresHistory;
+    }
+
+    private function getGrammarHighestScore($grammarId)
+    {
+        $currentProgress = VocabularyListeningGrammarProgress::where('student_id', Auth::id())
+            ->where('grammar_id', $grammarId)
+            ->first();
+
+        return $currentProgress ? $currentProgress->highest_score : 0;
+    }
+
+    private function incrementGrammarRetries($grammarId)
+    {
+        $currentProgress = VocabularyListeningGrammarProgress::where('student_id', Auth::id())
+            ->where('grammar_id', $grammarId)
+            ->first();
+
+        return $currentProgress ? $currentProgress->retries + 1 : 1;
+    }
+
+    private function updateGrammarScoresHistory($grammarId, $newScore)
+    {
+        $currentProgress = VocabularyListeningGrammarProgress::where('student_id', Auth::id())
+            ->where('grammar_id', $grammarId)
             ->first();
 
         $scoresHistory = $currentProgress ? $currentProgress->scores_history ?? [] : [];

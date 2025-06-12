@@ -74,6 +74,10 @@ Route::prefix('online')->name('online.')->group(function () {
                 Route::post('/vocabulary-listening/dictation/save-progress', [VocabularyListeningDictationController::class, 'saveProgress'])
                     ->name('vocabulary-listening.dictation.save-progress');
 
+                // Add new route for saving grammar progress
+                Route::post('/vocabulary-listening/grammar/save-progress', [VocabularyListeningController::class, 'saveGrammarProgress'])
+                    ->name('vocabulary-listening.grammar.save-progress');
+
                 // Add new route for saving key phrase progress
                 Route::post('/vocabulary-listening/phrases/save-progress', [VocabularyListeningController::class, 'savePhrasesProgress'])
                     ->name('vocabulary-listening.phrases.save-progress');
@@ -81,6 +85,10 @@ Route::prefix('online')->name('online.')->group(function () {
                 // Add new route for saving sentence building progress
                 Route::post('/vocabulary-listening/sentence/save-progress', [VocabularyListeningController::class, 'saveSentenceProgress'])
                     ->name('vocabulary-listening.sentence.save-progress');
+
+                // Add new route for transcription progress
+                Route::post('/vocabulary-listening/transcription/save-progress', [VocabularyListeningController::class, 'saveTranscriptionProgress'])
+                    ->name('vocabulary-listening.transcription.save-progress');
             });
 
             // Sessions

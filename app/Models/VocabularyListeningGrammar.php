@@ -42,7 +42,7 @@ class VocabularyListeningGrammar extends BaseModel
                 'editable' => true
             ],
             'correct_synonym' => [
-                'label' => 'Từ đồng nghĩa',
+                'label' => 'Từ đồng nghĩa <Tiếng Anhnh>',
                 'type' => 'text',
                 'searchable' => true,
                 'sortable' => true,
@@ -84,5 +84,9 @@ class VocabularyListeningGrammar extends BaseModel
     public function lesson()
     {
         return $this->belongsTo(Lesson::class);
+    }
+    protected static function bootHasSlug()
+    {
+        // Override to disable slug generation
     }
 }
