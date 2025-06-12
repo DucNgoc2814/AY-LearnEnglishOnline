@@ -7,9 +7,12 @@ use App\Models\VocabularyListeningQuizlet;
 use App\Models\VocabularyListeningDictation;
 use App\Models\VocabularyListeningKeyPhrase;
 use App\Models\VocabularyListeningDictationProgress;
+use App\Models\VocabularyListeningSentenceBuilding;
+use App\Models\VocabularyListeningSentenceBuildingProgress;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VocabularyListeningController extends Controller
 {
@@ -85,6 +88,43 @@ class VocabularyListeningController extends Controller
                 ];
             });
 
+        // Lấy câu từ database và kiểm tra dữ liệu
+        $sentenceBuildings = [];
+        $sentenceBuildingMessage = null;
+
+        if ($lesson_id) {
+            $sentenceBuildings = VocabularyListeningSentenceBuilding::where('lesson_id', $lesson_id)
+                ->orderBy('sentence_number')
+                ->get()
+                ->map(function ($sentence) {
+                    // Tách câu thành mảng các từ
+                    $words = explode(' ', $sentence->correct_sentence);
+                    // Đảo ngẫu nhiên thứ tự các từ
+                    shuffle($words);
+
+                    return [
+                        'id' => $sentence->id,
+                        'words' => $words, // Trả về mảng các từ đã được đảo ngẫu nhiên
+                        'answer' => $sentence->correct_sentence,
+                        'max_retries' => $sentence->max_retries,
+                        'min_required_score' => $sentence->min_required_score
+                    ];
+                });
+
+            // Kiểm tra nếu không có dữ liệu
+            if ($sentenceBuildings->isEmpty()) {
+                $sentenceBuildingMessage = [
+                    'type' => 'info',
+                    'message' => 'Hiện tại chưa có bài tập Sentence Building cho bài học này.'
+                ];
+            }
+        } else {
+            $sentenceBuildingMessage = [
+                'type' => 'info',
+                'message' => 'Vui lòng chọn một bài học để xem các bài tập Sentence Building.'
+            ];
+        }
+
         $data = [
             'title' => 'Vocabulary & Listening Practice',
             'current_lesson_id' => $lesson_id,
@@ -119,32 +159,8 @@ class VocabularyListeningController extends Controller
                     'id' => 'step5',
                     'title' => 'SENTENCE BUILDING',
                     'description' => 'Kéo thả để sắp xếp các từ dưới đây thành một câu đúng',
-                    'sentences' => [
-                        [
-                            'words' => ['great', 'is', 'but', 'living', 'really', 'of', 'cost', 'Paris', 'high', 'the', ','],
-                            'answer' => 'Paris is really great but , the cost of living is high'
-                        ],
-                        [
-                            'words' => ['boring', 'it', 'a', 'find', 'I', 'bit'],
-                            'answer' => 'I find it a bit boring'
-                        ],
-                        [
-                            'words' => ['on', 'hot', 'weather', 'very', 'the', 'I\'m', 'not', 'keen'],
-                            'answer' => 'I\'m not very keen on the hot weather'
-                        ],
-                        [
-                            'words' => ['to', 'the', 'are', 'tourists', 'very', 'friendly', 'locals', 'off', 'first'],
-                            'answer' => 'the locals are very friendly to tourists off first'
-                        ],
-                        [
-                            'words' => ['dishes', 'of', 'wide', 'come', 'local', 'from', 'far', 'many', 'enjoy', 'to', 'variety', 'foreigners', 'the'],
-                            'answer' => 'many foreigners come from far to enjoy the wide variety of local dishes'
-                        ],
-                        [
-                            'words' => ['five', 'been', 'there', 'for', 'about', 'living', 'I\'ve', 'years'],
-                            'answer' => 'I\'ve been living there for about five years'
-                        ]
-                    ]
+                    'sentences' => $sentenceBuildings,
+                    'message' => $sentenceBuildingMessage
                 ],
                 [
                     'id' => 'step6',
@@ -297,6 +313,55 @@ class VocabularyListeningController extends Controller
                     'last_attempt' => now(),
                     'retries' => $this->incrementKeyPhraseRetries($validatedData['key_phrase_id']),
                     'scores_history' => $this->updateKeyPhraseScoresHistory($validatedData['key_phrase_id'], $validatedData['score'])
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tiến độ đã được lưu thành công',
+                'data' => $progress
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra khi lưu tiến độ: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function saveSentenceProgress(Request $request)
+    {
+        try {
+            $validatedData = $request->validate([
+                'sentence_building_id' => 'required|exists:vocabulary_listening_sentence_buildings,id',
+                'current_position' => 'required|integer|min:0',
+                'completed_count' => 'required|integer|min:0',
+                'attempts' => 'required|array',
+                'score' => 'required|numeric|min:0|max:100'
+            ]);
+
+            // Tính toán tiến độ dựa trên số câu đã hoàn thành
+            $totalSentences = VocabularyListeningSentenceBuilding::where('lesson_id', $request->lesson_id)->count();
+            $progress = ($validatedData['completed_count'] / $totalSentences) * 100;
+
+            $progress = VocabularyListeningSentenceBuildingProgress::updateOrCreate(
+                [
+                    'student_id' => Auth::id(),
+                    'sentence_building_id' => $validatedData['sentence_building_id']
+                ],
+                [
+                    'progress' => $progress,
+                    'current_position' => $validatedData['current_position'],
+                    'completed_count' => $validatedData['completed_count'],
+                    'attempts' => $validatedData['attempts'],
+                    'last_attempt' => now(),
+                    'retries' => DB::raw('retries + 1'),
+                    'scores_history' => DB::raw("JSON_ARRAY_APPEND(
+                        COALESCE(scores_history, '[]'),
+                        '$',
+                        '" . json_encode(['score' => $validatedData['score'], 'date' => now()]) . "'
+                    )")
                 ]
             );
 

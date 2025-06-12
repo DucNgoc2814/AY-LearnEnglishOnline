@@ -77,6 +77,10 @@ Route::prefix('online')->name('online.')->group(function () {
                 // Add new route for saving key phrase progress
                 Route::post('/vocabulary-listening/phrases/save-progress', [VocabularyListeningController::class, 'savePhrasesProgress'])
                     ->name('vocabulary-listening.phrases.save-progress');
+
+                // Add new route for saving sentence building progress
+                Route::post('/vocabulary-listening/sentence/save-progress', [VocabularyListeningController::class, 'saveSentenceProgress'])
+                    ->name('vocabulary-listening.sentence.save-progress');
             });
 
             // Sessions
