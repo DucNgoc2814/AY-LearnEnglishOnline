@@ -25,6 +25,7 @@ use App\Http\Controllers\ReflectionExerciseController;
 use App\Http\Controllers\VideoHandoutController;
 use App\Http\Controllers\VideoShadowingController;
 use App\Http\Controllers\Online\VocabularyListeningController;
+use App\Http\Controllers\Online\VideoExerciseLessonController;
 
 /*
 |--------------------------------------------------------------------------
@@ -197,7 +198,13 @@ Route::prefix('online')->name('online.')->group(function () {
             });
 
             // Exercise Routes
-            Route::get('/video-exercise/{id}', [VideoExerciseController::class, 'show'])->name('video-exercise.show');
+            Route::prefix('video-exercise')->name('video-exercise.')->group(function () {
+                Route::get('/', [VideoExerciseLessonController::class, 'index'])->name('index');
+                Route::get('/{id}', [VideoExerciseLessonController::class, 'show'])->name('show');
+                Route::post('/', [VideoExerciseLessonController::class, 'store'])->name('store');
+                Route::put('/{id}', [VideoExerciseLessonController::class, 'update'])->name('update');
+                Route::delete('/{id}', [VideoExerciseLessonController::class, 'destroy'])->name('destroy');
+            });
             Route::get('/reflection-exercise/{id}', [ReflectionExerciseController::class, 'show'])->name('reflection-exercise.show');
             Route::get('/video-handout', [VideoHandoutController::class, 'show'])->name('video-handout.show');
             Route::get('/video-shadowing', [VideoShadowingController::class, 'show'])->name('video-shadowing.show');

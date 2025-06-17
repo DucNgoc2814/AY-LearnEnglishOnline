@@ -77,12 +77,30 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="ratio ratio-16x9 mb-3">
+                                @php
+                                    $embedUrl = App\Helpers\VideoHelper::getEmbedUrl($lesson->video_url);
+                                @endphp
+                                <!-- Debug info -->
+                                @if(config('app.debug'))
+                                <div class="alert alert-info">
+                                    <strong>Debug:</strong><br>
+                                    Original URL: {{ $lesson->video_url }}<br>
+                                    Processed URL: {{ $embedUrl }}
+                                </div>
+                                @endif
+
                                 <iframe
-                                    src="{{ App\Helpers\VideoHelper::getEmbedUrl($lesson->video_url) }}"
+                                    src="{{ $embedUrl }}"
                                     title="{{ $lesson->title ?? 'Video Exercise' }}"
                                     allowfullscreen
                                     class="rounded shadow-sm"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                                    referrerpolicy="origin"
+                                    loading="lazy"
+                                    style="border: none; width: 100%; height: 100%;"
+                                    onload="this.style.visibility='visible'"
+                                    onerror="handleIframeError(this)"
                                 ></iframe>
                             </div>
                             <div class="alert alert-info mb-3">
@@ -479,6 +497,28 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    function handleIframeError(iframe) {
+        // Thử load lại với URL gốc
+        iframe.src = '{{ $lesson->video_url }}';
+
+        // Nếu vẫn lỗi, hiển thị thông báo
+        iframe.onerror = function() {
+            iframe.style.display = 'none';
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-danger';
+            errorDiv.innerHTML = `
+                <h4 class="alert-heading">Không thể tải video</h4>
+                <p>Xin lỗi, không thể tải video lúc này. Vui lòng:</p>
+                <ul>
+                    <li>Kiểm tra kết nối internet của bạn</li>
+                    <li>Thử tải lại trang</li>
+                    <li>Hoặc <a href="{{ $lesson->video_url }}" target="_blank">mở video trong tab mới</a></li>
+                </ul>
+            `;
+            iframe.parentNode.appendChild(errorDiv);
+        };
+    }
 });
 </script>
 @endpush
