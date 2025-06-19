@@ -8,7 +8,6 @@ class VideoExerciseQuestion extends BaseModel
     {
         return [
             'video_exercise_lesson_id' => 'required|exists:video_exercise_lessons,id',
-            'time_point' => 'required|integer|min:0',
             'question_text' => 'required|string',
             'context_text' => 'nullable|string',
             'correct_answer' => 'required|string'
@@ -24,29 +23,18 @@ class VideoExerciseQuestion extends BaseModel
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true,
-                'options' => function() {
-                    return VideoExerciseLesson::pluck('title', 'id')->toArray();
-                }
-            ],
-            'time_point' => [
-                'label' => 'Thời điểm (giây)',
-                'type' => 'number',
-                'min' => '0',
-                'step' => '1',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
+                'options' => VideoExerciseLesson::pluck('title', 'id')->toArray(),
             ],
             'question_text' => [
                 'label' => 'Nội dung câu hỏi',
-                'type' => 'textarea',
+                'type' => 'text',
                 'searchable' => true,
                 'sortable' => false,
                 'editable' => true
             ],
             'context_text' => [
-                'label' => 'Ngữ cảnh',
-                'type' => 'textarea',
+                'label' => 'Đáp án hiển thị',
+                'type' => 'text',
                 'searchable' => true,
                 'sortable' => false,
                 'editable' => true
@@ -95,5 +83,9 @@ class VideoExerciseQuestion extends BaseModel
     public function checkAnswer($answer)
     {
         return strtolower(trim($answer)) === strtolower(trim($this->correct_answer));
+    }
+    protected static function bootHasSlug()
+    {
+        // Override to disable slug generation
     }
 }

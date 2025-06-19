@@ -12,80 +12,37 @@ class VideoExerciseLessonController extends Controller
 {
     public function index()
     {
-        $lessons = VideoExerciseLesson::with(['questions', 'clips'])->get();
-        return view('online.classes.video-exercise.index', compact('lessons'));
+        return redirect()->route('online.video-exercise.show', 1);
     }
 
-    public function show($id)
+    public function show($lesson_id)
     {
         try {
-            $lesson = VideoExerciseLesson::findOrFail($id);
+            $lesson = VideoExerciseLesson::where('lesson_id', $lesson_id)
+                ->with('videoExerciseQuestions') // Load questions relationship
+                ->first();
 
-            // Xử lý URL video từ base URL
-            $videoUrl = $lesson->video_url;
-            if (!empty($videoUrl)) {
-                $lesson->video_url = VideoHelper::getEmbedUrl($videoUrl);
-                Log::info('Video URL processed:', ['original' => $videoUrl, 'processed' => $lesson->video_url]);
+            if (!$lesson) {
+                return view('online.classes.video-exercise.show', [
+                    'lesson' => null,
+                    'message' => 'Bài học này chưa có bài tập video. Vui lòng quay lại sau!'
+                ]);
             }
 
-            return view('online.classes.video-exercise.show', compact('lesson'));
+            if (empty($lesson->video_url)) {
+                session()->flash('error', 'Video bài học này chưa được cập nhật. Vui lòng quay lại sau!');
+                return back();
+            }
+
+            // Xử lý URL video từ base URL
+            $lesson->video_url = VideoHelper::getEmbedUrl($lesson->video_url);
+
+            // Chuẩn bị dữ liệu cho word bank
+            $wordBank = $lesson->videoExerciseQuestions->pluck('correct_answer')->unique()->values()->toArray();
+
+            return view('online.classes.video-exercise.show', compact('lesson', 'wordBank'));
         } catch (\Exception $e) {
-            Log::error('Error in VideoExerciseLessonController@show: ' . $e->getMessage());
-            return redirect()->route('online.video-exercise.index')
-                ->with('error', 'Không thể tải bài học video. Vui lòng thử lại sau.');
-        }
-    }
-
-    public function store(Request $request)
-    {
-        try {
-            $validated = $request->validate([
-                'lesson_id' => 'required|exists:lessons,id',
-                'title' => 'required|string|max:255',
-                'video_url' => 'required|string',
-                'description' => 'nullable|string',
-            ]);
-
-            $lesson = VideoExerciseLesson::create($validated);
-            return redirect()->route('online.video-exercise.show', $lesson->id)
-                ->with('success', 'Bài tập video đã được tạo thành công.');
-        } catch (\Exception $e) {
-            Log::error('Error in VideoExerciseLessonController@store: ' . $e->getMessage());
-            return back()->with('error', 'Không thể tạo bài tập video. Vui lòng thử lại sau.');
-        }
-    }
-
-    public function update(Request $request, $id)
-    {
-        try {
-            $lesson = VideoExerciseLesson::findOrFail($id);
-
-            $validated = $request->validate([
-                'title' => 'required|string|max:255',
-                'video_url' => 'required|string',
-                'description' => 'nullable|string',
-            ]);
-
-            $lesson->update($validated);
-            return redirect()->route('online.video-exercise.show', $lesson->id)
-                ->with('success', 'Bài tập video đã được cập nhật thành công.');
-        } catch (\Exception $e) {
-            Log::error('Error in VideoExerciseLessonController@update: ' . $e->getMessage());
-            return back()->with('error', 'Không thể cập nhật bài tập video. Vui lòng thử lại sau.');
-        }
-    }
-
-    public function destroy($id)
-    {
-        try {
-            $lesson = VideoExerciseLesson::findOrFail($id);
-            $lesson->delete();
-
-            return redirect()->route('online.video-exercise.index')
-                ->with('success', 'Bài tập video đã được xóa thành công.');
-        } catch (\Exception $e) {
-            Log::error('Error in VideoExerciseLessonController@destroy: ' . $e->getMessage());
-            return back()->with('error', 'Không thể xóa bài tập video. Vui lòng thử lại sau.');
+            return back()->with('error', 'Không thể tải bài tập video. Vui lòng thử lại sau.');
         }
     }
 }
