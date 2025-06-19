@@ -21,17 +21,22 @@ class VideoShadowingController extends Controller
             abort(404, 'Video shadowing không tồn tại cho bài học này');
         }
 
+        // Lấy các segments và sắp xếp theo order_index
+        $segments = $videoShadowing->segments()
+            ->orderBy('order_index', 'asc')
+            ->get();
+
         $data = [
             'title' => $videoShadowing->title,
             'video' => [
                 'title' => $videoShadowing->title,
                 'url' => $videoShadowing->getMediaUrl('video_url'),
                 'description' => $videoShadowing->description,
-                'transcript' => $videoShadowing->segments->map(function($segment) {
+                'transcript' => $segments->map(function($segment) {
                     return [
-                        'time' => $segment->time_range,
-                        'text' => $segment->text,
-                        'translation' => $segment->translation
+                        'time' => $this->formatTimeRange($segment->start_time, $segment->end_time),
+                        'text' => $segment->english_text,
+                        'translation' => $segment->vietnamese_text
                     ];
                 }),
                 'tips' => [
@@ -45,5 +50,19 @@ class VideoShadowingController extends Controller
         ];
 
         return view('online.classes.video-shadowing.show', $data);
+    }
+
+    /**
+     * Format thời gian từ giây sang định dạng "m:ss - m:ss"
+     */
+    private function formatTimeRange($startSeconds, $endSeconds)
+    {
+        $formatTime = function($seconds) {
+            $minutes = floor($seconds / 60);
+            $seconds = $seconds % 60;
+            return sprintf("%d:%02d", $minutes, $seconds);
+        };
+
+        return $formatTime($startSeconds) . ' - ' . $formatTime($endSeconds);
     }
 }

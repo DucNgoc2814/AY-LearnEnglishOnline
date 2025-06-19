@@ -8,7 +8,7 @@ class VideoShadowingSegment extends BaseModel
     public static function getBaseRules($id = null)
     {
         return [
-            'video_shadowing_id' => 'required|exists:video_shadowing,id',
+            'video_shadowing_id' => 'required|exists:video_shadowings,id',
             'start_time' => 'required|integer|min:0',
             'end_time' => 'required|integer|min:0|gt:start_time',
             'english_text' => 'required|string',
