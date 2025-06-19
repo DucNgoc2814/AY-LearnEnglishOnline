@@ -294,4 +294,9 @@ class Lesson extends BaseModel
     {
         return $this->lessonTests()->count();
     }
+
+    public function videoShadowing()
+    {
+        return $this->hasOne(VideoShadowing::class);
+    }
 }

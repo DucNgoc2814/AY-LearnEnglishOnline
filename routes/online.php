@@ -23,7 +23,7 @@ use App\Http\Controllers\Online\VocabularyListeningDictationController;
 use App\Http\Controllers\VideoExerciseController;
 use App\Http\Controllers\ReflectionExerciseController;
 use App\Http\Controllers\VideoHandoutController;
-use App\Http\Controllers\VideoShadowingController;
+use App\Http\Controllers\Online\VideoShadowingController;
 use App\Http\Controllers\Online\VocabularyListeningController;
 use App\Http\Controllers\Online\VideoExerciseLessonController;
 
@@ -207,7 +207,7 @@ Route::prefix('online')->name('online.')->group(function () {
             });
             Route::get('/reflection-exercise/{id}', [ReflectionExerciseController::class, 'show'])->name('reflection-exercise.show');
             Route::get('/video-handout', [VideoHandoutController::class, 'show'])->name('video-handout.show');
-            Route::get('/video-shadowing', [VideoShadowingController::class, 'show'])->name('video-shadowing.show');
+            Route::get('/video-shadowing/{id}', [VideoShadowingController::class, 'show'])->name('video-shadowing.show');
             Route::get('/vocabulary-listening/{lesson_id?}', [\App\Http\Controllers\Online\VocabularyListeningController::class, 'show'])->name('vocabulary-listening.show');
         });
     });

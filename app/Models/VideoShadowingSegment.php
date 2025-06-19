@@ -86,4 +86,9 @@ class VideoShadowingSegment extends BaseModel
     {
         return $this->belongsTo(VideoShadowing::class);
     }
+    protected static function bootHasSlug()
+    {
+        // Override to disable slug generation
+    }
+
 }

@@ -214,7 +214,7 @@
                                                                 </div>
                                                                 <div class="d-flex flex-column align-items-end">
                                                                     <div class="btn-group">
-                                                                        <a href="{{ route('online.video-shadowing.show') }}" class="btn btn-sm btn-outline-primary">
+                                                                        <a href="{{ route('online.video-shadowing.show', ['id' => $lesson->id]) }}" class="btn btn-sm btn-outline-primary">
                                                                             <i class="fas fa-play"></i> Xem video
                                                                         </a>
                                                                     </div>

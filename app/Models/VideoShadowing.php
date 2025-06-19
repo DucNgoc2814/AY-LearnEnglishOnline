@@ -52,7 +52,8 @@ class VideoShadowing extends BaseModel
             ],
             'video_url' => [
                 'label' => 'URL Video',
-                'type' => 'text',
+                'type' => 'file',
+                'accept' => 'video/*',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
@@ -96,4 +97,9 @@ class VideoShadowing extends BaseModel
     {
         return $this->hasMany(VideoShadowingSegment::class);
     }
+    protected static function bootHasSlug()
+    {
+        // Override to disable slug generation
+    }
+
 }
