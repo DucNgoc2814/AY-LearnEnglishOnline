@@ -5,7 +5,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="card-title mb-0">{{ $title }}</h4>
+                    <h4 class="card-title mb-0">Video Shadowing - {{ $title }}</h4>
                 </div>
 
                 <!-- Nav tabs -->
@@ -32,13 +32,13 @@
                             <div class="col-md-6">
                                 <div class="alert alert-info mb-4">
                                     <h5 class="alert-heading">
-                                        <i class="fas fa-video me-2"></i>Bước 1: Xem và Nghe
+                                        <i class="fas fa-headphones me-2"></i>Bước 1: Nghe
                                     </h5>
                                     <ul class="mb-0">
-                                        <li>Xem video và nghe thật kỹ phát âm của người bản xứ</li>
+                                        <li>Nghe thật kỹ phát âm của người bản xứ</li>
                                         <li>Chú ý đến ngữ điệu và nhịp điệu của câu</li>
                                         <li>Có thể bật transcript để theo dõi nội dung</li>
-                                        <li>Xem lại video nhiều lần nếu cần thiết</li>
+                                        <li>Nghe lại nhiều lần nếu cần thiết</li>
                                     </ul>
                                 </div>
 
@@ -93,20 +93,20 @@
                     <!-- Practice Tab -->
                     <div class="tab-pane fade" id="practice" role="tabpanel">
                         <div class="row">
-                            <!-- Video Section -->
+                            <!-- Audio Section -->
                             <div class="col-lg-8">
                                 <div class="card mb-4">
-                                    <div class="card-body p-0">
-                                        <div class="ratio ratio-16x9">
-                                            <video src="{{ $video['url'] }}" title="{{ $video['title'] }}" controls
-                                                class="rounded w-100" controlsList="nodownload">
-                                                Your browser does not support the video tag.
-                                            </video>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-center">
+                                            <audio id="mainAudio" src="{{ $audio['url'] }}" class="w-100" controls
+                                                controlsList="nodownload">
+                                                Your browser does not support the audio element.
+                                            </audio>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Video Controls -->
+                                <!-- Audio Controls -->
                                 <div class="card mb-4">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-center">
@@ -117,6 +117,18 @@
                                                 <button class="btn btn-outline-primary" id="replayBtn">
                                                     <i class="fas fa-redo me-2"></i>Replay Section
                                                 </button>
+                                                <button class="btn btn-outline-primary" id="speedBtn">
+                                                    <i class="fas fa-tachometer-alt me-2"></i>Speed: 1x
+                                                </button>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <span id="currentTime" class="me-2">0:00</span>
+                                                <span>/</span>
+                                                <span id="duration" class="ms-2">0:00</span>
+                                            </div>
+                                        </div>
+                                        <div class="progress mt-3" style="height: 6px;">
+                                            <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%">
                                             </div>
                                         </div>
                                     </div>
@@ -128,7 +140,7 @@
                                         <h5 class="card-title mb-4">
                                             <i class="fas fa-file-alt me-2"></i>Transcript & Translation
                                         </h5>
-                                        @foreach ($video['transcript'] as $section)
+                                        @foreach ($audio['transcript'] as $section)
                                             <div class="transcript-section mb-4">
                                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                                     <div class="d-flex align-items-center">
@@ -165,10 +177,10 @@
                                         </h5>
                                     </div>
                                     <div class="card-body">
-                                        <p class="card-text mb-4">{{ $video['description'] }}</p>
+                                        <p class="card-text mb-4">{{ $audio['description'] }}</p>
                                         <h6 class="mb-3">Các bước thực hiện:</h6>
                                         <ol class="list-unstyled mb-0">
-                                            @foreach ($video['tips'] as $tip)
+                                            @foreach ($audio['tips'] as $tip)
                                                 <li class="mb-3">
                                                     <div class="d-flex">
                                                         <span class="me-3">
@@ -395,83 +407,133 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                // Lấy các elements
-                const video = document.querySelector('video');
-                const playPauseBtn = document.getElementById('playPauseBtn');
+                const audio = document.getElementById('mainAudio');
+                const mainPlayPauseBtn = document.getElementById('playPauseBtn');
                 const replayBtn = document.getElementById('replayBtn');
+                const speedBtn = document.getElementById('speedBtn');
+                const progressBar = document.getElementById('progressBar');
+                const currentTimeSpan = document.getElementById('currentTime');
+                const durationSpan = document.getElementById('duration');
+                const sectionPlayButtons = document.querySelectorAll('.play-section');
 
-                // Biến lưu thời gian bắt đầu của section hiện tại
                 let currentSectionStart = 0;
                 let currentSectionEnd = 0;
+                const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
+                let currentSpeedIndex = 2; // Start at 1x speed
+                let activePlayButton = null; // Theo dõi nút play section đang active
 
-                // Xử lý nút Play/Pause
-                playPauseBtn.addEventListener('click', function() {
-                    if (video.paused) {
-                        video.play();
-                        playPauseBtn.innerHTML = '<i class="fas fa-pause me-2"></i>Pause';
+                // Format time function
+                function formatTime(seconds) {
+                    const minutes = Math.floor(seconds / 60);
+                    seconds = Math.floor(seconds % 60);
+                    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                }
+
+                // Update progress bar and time displays
+                audio.addEventListener('timeupdate', function() {
+                    const percent = (audio.currentTime / audio.duration) * 100;
+                    progressBar.style.width = percent + '%';
+                    currentTimeSpan.textContent = formatTime(audio.currentTime);
+
+                    // Check if we need to stop at section end
+                    if (currentSectionEnd && audio.currentTime >= currentSectionEnd) {
+                        audio.pause();
+                        mainPlayPauseBtn.innerHTML = '<i class="fas fa-play me-2"></i>Play';
+                        // Reset active section play button
+                        if (activePlayButton) {
+                            activePlayButton.innerHTML = '<i class="fas fa-play"></i>';
+                            activePlayButton = null;
+                        }
+                    }
+                });
+
+                // Update duration display when metadata is loaded
+                audio.addEventListener('loadedmetadata', function() {
+                    durationSpan.textContent = formatTime(audio.duration);
+                });
+
+                // Main Play/Pause button
+                mainPlayPauseBtn.addEventListener('click', function() {
+                    if (audio.paused) {
+                        audio.play();
+                        mainPlayPauseBtn.innerHTML = '<i class="fas fa-pause me-2"></i>Pause';
                     } else {
-                        video.pause();
-                        playPauseBtn.innerHTML = '<i class="fas fa-play me-2"></i>Play';
+                        audio.pause();
+                        mainPlayPauseBtn.innerHTML = '<i class="fas fa-play me-2"></i>Play';
                     }
                 });
 
-                // Xử lý nút Replay Section
+                // Audio state change listeners
+                audio.addEventListener('play', function() {
+                    mainPlayPauseBtn.innerHTML = '<i class="fas fa-pause me-2"></i>Pause';
+                });
+
+                audio.addEventListener('pause', function() {
+                    mainPlayPauseBtn.innerHTML = '<i class="fas fa-play me-2"></i>Play';
+                });
+
+                // Replay button
                 replayBtn.addEventListener('click', function() {
-                    // Nếu đang trong một section
                     if (currentSectionStart !== null) {
-                        video.currentTime = currentSectionStart;
-                        video.play();
-                        playPauseBtn.innerHTML = '<i class="fas fa-pause me-2"></i>Pause';
+                        audio.currentTime = currentSectionStart;
+                        audio.play();
                     }
                 });
 
-                // Cập nhật trạng thái nút khi video play/pause
-                video.addEventListener('play', function() {
-                    playPauseBtn.innerHTML = '<i class="fas fa-pause me-2"></i>Pause';
+                // Speed button
+                speedBtn.addEventListener('click', function() {
+                    currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
+                    const newSpeed = speeds[currentSpeedIndex];
+                    audio.playbackRate = newSpeed;
+                    speedBtn.innerHTML = `<i class="fas fa-tachometer-alt me-2"></i>Speed: ${newSpeed}x`;
                 });
 
-                video.addEventListener('pause', function() {
-                    playPauseBtn.innerHTML = '<i class="fas fa-play me-2"></i>Play';
+                // Click on progress bar to seek
+                progressBar.parentElement.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const percent = (e.clientX - rect.left) / rect.width;
+                    audio.currentTime = percent * audio.duration;
                 });
 
-                // Xử lý khi click vào nút play section
-                document.querySelectorAll('.play-section').forEach(button => {
+                // Section play buttons
+                sectionPlayButtons.forEach(button => {
                     button.addEventListener('click', function() {
-                        const timeRange = this.dataset.time; // Format: "0:00 - 0:15"
+                        // Reset previous active button if exists
+                        if (activePlayButton && activePlayButton !== this) {
+                            activePlayButton.innerHTML = '<i class="fas fa-play"></i>';
+                        }
+
+                        const timeRange = this.dataset.time;
                         const [start, end] = timeRange.split(' - ')
                             .map(time => {
                                 const [min, sec] = time.split(':').map(Number);
                                 return min * 60 + sec;
                             });
 
-                        // Lưu thời gian của section hiện tại
                         currentSectionStart = start;
                         currentSectionEnd = end;
 
-                        // Chuyển video đến thời điểm bắt đầu và play
-                        video.currentTime = start;
-                        video.play();
-                        playPauseBtn.innerHTML = '<i class="fas fa-pause me-2"></i>Pause';
+                        if (audio.currentTime >= start && audio.currentTime < end && !audio.paused) {
+                            // If current section is playing, pause it
+                            audio.pause();
+                            this.innerHTML = '<i class="fas fa-play"></i>';
+                            activePlayButton = null;
+                        } else {
+                            // Play the section
+                            audio.currentTime = start;
+                            audio.play();
+                            this.innerHTML = '<i class="fas fa-pause"></i>';
+                            activePlayButton = this;
+                        }
                     });
                 });
 
-                // Kiểm tra và dừng video khi kết thúc section
-                video.addEventListener('timeupdate', function() {
-                    if (currentSectionEnd && video.currentTime >= currentSectionEnd) {
-                        video.pause();
-                        playPauseBtn.innerHTML = '<i class="fas fa-play me-2"></i>Play';
-                    }
-                });
-
-                // Thêm phím tắt
+                // Keyboard shortcuts
                 document.addEventListener('keydown', function(e) {
-                    // Space để play/pause
                     if (e.code === 'Space') {
                         e.preventDefault();
-                        playPauseBtn.click();
-                    }
-                    // R để replay section
-                    else if (e.code === 'KeyR') {
+                        mainPlayPauseBtn.click();
+                    } else if (e.code === 'KeyR') {
                         e.preventDefault();
                         replayBtn.click();
                     }

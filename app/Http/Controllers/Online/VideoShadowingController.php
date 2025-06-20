@@ -18,7 +18,7 @@ class VideoShadowingController extends Controller
         $videoShadowing = $lesson->videoShadowing;
 
         if (!$videoShadowing) {
-            abort(404, 'Video shadowing không tồn tại cho bài học này');
+            abort(404, 'Audio shadowing không tồn tại cho bài học này');
         }
 
         // Lấy các segments và sắp xếp theo order_index
@@ -28,9 +28,9 @@ class VideoShadowingController extends Controller
 
         $data = [
             'title' => $videoShadowing->title,
-            'video' => [
+            'audio' => [
                 'title' => $videoShadowing->title,
-                'url' => $videoShadowing->getMediaUrl('video_url'),
+                'url' => $videoShadowing->getMediaUrl('audio_url'),
                 'description' => $videoShadowing->description,
                 'transcript' => $segments->map(function($segment) {
                     return [
@@ -43,7 +43,7 @@ class VideoShadowingController extends Controller
                     'Nghe đoạn hội thoại vài lần để làm quen với nội dung',
                     'Tập trung vào ngữ điệu và cách phát âm của người bản xứ',
                     'Bắt đầu lặp lại từng câu theo người nói',
-                    'Cố gắng nói đồng thời với video (shadowing)',
+                    'Cố gắng nói đồng thời với audio (shadowing)',
                     'Ghi âm giọng nói của bạn để so sánh và cải thiện'
                 ]
             ]

@@ -7,11 +7,11 @@ class VideoShadowing extends BaseModel
     public static function mediaFields(): array
     {
         return [
-            'video_url' => [
-                'type' => 'video',
-                'max_size' => 102400,
-                'mimes' => 'mp4,webm,ogg',
-                'label' => 'Video Shadowing'
+            'audio_url' => [
+                'type' => 'audio',
+                'max_size' => 51200, // 50MB
+                'mimes' => 'mp3,wav,ogg',
+                'label' => 'Audio Shadowing'
             ]
         ];
     }
@@ -21,7 +21,7 @@ class VideoShadowing extends BaseModel
             'lesson_id' => 'required|exists:lessons,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'video_url' => 'required|string|max:255',
+            'audio_url' => 'required|string|max:255',
         ];
     }
 
@@ -50,10 +50,10 @@ class VideoShadowing extends BaseModel
                 'sortable' => false,
                 'editable' => true
             ],
-            'video_url' => [
-                'label' => 'URL Video',
+            'audio_url' => [
+                'label' => 'URL Audio',
                 'type' => 'file',
-                'accept' => 'video/*',
+                'accept' => 'audio/*',
                 'searchable' => true,
                 'sortable' => true,
                 'editable' => true
@@ -63,7 +63,7 @@ class VideoShadowing extends BaseModel
             $fields[$field] = [
                 'label' => $config['label'],
                 'type' => 'file',
-                'accept' => $config['type'] === 'image' ? 'image/*' : 'video/*',
+                'accept' => 'audio/*',
                 'max_size' => $config['max_size'],
                 'editable' => true
             ];
