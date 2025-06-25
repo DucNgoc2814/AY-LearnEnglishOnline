@@ -267,6 +267,112 @@
     </div>
 </div>
 
+<!-- Modal Chi tiết tiến độ -->
+<div class="modal fade" id="progressDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chi tiết tiến độ học viên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="student-info mb-4">
+                    <div class="d-flex align-items-center">
+                        <img src="" class="rounded-circle me-3" width="60" height="60" id="studentAvatar">
+                        <div>
+                            <h5 class="mb-1" id="studentName"></h5>
+                            <p class="mb-0 text-muted" id="studentEmail"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tiến độ các loại bài tập -->
+                <div class="progress-sections">
+                    <!-- Bài tập kéo thả -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">Bài tập điền từ kéo thả</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Số câu đã làm:</strong>
+                                        <span id="dragDropProgress">0/0</span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Lần làm gần nhất:</strong>
+                                        <span id="dragDropLastAttempt">-</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bài tập điền từ -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">Bài tập điền từ vào chỗ trống</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Số câu đã làm:</strong>
+                                        <span id="fillInProgress">0/0</span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Lần làm gần nhất:</strong>
+                                        <span id="fillInLastAttempt">-</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bài tập ghi âm -->
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">Bài tập ghi âm</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Số clip đã ghi:</strong>
+                                        <span id="recordingCount">0</span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Lần ghi gần nhất:</strong>
+                                        <span id="recordingLastAttempt">-</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Danh sách recordings -->
+                            <div class="recording-history">
+                                <h6 class="mb-3">Lịch sử ghi âm</h6>
+                                <div class="list-group" id="recordingList">
+                                    <!-- Recording items will be added here dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('styles')
 <style>
 .progress {
@@ -278,6 +384,53 @@
 }
 .table > :not(caption) > * > * {
     vertical-align: middle;
+}
+
+/* Styles cho modal chi tiết */
+.student-info {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 1rem;
+}
+
+.recording-history {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.recording-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+    background-color: #f8f9fa;
+}
+
+.recording-item:hover {
+    background-color: #e9ecef;
+}
+
+.recording-item .recording-info {
+    flex-grow: 1;
+}
+
+.recording-item .recording-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.recording-item audio {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+}
+
+.progress-sections .card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 </style>
 @endpush
@@ -299,6 +452,101 @@ $(document).ready(function() {
     $('.btn-primary').on('click', function() {
         // Add your export logic here
     });
+
+    // Khởi tạo modal
+    const progressModal = new bootstrap.Modal(document.getElementById('progressDetailModal'));
+
+    // Xử lý khi click nút xem chi tiết
+    $('.btn-primary[title="Xem chi tiết"]').on('click', function() {
+        const row = $(this).closest('tr');
+        const studentId = row.find('small.text-muted').text().replace('ID: ', '');
+
+        // Cập nhật thông tin học viên trong modal
+        $('#studentAvatar').attr('src', row.find('img').attr('src'));
+        $('#studentName').text(row.find('.fw-bold').text());
+        $('#studentEmail').text(row.find('td:eq(2)').text());
+
+        // Gọi API để lấy dữ liệu chi tiết
+        fetchStudentProgress(studentId);
+
+        // Hiển thị modal
+        progressModal.show();
+    });
+
+    // Hàm lấy dữ liệu chi tiết tiến độ học viên
+    function fetchStudentProgress(studentId) {
+        // Giả lập dữ liệu API - Thay thế bằng call API thực tế
+        const mockData = {
+            dragDrop: {
+                completed: 15,
+                total: 20,
+                lastAttempt: '2024-03-15 14:30'
+            },
+            fillIn: {
+                completed: 8,
+                total: 10,
+                lastAttempt: '2024-03-15 13:45'
+            },
+            recordings: {
+                count: 3,
+                lastAttempt: '2024-03-15 14:15',
+                items: [
+                    {
+                        id: 1,
+                        timestamp: '2024-03-15 14:15',
+                        duration: '00:35',
+                        audioUrl: '/path/to/audio1.mp3'
+                    },
+                    {
+                        id: 2,
+                        timestamp: '2024-03-15 14:00',
+                        duration: '00:42',
+                        audioUrl: '/path/to/audio2.mp3'
+                    },
+                    {
+                        id: 3,
+                        timestamp: '2024-03-15 13:45',
+                        duration: '00:28',
+                        audioUrl: '/path/to/audio3.mp3'
+                    }
+                ]
+            }
+        };
+
+        // Cập nhật thông tin bài tập kéo thả
+        $('#dragDropProgress').text(`${mockData.dragDrop.completed}/${mockData.dragDrop.total}`);
+        $('#dragDropLastAttempt').text(mockData.dragDrop.lastAttempt);
+
+        // Cập nhật thông tin bài tập điền từ
+        $('#fillInProgress').text(`${mockData.fillIn.completed}/${mockData.fillIn.total}`);
+        $('#fillInLastAttempt').text(mockData.fillIn.lastAttempt);
+
+        // Cập nhật thông tin bài tập ghi âm
+        $('#recordingCount').text(mockData.recordings.count);
+        $('#recordingLastAttempt').text(mockData.recordings.lastAttempt);
+
+        // Cập nhật danh sách recordings
+        const recordingList = $('#recordingList');
+        recordingList.empty();
+
+        mockData.recordings.items.forEach(recording => {
+            const recordingItem = `
+                <div class="recording-item">
+                    <div class="recording-info">
+                        <div class="mb-2">
+                            <strong>Thời gian:</strong> ${recording.timestamp}
+                            <span class="ms-3"><strong>Độ dài:</strong> ${recording.duration}</span>
+                        </div>
+                        <audio controls>
+                            <source src="${recording.audioUrl}" type="audio/mpeg">
+                            Trình duyệt của bạn không hỗ trợ phát audio.
+                        </audio>
+                    </div>
+                </div>
+            `;
+            recordingList.append(recordingItem);
+        });
+    }
 });
 </script>
 @endpush

@@ -4,7 +4,7 @@
     <div class="container py-4">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">Video Exercise</h4>
+                <h4 class="card-title mb-4">U.S. MOVIE - {{ $lesson->title }}</h4>
 
                 <ul class="nav nav-tabs" id="exerciseTabs" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -66,6 +66,29 @@
                                         <li>Sử dụng nút play để nghe lại audio và lặp lại nhiều lần</li>
                                         <li>Có thể hiện/ẩn phụ đề để hỗ trợ việc luyện tập</li>
                                     </ul>
+                                </div>
+
+                                <!-- Video Tutorial -->
+                                <div class="video-container mb-4">
+                                    <h5 class="mb-3"><i class="fas fa-video me-2"></i>Tutorial Video</h5>
+                                    <div class="ratio ratio-16x9 mb-4">
+                                        @php
+                                            // Convert YouTube URL to embed URL
+                                            $tutorialUrl = $tutorial_video_url ?? '';
+                                            $videoId = '';
+                                            if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $tutorialUrl, $match)) {
+                                                $videoId = $match[1];
+                                            }
+                                            $embedUrl = 'https://www.youtube.com/embed/' . $videoId;
+                                        @endphp
+                                        <iframe src="{{ $embedUrl }}" title="Tutorial video" frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen class="rounded shadow-sm">
+                                        </iframe>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-muted">Watch the tutorial video to understand the learning process</p>
+                                    </div>
                                 </div>
 
                                 <div class="text-center mt-4">

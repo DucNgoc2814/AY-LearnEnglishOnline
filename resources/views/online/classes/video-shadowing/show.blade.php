@@ -170,7 +170,7 @@
 
                             <!-- Tips & Instructions -->
                             <div class="col-lg-4">
-                                <div class="card mb-4">
+                                {{-- <div class="card mb-4">
                                     <div class="card-header bg-primary text-white">
                                         <h5 class="card-title mb-0">
                                             <i class="fas fa-lightbulb me-2"></i>Hướng dẫn Shadowing
@@ -192,7 +192,7 @@
                                             @endforeach
                                         </ol>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <!-- Recording History -->
                                 <div class="card">

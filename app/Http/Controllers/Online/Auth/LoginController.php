@@ -97,7 +97,8 @@ class LoginController extends Controller
             session([
                 'jwt_token' => $token,
                 'user_display_name' => $displayName,
-                'user_type' => $credentials['user_type']
+                'user_type' => $credentials['user_type'],
+                'user_id' => $user->id
             ]);
 
             Log::info('Login successful', [

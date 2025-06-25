@@ -137,6 +137,8 @@ Route::prefix('online')->name('online.')->group(function () {
                         Route::get('/handout', [TeacherClassController::class, 'handoutProgress'])->name('handout');
                         Route::get('/shadowing', [TeacherClassController::class, 'shadowingProgress'])->name('shadowing');
                         Route::get('/reflection', [TeacherClassController::class, 'reflectionProgress'])->name('reflection');
+                        Route::get('/reflection/student/{student_id}', [TeacherClassController::class, 'reflectionDetail'])->name('reflection.detail');
+                        Route::post('/reflection/student/{student_id}/save', [TeacherClassController::class, 'saveReflection'])->name('reflection.save');
                     });
 
                     // Materials

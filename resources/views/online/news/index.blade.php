@@ -1,6 +1,6 @@
 @extends('online.layouts.master')
 
-@section('title', 'Thông báo & Tin tức')
+@section('title', 'News & Announcements')
 
 @push('styles')
     <style>
@@ -172,25 +172,23 @@
         }
 
         /* Category colors */
-        .category-thông-báo,
+        .category-announcement,
         .category-notice {
             background-color: #e3f2fd;
             color: #0066cc;
         }
 
-        .category-hướng-dẫn,
+        .category-guideline,
         .category-guide {
             background-color: #e8f5e9;
             color: #2e7d32;
         }
 
-        .category-sự-kiện,
         .category-event {
             background-color: #fff8e1;
             color: #f57c00;
         }
 
-        .category-học-tập,
         .category-study {
             background-color: #f3e5f5;
             color: #7b1fa2;
@@ -240,7 +238,7 @@
         }
 
         /* Fix for iOS Safari */
-        @supports (-webkit-touch-callout: none) {
+        @media not all and (-webkit-touch-callout: none) {
             .news-container {
                 width: 100vw;
             }
@@ -256,18 +254,18 @@
     <div class="news-container">
         <div class="page-header">
             <h5 class="page-title">
-                <i class="fas fa-newspaper"></i>Thông báo & Tin tức
+                <i class="fas fa-newspaper"></i>News & Announcements
             </h5>
         </div>
 
         <div class="filter-section">
-            <div class="filter-label">Lọc theo danh mục</div>
+            <div class="filter-label">Filter by category</div>
             <div class="filter-buttons">
-                <button class="filter-btn active">Tất cả</button>
-                <button class="filter-btn">Thông báo</button>
-                <button class="filter-btn">Hướng dẫn</button>
-                <button class="filter-btn">Sự kiện</button>
-                <button class="filter-btn">Học tập</button>
+                <button class="filter-btn active">Announcements</button>
+                <button class="filter-btn">Guidelines</button>
+                <button class="filter-btn">Events</button>
+                <button class="filter-btn">Upcoming courses
+                </button>
             </div>
         </div>
 
@@ -282,7 +280,7 @@
                             </span>
                             @if ($item['is_important'])
                                 <span class="important-badge">
-                                    <i class="fas fa-exclamation-circle"></i>Quan trọng
+                                    <i class="fas fa-exclamation-circle"></i>Important
                                 </span>
                             @endif
                         </div>
@@ -298,7 +296,7 @@
                                 {{ \Carbon\Carbon::parse($item['created_at'])->format('d/m/Y') }}
                             </div>
                             <a href="{{ route('online.news.show', $item['id']) }}" class="news-link text-decoration-none">
-                                Xem chi tiết
+                                View details
                                 <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>

@@ -5,11 +5,6 @@
 @section('content')
 <div class="container-fluid px-4">
     <h1 class="mt-4">Shadowing Progress</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="{{ route('online.teacher.classes.index') }}">Danh sách lớp</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('online.teacher.classes.show', ['id' => 1]) }}">Lớp IELTS 7.0</a></li>
-        <li class="breadcrumb-item active">Shadowing Progress</li>
-    </ol>
 
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -34,26 +29,11 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="text-dark">
-                                    <div class="small text-muted mb-1">Tổng số bài tập</div>
-                                    <div class="fw-bold h5 mb-0">5</div>
+                                    <div class="small text-muted mb-1">Tổng số học viên</div>
+                                    <div class="fw-bold h5 mb-0">20</div>
                                 </div>
                                 <div class="text-dark">
-                                    <i class="fas fa-tasks fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="card bg-light mb-4">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="text-dark">
-                                    <div class="small text-muted mb-1">Đã nộp</div>
-                                    <div class="fw-bold h5 mb-0">4/5</div>
-                                </div>
-                                <div class="text-dark">
-                                    <i class="fas fa-check-circle fa-2x"></i>
+                                    <i class="fas fa-users fa-2x"></i>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +44,22 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="text-dark">
-                                    <div class="small text-muted mb-1">Tỷ lệ nộp</div>
+                                    <div class="small text-muted mb-1">Đã nộp trung bình</div>
+                                    <div class="fw-bold h5 mb-0">15/20</div>
+                                </div>
+                                <div class="text-dark">
+                                    <i class="fas fa-microphone-alt fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-dark">
+                                    <div class="small text-muted mb-1">Độ chính xác TB</div>
                                     <div class="fw-bold h5 mb-0">80.00%</div>
                                 </div>
                                 <div class="text-dark">
@@ -79,8 +74,8 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="text-dark">
-                                    <div class="small text-muted mb-1">Đang diễn ra</div>
-                                    <div class="fw-bold h5 mb-0">1</div>
+                                    <div class="small text-muted mb-1">Thời gian TB</div>
+                                    <div class="fw-bold h5 mb-0">6 phút</div>
                                 </div>
                                 <div class="text-dark">
                                     <i class="fas fa-clock fa-2x"></i>
@@ -347,6 +342,107 @@
     </div>
 </div>
 
+<!-- Student Recording Detail Modal -->
+<div class="modal fade" id="studentRecordingModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chi tiết bản ghi của học viên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="student-info mb-4">
+                    <div class="d-flex align-items-center">
+                        <img src="" alt="Student Avatar" class="rounded-circle me-3" width="60" height="60" id="modalStudentAvatar">
+                        <div>
+                            <h4 class="mb-1" id="modalStudentName"></h4>
+                            <p class="text-muted mb-0" id="modalStudentId"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recording List -->
+                <div class="recordings-list">
+                    <h5 class="mb-3">Daily Conversation 1</h5>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h6>Bản gốc</h6>
+                                    <audio controls class="w-100 mb-2">
+                                        <source src="#" type="audio/mpeg" id="originalAudio1">
+                                    </audio>
+                                    <div class="text-muted small">Thời lượng: 30 giây</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Bản ghi của học viên</h6>
+                                    <audio controls class="w-100 mb-2">
+                                        <source src="#" type="audio/mpeg" id="studentAudio1">
+                                    </audio>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="text-muted small">Thời gian ghi: 15/03/2024 14:30</div>
+                                        <div class="text-success">Độ chính xác: 90%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="mb-3">Business Meeting</h5>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h6>Bản gốc</h6>
+                                    <audio controls class="w-100 mb-2">
+                                        <source src="#" type="audio/mpeg" id="originalAudio2">
+                                    </audio>
+                                    <div class="text-muted small">Thời lượng: 45 giây</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Bản ghi của học viên</h6>
+                                    <audio controls class="w-100 mb-2">
+                                        <source src="#" type="audio/mpeg" id="studentAudio2">
+                                    </audio>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="text-muted small">Thời gian ghi: 15/03/2024 15:00</div>
+                                        <div class="text-success">Độ chính xác: 85%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="mb-3">Travel Dialogue</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h6>Bản gốc</h6>
+                                    <audio controls class="w-100 mb-2">
+                                        <source src="#" type="audio/mpeg" id="originalAudio3">
+                                    </audio>
+                                    <div class="text-muted small">Thời lượng: 35 giây</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Bản ghi của học viên</h6>
+                                    <audio controls class="w-100 mb-2">
+                                        <source src="#" type="audio/mpeg" id="studentAudio3">
+                                    </audio>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="text-muted small">Thời gian ghi: 15/03/2024 15:30</div>
+                                        <div class="text-success">Độ chính xác: 88%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('styles')
 <style>
 .progress {
@@ -378,6 +474,45 @@ $(document).ready(function() {
     // Handle export button
     $('.btn-primary').on('click', function() {
         // Add your export logic here
+    });
+
+    // Handle view detail button
+    $('.btn-primary[title="Xem chi tiết"]').on('click', function() {
+        const row = $(this).closest('tr');
+        const studentName = row.find('.fw-bold').text();
+        const studentId = row.find('.text-muted').text();
+        const studentAvatar = row.find('img').attr('src');
+
+        // Update modal content
+        $('#modalStudentName').text(studentName);
+        $('#modalStudentId').text(studentId);
+        $('#modalStudentAvatar').attr('src', studentAvatar);
+
+        // Show modal
+        $('#studentRecordingModal').modal('show');
+    });
+
+    // Handle play recording button
+    $('.fa-play-circle').parent().on('click', function(e) {
+        e.preventDefault();
+        const row = $(this).closest('tr');
+        const studentName = row.find('.fw-bold').text();
+        const studentId = row.find('.text-muted').text();
+        const studentAvatar = row.find('img').attr('src');
+
+        // Update modal content
+        $('#modalStudentName').text(studentName);
+        $('#modalStudentId').text(studentId);
+        $('#modalStudentAvatar').attr('src', studentAvatar);
+
+        // Show modal and play specific recording
+        $('#studentRecordingModal').modal('show');
+        const recordingType = $(this).closest('td').index() - 2; // Adjust index based on column position
+        if(recordingType >= 0 && recordingType <= 2) {
+            setTimeout(() => {
+                $(`#studentAudio${recordingType + 1}`).closest('audio')[0].play();
+            }, 500);
+        }
     });
 });
 </script>

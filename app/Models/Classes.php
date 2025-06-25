@@ -204,11 +204,21 @@ class Classes extends BaseModel
         return $this->hasMany(CourseRegistration::class, 'class_id');
     }
 
-    public function students(): BelongsToMany
+    public function students()
     {
-        return $this->belongsToMany(Student::class, 'course_registrations', 'class_id', 'student_id')
-            ->withPivot(['status', 'fee_amount', 'payment_status', 'payment_method', 'payment_date', 'invoice_number', 'enrollment_date', 'completion_date', 'notes'])
-            ->withTimestamps();
+        return $this->hasManyThrough(
+            Student::class,
+            'App\Models\ClassStudent',
+            'class_id', // Foreign key on class_students table
+            'id', // Foreign key on students table
+            'id', // Local key on classes table
+            'registration_id' // Local key on class_students table
+        );
+    }
+
+    public function classStudents()
+    {
+        return $this->hasMany(ClassStudent::class, 'class_id');
     }
 
     public function schedules(): HasMany

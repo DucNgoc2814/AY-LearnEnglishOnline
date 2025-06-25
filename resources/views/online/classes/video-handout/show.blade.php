@@ -4,7 +4,7 @@
 <div class="container py-4">
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title mb-4">{{ $title }}</h4>
+            <h4 class="card-title mb-4">PRONUNCIATION</h4>
 
             <ul class="nav nav-tabs" id="videoHandoutTabs" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -1038,65 +1038,24 @@
                         <div class="col-12">
                             <div class="homework-section">
                                 <h3 class="mb-4">5. Homework</h3>
-
-                                <!-- After Class Section -->
-                                <div class="card mb-4">
-                                    <div class="card-header bg-light">
-                                        <h5 class="mb-0">AFTER CLASS (LESSON 1)</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="homework-item d-flex align-items-center p-3 border-bottom">
-                                            <span class="number me-3">1.</span>
-                                            <div class="content">
-                                                <h6 class="mb-0">Reflection: Unit 1 (Hometown)</h6>
-                                            </div>
-                                            <a href="#" class="btn btn-outline-primary ms-auto">
-                                                <i class="fas fa-external-link-alt me-2"></i>Start
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Self Study Section -->
-                                <div class="card mb-4">
-                                    <div class="card-header bg-light">
-                                        <h5 class="mb-0">SELF - STUDY (LESSON 1)</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="homework-item d-flex align-items-center p-3 border-bottom">
-                                            <span class="number me-3">2.</span>
-                                            <div class="content">
-                                                <h6 class="mb-0">Shadowing: Unit 1 (Hometown)</h6>
-                                            </div>
-                                            <a href="#" class="btn btn-outline-primary ms-auto">
-                                                <i class="fas fa-external-link-alt me-2"></i>Start
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Before Class Section -->
                                 <div class="card">
-                                    <div class="card-header bg-light">
-                                        <h5 class="mb-0">BEFORE CLASS (LESSON 2)</h5>
-                                    </div>
                                     <div class="card-body">
-                                        <div class="homework-item d-flex align-items-center p-3 border-bottom">
-                                            <span class="number me-3">3.</span>
-                                            <div class="content">
-                                                <h6 class="mb-0">Young Sheldon: Episode 2</h6>
-                                            </div>
-                                            <a href="#" class="btn btn-outline-primary ms-auto">
-                                                <i class="fas fa-external-link-alt me-2"></i>Start
-                                            </a>
+                                        <div class="ratio ratio-16x9">
+                                            <iframe
+                                                src="https://wordwall.net/embed/16780416/games-for-words-unit-hello-1"
+                                                frameborder="0"
+                                                allowfullscreen>
+                                            </iframe>
                                         </div>
-                                        <div class="homework-item d-flex align-items-center p-3">
-                                            <span class="number me-3">4.</span>
-                                            <div class="content">
-                                                <h6 class="mb-0">Active Listening: Unit 2 (Home)</h6>
-                                            </div>
-                                            <a href="#" class="btn btn-outline-primary ms-auto">
-                                                <i class="fas fa-external-link-alt me-2"></i>Start
+                                        <div class="text-center mt-3">
+                                            <p class="text-muted">
+                                                Practice vocabulary with interactive word games
+                                            </p>
+                                            <a href="https://wordwall.net/resource/16780416/games-for-words-unit-hello-1"
+                                               target="_blank"
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-external-link-alt me-2"></i>
+                                                Open in new tab
                                             </a>
                                         </div>
                                     </div>

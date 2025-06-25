@@ -225,25 +225,25 @@
             <div class="class-meta">
                 <div class="meta-item">
                     <i class="fas fa-user-tie"></i>
-                    <span class="meta-label">Giảng viên:</span>
-                    <span>{{ $class->teacher->name ?? ($class->teacher->full_name ?? 'Chưa phân công') }}</span>
+                    <span class="meta-label">Instructor:</span>
+                    <span>{{ $class->teacher->name ?? ($class->teacher->full_name ?? 'Not Assigned') }}</span>
                 </div>
                 <div class="meta-item">
                     <i class="fas fa-users"></i>
-                    <span class="meta-label">Sĩ số:</span>
-                    <span>{{ $class->students->count() }} học viên</span>
+                    <span class="meta-label">Class Size:</span>
+                    <span>{{ $class->students->count() }} students</span>
                 </div>
                 <div class="meta-item">
                     <i class="fas fa-calendar"></i>
-                    <span class="meta-label">Lịch học:</span>
+                    <span class="meta-label">Schedule:</span>
                     <span>{{ $class->formatted_schedule }}</span>
                 </div>
                 <div class="meta-item">
                     <i class="fas fa-clock"></i>
-                    <span class="meta-label">Trạng thái:</span>
+                    <span class="meta-label">Status:</span>
                     <span
                         class="badge {{ $class->status === 'active' ? 'bg-success' : ($class->status === 'pending' ? 'bg-warning' : 'bg-secondary') }}">
-                        {{ $class->status === 'active' ? 'Đang diễn ra' : ($class->status === 'pending' ? 'Sắp diễn ra' : 'Đã kết thúc') }}
+                        {{ $class->status === 'active' ? 'In Progress' : ($class->status === 'pending' ? 'Upcoming' : 'Completed') }}
                     </span>
                 </div>
             </div>
@@ -252,19 +252,19 @@
         <div class="quick-stats">
             <div class="stat-card">
                 <div class="stat-value">{{ $stats['total_sessions'] ?? 0 }}</div>
-                <div class="stat-label">Tổng số buổi học</div>
+                <div class="stat-label">Total Sessions</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">{{ $stats['completed_sessions'] ?? 0 }}</div>
-                <div class="stat-label">Buổi đã học</div>
+                <div class="stat-label">Completed Sessions</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">{{ $stats['attendance_rate'] ?? 0 }}%</div>
-                <div class="stat-label">Tỷ lệ điểm danh</div>
+                <div class="stat-label">Attendance Rate</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">{{ $stats['assignment_count'] ?? 0 }}</div>
-                <div class="stat-label">Bài tập</div>
+                <div class="stat-label">Assignments</div>
             </div>
         </div>
 
@@ -272,13 +272,13 @@
             <li class="nav-item" role="presentation">
                 <a class="nav-link active" id="materials-tab" data-bs-toggle="tab" href="#materials" role="tab">
                     <i class="fas fa-book"></i>
-                    Tài liệu
+                    Materials
                 </a>
             </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="zoom-tab" data-bs-toggle="tab" href="#zoom" role="tab">
                     <i class="fas fa-video"></i>
-                    Link Zoom
+                    Zoom Link
                 </a>
             </li>
             <li class="nav-item" role="presentation">
@@ -290,13 +290,13 @@
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="resources-tab" data-bs-toggle="tab" href="#resources" role="tab">
                     <i class="fas fa-graduation-cap"></i>
-                    Học liệu
+                    Learning Resources
                 </a>
             </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="progress-tab" data-bs-toggle="tab" href="#progress" role="tab">
                     <i class="fas fa-chart-line"></i>
-                    Tiến độ làm bài
+                    Assignment Progress
                 </a>
             </li>
         </ul>

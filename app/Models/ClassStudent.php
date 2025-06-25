@@ -232,11 +232,19 @@ class ClassStudent extends BaseModel
         return $this->hasOneThrough(
             Student::class,
             CourseRegistrationStudent::class,
-            'course_registration_id', // Khóa ngoại trên bảng trung gian (course_registration_student)
-            'id', // Khóa chính của bảng đích (students)
-            'registration_id', // Khóa ngoại trên bảng hiện tại (class_students)
-            'student_id' // Khóa ngoại trên bảng trung gian trỏ đến bảng đích
+            'course_registration_id',
+            'id',
+            'registration_id',
+            'student_id'
         );
+        // return $this->hasOneThrough(
+        //     Student::class,
+        //     CourseRegistration::class,
+        //     'id', // Foreign key on course_registrations table
+        //     'id', // Foreign key on students table
+        //     'registration_id', // Local key on class_students table
+        //     'student_id' // Local key on course_registrations table
+        // );
     }
 
     /**
