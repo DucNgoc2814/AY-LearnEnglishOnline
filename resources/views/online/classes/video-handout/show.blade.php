@@ -784,6 +784,75 @@
                                     </div>
                                 </div>
 
+                                <!-- Practice 7: Word pair /ɑː/ & /ʌ/ -->
+                                <div class="card mt-4">
+                                    <div class="card-body">
+                                        <h4 class="card-title mb-4">
+                                            <i class="fas fa-exchange-alt me-2"></i>Practice 7: Phân Biệt Âm /ɑː/ & /ʌ/
+                                        </h4>
+
+                                        <div class="alert alert-info mb-4">
+                                            <h5 class="alert-heading">
+                                                <i class="fas fa-info-circle me-2"></i>Hướng Dẫn
+                                            </h5>
+                                            <p class="mb-0">
+                                                Kéo các từ đang chạy phía trên và thả vào ô phù hợp bên dưới. Mỗi từ sẽ
+                                                thuộc về một trong hai âm: /ɑː/ hoặc /ʌ/.
+                                                Hãy lắng nghe kỹ phát âm của từng từ và quyết định xem nó thuộc nhóm âm nào.
+                                            </p>
+                                        </div>
+
+                                        <!-- Word Stream Section -->
+                                        <div class="word-stream-container mb-4">
+                                            <div class="word-stream" id="wordStream">
+                                                <!-- Words will be added here dynamically -->
+                                            </div>
+                                        </div>
+
+                                        <!-- Drop Zones -->
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <div class="drop-zone" id="longAhZone" data-sound="ɑː">
+                                                    <div class="drop-zone-header">
+                                                        <h5 class="mb-0">
+                                                            <span class="phonetic-label">/ɑː/</span>
+                                                            <span class="example-words">car, park, dark</span>
+                                                        </h5>
+                                                    </div>
+                                                    <div class="drop-zone-content">
+                                                        <!-- Dropped words will appear here -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="drop-zone" id="shortUZone" data-sound="ʌ">
+                                                    <div class="drop-zone-header">
+                                                        <h5 class="mb-0">
+                                                            <span class="phonetic-label">/ʌ/</span>
+                                                            <span class="example-words">cup, sun, run</span>
+                                                        </h5>
+                                                    </div>
+                                                    <div class="drop-zone-content">
+                                                        <!-- Dropped words will appear here -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Progress Section -->
+                                        <div class="progress-section mt-4">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="progress-label">Tiến độ:</span>
+                                                <span class="progress-count">0/20 từ</span>
+                                            </div>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: 0%"
+                                                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <style>
                                     .spelling-patterns {
                                         background: #f8f9fa;
@@ -912,683 +981,1646 @@
                                         });
                                     });
                                 </script>
+
+                                <!-- Practice 8: Kĩ thuật rút gọn âm (Reduction) -->
+                                <div class="card mt-4">
+                                    <div class="card-body">
+                                        <h4 class="card-title mb-4">
+                                            <i class="fas fa-volume-down me-2"></i>Practice 8: Kĩ thuật rút gọn âm
+                                            (Reduction)
+                                        </h4>
+
+                                        <div class="alert alert-info mb-4">
+                                            <h5 class="alert-heading">
+                                                <i class="fas fa-info-circle me-2"></i>Hướng Dẫn
+                                            </h5>
+                                            <p class="mb-0">
+                                                Nghe và chọn dạng rút gọn âm đúng cho mỗi câu. Chú ý cách phát âm tự nhiên
+                                                trong giao tiếp hàng ngày.
+                                            </p>
+                                        </div>
+
+                                        <!-- Reduction Type 1: Want to => wanna -->
+                                        <div class="reduction-section mb-4">
+                                            <h5 class="reduction-title">
+                                                <span class="badge bg-primary me-2">1</span>
+                                                Want to <i class="fas fa-arrow-right mx-2"></i>
+                                                <span class="text-danger">wanna</span>
+                                                <span class="phonetic text-muted">/wɒnə/</span>
+                                            </h5>
+
+                                            <div class="sentences-list">
+                                                <div class="sentence-item p-3 border rounded mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <button class="btn btn-sm btn-outline-primary me-2 play-btn"
+                                                            data-audio="/audio/reduction/wanna1.mp3">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                        <div class="sentence-text">Do you <span
+                                                                class="highlight-word">want to</span> come over and watch
+                                                            it with me?</div>
+                                                    </div>
+                                                    <div class="options mt-2">
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="true">wanna</button>
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="false">want to</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="sentence-item p-3 border rounded mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <button class="btn btn-sm btn-outline-primary me-2 play-btn"
+                                                            data-audio="/audio/reduction/wanna2.mp3">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                        <div class="sentence-text">Do you <span
+                                                                class="highlight-word">want to</span> grab lunch later?
+                                                        </div>
+                                                    </div>
+                                                    <div class="options mt-2">
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="true">wanna</button>
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="false">want to</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Reduction Type 2: Going to => gonna -->
+                                        <div class="reduction-section mb-4">
+                                            <h5 class="reduction-title">
+                                                <span class="badge bg-primary me-2">2</span>
+                                                Going to <i class="fas fa-arrow-right mx-2"></i>
+                                                <span class="text-danger">gonna</span>
+                                                <span class="phonetic text-muted">/ɡənə/</span>
+                                            </h5>
+
+                                            <div class="sentences-list">
+                                                <div class="sentence-item p-3 border rounded mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <button class="btn btn-sm btn-outline-primary me-2 play-btn"
+                                                            data-audio="/audio/reduction/gonna1.mp3">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                        <div class="sentence-text">When are they <span
+                                                                class="highlight-word">going to</span> be in Chicago?</div>
+                                                    </div>
+                                                    <div class="options mt-2">
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="true">gonna</button>
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="false">going to</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="sentence-item p-3 border rounded mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <button class="btn btn-sm btn-outline-primary me-2 play-btn"
+                                                            data-audio="/audio/reduction/gonna2.mp3">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                        <div class="sentence-text">They're <span
+                                                                class="highlight-word">going to</span> go camping.</div>
+                                                    </div>
+                                                    <div class="options mt-2">
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="true">gonna</button>
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="false">going to</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="sentence-item p-3 border rounded mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <button class="btn btn-sm btn-outline-primary me-2 play-btn"
+                                                            data-audio="/audio/reduction/gonna3.mp3">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                        <div class="sentence-text">What are you <span
+                                                                class="highlight-word">going to</span> do in England?</div>
+                                                    </div>
+                                                    <div class="options mt-2">
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="true">gonna</button>
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="false">going to</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="sentence-item p-3 border rounded mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <button class="btn btn-sm btn-outline-primary me-2 play-btn"
+                                                            data-audio="/audio/reduction/gonna4.mp3">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                        <div class="sentence-text">I'm <span class="highlight-word">going
+                                                                to</span> go to art galleries</div>
+                                                    </div>
+                                                    <div class="options mt-2">
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="true">gonna</button>
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="false">going to</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Reduction Type 3: Got to => gotta -->
+                                        <div class="reduction-section mb-4">
+                                            <h5 class="reduction-title">
+                                                <span class="badge bg-primary me-2">3</span>
+                                                Got to <i class="fas fa-arrow-right mx-2"></i>
+                                                <span class="text-danger">gotta</span>
+                                                <span class="phonetic text-muted">/ɡɒtə/</span>
+                                            </h5>
+
+                                            <div class="sentences-list">
+                                                <div class="sentence-item p-3 border rounded mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <button class="btn btn-sm btn-outline-primary me-2 play-btn"
+                                                            data-audio="/audio/reduction/gotta1.mp3">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                        <div class="sentence-text">I've <span class="highlight-word">got
+                                                                to</span> run. Talk to you later.</div>
+                                                    </div>
+                                                    <div class="options mt-2">
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="true">gotta</button>
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="false">got to</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="sentence-item p-3 border rounded mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <button class="btn btn-sm btn-outline-primary me-2 play-btn"
+                                                            data-audio="/audio/reduction/gotta2.mp3">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                        <div class="sentence-text">We've <span class="highlight-word">got
+                                                                to</span> hurry or we'll be late.</div>
+                                                    </div>
+                                                    <div class="options mt-2">
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="true">gotta</button>
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="false">got to</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Reduction Type 4: Kind of => kinda -->
+                                        <div class="reduction-section mb-4">
+                                            <h5 class="reduction-title">
+                                                <span class="badge bg-primary me-2">4</span>
+                                                Kind of <i class="fas fa-arrow-right mx-2"></i>
+                                                <span class="text-danger">kinda</span>
+                                                <span class="phonetic text-muted">/kaɪndə/</span>
+                                            </h5>
+
+                                            <div class="sentences-list">
+                                                <div class="sentence-item p-3 border rounded mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <button class="btn btn-sm btn-outline-primary me-2 play-btn"
+                                                            data-audio="/audio/reduction/kinda1.mp3">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                        <div class="sentence-text">He's <span class="highlight-word">kind
+                                                                of</span> shy and not very talkative.</div>
+                                                    </div>
+                                                    <div class="options mt-2">
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="true">kinda</button>
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="false">kind of</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="sentence-item p-3 border rounded mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <button class="btn btn-sm btn-outline-primary me-2 play-btn"
+                                                            data-audio="/audio/reduction/kinda2.mp3">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                        <div class="sentence-text">It's <span class="highlight-word">kind
+                                                                of</span> cold in here - can we close the window?</div>
+                                                    </div>
+                                                    <div class="options mt-2">
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="true">kinda</button>
+                                                        <button class="btn btn-outline-secondary me-2 option-btn"
+                                                            data-correct="false">kind of</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Progress Section -->
+                                        <div class="progress-section mt-4">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="progress-label">Tiến độ:</span>
+                                                <span class="progress-count">0/10 câu</span>
+                                            </div>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" style="width: 0%"
+                                                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <style>
+                                    .reduction-section {
+                                        background: #f8f9fa;
+                                        padding: 20px;
+                                        border-radius: 8px;
+                                    }
+
+                                    .reduction-title {
+                                        color: #0d6efd;
+                                        margin-bottom: 20px;
+                                    }
+
+                                    .highlight-word {
+                                        color: #dc3545;
+                                        font-weight: 500;
+                                    }
+
+                                    .phonetic {
+                                        font-size: 0.9em;
+                                    }
+
+                                    .sentence-item {
+                                        background: white;
+                                        transition: all 0.3s ease;
+                                    }
+
+                                    .sentence-item:hover {
+                                        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+                                    }
+
+                                    .option-btn {
+                                        transition: all 0.3s ease;
+                                        font-weight: 500;
+                                        min-width: 100px;
+                                    }
+
+                                    .option-btn.correct {
+                                        background-color: #198754;
+                                        border-color: #198754;
+                                        color: white;
+                                        box-shadow: 0 0 10px rgba(25, 135, 84, 0.5);
+                                    }
+
+                                    .option-btn.incorrect {
+                                        background-color: #dc3545;
+                                        border-color: #dc3545;
+                                        color: white;
+                                        box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+                                    }
+
+                                    /* Thêm icon cho trạng thái đúng/sai */
+                                    .option-btn.correct::after {
+                                        content: ' ✓';
+                                        font-weight: bold;
+                                    }
+
+                                    .option-btn.incorrect::after {
+                                        content: ' ✗';
+                                        font-weight: bold;
+                                    }
+
+                                    /* Hiệu ứng hover cho nút chưa chọn */
+                                    .option-btn:not(.correct):not(.incorrect):hover {
+                                        background-color: #e9ecef;
+                                        transform: translateY(-2px);
+                                    }
+
+                                    .play-btn:hover {
+                                        transform: scale(1.1);
+                                    }
+
+                                    @keyframes shake {
+
+                                        0%,
+                                        100% {
+                                            transform: translateX(0);
+                                        }
+
+                                        10%,
+                                        30%,
+                                        50%,
+                                        70%,
+                                        90% {
+                                            transform: translateX(-5px);
+                                        }
+
+                                        20%,
+                                        40%,
+                                        60%,
+                                        80% {
+                                            transform: translateX(5px);
+                                        }
+                                    }
+
+                                    .option-btn.incorrect {
+                                        animation: shake 0.5s;
+                                    }
+
+                                    /* Hiệu ứng cho nút đúng */
+                                    @keyframes pulse {
+                                        0% {
+                                            transform: scale(1);
+                                        }
+
+                                        50% {
+                                            transform: scale(1.05);
+                                        }
+
+                                        100% {
+                                            transform: scale(1);
+                                        }
+                                    }
+
+                                    .option-btn.correct {
+                                        animation: pulse 0.5s;
+                                    }
+                                </style>
+
+                                <script>
+                                    class ReductionPractice {
+                                        constructor() {
+                                            this.totalQuestions = 10;
+                                            this.correctAnswers = 0;
+                                            this.attemptedQuestions = new Set();
+
+                                            this.initializeElements();
+                                            this.setupEventListeners();
+                                        }
+
+                                        initializeElements() {
+                                            this.progressBar = document.querySelector('.progress-bar');
+                                            this.progressCount = document.querySelector('.progress-count');
+                                            this.playButtons = document.querySelectorAll('.play-btn');
+                                            this.optionButtons = document.querySelectorAll('.option-btn');
+                                        }
+
+                                        setupEventListeners() {
+                                            // Setup audio play buttons
+                                            this.playButtons.forEach(button => {
+                                                button.addEventListener('click', () => {
+                                                    const audioSrc = button.dataset.audio;
+                                                    const audio = new Audio(audioSrc);
+                                                    audio.play();
+                                                });
+                                            });
+
+                                            // Setup option buttons
+                                            this.optionButtons.forEach(button => {
+                                                button.addEventListener('click', () => {
+                                                    const sentenceItem = button.closest('.sentence-item');
+                                                    if (!this.attemptedQuestions.has(sentenceItem)) {
+                                                        this.handleAnswer(button);
+                                                    }
+                                                });
+                                            });
+                                        }
+
+                                        handleAnswer(button) {
+                                            const isCorrect = button.dataset.correct === 'true';
+                                            const sentenceItem = button.closest('.sentence-item');
+                                            const options = sentenceItem.querySelectorAll('.option-btn');
+
+                                            // Mark this question as attempted
+                                            this.attemptedQuestions.add(sentenceItem);
+
+                                            if (isCorrect) {
+                                                button.classList.add('correct');
+                                                this.correctAnswers++;
+                                                this.updateProgress();
+
+                                                // Play success sound
+                                                const audio = new Audio('/audio/success.mp3');
+                                                audio.play();
+                                            } else {
+                                                button.classList.add('incorrect');
+
+                                                // Show correct answer
+                                                options.forEach(opt => {
+                                                    if (opt.dataset.correct === 'true') {
+                                                        opt.classList.add('correct');
+                                                    }
+                                                });
+                                            }
+
+                                            // Disable all options for this sentence
+                                            options.forEach(opt => {
+                                                opt.disabled = true;
+                                            });
+
+                                            // Check if practice is complete
+                                            if (this.attemptedQuestions.size === this.totalQuestions) {
+                                                this.showCompletionMessage();
+                                            }
+                                        }
+
+                                        updateProgress() {
+                                            const progress = (this.attemptedQuestions.size / this.totalQuestions) * 100;
+                                            this.progressBar.style.width = `${progress}%`;
+                                            this.progressCount.textContent = `${this.attemptedQuestions.size}/${this.totalQuestions} câu`;
+                                        }
+
+                                        showCompletionMessage() {
+                                            const messageHTML = `
+                                <div class="alert alert-success mt-4">
+                                    <h4 class="alert-heading">Chúc mừng! 🎉</h4>
+                                    <p>Bạn đã hoàn thành bài tập về kỹ thuật rút gọn âm!</p>
+                                    <hr>
+                                    <p class="mb-0">Số câu đúng: ${this.correctAnswers}/${this.totalQuestions}</p>
+                                    <div class="mt-3">
+                                        <button class="btn btn-primary" onclick="window.location.reload()">
+                                            <i class="fas fa-redo me-2"></i>Làm Lại
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+
+                                            const messageElement = document.createElement('div');
+                                            messageElement.innerHTML = messageHTML;
+                                            document.querySelector('.progress-section').after(messageElement);
+                                        }
+                                    }
+
+                                    // Initialize Reduction Practice when the handout tab is shown
+                                    document.getElementById('handout-tab').addEventListener('click', function() {
+                                        if (!window.reductionPractice) {
+                                            window.reductionPractice = new ReductionPractice();
+                                        }
+                                    });
+                                </script>
                             </div>
                         </div>
                     </div>
+
+                    <style>
+                        /* Word Stream Styles */
+                        .word-stream-container {
+                            background: #f8f9fa;
+                            padding: 20px;
+                            border-radius: 8px;
+                            position: relative;
+                            overflow: hidden;
+                            height: 100px;
+                        }
+
+                        .word-stream {
+                            position: relative;
+                            height: 60px;
+                            display: flex;
+                            align-items: center;
+                        }
+
+                        .floating-word {
+                            position: absolute;
+                            background: white;
+                            padding: 8px 16px;
+                            border: 2px solid #0d6efd;
+                            border-radius: 20px;
+                            cursor: grab;
+                            transition: transform 0.2s;
+                            user-select: none;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            min-width: 100px;
+                            animation: floatLeft 15s linear;
+                        }
+
+                        .floating-word:hover {
+                            transform: scale(1.05);
+                        }
+
+                        .floating-word .word-text {
+                            font-weight: 500;
+                            color: #0d6efd;
+                        }
+
+                        .floating-word .phonetic {
+                            font-size: 0.8em;
+                            color: #6c757d;
+                        }
+
+                        @keyframes floatLeft {
+                            from {
+                                left: 100%;
+                            }
+
+                            to {
+                                left: -120px;
+                            }
+                        }
+
+                        /* Drop Zone Styles */
+                        .drop-zone {
+                            border: 3px dashed #dee2e6;
+                            border-radius: 8px;
+                            padding: 20px;
+                            min-height: 200px;
+                            transition: all 0.3s ease;
+                        }
+
+                        .drop-zone.drag-over {
+                            border-color: #0d6efd;
+                            background: #e7f1ff;
+                        }
+
+                        .drop-zone-header {
+                            text-align: center;
+                            margin-bottom: 15px;
+                            padding-bottom: 15px;
+                            border-bottom: 1px solid #dee2e6;
+                        }
+
+                        .phonetic-label {
+                            font-size: 1.2em;
+                            font-weight: bold;
+                            color: #0d6efd;
+                            margin-right: 10px;
+                        }
+
+                        .example-words {
+                            color: #6c757d;
+                            font-size: 0.9em;
+                        }
+
+                        .drop-zone-content {
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 10px;
+                            min-height: 100px;
+                        }
+
+                        .dropped-word {
+                            background: white;
+                            padding: 8px 16px;
+                            border-radius: 20px;
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            animation: dropIn 0.3s ease;
+                        }
+
+                        .dropped-word.correct {
+                            border: 2px solid #198754;
+                            color: #198754;
+                        }
+
+                        .dropped-word.incorrect {
+                            border: 2px solid #dc3545;
+                            color: #dc3545;
+                            animation: shake 0.5s;
+                        }
+
+                        @keyframes dropIn {
+                            from {
+                                transform: translateY(-20px);
+                                opacity: 0;
+                            }
+
+                            to {
+                                transform: translateY(0);
+                                opacity: 1;
+                            }
+                        }
+
+                        @keyframes shake {
+
+                            0%,
+                            100% {
+                                transform: translateX(0);
+                            }
+
+                            10%,
+                            30%,
+                            50%,
+                            70%,
+                            90% {
+                                transform: translateX(-5px);
+                            }
+
+                            20%,
+                            40%,
+                            60%,
+                            80% {
+                                transform: translateX(5px);
+                            }
+                        }
+
+                        /* Progress Styles */
+                        .progress-section {
+                            background: #f8f9fa;
+                            padding: 15px;
+                            border-radius: 8px;
+                            margin-top: 20px;
+                        }
+
+                        .progress-label {
+                            font-weight: 500;
+                        }
+
+                        .progress {
+                            height: 10px;
+                        }
+                    </style>
+
+                    <script>
+                        class WordPairPractice {
+                            constructor() {
+                                this.words = [{
+                                        word: 'car',
+                                        phonetic: '/kɑː/',
+                                        sound: 'ɑː',
+                                        audio: '/audio/vocabulary/car.mp3'
+                                    },
+                                    {
+                                        word: 'cup',
+                                        phonetic: '/kʌp/',
+                                        sound: 'ʌ',
+                                        audio: '/audio/vocabulary/cup.mp3'
+                                    },
+                                    {
+                                        word: 'heart',
+                                        phonetic: '/hɑːt/',
+                                        sound: 'ɑː',
+                                        audio: '/audio/vocabulary/heart.mp3'
+                                    },
+                                    {
+                                        word: 'sun',
+                                        phonetic: '/sʌn/',
+                                        sound: 'ʌ',
+                                        audio: '/audio/vocabulary/sun.mp3'
+                                    },
+                                    {
+                                        word: 'park',
+                                        phonetic: '/pɑːk/',
+                                        sound: 'ɑː',
+                                        audio: '/audio/vocabulary/park.mp3'
+                                    },
+                                    {
+                                        word: 'run',
+                                        phonetic: '/rʌn/',
+                                        sound: 'ʌ',
+                                        audio: '/audio/vocabulary/run.mp3'
+                                    },
+                                    {
+                                        word: 'dark',
+                                        phonetic: '/dɑːk/',
+                                        sound: 'ɑː',
+                                        audio: '/audio/vocabulary/dark.mp3'
+                                    },
+                                    {
+                                        word: 'bus',
+                                        phonetic: '/bʌs/',
+                                        sound: 'ʌ',
+                                        audio: '/audio/vocabulary/bus.mp3'
+                                    },
+                                    {
+                                        word: 'farm',
+                                        phonetic: '/fɑːm/',
+                                        sound: 'ɑː',
+                                        audio: '/audio/vocabulary/farm.mp3'
+                                    },
+                                    {
+                                        word: 'duck',
+                                        phonetic: '/dʌk/',
+                                        sound: 'ʌ',
+                                        audio: '/audio/vocabulary/duck.mp3'
+                                    },
+                                    {
+                                        word: 'star',
+                                        phonetic: '/stɑː/',
+                                        sound: 'ɑː',
+                                        audio: '/audio/vocabulary/star.mp3'
+                                    },
+                                    {
+                                        word: 'jump',
+                                        phonetic: '/dʒʌmp/',
+                                        sound: 'ʌ',
+                                        audio: '/audio/vocabulary/jump.mp3'
+                                    },
+                                    {
+                                        word: 'palm',
+                                        phonetic: '/pɑːm/',
+                                        sound: 'ɑː',
+                                        audio: '/audio/vocabulary/palm.mp3'
+                                    },
+                                    {
+                                        word: 'lunch',
+                                        phonetic: '/lʌntʃ/',
+                                        sound: 'ʌ',
+                                        audio: '/audio/vocabulary/lunch.mp3'
+                                    },
+                                    {
+                                        word: 'calm',
+                                        phonetic: '/kɑːm/',
+                                        sound: 'ɑː',
+                                        audio: '/audio/vocabulary/calm.mp3'
+                                    },
+                                    {
+                                        word: 'hug',
+                                        phonetic: '/hʌɡ/',
+                                        sound: 'ʌ',
+                                        audio: '/audio/vocabulary/hug.mp3'
+                                    },
+                                    {
+                                        word: 'path',
+                                        phonetic: '/pɑːθ/',
+                                        sound: 'ɑː',
+                                        audio: '/audio/vocabulary/path.mp3'
+                                    },
+                                    {
+                                        word: 'love',
+                                        phonetic: '/lʌv/',
+                                        sound: 'ʌ',
+                                        audio: '/audio/vocabulary/love.mp3'
+                                    },
+                                    {
+                                        word: 'grass',
+                                        phonetic: '/grɑːs/',
+                                        sound: 'ɑː',
+                                        audio: '/audio/vocabulary/grass.mp3'
+                                    },
+                                    {
+                                        word: 'much',
+                                        phonetic: '/mʌtʃ/',
+                                        sound: 'ʌ',
+                                        audio: '/audio/vocabulary/much.mp3'
+                                    }
+                                ];
+
+                                this.correctCount = 0;
+                                this.totalWords = this.words.length;
+                                this.activeWords = new Set();
+                                this.maxActiveWords = 5;
+                                this.correctWords = new Set(); // Thêm set để theo dõi các từ đã đúng
+
+                                this.initializeElements();
+                                this.setupDropZones();
+                                this.startWordStream();
+                            }
+
+                            initializeElements() {
+                                this.wordStream = document.getElementById('wordStream');
+                                this.progressBar = document.querySelector('.progress-bar');
+                                this.progressCount = document.querySelector('.progress-count');
+                                this.dropZones = document.querySelectorAll('.drop-zone');
+                            }
+
+                            setupDropZones() {
+                                this.dropZones.forEach(zone => {
+                                    zone.addEventListener('dragover', (e) => {
+                                        e.preventDefault();
+                                        zone.classList.add('drag-over');
+                                    });
+
+                                    zone.addEventListener('dragleave', () => {
+                                        zone.classList.remove('drag-over');
+                                    });
+
+                                    zone.addEventListener('drop', (e) => {
+                                        e.preventDefault();
+                                        zone.classList.remove('drag-over');
+                                        const wordData = JSON.parse(e.dataTransfer.getData('text/plain'));
+                                        const draggedElement = document.querySelector(
+                                            `.floating-word[data-word="${wordData.word}"]`);
+                                        this.handleDrop(wordData, zone, draggedElement);
+                                    });
+                                });
+                            }
+
+                            createFloatingWord(wordData) {
+                                if (this.correctWords.has(wordData.word)) {
+                                    return null; // Không tạo từ đã đúng
+                                }
+
+                                const wordElement = document.createElement('div');
+                                wordElement.className = 'floating-word';
+                                wordElement.draggable = true;
+                                wordElement.dataset.word = wordData.word;
+                                wordElement.innerHTML = `
+                                <span class="word-text">${wordData.word}</span>
+                                <span class="phonetic">${wordData.phonetic}</span>
+                            `;
+
+                                wordElement.addEventListener('dragstart', (e) => {
+                                    e.dataTransfer.setData('text/plain', JSON.stringify(wordData));
+                                });
+
+                                return wordElement;
+                            }
+
+                            startWordStream() {
+                                this.shuffleWords();
+                                this.addWords();
+                                // Thêm từ mới mỗi 3 giây
+                                setInterval(() => this.addWords(), 3000);
+                            }
+
+                            shuffleWords() {
+                                for (let i = this.words.length - 1; i > 0; i--) {
+                                    const j = Math.floor(Math.random() * (i + 1));
+                                    [this.words[i], this.words[j]] = [this.words[j], this.words[i]];
+                                }
+                            }
+
+                            addWords() {
+                                // Chỉ thêm từ mới nếu chưa hoàn thành
+                                if (this.correctCount < this.totalWords) {
+                                    while (this.activeWords.size < this.maxActiveWords) {
+                                        // Lặp qua tất cả các từ cho đến khi tìm thấy từ chưa đúng
+                                        for (let word of this.words) {
+                                            if (!this.activeWords.has(word.word) && !this.correctWords.has(word.word)) {
+                                                const wordElement = this.createFloatingWord(word);
+                                                if (wordElement) {
+                                                    this.wordStream.appendChild(wordElement);
+                                                    this.activeWords.add(word.word);
+
+                                                    // Tính toán vị trí bắt đầu ngẫu nhiên
+                                                    const startPosition = 100 + Math.random() * 20;
+                                                    wordElement.style.left = `${startPosition}%`;
+
+                                                    // Animation kết thúc
+                                                    wordElement.addEventListener('animationend', () => {
+                                                        if (this.activeWords.has(word.word) && !this.correctWords.has(word
+                                                            .word)) {
+                                                            this.activeWords.delete(word.word);
+                                                            wordElement.remove();
+                                                        }
+                                                    });
+
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        // Nếu không tìm thấy từ mới để thêm, thoát khỏi vòng lặp
+                                        if (this.activeWords.size === this.correctWords.size) break;
+                                    }
+                                }
+                            }
+
+                            handleDrop(wordData, zone, wordElement) {
+                                const isCorrect = wordData.sound === zone.dataset.sound;
+                                const droppedElement = document.createElement('div');
+                                droppedElement.className = `dropped-word ${isCorrect ? 'correct' : 'incorrect'}`;
+                                droppedElement.innerHTML = `
+                                <span>${wordData.word}</span>
+                                <i class="fas ${isCorrect ? 'fa-check text-success' : 'fa-times text-danger'}"></i>
+                            `;
+
+                                if (isCorrect) {
+                                    this.correctCount++;
+                                    this.updateProgress();
+                                    zone.querySelector('.drop-zone-content').appendChild(droppedElement);
+
+                                    // Đánh dấu từ đã đúng và xóa khỏi stream
+                                    this.correctWords.add(wordData.word);
+                                    this.activeWords.delete(wordData.word);
+                                    if (wordElement) {
+                                        wordElement.remove();
+                                    }
+
+                                    // Play success sound
+                                    const audio = new Audio(wordData.audio);
+                                    audio.play();
+
+                                    // Thêm từ mới
+                                    this.addWords();
+
+                                    if (this.correctCount === this.totalWords) {
+                                        this.showCompletionMessage();
+                                    }
+                                } else {
+                                    droppedElement.addEventListener('animationend', () => {
+                                        droppedElement.remove();
+                                    });
+                                    zone.querySelector('.drop-zone-content').appendChild(droppedElement);
+                                }
+                            }
+
+                            updateProgress() {
+                                const progress = (this.correctCount / this.totalWords) * 100;
+                                this.progressBar.style.width = `${progress}%`;
+                                this.progressCount.textContent = `${this.correctCount}/${this.totalWords} từ`;
+                            }
+
+                            showCompletionMessage() {
+                                const messageHTML = `
+                                <div class="alert alert-success mt-4">
+                                    <h4 class="alert-heading">Chúc mừng! 🎉</h4>
+                                    <p>Bạn đã hoàn thành xuất sắc bài tập phân biệt âm /ɑː/ và /ʌ/!</p>
+                                    <hr>
+                                    <p class="mb-0">Số từ đúng: ${this.correctCount}/${this.totalWords}</p>
+                                    <div class="mt-3">
+                                        <button class="btn btn-primary" onclick="window.location.reload()">
+                                            <i class="fas fa-redo me-2"></i>Làm Lại
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+
+                                const messageElement = document.createElement('div');
+                                messageElement.innerHTML = messageHTML;
+                                document.querySelector('.progress-section').after(messageElement);
+                            }
+                        }
+
+                        // Initialize Word Pair Practice when the handout tab is shown
+                        document.getElementById('handout-tab').addEventListener('click', function() {
+                            if (!window.wordPairPractice) {
+                                window.wordPairPractice = new WordPairPractice();
+                            }
+                        });
+                    </script>
+
+
                 </div>
             </div>
         </div>
-    </div>
 
-    <style>
-        .video-item {
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
-
-        .video-item:hover {
-            background-color: #f8f9fa;
-            border-left-color: #0d6efd;
-        }
-
-        .video-item.active {
-            background-color: #0d6efd !important;
-            /* Màu xanh đậm */
-            border-left-color: #0d6efd;
-            color: white !important;
-            /* Đổi màu chữ thành trắng để dễ đọc */
-        }
-
-        .video-item.active .text-muted {
-            color: rgba(255, 255, 255, 0.8) !important;
-            /* Màu chữ mô tả cũng chuyển sang trắng nhạt */
-        }
-
-        .video-item.active .fa-play-circle {
-            display: none;
-        }
-
-        .video-item .video-status {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .video-item.watched .video-status {
-            opacity: 1;
-        }
-
-        .accordion-button:not(.collapsed) {
-            background-color: #f8f9fa;
-            color: #0d6efd;
-        }
-
-        .accordion-button:focus {
-            box-shadow: none;
-        }
-
-        /* Memory Game Styles */
-        .memory-game-container {
-            padding: 20px;
-        }
-
-        .memory-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .memory-card {
-            aspect-ratio: 1;
-            perspective: 1000px;
-            cursor: pointer;
-        }
-
-        .memory-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-            cursor: pointer;
-        }
-
-        .memory-card.flipped .memory-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .memory-card-front,
-        .memory-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2em;
-            font-weight: bold;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .memory-card-front {
-            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
-            color: white;
-        }
-
-        .memory-card-back {
-            background: white;
-            transform: rotateY(180deg);
-            border: 2px solid #0d6efd;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .memory-card-back .word {
-            font-size: 1.2rem;
-            color: #0d6efd;
-        }
-
-        .memory-card-back .phonetic {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin-top: 5px;
-        }
-
-        .memory-card.matched .memory-card-inner {
-            transform: rotateY(180deg);
-            box-shadow: 0 0 15px rgba(25, 135, 84, 0.5);
-        }
-
-        .memory-card.matched .memory-card-back {
-            border-color: #198754;
-        }
-
-        .memory-card.wrong {
-            animation: shake 0.5s;
-        }
-
-        .game-stats {
-            font-size: 1.1rem;
-            color: #6c757d;
-        }
-
-        @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
+        <style>
+            .video-item {
+                transition: all 0.3s ease;
+                border-left: 4px solid transparent;
             }
 
-            10%,
-            30%,
-            50%,
-            70%,
-            90% {
-                transform: translateX(-5px);
+            .video-item:hover {
+                background-color: #f8f9fa;
+                border-left-color: #0d6efd;
             }
 
-            20%,
-            40%,
-            60%,
-            80% {
-                transform: translateX(5px);
-            }
-        }
-
-        .memory-card-back.image-card {
-            padding: 5px;
-        }
-
-        .memory-card-back .card-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 6px;
-        }
-
-        .memory-card-back.word-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-        }
-
-        .memory-card-back .word {
-            font-size: 1.4rem;
-            color: #0d6efd;
-            margin-bottom: 5px;
-        }
-
-        .memory-card-back .phonetic {
-            font-size: 1rem;
-            color: #6c757d;
-        }
-
-        .memory-card-back {
-            position: relative;
-        }
-
-        .audio-btn {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: #0d6efd;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .audio-btn:hover {
-            background: #0b5ed7;
-            transform: scale(1.1);
-        }
-
-        .memory-card-back.word-card .audio-btn {
-            bottom: 10px;
-            right: 10px;
-        }
-
-        .memory-card-back.image-card .audio-btn {
-            bottom: 10px;
-            right: 10px;
-            background: rgba(13, 110, 253, 0.8);
-        }
-
-        /* Recording Section Styles */
-        .recording-section {
-            background: #fff;
-            border-radius: 8px;
-        }
-
-        .record-controls {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        #recordButton {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-        }
-
-        #recordButton.recording {
-            background-color: #dc3545;
-            border-color: #dc3545;
-            animation: pulse 1.5s infinite;
-        }
-
-        #recordingTimer {
-            font-size: 1.1rem;
-            color: #dc3545;
-            font-weight: 500;
-        }
-
-        .recording-item {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem;
-            border: 1px solid #dee2e6;
-            margin-bottom: 0.5rem;
-            border-radius: 0.375rem;
-            background: #f8f9fa;
-        }
-
-        .recording-item .recording-info {
-            flex-grow: 1;
-            margin-right: 1rem;
-        }
-
-        .recording-item .recording-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .recording-item .btn-action {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
+            .video-item.active {
+                background-color: #0d6efd !important;
+                /* Màu xanh đậm */
+                border-left-color: #0d6efd;
+                color: white !important;
+                /* Đổi màu chữ thành trắng để dễ đọc */
             }
 
-            50% {
-                transform: scale(1.05);
+            .video-item.active .text-muted {
+                color: rgba(255, 255, 255, 0.8) !important;
+                /* Màu chữ mô tả cũng chuyển sang trắng nhạt */
             }
 
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        /* Spelling Pattern Practice Styles */
-        .word-options-container {
-            margin: 20px 0;
-        }
-
-        .word-option {
-            background: white;
-            border: 2px solid #0d6efd;
-            border-radius: 25px;
-            padding: 8px 20px;
-            font-size: 1.1rem;
-            color: #0d6efd;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 5px;
-        }
-
-        .word-option:hover {
-            background: #e7f1ff;
-            transform: translateY(-2px);
-        }
-
-        .word-option.correct {
-            background: #198754;
-            border-color: #198754;
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .word-option.incorrect {
-            background: #dc3545;
-            border-color: #dc3545;
-            color: white;
-            animation: shake 0.5s;
-        }
-
-        @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
+            .video-item.active .fa-play-circle {
+                display: none;
             }
 
-            10%,
-            30%,
-            50%,
-            70%,
-            90% {
-                transform: translateX(-5px);
+            .video-item .video-status {
+                opacity: 0;
+                transition: opacity 0.3s ease;
             }
 
-            20%,
-            40%,
-            60%,
-            80% {
-                transform: translateX(5px);
-            }
-        }
-
-        .audio-player {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .highlight-word {
-            color: #dc3545;
-            font-weight: 500;
-        }
-
-        .sentence-text {
-            font-size: 1.2rem;
-            line-height: 1.5;
-        }
-
-        .sentence-item {
-            border: 1px solid rgba(0, 0, 0, .125);
-            transition: all 0.3s ease;
-        }
-
-        .sentence-item:hover {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, .075);
-        }
-
-        .record-btn.recording {
-            background-color: #dc3545;
-            border-color: #dc3545;
-            color: white;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
+            .video-item.watched .video-status {
+                opacity: 1;
             }
 
-            50% {
-                transform: scale(1.05);
+            .accordion-button:not(.collapsed) {
+                background-color: #f8f9fa;
+                color: #0d6efd;
             }
 
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .recordings-list {
-            margin-top: 1rem;
-        }
-
-        .recording-item {
-            display: flex;
-            align-items: center;
-            padding: 0.5rem;
-            background: white;
-            border-radius: 0.25rem;
-            margin-bottom: 0.5rem;
-            border: 1px solid rgba(0, 0, 0, .125);
-        }
-
-        .recording-item .controls {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .recording-item .timestamp {
-            margin-right: auto;
-            color: #6c757d;
-        }
-
-        .empty-message {
-            padding: 1rem;
-            font-size: 0.9rem;
-            display: none;
-        }
-
-        .recordings-list:empty+.empty-message {
-            display: block;
-        }
-
-        .history-btn .recording-count {
-            margin-left: 5px;
-        }
-
-        .audio-player-wrapper {
-            flex: 1;
-            max-width: 300px;
-        }
-
-        .audio-player-wrapper audio {
-            width: 100%;
-            height: 38px;
-        }
-
-        /* Custom audio player styling */
-        audio.original-audio {
-            border-radius: 20px;
-            background: #f8f9fa;
-        }
-
-        audio.original-audio::-webkit-media-controls-panel {
-            background: #f8f9fa;
-        }
-
-        audio.original-audio::-webkit-media-controls-play-button {
-            background-color: #0d6efd;
-            border-radius: 50%;
-        }
-
-        audio.original-audio::-webkit-media-controls-play-button:hover {
-            background-color: #0b5ed7;
-        }
-
-        audio.original-audio::-webkit-media-controls-current-time-display,
-        audio.original-audio::-webkit-media-controls-time-remaining-display {
-            color: #212529;
-        }
-    </style>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const videoItems = document.querySelectorAll('.video-item');
-            const videoPlayer = document.getElementById('videoPlayer');
-
-            videoItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    // Remove active class and restore play icon from all items
-                    videoItems.forEach(i => {
-                        i.classList.remove('active');
-                        const playIcon = i.querySelector('.fa-play-circle');
-                        if (playIcon) {
-                            playIcon.style.display = 'inline-block';
-                        }
-                    });
-
-                    // Add active class to clicked item
-                    this.classList.add('active');
-
-                    // Hide play icon of clicked item
-                    const playIcon = this.querySelector('.fa-play-circle');
-                    if (playIcon) {
-                        playIcon.style.display = 'none';
-                    }
-
-                    // Update video source
-                    const videoUrl = this.dataset.videoUrl;
-                    videoPlayer.src = videoUrl;
-
-                    // Mark as watched
-                    this.classList.add('watched');
-                });
-            });
-        });
-
-        // Memory Game for Long /ɑː/ Sound Practice
-        class PronunciationMemoryGame {
-            constructor() {
-                this.cards = [{
-                        id: 1,
-                        type: 'word',
-                        word: 'car',
-                        phonetic: '/kɑː/',
-                        pair: 'car.jpg',
-                        audio: '/audio/vocabulary/car.mp3'
-                    },
-                    {
-                        id: 2,
-                        type: 'image',
-                        image: '/images/vocabulary/car.jpg',
-                        pair: 'car',
-                        audio: '/audio/vocabulary/car.mp3'
-                    },
-                    {
-                        id: 3,
-                        type: 'word',
-                        word: 'star',
-                        phonetic: '/stɑː/',
-                        pair: 'star.jpg',
-                        audio: '/audio/vocabulary/star.mp3'
-                    },
-                    {
-                        id: 4,
-                        type: 'image',
-                        image: '/images/vocabulary/star.jpg',
-                        pair: 'star',
-                        audio: '/audio/vocabulary/star.mp3'
-                    },
-                    {
-                        id: 5,
-                        type: 'word',
-                        word: 'heart',
-                        phonetic: '/hɑːt/',
-                        pair: 'heart.jpg',
-                        audio: '/audio/vocabulary/heart.mp3'
-                    },
-                    {
-                        id: 6,
-                        type: 'image',
-                        image: '/images/vocabulary/heart.jpg',
-                        pair: 'heart',
-                        audio: '/audio/vocabulary/heart.mp3'
-                    },
-                    {
-                        id: 7,
-                        type: 'word',
-                        word: 'dark',
-                        phonetic: '/dɑːk/',
-                        pair: 'dark.jpg',
-                        audio: '/audio/vocabulary/dark.mp3'
-                    },
-                    {
-                        id: 8,
-                        type: 'image',
-                        image: '/images/vocabulary/dark.jpg',
-                        pair: 'dark',
-                        audio: '/audio/vocabulary/dark.mp3'
-                    },
-                    {
-                        id: 9,
-                        type: 'word',
-                        word: 'park',
-                        phonetic: '/pɑːk/',
-                        pair: 'park.jpg',
-                        audio: '/audio/vocabulary/park.mp3'
-                    },
-                    {
-                        id: 10,
-                        type: 'image',
-                        image: '/images/vocabulary/park.jpg',
-                        pair: 'park',
-                        audio: '/audio/vocabulary/park.mp3'
-                    },
-                    {
-                        id: 11,
-                        type: 'word',
-                        word: 'farm',
-                        phonetic: '/fɑːm/',
-                        pair: 'farm.jpg',
-                        audio: '/audio/vocabulary/farm.mp3'
-                    },
-                    {
-                        id: 12,
-                        type: 'image',
-                        image: '/images/vocabulary/farm.jpg',
-                        pair: 'farm',
-                        audio: '/audio/vocabulary/farm.mp3'
-                    },
-                    {
-                        id: 13,
-                        type: 'word',
-                        word: 'grass',
-                        phonetic: '/grɑːs/',
-                        pair: 'grass.jpg',
-                        audio: '/audio/vocabulary/grass.mp3'
-                    },
-                    {
-                        id: 14,
-                        type: 'image',
-                        image: '/images/vocabulary/grass.jpg',
-                        pair: 'grass',
-                        audio: '/audio/vocabulary/grass.mp3'
-                    },
-                    {
-                        id: 15,
-                        type: 'word',
-                        word: 'path',
-                        phonetic: '/pɑːθ/',
-                        pair: 'path.jpg',
-                        audio: '/audio/vocabulary/path.mp3'
-                    },
-                    {
-                        id: 16,
-                        type: 'image',
-                        image: '/images/vocabulary/path.jpg',
-                        pair: 'path',
-                        audio: '/audio/vocabulary/path.mp3'
-                    }
-                ];
-
-                this.flippedCards = [];
-                this.matchedPairs = 0;
-                this.moves = 0;
-                this.isLocked = false;
-                this.startTime = null;
-                this.timerInterval = null;
-
-                this.grid = document.getElementById('memoryGrid');
-                this.moveCount = document.getElementById('moveCount');
-                this.matchCount = document.getElementById('matchCount');
-                this.timerDisplay = document.getElementById('memoryGameTimer');
-
-                this.initialize();
+            .accordion-button:focus {
+                box-shadow: none;
             }
 
-            initialize() {
-                this.shuffleCards();
-                this.renderCards();
-                this.startTimer();
+            /* Memory Game Styles */
+            .memory-game-container {
+                padding: 20px;
             }
 
-            shuffleCards() {
-                for (let i = this.cards.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+            .memory-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+
+            .memory-card {
+                aspect-ratio: 1;
+                perspective: 1000px;
+                cursor: pointer;
+            }
+
+            .memory-card-inner {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                text-align: center;
+                transition: transform 0.6s;
+                transform-style: preserve-3d;
+                cursor: pointer;
+            }
+
+            .memory-card.flipped .memory-card-inner {
+                transform: rotateY(180deg);
+            }
+
+            .memory-card-front,
+            .memory-card-back {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                backface-visibility: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2em;
+                font-weight: bold;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .memory-card-front {
+                background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+                color: white;
+            }
+
+            .memory-card-back {
+                background: white;
+                transform: rotateY(180deg);
+                border: 2px solid #0d6efd;
+                padding: 10px;
+                text-align: center;
+            }
+
+            .memory-card-back .word {
+                font-size: 1.2rem;
+                color: #0d6efd;
+            }
+
+            .memory-card-back .phonetic {
+                font-size: 0.9rem;
+                color: #6c757d;
+                margin-top: 5px;
+            }
+
+            .memory-card.matched .memory-card-inner {
+                transform: rotateY(180deg);
+                box-shadow: 0 0 15px rgba(25, 135, 84, 0.5);
+            }
+
+            .memory-card.matched .memory-card-back {
+                border-color: #198754;
+            }
+
+            .memory-card.wrong {
+                animation: shake 0.5s;
+            }
+
+            .game-stats {
+                font-size: 1.1rem;
+                color: #6c757d;
+            }
+
+            @keyframes shake {
+
+                0%,
+                100% {
+                    transform: translateX(0);
+                }
+
+                10%,
+                30%,
+                50%,
+                70%,
+                90% {
+                    transform: translateX(-5px);
+                }
+
+                20%,
+                40%,
+                60%,
+                80% {
+                    transform: translateX(5px);
                 }
             }
 
-            renderCards() {
-                this.grid.innerHTML = '';
-                this.cards.forEach((card, index) => {
-                    const cardElement = document.createElement('div');
-                    cardElement.className = 'memory-card';
-                    cardElement.dataset.index = index;
+            .memory-card-back.image-card {
+                padding: 5px;
+            }
 
-                    if (card.type === 'word') {
-                        cardElement.innerHTML = `
+            .memory-card-back .card-image {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                border-radius: 6px;
+            }
+
+            .memory-card-back.word-card {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 10px;
+            }
+
+            .memory-card-back .word {
+                font-size: 1.4rem;
+                color: #0d6efd;
+                margin-bottom: 5px;
+            }
+
+            .memory-card-back .phonetic {
+                font-size: 1rem;
+                color: #6c757d;
+            }
+
+            .memory-card-back {
+                position: relative;
+            }
+
+            .audio-btn {
+                position: absolute;
+                bottom: 5px;
+                right: 5px;
+                background: #0d6efd;
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .audio-btn:hover {
+                background: #0b5ed7;
+                transform: scale(1.1);
+            }
+
+            .memory-card-back.word-card .audio-btn {
+                bottom: 10px;
+                right: 10px;
+            }
+
+            .memory-card-back.image-card .audio-btn {
+                bottom: 10px;
+                right: 10px;
+                background: rgba(13, 110, 253, 0.8);
+            }
+
+            /* Recording Section Styles */
+            .recording-section {
+                background: #fff;
+                border-radius: 8px;
+            }
+
+            .record-controls {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            #recordButton {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.5rem 1rem;
+            }
+
+            #recordButton.recording {
+                background-color: #dc3545;
+                border-color: #dc3545;
+                animation: pulse 1.5s infinite;
+            }
+
+            #recordingTimer {
+                font-size: 1.1rem;
+                color: #dc3545;
+                font-weight: 500;
+            }
+
+            .recording-item {
+                display: flex;
+                align-items: center;
+                padding: 0.75rem;
+                border: 1px solid #dee2e6;
+                margin-bottom: 0.5rem;
+                border-radius: 0.375rem;
+                background: #f8f9fa;
+            }
+
+            .recording-item .recording-info {
+                flex-grow: 1;
+                margin-right: 1rem;
+            }
+
+            .recording-item .recording-actions {
+                display: flex;
+                gap: 0.5rem;
+            }
+
+            .recording-item .btn-action {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.05);
+                }
+
+                100% {
+                    transform: scale(1);
+                }
+            }
+
+            /* Spelling Pattern Practice Styles */
+            .word-options-container {
+                margin: 20px 0;
+            }
+
+            .word-option {
+                background: white;
+                border: 2px solid #0d6efd;
+                border-radius: 25px;
+                padding: 8px 20px;
+                font-size: 1.1rem;
+                color: #0d6efd;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                margin: 5px;
+            }
+
+            .word-option:hover {
+                background: #e7f1ff;
+                transform: translateY(-2px);
+            }
+
+            .word-option.correct {
+                background: #198754;
+                border-color: #198754;
+                color: white;
+                transition: all 0.3s ease;
+            }
+
+            .word-option.incorrect {
+                background: #dc3545;
+                border-color: #dc3545;
+                color: white;
+                animation: shake 0.5s;
+            }
+
+            @keyframes shake {
+
+                0%,
+                100% {
+                    transform: translateX(0);
+                }
+
+                10%,
+                30%,
+                50%,
+                70%,
+                90% {
+                    transform: translateX(-5px);
+                }
+
+                20%,
+                40%,
+                60%,
+                80% {
+                    transform: translateX(5px);
+                }
+            }
+
+            .audio-player {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            .highlight-word {
+                color: #dc3545;
+                font-weight: 500;
+            }
+
+            .sentence-text {
+                font-size: 1.2rem;
+                line-height: 1.5;
+            }
+
+            .sentence-item {
+                border: 1px solid rgba(0, 0, 0, .125);
+                transition: all 0.3s ease;
+            }
+
+            .sentence-item:hover {
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, .075);
+            }
+
+            .record-btn.recording {
+                background-color: #dc3545;
+                border-color: #dc3545;
+                color: white;
+                animation: pulse 1.5s infinite;
+            }
+
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.05);
+                }
+
+                100% {
+                    transform: scale(1);
+                }
+            }
+
+            .recordings-list {
+                margin-top: 1rem;
+            }
+
+            .recording-item {
+                display: flex;
+                align-items: center;
+                padding: 0.5rem;
+                background: white;
+                border-radius: 0.25rem;
+                margin-bottom: 0.5rem;
+                border: 1px solid rgba(0, 0, 0, .125);
+            }
+
+            .recording-item .controls {
+                display: flex;
+                gap: 0.5rem;
+            }
+
+            .recording-item .timestamp {
+                margin-right: auto;
+                color: #6c757d;
+            }
+
+            .empty-message {
+                padding: 1rem;
+                font-size: 0.9rem;
+                display: none;
+            }
+
+            .recordings-list:empty+.empty-message {
+                display: block;
+            }
+
+            .history-btn .recording-count {
+                margin-left: 5px;
+            }
+
+            .audio-player-wrapper {
+                flex: 1;
+                max-width: 300px;
+            }
+
+            .audio-player-wrapper audio {
+                width: 100%;
+                height: 38px;
+            }
+
+            /* Custom audio player styling */
+            audio.original-audio {
+                border-radius: 20px;
+                background: #f8f9fa;
+            }
+
+            audio.original-audio::-webkit-media-controls-panel {
+                background: #f8f9fa;
+            }
+
+            audio.original-audio::-webkit-media-controls-play-button {
+                background-color: #0d6efd;
+                border-radius: 50%;
+            }
+
+            audio.original-audio::-webkit-media-controls-play-button:hover {
+                background-color: #0b5ed7;
+            }
+
+            audio.original-audio::-webkit-media-controls-current-time-display,
+            audio.original-audio::-webkit-media-controls-time-remaining-display {
+                color: #212529;
+            }
+        </style>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const videoItems = document.querySelectorAll('.video-item');
+                const videoPlayer = document.getElementById('videoPlayer');
+
+                videoItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        // Remove active class and restore play icon from all items
+                        videoItems.forEach(i => {
+                            i.classList.remove('active');
+                            const playIcon = i.querySelector('.fa-play-circle');
+                            if (playIcon) {
+                                playIcon.style.display = 'inline-block';
+                            }
+                        });
+
+                        // Add active class to clicked item
+                        this.classList.add('active');
+
+                        // Hide play icon of clicked item
+                        const playIcon = this.querySelector('.fa-play-circle');
+                        if (playIcon) {
+                            playIcon.style.display = 'none';
+                        }
+
+                        // Update video source
+                        const videoUrl = this.dataset.videoUrl;
+                        videoPlayer.src = videoUrl;
+
+                        // Mark as watched
+                        this.classList.add('watched');
+                    });
+                });
+            });
+
+            // Memory Game for Long /ɑː/ Sound Practice
+            class PronunciationMemoryGame {
+                constructor() {
+                    this.cards = [{
+                            id: 1,
+                            type: 'word',
+                            word: 'car',
+                            phonetic: '/kɑː/',
+                            pair: 'car.jpg',
+                            audio: '/audio/vocabulary/car.mp3'
+                        },
+                        {
+                            id: 2,
+                            type: 'image',
+                            image: '/images/vocabulary/car.jpg',
+                            pair: 'car',
+                            audio: '/audio/vocabulary/car.mp3'
+                        },
+                        {
+                            id: 3,
+                            type: 'word',
+                            word: 'star',
+                            phonetic: '/stɑː/',
+                            pair: 'star.jpg',
+                            audio: '/audio/vocabulary/star.mp3'
+                        },
+                        {
+                            id: 4,
+                            type: 'image',
+                            image: '/images/vocabulary/star.jpg',
+                            pair: 'star',
+                            audio: '/audio/vocabulary/star.mp3'
+                        },
+                        {
+                            id: 5,
+                            type: 'word',
+                            word: 'heart',
+                            phonetic: '/hɑːt/',
+                            pair: 'heart.jpg',
+                            audio: '/audio/vocabulary/heart.mp3'
+                        },
+                        {
+                            id: 6,
+                            type: 'image',
+                            image: '/images/vocabulary/heart.jpg',
+                            pair: 'heart',
+                            audio: '/audio/vocabulary/heart.mp3'
+                        },
+                        {
+                            id: 7,
+                            type: 'word',
+                            word: 'dark',
+                            phonetic: '/dɑːk/',
+                            pair: 'dark.jpg',
+                            audio: '/audio/vocabulary/dark.mp3'
+                        },
+                        {
+                            id: 8,
+                            type: 'image',
+                            image: '/images/vocabulary/dark.jpg',
+                            pair: 'dark',
+                            audio: '/audio/vocabulary/dark.mp3'
+                        },
+                        {
+                            id: 9,
+                            type: 'word',
+                            word: 'park',
+                            phonetic: '/pɑːk/',
+                            pair: 'park.jpg',
+                            audio: '/audio/vocabulary/park.mp3'
+                        },
+                        {
+                            id: 10,
+                            type: 'image',
+                            image: '/images/vocabulary/park.jpg',
+                            pair: 'park',
+                            audio: '/audio/vocabulary/park.mp3'
+                        },
+                        {
+                            id: 11,
+                            type: 'word',
+                            word: 'farm',
+                            phonetic: '/fɑːm/',
+                            pair: 'farm.jpg',
+                            audio: '/audio/vocabulary/farm.mp3'
+                        },
+                        {
+                            id: 12,
+                            type: 'image',
+                            image: '/images/vocabulary/farm.jpg',
+                            pair: 'farm',
+                            audio: '/audio/vocabulary/farm.mp3'
+                        },
+                        {
+                            id: 13,
+                            type: 'word',
+                            word: 'grass',
+                            phonetic: '/grɑːs/',
+                            pair: 'grass.jpg',
+                            audio: '/audio/vocabulary/grass.mp3'
+                        },
+                        {
+                            id: 14,
+                            type: 'image',
+                            image: '/images/vocabulary/grass.jpg',
+                            pair: 'grass',
+                            audio: '/audio/vocabulary/grass.mp3'
+                        },
+                        {
+                            id: 15,
+                            type: 'word',
+                            word: 'path',
+                            phonetic: '/pɑːθ/',
+                            pair: 'path.jpg',
+                            audio: '/audio/vocabulary/path.mp3'
+                        },
+                        {
+                            id: 16,
+                            type: 'image',
+                            image: '/images/vocabulary/path.jpg',
+                            pair: 'path',
+                            audio: '/audio/vocabulary/path.mp3'
+                        }
+                    ];
+
+                    this.flippedCards = [];
+                    this.matchedPairs = 0;
+                    this.moves = 0;
+                    this.isLocked = false;
+                    this.startTime = null;
+                    this.timerInterval = null;
+
+                    this.grid = document.getElementById('memoryGrid');
+                    this.moveCount = document.getElementById('moveCount');
+                    this.matchCount = document.getElementById('matchCount');
+                    this.timerDisplay = document.getElementById('memoryGameTimer');
+
+                    this.initialize();
+                }
+
+                initialize() {
+                    this.shuffleCards();
+                    this.renderCards();
+                    this.startTimer();
+                }
+
+                shuffleCards() {
+                    for (let i = this.cards.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+                    }
+                }
+
+                renderCards() {
+                    this.grid.innerHTML = '';
+                    this.cards.forEach((card, index) => {
+                        const cardElement = document.createElement('div');
+                        cardElement.className = 'memory-card';
+                        cardElement.dataset.index = index;
+
+                        if (card.type === 'word') {
+                            cardElement.innerHTML = `
                             <div class="memory-card-inner">
                                 <div class="memory-card-front">
                                     ${index + 1}
@@ -1602,8 +2634,8 @@
                                 </div>
                             </div>
                         `;
-                    } else {
-                        cardElement.innerHTML = `
+                        } else {
+                            cardElement.innerHTML = `
                             <div class="memory-card-inner">
                                 <div class="memory-card-front">
                                     ${index + 1}
@@ -1616,87 +2648,87 @@
                                 </div>
                             </div>
                         `;
+                        }
+
+                        cardElement.addEventListener('click', () => this.flipCard(cardElement, card));
+                        this.grid.appendChild(cardElement);
+                    });
+                }
+
+                flipCard(element, card) {
+                    if (this.isLocked || element.classList.contains('flipped') || element.classList.contains('matched')) {
+                        return;
                     }
 
-                    cardElement.addEventListener('click', () => this.flipCard(cardElement, card));
-                    this.grid.appendChild(cardElement);
-                });
-            }
+                    element.classList.add('flipped');
+                    this.flippedCards.push({
+                        element,
+                        card
+                    });
 
-            flipCard(element, card) {
-                if (this.isLocked || element.classList.contains('flipped') || element.classList.contains('matched')) {
-                    return;
+                    if (this.flippedCards.length === 2) {
+                        this.moves++;
+                        this.moveCount.textContent = this.moves;
+                        this.isLocked = true;
+                        this.checkMatch();
+                    }
                 }
 
-                element.classList.add('flipped');
-                this.flippedCards.push({
-                    element,
-                    card
-                });
+                checkMatch() {
+                    const [first, second] = this.flippedCards;
+                    const isMatch = (first.card.type === 'word' && second.card.type === 'image' && first.card.word ===
+                            second.card.pair) ||
+                        (first.card.type === 'image' && second.card.type === 'word' && first.card.pair === second.card
+                            .word);
 
-                if (this.flippedCards.length === 2) {
-                    this.moves++;
-                    this.moveCount.textContent = this.moves;
-                    this.isLocked = true;
-                    this.checkMatch();
+                    if (isMatch) {
+                        this.handleMatch(first.element, second.element);
+                    } else {
+                        this.handleMismatch(first.element, second.element);
+                    }
                 }
-            }
 
-            checkMatch() {
-                const [first, second] = this.flippedCards;
-                const isMatch = (first.card.type === 'word' && second.card.type === 'image' && first.card.word ===
-                        second.card.pair) ||
-                    (first.card.type === 'image' && second.card.type === 'word' && first.card.pair === second.card
-                        .word);
+                handleMatch(firstCard, secondCard) {
+                    firstCard.classList.add('matched');
+                    secondCard.classList.add('matched');
+                    this.matchedPairs++;
+                    this.matchCount.textContent = this.matchedPairs;
 
-                if (isMatch) {
-                    this.handleMatch(first.element, second.element);
-                } else {
-                    this.handleMismatch(first.element, second.element);
-                }
-            }
-
-            handleMatch(firstCard, secondCard) {
-                firstCard.classList.add('matched');
-                secondCard.classList.add('matched');
-                this.matchedPairs++;
-                this.matchCount.textContent = this.matchedPairs;
-
-                this.flippedCards = [];
-                this.isLocked = false;
-
-                if (this.matchedPairs === 8) {
-                    this.handleGameComplete();
-                }
-            }
-
-            handleMismatch(firstCard, secondCard) {
-                firstCard.classList.add('wrong');
-                secondCard.classList.add('wrong');
-
-                setTimeout(() => {
-                    firstCard.classList.remove('flipped', 'wrong');
-                    secondCard.classList.remove('flipped', 'wrong');
                     this.flippedCards = [];
                     this.isLocked = false;
-                }, 1000);
-            }
 
-            startTimer() {
-                this.startTime = Date.now();
-                this.timerInterval = setInterval(() => {
-                    const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
-                    const minutes = Math.floor(elapsed / 60);
-                    const seconds = elapsed % 60;
-                    this.timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-                }, 1000);
-            }
+                    if (this.matchedPairs === 8) {
+                        this.handleGameComplete();
+                    }
+                }
 
-            handleGameComplete() {
-                clearInterval(this.timerInterval);
-                const timeSpent = this.timerDisplay.textContent;
+                handleMismatch(firstCard, secondCard) {
+                    firstCard.classList.add('wrong');
+                    secondCard.classList.add('wrong');
 
-                const messageHTML = `
+                    setTimeout(() => {
+                        firstCard.classList.remove('flipped', 'wrong');
+                        secondCard.classList.remove('flipped', 'wrong');
+                        this.flippedCards = [];
+                        this.isLocked = false;
+                    }, 1000);
+                }
+
+                startTimer() {
+                    this.startTime = Date.now();
+                    this.timerInterval = setInterval(() => {
+                        const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+                        const minutes = Math.floor(elapsed / 60);
+                        const seconds = elapsed % 60;
+                        this.timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    }, 1000);
+                }
+
+                handleGameComplete() {
+                    clearInterval(this.timerInterval);
+                    const timeSpent = this.timerDisplay.textContent;
+
+                    const messageHTML = `
                     <div class="alert alert-success mt-4">
                         <h4 class="alert-heading">Congratulations! 🎉</h4>
                         <p>You've completed the Long /ɑː/ Sound Practice!</p>
@@ -1714,127 +2746,127 @@
                     </div>
                 `;
 
-                const messageElement = document.createElement('div');
-                messageElement.innerHTML = messageHTML;
-                this.grid.parentNode.appendChild(messageElement);
+                    const messageElement = document.createElement('div');
+                    messageElement.innerHTML = messageHTML;
+                    this.grid.parentNode.appendChild(messageElement);
+                }
             }
-        }
 
-        // Initialize the Pronunciation Memory Game when the handout tab is shown
-        document.getElementById('handout-tab').addEventListener('click', function() {
-            if (!window.pronunciationGame) {
-                window.pronunciationGame = new PronunciationMemoryGame();
-            }
-        });
-
-        // Add audio playback function
-        function playAudio(audioSrc) {
-            const audio = new Audio(audioSrc);
-            audio.play().catch(error => {
-                console.error('Error playing audio:', error);
+            // Initialize the Pronunciation Memory Game when the handout tab is shown
+            document.getElementById('handout-tab').addEventListener('click', function() {
+                if (!window.pronunciationGame) {
+                    window.pronunciationGame = new PronunciationMemoryGame();
+                }
             });
-        }
 
-        // Recording functionality
-        class AudioRecorder {
-            constructor() {
-                this.mediaRecorder = null;
-                this.audioChunks = [];
-                this.isRecording = false;
-                this.recordButton = document.getElementById('recordButton');
-                this.recordingTimer = document.getElementById('recordingTimer');
-                this.timerDisplay = document.getElementById('timerDisplay');
-                this.recordingsList = document.getElementById('recordingsList');
-                this.recordings = [];
-                this.timerInterval = null;
-                this.startTime = null;
-
-                this.setupEventListeners();
-            }
-
-            setupEventListeners() {
-                this.recordButton.addEventListener('click', () => {
-                    if (!this.isRecording) {
-                        this.startRecording();
-                    } else {
-                        this.stopRecording();
-                    }
+            // Add audio playback function
+            function playAudio(audioSrc) {
+                const audio = new Audio(audioSrc);
+                audio.play().catch(error => {
+                    console.error('Error playing audio:', error);
                 });
             }
 
-            async startRecording() {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                        audio: true
-                    });
-                    this.mediaRecorder = new MediaRecorder(stream);
+            // Recording functionality
+            class AudioRecorder {
+                constructor() {
+                    this.mediaRecorder = null;
                     this.audioChunks = [];
-
-                    this.mediaRecorder.addEventListener('dataavailable', (event) => {
-                        this.audioChunks.push(event.data);
-                    });
-
-                    this.mediaRecorder.addEventListener('stop', () => {
-                        const audioBlob = new Blob(this.audioChunks, {
-                            type: 'audio/wav'
-                        });
-                        const audioUrl = URL.createObjectURL(audioBlob);
-                        this.addRecordingToList(audioUrl);
-                    });
-
-                    this.mediaRecorder.start();
-                    this.isRecording = true;
-                    this.startTime = Date.now();
-                    this.startTimer();
-
-                    this.recordButton.classList.add('recording');
-                    this.recordButton.querySelector('span').textContent = 'Stop Recording';
-                    this.recordButton.querySelector('i').className = 'fas fa-stop';
-                    this.recordingTimer.classList.remove('d-none');
-
-                } catch (error) {
-                    console.error('Error accessing microphone:', error);
-                    alert('Error accessing microphone. Please ensure you have granted microphone permissions.');
-                }
-            }
-
-            stopRecording() {
-                if (this.mediaRecorder && this.isRecording) {
-                    this.mediaRecorder.stop();
                     this.isRecording = false;
-                    this.stopTimer();
+                    this.recordButton = document.getElementById('recordButton');
+                    this.recordingTimer = document.getElementById('recordingTimer');
+                    this.timerDisplay = document.getElementById('timerDisplay');
+                    this.recordingsList = document.getElementById('recordingsList');
+                    this.recordings = [];
+                    this.timerInterval = null;
+                    this.startTime = null;
 
-                    this.recordButton.classList.remove('recording');
-                    this.recordButton.querySelector('span').textContent = 'Start Recording';
-                    this.recordButton.querySelector('i').className = 'fas fa-microphone';
-                    this.recordingTimer.classList.add('d-none');
-
-                    // Stop all tracks in the stream
-                    this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                    this.setupEventListeners();
                 }
-            }
 
-            startTimer() {
-                this.timerInterval = setInterval(() => {
-                    const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
-                    const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
-                    const seconds = (elapsed % 60).toString().padStart(2, '0');
-                    this.timerDisplay.textContent = `${minutes}:${seconds}`;
-                }, 1000);
-            }
+                setupEventListeners() {
+                    this.recordButton.addEventListener('click', () => {
+                        if (!this.isRecording) {
+                            this.startRecording();
+                        } else {
+                            this.stopRecording();
+                        }
+                    });
+                }
 
-            stopTimer() {
-                clearInterval(this.timerInterval);
-                this.timerDisplay.textContent = '00:00';
-            }
+                async startRecording() {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({
+                            audio: true
+                        });
+                        this.mediaRecorder = new MediaRecorder(stream);
+                        this.audioChunks = [];
 
-            addRecordingToList(audioUrl) {
-                const timestamp = new Date().toLocaleTimeString();
-                const recordingId = `recording-${Date.now()}`;
+                        this.mediaRecorder.addEventListener('dataavailable', (event) => {
+                            this.audioChunks.push(event.data);
+                        });
 
-                const recordingItem = document.createElement('div');
-                recordingItem.className = 'recording-item';
-                recordingItem.innerHTML = `
+                        this.mediaRecorder.addEventListener('stop', () => {
+                            const audioBlob = new Blob(this.audioChunks, {
+                                type: 'audio/wav'
+                            });
+                            const audioUrl = URL.createObjectURL(audioBlob);
+                            this.addRecordingToList(audioUrl);
+                        });
+
+                        this.mediaRecorder.start();
+                        this.isRecording = true;
+                        this.startTime = Date.now();
+                        this.startTimer();
+
+                        this.recordButton.classList.add('recording');
+                        this.recordButton.querySelector('span').textContent = 'Stop Recording';
+                        this.recordButton.querySelector('i').className = 'fas fa-stop';
+                        this.recordingTimer.classList.remove('d-none');
+
+                    } catch (error) {
+                        console.error('Error accessing microphone:', error);
+                        alert('Error accessing microphone. Please ensure you have granted microphone permissions.');
+                    }
+                }
+
+                stopRecording() {
+                    if (this.mediaRecorder && this.isRecording) {
+                        this.mediaRecorder.stop();
+                        this.isRecording = false;
+                        this.stopTimer();
+
+                        this.recordButton.classList.remove('recording');
+                        this.recordButton.querySelector('span').textContent = 'Start Recording';
+                        this.recordButton.querySelector('i').className = 'fas fa-microphone';
+                        this.recordingTimer.classList.add('d-none');
+
+                        // Stop all tracks in the stream
+                        this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                    }
+                }
+
+                startTimer() {
+                    this.timerInterval = setInterval(() => {
+                        const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+                        const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+                        const seconds = (elapsed % 60).toString().padStart(2, '0');
+                        this.timerDisplay.textContent = `${minutes}:${seconds}`;
+                    }, 1000);
+                }
+
+                stopTimer() {
+                    clearInterval(this.timerInterval);
+                    this.timerDisplay.textContent = '00:00';
+                }
+
+                addRecordingToList(audioUrl) {
+                    const timestamp = new Date().toLocaleTimeString();
+                    const recordingId = `recording-${Date.now()}`;
+
+                    const recordingItem = document.createElement('div');
+                    recordingItem.className = 'recording-item';
+                    recordingItem.innerHTML = `
                     <div class="recording-info">
                         <div class="recording-title">Recording at ${timestamp}</div>
                     </div>
@@ -1849,196 +2881,196 @@
                     <audio id="${recordingId}" src="${audioUrl}"></audio>
                 `;
 
-                // Add event listeners for play/pause
-                const playBtn = recordingItem.querySelector('.play-btn');
-                const audio = recordingItem.querySelector('audio');
+                    // Add event listeners for play/pause
+                    const playBtn = recordingItem.querySelector('.play-btn');
+                    const audio = recordingItem.querySelector('audio');
 
-                playBtn.addEventListener('click', () => {
-                    const isPlaying = playBtn.dataset.playing === 'true';
-                    if (isPlaying) {
-                        audio.pause();
+                    playBtn.addEventListener('click', () => {
+                        const isPlaying = playBtn.dataset.playing === 'true';
+                        if (isPlaying) {
+                            audio.pause();
+                            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                            playBtn.dataset.playing = 'false';
+                        } else {
+                            audio.play();
+                            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                            playBtn.dataset.playing = 'true';
+                        }
+                    });
+
+                    // Add event listener for delete
+                    const deleteBtn = recordingItem.querySelector('.delete-btn');
+                    deleteBtn.addEventListener('click', () => {
+                        if (confirm('Are you sure you want to delete this recording?')) {
+                            recordingItem.remove();
+                            URL.revokeObjectURL(audioUrl);
+                        }
+                    });
+
+                    // Add event listener for audio end
+                    audio.addEventListener('ended', () => {
                         playBtn.innerHTML = '<i class="fas fa-play"></i>';
                         playBtn.dataset.playing = 'false';
-                    } else {
-                        audio.play();
-                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                        playBtn.dataset.playing = 'true';
-                    }
-                });
-
-                // Add event listener for delete
-                const deleteBtn = recordingItem.querySelector('.delete-btn');
-                deleteBtn.addEventListener('click', () => {
-                    if (confirm('Are you sure you want to delete this recording?')) {
-                        recordingItem.remove();
-                        URL.revokeObjectURL(audioUrl);
-                    }
-                });
-
-                // Add event listener for audio end
-                audio.addEventListener('ended', () => {
-                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    playBtn.dataset.playing = 'false';
-                });
-
-                this.recordingsList.insertBefore(recordingItem, this.recordingsList.firstChild);
-            }
-        }
-
-        // Initialize the recorder when the handout tab is shown
-        document.getElementById('handout-tab').addEventListener('click', function() {
-            if (!window.audioRecorder) {
-                window.audioRecorder = new AudioRecorder();
-            }
-        });
-
-        // Spelling Pattern Practice
-        class SpellingPatternPractice {
-            constructor() {
-                this.words = [{
-                        word: 'half',
-                        audio: '/audio/vocabulary/half.mp3',
-                        patterns: ['al']
-                    },
-                    {
-                        word: 'bath',
-                        audio: '/audio/vocabulary/bath.mp3',
-                        patterns: ['a']
-                    },
-                    {
-                        word: 'grass',
-                        audio: '/audio/vocabulary/grass.mp3',
-                        patterns: ['ass']
-                    },
-                    {
-                        word: 'path',
-                        audio: '/audio/vocabulary/path.mp3',
-                        patterns: ['a']
-                    },
-                    {
-                        word: 'start',
-                        audio: '/audio/vocabulary/start.mp3',
-                        patterns: ['ar']
-                    },
-                    {
-                        word: 'father',
-                        audio: '/audio/vocabulary/father.mp3',
-                        patterns: ['a']
-                    },
-                    {
-                        word: 'car',
-                        audio: '/audio/vocabulary/car.mp3',
-                        patterns: ['ar']
-                    },
-                    {
-                        word: 'heart',
-                        audio: '/audio/vocabulary/heart.mp3',
-                        patterns: ['ear']
-                    },
-                    {
-                        word: 'palm',
-                        audio: '/audio/vocabulary/palm.mp3',
-                        patterns: ['al']
-                    },
-                    {
-                        word: 'calm',
-                        audio: '/audio/vocabulary/calm.mp3',
-                        patterns: ['al']
-                    }
-                ];
-
-                this.currentAudio = document.getElementById('currentAudio');
-                this.container = document.querySelector('.word-options-container');
-                this.currentWordIndex = 0;
-
-                this.initialize();
-            }
-
-            initialize() {
-                this.shuffleWords();
-                this.renderWords();
-                this.loadCurrentAudio();
-                this.setupEventListeners();
-            }
-
-            loadCurrentAudio() {
-                if (this.currentWordIndex < this.words.length) {
-                    this.currentAudio.src = this.words[this.currentWordIndex].audio;
-                    this.currentAudio.play().catch(error => {
-                        console.error('Error playing audio:', error);
                     });
-                } else {
-                    // All words completed
-                    this.showCompletionMessage();
+
+                    this.recordingsList.insertBefore(recordingItem, this.recordingsList.firstChild);
                 }
             }
 
-            shuffleWords() {
-                for (let i = this.words.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [this.words[i], this.words[j]] = [this.words[j], this.words[i]];
+            // Initialize the recorder when the handout tab is shown
+            document.getElementById('handout-tab').addEventListener('click', function() {
+                if (!window.audioRecorder) {
+                    window.audioRecorder = new AudioRecorder();
                 }
-            }
+            });
 
-            renderWords() {
-                this.container.innerHTML = '';
-                this.words.forEach(word => {
-                    const wordButton = document.createElement('button');
-                    wordButton.className = 'word-option';
-                    wordButton.textContent = word.word;
-                    this.container.appendChild(wordButton);
-                });
-            }
+            // Spelling Pattern Practice
+            class SpellingPatternPractice {
+                constructor() {
+                    this.words = [{
+                            word: 'half',
+                            audio: '/audio/vocabulary/half.mp3',
+                            patterns: ['al']
+                        },
+                        {
+                            word: 'bath',
+                            audio: '/audio/vocabulary/bath.mp3',
+                            patterns: ['a']
+                        },
+                        {
+                            word: 'grass',
+                            audio: '/audio/vocabulary/grass.mp3',
+                            patterns: ['ass']
+                        },
+                        {
+                            word: 'path',
+                            audio: '/audio/vocabulary/path.mp3',
+                            patterns: ['a']
+                        },
+                        {
+                            word: 'start',
+                            audio: '/audio/vocabulary/start.mp3',
+                            patterns: ['ar']
+                        },
+                        {
+                            word: 'father',
+                            audio: '/audio/vocabulary/father.mp3',
+                            patterns: ['a']
+                        },
+                        {
+                            word: 'car',
+                            audio: '/audio/vocabulary/car.mp3',
+                            patterns: ['ar']
+                        },
+                        {
+                            word: 'heart',
+                            audio: '/audio/vocabulary/heart.mp3',
+                            patterns: ['ear']
+                        },
+                        {
+                            word: 'palm',
+                            audio: '/audio/vocabulary/palm.mp3',
+                            patterns: ['al']
+                        },
+                        {
+                            word: 'calm',
+                            audio: '/audio/vocabulary/calm.mp3',
+                            patterns: ['al']
+                        }
+                    ];
 
-            setupEventListeners() {
-                const wordButtons = this.container.querySelectorAll('.word-option');
-                wordButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        this.checkAnswer(button);
-                    });
-                });
+                    this.currentAudio = document.getElementById('currentAudio');
+                    this.container = document.querySelector('.word-options-container');
+                    this.currentWordIndex = 0;
 
-                // Replay audio when it ends
-                this.currentAudio.addEventListener('ended', () => {
-                    setTimeout(() => {
+                    this.initialize();
+                }
+
+                initialize() {
+                    this.shuffleWords();
+                    this.renderWords();
+                    this.loadCurrentAudio();
+                    this.setupEventListeners();
+                }
+
+                loadCurrentAudio() {
+                    if (this.currentWordIndex < this.words.length) {
+                        this.currentAudio.src = this.words[this.currentWordIndex].audio;
                         this.currentAudio.play().catch(error => {
-                            console.error('Error replaying audio:', error);
+                            console.error('Error playing audio:', error);
                         });
-                    }, 1000); // Wait 1 second before replaying
-                });
-            }
-
-            checkAnswer(button) {
-                const currentWord = this.words[this.currentWordIndex];
-                const isCorrect = button.textContent === currentWord.word;
-
-                if (isCorrect) {
-                    // Add correct animation and remove the button
-                    button.classList.add('correct');
-                    setTimeout(() => {
-                        button.style.transform = 'scale(0)';
-                        button.style.opacity = '0';
-                        setTimeout(() => {
-                            button.remove();
-                        }, 300); // Remove after animation
-                    }, 500); // Start animation after showing correct state
-
-                    // Move to next word
-                    this.currentWordIndex++;
-                    setTimeout(() => {
-                        this.loadCurrentAudio();
-                    }, 1000);
-                } else {
-                    // Show incorrect feedback temporarily
-                    button.classList.add('incorrect');
-                    setTimeout(() => {
-                        button.classList.remove('incorrect');
-                    }, 1000);
+                    } else {
+                        // All words completed
+                        this.showCompletionMessage();
+                    }
                 }
-            }
 
-            showCompletionMessage() {
-                const messageHTML = `
+                shuffleWords() {
+                    for (let i = this.words.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [this.words[i], this.words[j]] = [this.words[j], this.words[i]];
+                    }
+                }
+
+                renderWords() {
+                    this.container.innerHTML = '';
+                    this.words.forEach(word => {
+                        const wordButton = document.createElement('button');
+                        wordButton.className = 'word-option';
+                        wordButton.textContent = word.word;
+                        this.container.appendChild(wordButton);
+                    });
+                }
+
+                setupEventListeners() {
+                    const wordButtons = this.container.querySelectorAll('.word-option');
+                    wordButtons.forEach(button => {
+                        button.addEventListener('click', () => {
+                            this.checkAnswer(button);
+                        });
+                    });
+
+                    // Replay audio when it ends
+                    this.currentAudio.addEventListener('ended', () => {
+                        setTimeout(() => {
+                            this.currentAudio.play().catch(error => {
+                                console.error('Error replaying audio:', error);
+                            });
+                        }, 1000); // Wait 1 second before replaying
+                    });
+                }
+
+                checkAnswer(button) {
+                    const currentWord = this.words[this.currentWordIndex];
+                    const isCorrect = button.textContent === currentWord.word;
+
+                    if (isCorrect) {
+                        // Add correct animation and remove the button
+                        button.classList.add('correct');
+                        setTimeout(() => {
+                            button.style.transform = 'scale(0)';
+                            button.style.opacity = '0';
+                            setTimeout(() => {
+                                button.remove();
+                            }, 300); // Remove after animation
+                        }, 500); // Start animation after showing correct state
+
+                        // Move to next word
+                        this.currentWordIndex++;
+                        setTimeout(() => {
+                            this.loadCurrentAudio();
+                        }, 1000);
+                    } else {
+                        // Show incorrect feedback temporarily
+                        button.classList.add('incorrect');
+                        setTimeout(() => {
+                            button.classList.remove('incorrect');
+                        }, 1000);
+                    }
+                }
+
+                showCompletionMessage() {
+                    const messageHTML = `
                     <div class="alert alert-success mt-4">
                         <h4 class="alert-heading">Congratulations! 🎉</h4>
                         <p>You've completed all the words!</p>
@@ -2050,106 +3082,106 @@
                     </div>
                 `;
 
-                const messageElement = document.createElement('div');
-                messageElement.innerHTML = messageHTML;
-                this.container.parentNode.appendChild(messageElement);
-                this.container.style.display = 'none';
-            }
-        }
-
-        // Initialize Spelling Pattern Practice when the handout tab is shown
-        document.getElementById('handout-tab').addEventListener('click', function() {
-            if (!window.spellingPractice) {
-                window.spellingPractice = new SpellingPatternPractice();
-            }
-        });
-
-        class SentencePractice {
-            constructor() {
-                this.initializeElements();
-                this.setupEventListeners();
-                this.mediaRecorder = null;
-                this.audioChunks = [];
-                this.isRecording = false;
-                this.currentRecordingBtn = null;
+                    const messageElement = document.createElement('div');
+                    messageElement.innerHTML = messageHTML;
+                    this.container.parentNode.appendChild(messageElement);
+                    this.container.style.display = 'none';
+                }
             }
 
-            initializeElements() {
-                this.originalAudios = document.querySelectorAll('.original-audio');
-                this.recordButtons = document.querySelectorAll('.record-btn');
-            }
+            // Initialize Spelling Pattern Practice when the handout tab is shown
+            document.getElementById('handout-tab').addEventListener('click', function() {
+                if (!window.spellingPractice) {
+                    window.spellingPractice = new SpellingPatternPractice();
+                }
+            });
 
-            setupEventListeners() {
-                // Setup audio ended event
-                this.originalAudios.forEach(audio => {
-                    audio.addEventListener('ended', () => {
-                        // Optional: Add any behavior you want when the original audio ends
-                    });
-                });
-
-                // Setup record buttons
-                this.recordButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        if (!this.isRecording) {
-                            this.startRecording(button);
-                        } else if (this.currentRecordingBtn === button) {
-                            this.stopRecording();
-                        }
-                    });
-                });
-            }
-
-            async startRecording(button) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                        audio: true
-                    });
-                    this.mediaRecorder = new MediaRecorder(stream);
+            class SentencePractice {
+                constructor() {
+                    this.initializeElements();
+                    this.setupEventListeners();
+                    this.mediaRecorder = null;
                     this.audioChunks = [];
-                    this.currentRecordingBtn = button;
-
-                    this.mediaRecorder.addEventListener('dataavailable', (event) => {
-                        this.audioChunks.push(event.data);
-                    });
-
-                    this.mediaRecorder.addEventListener('stop', () => {
-                        const audioBlob = new Blob(this.audioChunks, {
-                            type: 'audio/wav'
-                        });
-                        const audioUrl = URL.createObjectURL(audioBlob);
-                        this.addRecordingToList(audioUrl, button.dataset.sentenceId);
-                    });
-
-                    this.mediaRecorder.start();
-                    this.isRecording = true;
-                    button.classList.add('recording');
-                    button.innerHTML = '<i class="fas fa-stop me-2"></i>Stop';
-
-                } catch (error) {
-                    console.error('Error accessing microphone:', error);
-                    alert('Error accessing microphone. Please ensure you have granted microphone permissions.');
-                }
-            }
-
-            stopRecording() {
-                if (this.mediaRecorder && this.isRecording) {
-                    this.mediaRecorder.stop();
                     this.isRecording = false;
-                    this.currentRecordingBtn.classList.remove('recording');
-                    this.currentRecordingBtn.innerHTML = '<i class="fas fa-microphone me-2"></i>Record';
-
-                    // Stop all tracks in the stream
-                    this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                    this.currentRecordingBtn = null;
                 }
-            }
 
-            addRecordingToList(audioUrl, sentenceId) {
-                const recordingsList = document.getElementById(`recordings-${sentenceId}`);
-                const timestamp = new Date().toLocaleTimeString();
+                initializeElements() {
+                    this.originalAudios = document.querySelectorAll('.original-audio');
+                    this.recordButtons = document.querySelectorAll('.record-btn');
+                }
 
-                const recordingItem = document.createElement('div');
-                recordingItem.className = 'recording-item';
-                recordingItem.innerHTML = `
+                setupEventListeners() {
+                    // Setup audio ended event
+                    this.originalAudios.forEach(audio => {
+                        audio.addEventListener('ended', () => {
+                            // Optional: Add any behavior you want when the original audio ends
+                        });
+                    });
+
+                    // Setup record buttons
+                    this.recordButtons.forEach(button => {
+                        button.addEventListener('click', () => {
+                            if (!this.isRecording) {
+                                this.startRecording(button);
+                            } else if (this.currentRecordingBtn === button) {
+                                this.stopRecording();
+                            }
+                        });
+                    });
+                }
+
+                async startRecording(button) {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({
+                            audio: true
+                        });
+                        this.mediaRecorder = new MediaRecorder(stream);
+                        this.audioChunks = [];
+                        this.currentRecordingBtn = button;
+
+                        this.mediaRecorder.addEventListener('dataavailable', (event) => {
+                            this.audioChunks.push(event.data);
+                        });
+
+                        this.mediaRecorder.addEventListener('stop', () => {
+                            const audioBlob = new Blob(this.audioChunks, {
+                                type: 'audio/wav'
+                            });
+                            const audioUrl = URL.createObjectURL(audioBlob);
+                            this.addRecordingToList(audioUrl, button.dataset.sentenceId);
+                        });
+
+                        this.mediaRecorder.start();
+                        this.isRecording = true;
+                        button.classList.add('recording');
+                        button.innerHTML = '<i class="fas fa-stop me-2"></i>Stop';
+
+                    } catch (error) {
+                        console.error('Error accessing microphone:', error);
+                        alert('Error accessing microphone. Please ensure you have granted microphone permissions.');
+                    }
+                }
+
+                stopRecording() {
+                    if (this.mediaRecorder && this.isRecording) {
+                        this.mediaRecorder.stop();
+                        this.isRecording = false;
+                        this.currentRecordingBtn.classList.remove('recording');
+                        this.currentRecordingBtn.innerHTML = '<i class="fas fa-microphone me-2"></i>Record';
+
+                        // Stop all tracks in the stream
+                        this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                    }
+                }
+
+                addRecordingToList(audioUrl, sentenceId) {
+                    const recordingsList = document.getElementById(`recordings-${sentenceId}`);
+                    const timestamp = new Date().toLocaleTimeString();
+
+                    const recordingItem = document.createElement('div');
+                    recordingItem.className = 'recording-item';
+                    recordingItem.innerHTML = `
                     <span class="timestamp">${timestamp}</span>
                     <div class="controls">
                         <button class="btn btn-sm btn-primary play-btn">
@@ -2162,238 +3194,238 @@
                     <audio src="${audioUrl}"></audio>
                 `;
 
-                const playBtn = recordingItem.querySelector('.play-btn');
-                const deleteBtn = recordingItem.querySelector('.delete-btn');
-                const audio = recordingItem.querySelector('audio');
+                    const playBtn = recordingItem.querySelector('.play-btn');
+                    const deleteBtn = recordingItem.querySelector('.delete-btn');
+                    const audio = recordingItem.querySelector('audio');
 
-                playBtn.addEventListener('click', () => {
-                    if (audio.paused) {
-                        audio.play();
-                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    } else {
-                        audio.pause();
-                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    }
-                });
-
-                audio.addEventListener('ended', () => {
-                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                });
-
-                deleteBtn.addEventListener('click', () => {
-                    if (confirm('Are you sure you want to delete this recording?')) {
-                        recordingItem.remove();
-                        URL.revokeObjectURL(audioUrl);
-                    }
-                });
-
-                // Update recording count
-                const historyBtn = document.querySelector(`[data-bs-target="#history-${sentenceId}"]`);
-                const countBadge = historyBtn.querySelector('.recording-count');
-                const currentCount = parseInt(countBadge.textContent);
-                countBadge.textContent = currentCount + 1;
-
-                // Show history panel if it's the first recording
-                if (currentCount === 0) {
-                    const historyPanel = document.getElementById(`history-${sentenceId}`);
-                    bootstrap.Collapse.getOrCreateInstance(historyPanel).show();
-                }
-
-                recordingsList.insertBefore(recordingItem, recordingsList.firstChild);
-
-                // ... existing delete event listener ...
-                deleteBtn.addEventListener('click', () => {
-                    if (confirm('Are you sure you want to delete this recording?')) {
-                        recordingItem.remove();
-                        URL.revokeObjectURL(audioUrl);
-
-                        // Update recording count
-                        const newCount = parseInt(countBadge.textContent) - 1;
-                        countBadge.textContent = newCount;
-
-                        // Hide history panel if no recordings left
-                        if (newCount === 0) {
-                            const historyPanel = document.getElementById(`history-${sentenceId}`);
-                            bootstrap.Collapse.getOrCreateInstance(historyPanel).hide();
+                    playBtn.addEventListener('click', () => {
+                        if (audio.paused) {
+                            audio.play();
+                            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        } else {
+                            audio.pause();
+                            playBtn.innerHTML = '<i class="fas fa-play"></i>';
                         }
+                    });
+
+                    audio.addEventListener('ended', () => {
+                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    });
+
+                    deleteBtn.addEventListener('click', () => {
+                        if (confirm('Are you sure you want to delete this recording?')) {
+                            recordingItem.remove();
+                            URL.revokeObjectURL(audioUrl);
+                        }
+                    });
+
+                    // Update recording count
+                    const historyBtn = document.querySelector(`[data-bs-target="#history-${sentenceId}"]`);
+                    const countBadge = historyBtn.querySelector('.recording-count');
+                    const currentCount = parseInt(countBadge.textContent);
+                    countBadge.textContent = currentCount + 1;
+
+                    // Show history panel if it's the first recording
+                    if (currentCount === 0) {
+                        const historyPanel = document.getElementById(`history-${sentenceId}`);
+                        bootstrap.Collapse.getOrCreateInstance(historyPanel).show();
                     }
-                });
-            }
-        }
 
-        // Initialize Sentence Practice when the handout tab is shown
-        document.getElementById('handout-tab').addEventListener('click', function() {
-            if (!window.sentencePractice) {
-                window.sentencePractice = new SentencePractice();
-            }
-        });
+                    recordingsList.insertBefore(recordingItem, recordingsList.firstChild);
 
-        // Memory Game for Short /ʌ/ Sound Practice
-        class ShortVowelMemoryGame extends PronunciationMemoryGame {
-            constructor() {
-                super();
-                this.cards = [{
-                        id: 1,
-                        type: 'word',
-                        word: 'cup',
-                        phonetic: '/kʌp/',
-                        pair: 'cup.jpg',
-                        audio: '/audio/vocabulary/cup.mp3'
-                    },
-                    {
-                        id: 2,
-                        type: 'image',
-                        image: '/images/vocabulary/cup.jpg',
-                        pair: 'cup',
-                        audio: '/audio/vocabulary/cup.mp3'
-                    },
-                    {
-                        id: 3,
-                        type: 'word',
-                        word: 'sun',
-                        phonetic: '/sʌn/',
-                        pair: 'sun.jpg',
-                        audio: '/audio/vocabulary/sun.mp3'
-                    },
-                    {
-                        id: 4,
-                        type: 'image',
-                        image: '/images/vocabulary/sun.jpg',
-                        pair: 'sun',
-                        audio: '/audio/vocabulary/sun.mp3'
-                    },
-                    {
-                        id: 5,
-                        type: 'word',
-                        word: 'run',
-                        phonetic: '/rʌn/',
-                        pair: 'run.jpg',
-                        audio: '/audio/vocabulary/run.mp3'
-                    },
-                    {
-                        id: 6,
-                        type: 'image',
-                        image: '/images/vocabulary/run.jpg',
-                        pair: 'run',
-                        audio: '/audio/vocabulary/run.mp3'
-                    },
-                    {
-                        id: 7,
-                        type: 'word',
-                        word: 'bus',
-                        phonetic: '/bʌs/',
-                        pair: 'bus.jpg',
-                        audio: '/audio/vocabulary/bus.mp3'
-                    },
-                    {
-                        id: 8,
-                        type: 'image',
-                        image: '/images/vocabulary/bus.jpg',
-                        pair: 'bus',
-                        audio: '/audio/vocabulary/bus.mp3'
-                    },
-                    {
-                        id: 9,
-                        type: 'word',
-                        word: 'duck',
-                        phonetic: '/dʌk/',
-                        pair: 'duck.jpg',
-                        audio: '/audio/vocabulary/duck.mp3'
-                    },
-                    {
-                        id: 10,
-                        type: 'image',
-                        image: '/images/vocabulary/duck.jpg',
-                        pair: 'duck',
-                        audio: '/audio/vocabulary/duck.mp3'
-                    },
-                    {
-                        id: 11,
-                        type: 'word',
-                        word: 'jump',
-                        phonetic: '/dʒʌmp/',
-                        pair: 'jump.jpg',
-                        audio: '/audio/vocabulary/jump.mp3'
-                    },
-                    {
-                        id: 12,
-                        type: 'image',
-                        image: '/images/vocabulary/jump.jpg',
-                        pair: 'jump',
-                        audio: '/audio/vocabulary/jump.mp3'
-                    },
-                    {
-                        id: 13,
-                        type: 'word',
-                        word: 'lunch',
-                        phonetic: '/lʌntʃ/',
-                        pair: 'lunch.jpg',
-                        audio: '/audio/vocabulary/lunch.mp3'
-                    },
-                    {
-                        id: 14,
-                        type: 'image',
-                        image: '/images/vocabulary/lunch.jpg',
-                        pair: 'lunch',
-                        audio: '/audio/vocabulary/lunch.mp3'
-                    },
-                    {
-                        id: 15,
-                        type: 'word',
-                        word: 'hug',
-                        phonetic: '/hʌɡ/',
-                        pair: 'hug.jpg',
-                        audio: '/audio/vocabulary/hug.mp3'
-                    },
-                    {
-                        id: 16,
-                        type: 'image',
-                        image: '/images/vocabulary/hug.jpg',
-                        pair: 'hug',
-                        audio: '/audio/vocabulary/hug.mp3'
-                    }
-                ];
+                    // ... existing delete event listener ...
+                    deleteBtn.addEventListener('click', () => {
+                        if (confirm('Are you sure you want to delete this recording?')) {
+                            recordingItem.remove();
+                            URL.revokeObjectURL(audioUrl);
 
-                this.grid = document.getElementById('memoryGrid2');
-                this.moveCount = document.getElementById('moveCount2');
-                this.matchCount = document.getElementById('matchCount2');
-                this.timerDisplay = document.getElementById('memoryGameTimer2');
+                            // Update recording count
+                            const newCount = parseInt(countBadge.textContent) - 1;
+                            countBadge.textContent = newCount;
 
-                this.initialize();
+                            // Hide history panel if no recordings left
+                            if (newCount === 0) {
+                                const historyPanel = document.getElementById(`history-${sentenceId}`);
+                                bootstrap.Collapse.getOrCreateInstance(historyPanel).hide();
+                            }
+                        }
+                    });
+                }
             }
-        }
 
-        // Initialize both memory games when the handout tab is shown
-        document.getElementById('handout-tab').addEventListener('click', function() {
-            if (!window.pronunciationGame) {
-                window.pronunciationGame = new PronunciationMemoryGame();
-            }
-            if (!window.shortVowelGame) {
-                window.shortVowelGame = new ShortVowelMemoryGame();
-            }
-        });
+            // Initialize Sentence Practice when the handout tab is shown
+            document.getElementById('handout-tab').addEventListener('click', function() {
+                if (!window.sentencePractice) {
+                    window.sentencePractice = new SentencePractice();
+                }
+            });
 
-        // Audio Recorder for Practice 4
-        class AudioRecorder2 extends AudioRecorder {
-            constructor() {
-                super();
-                this.recordButton = document.getElementById('recordButton2');
-                this.recordingTimer = document.getElementById('recordingTimer2');
-                this.timerDisplay = document.getElementById('timerDisplay2');
-                this.recordingsList = document.getElementById('recordingsList2');
+            // Memory Game for Short /ʌ/ Sound Practice
+            class ShortVowelMemoryGame extends PronunciationMemoryGame {
+                constructor() {
+                    super();
+                    this.cards = [{
+                            id: 1,
+                            type: 'word',
+                            word: 'cup',
+                            phonetic: '/kʌp/',
+                            pair: 'cup.jpg',
+                            audio: '/audio/vocabulary/cup.mp3'
+                        },
+                        {
+                            id: 2,
+                            type: 'image',
+                            image: '/images/vocabulary/cup.jpg',
+                            pair: 'cup',
+                            audio: '/audio/vocabulary/cup.mp3'
+                        },
+                        {
+                            id: 3,
+                            type: 'word',
+                            word: 'sun',
+                            phonetic: '/sʌn/',
+                            pair: 'sun.jpg',
+                            audio: '/audio/vocabulary/sun.mp3'
+                        },
+                        {
+                            id: 4,
+                            type: 'image',
+                            image: '/images/vocabulary/sun.jpg',
+                            pair: 'sun',
+                            audio: '/audio/vocabulary/sun.mp3'
+                        },
+                        {
+                            id: 5,
+                            type: 'word',
+                            word: 'run',
+                            phonetic: '/rʌn/',
+                            pair: 'run.jpg',
+                            audio: '/audio/vocabulary/run.mp3'
+                        },
+                        {
+                            id: 6,
+                            type: 'image',
+                            image: '/images/vocabulary/run.jpg',
+                            pair: 'run',
+                            audio: '/audio/vocabulary/run.mp3'
+                        },
+                        {
+                            id: 7,
+                            type: 'word',
+                            word: 'bus',
+                            phonetic: '/bʌs/',
+                            pair: 'bus.jpg',
+                            audio: '/audio/vocabulary/bus.mp3'
+                        },
+                        {
+                            id: 8,
+                            type: 'image',
+                            image: '/images/vocabulary/bus.jpg',
+                            pair: 'bus',
+                            audio: '/audio/vocabulary/bus.mp3'
+                        },
+                        {
+                            id: 9,
+                            type: 'word',
+                            word: 'duck',
+                            phonetic: '/dʌk/',
+                            pair: 'duck.jpg',
+                            audio: '/audio/vocabulary/duck.mp3'
+                        },
+                        {
+                            id: 10,
+                            type: 'image',
+                            image: '/images/vocabulary/duck.jpg',
+                            pair: 'duck',
+                            audio: '/audio/vocabulary/duck.mp3'
+                        },
+                        {
+                            id: 11,
+                            type: 'word',
+                            word: 'jump',
+                            phonetic: '/dʒʌmp/',
+                            pair: 'jump.jpg',
+                            audio: '/audio/vocabulary/jump.mp3'
+                        },
+                        {
+                            id: 12,
+                            type: 'image',
+                            image: '/images/vocabulary/jump.jpg',
+                            pair: 'jump',
+                            audio: '/audio/vocabulary/jump.mp3'
+                        },
+                        {
+                            id: 13,
+                            type: 'word',
+                            word: 'lunch',
+                            phonetic: '/lʌntʃ/',
+                            pair: 'lunch.jpg',
+                            audio: '/audio/vocabulary/lunch.mp3'
+                        },
+                        {
+                            id: 14,
+                            type: 'image',
+                            image: '/images/vocabulary/lunch.jpg',
+                            pair: 'lunch',
+                            audio: '/audio/vocabulary/lunch.mp3'
+                        },
+                        {
+                            id: 15,
+                            type: 'word',
+                            word: 'hug',
+                            phonetic: '/hʌɡ/',
+                            pair: 'hug.jpg',
+                            audio: '/audio/vocabulary/hug.mp3'
+                        },
+                        {
+                            id: 16,
+                            type: 'image',
+                            image: '/images/vocabulary/hug.jpg',
+                            pair: 'hug',
+                            audio: '/audio/vocabulary/hug.mp3'
+                        }
+                    ];
 
-                this.setupEventListeners();
-            }
-        }
+                    this.grid = document.getElementById('memoryGrid2');
+                    this.moveCount = document.getElementById('moveCount2');
+                    this.matchCount = document.getElementById('matchCount2');
+                    this.timerDisplay = document.getElementById('memoryGameTimer2');
 
-        // Initialize both recorders when the handout tab is shown
-        document.getElementById('handout-tab').addEventListener('click', function() {
-            if (!window.audioRecorder) {
-                window.audioRecorder = new AudioRecorder();
+                    this.initialize();
+                }
             }
-            if (!window.audioRecorder2) {
-                window.audioRecorder2 = new AudioRecorder2();
+
+            // Initialize both memory games when the handout tab is shown
+            document.getElementById('handout-tab').addEventListener('click', function() {
+                if (!window.pronunciationGame) {
+                    window.pronunciationGame = new PronunciationMemoryGame();
+                }
+                if (!window.shortVowelGame) {
+                    window.shortVowelGame = new ShortVowelMemoryGame();
+                }
+            });
+
+            // Audio Recorder for Practice 4
+            class AudioRecorder2 extends AudioRecorder {
+                constructor() {
+                    super();
+                    this.recordButton = document.getElementById('recordButton2');
+                    this.recordingTimer = document.getElementById('recordingTimer2');
+                    this.timerDisplay = document.getElementById('timerDisplay2');
+                    this.recordingsList = document.getElementById('recordingsList2');
+
+                    this.setupEventListeners();
+                }
             }
-        });
-    </script>
-@endsection
+
+            // Initialize both recorders when the handout tab is shown
+            document.getElementById('handout-tab').addEventListener('click', function() {
+                if (!window.audioRecorder) {
+                    window.audioRecorder = new AudioRecorder();
+                }
+                if (!window.audioRecorder2) {
+                    window.audioRecorder2 = new AudioRecorder2();
+                }
+            });
+        </script>
+    @endsection
