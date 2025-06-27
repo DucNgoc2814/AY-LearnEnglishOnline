@@ -202,3 +202,14 @@ Route::prefix('listen-in-english')->name('client.listen.')->group(function () {
     Route::get('/lesson/{id}', [App\Http\Controllers\Client\ListenController::class, 'lessonDetail'])->name('lesson.detail');
 });
 
+// Read to Lead Routes
+Route::prefix('read-to-lead')->name('client.read-to-lead.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Client\ReadToLeadController::class, 'index'])->name('index');
+    Route::get('/discovery', [App\Http\Controllers\Client\ReadToLeadController::class, 'discovery'])->name('discovery');
+    Route::get('/health-lifestyle', [App\Http\Controllers\Client\ReadToLeadController::class, 'healthLifestyle'])->name('health');
+    Route::get('/culture', [App\Http\Controllers\Client\ReadToLeadController::class, 'culture'])->name('culture');
+    Route::get('/travel', [App\Http\Controllers\Client\ReadToLeadController::class, 'travel'])->name('travel');
+    Route::get('/cuisine', [App\Http\Controllers\Client\ReadToLeadController::class, 'cuisine'])->name('cuisine');
+    Route::get('/article/{id}', [App\Http\Controllers\Client\ReadToLeadController::class, 'articleDetail'])->name('article.detail');
+});
+

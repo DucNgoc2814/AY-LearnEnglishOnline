@@ -75,7 +75,7 @@
                         </a>
                         <ul class="navbarHover">
                             <li class="dropdown-submenu">
-                                <a href="#">
+                                <a href="{{ route('client.read-to-lead.index') }}">
                                     <span class="text-cat">Read to lead</span>
                                 </a>
                             </li>
