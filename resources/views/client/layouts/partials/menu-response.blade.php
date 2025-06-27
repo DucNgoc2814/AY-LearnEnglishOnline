@@ -62,11 +62,41 @@
                             @endforeach
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link header-dropdown ps-2 text-nowrap bg-white text-dark hover-effect active-effect"
+                            href="#" id="navbarDropdown5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-book">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <span class="ms-2 fw-600 text-nowrap fs-13" style="color: #000;">SELFBOOT</span>
+                        </a>
+                        <ul class="navbarHover">
+                            <li class="dropdown-submenu">
+                                <a href="#">
+                                    <span class="text-cat">Read to lead</span>
+                                </a>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a href="{{ route('client.listen.index') }}">
+                                    <span class="text-cat">Listen in english</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
                 <ul class="navbar-nav main-nav-wrap mb-2 mb-lg-0 ms-2">
                     <li class="nav-item">
                         <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap hover-effect active-effect"
                             href="{{ route('practice-tests.index') }}" id="navbarDropdown4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-edit-3">
+                                <path d="M12 20h9"></path>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                            </svg>
                             <span class="ms-2">Thi thử Toeic</span>
                         </a>
                     </li>
@@ -76,6 +106,13 @@
                     <li class="nav-item">
                         <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap hover-effect active-effect"
                             href="addons/team_training/packages.html" id="navbarDropdown4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-info">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
                             <span class="ms-2">Giới thiệu</span>
                         </a>
                     </li>
@@ -85,6 +122,11 @@
                     <li class="nav-item">
                         <a class="nav-link header-dropdown bg-white text-dark fw-600 text-nowrap hover-effect active-effect"
                             href="tutors.html" id="navbarDropdown2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-phone">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
                             Liên hệ
                         </a>
                     </li>
@@ -242,6 +284,15 @@
                                 class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 hover-effect active-effect">
                                 <i class="fas fa-th-large me-2"></i>
                                 Danh mục
+                            </a>
+                        </li>
+
+                        <!-- SELFBOOT -->
+                        <li class="bg-light">
+                            <a href="#"
+                                class="btn btn-toggle d-inline-flex align-items-center rounded border-0 text-dark text-16px fw-500 hover-effect active-effect">
+                                <i class="fas fa-book me-2"></i>
+                                SELFBOOT
                             </a>
                         </li>
 

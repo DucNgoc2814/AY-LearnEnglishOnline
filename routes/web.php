@@ -194,3 +194,11 @@ Route::prefix('api/oxford')->middleware('web')->group(function () {
 Route::get('auth/facebook', [SocialLoginController::class, 'redirectToFacebook'])->name('auth.facebook');
 Route::get('auth/facebook/callback', [SocialLoginController::class, 'handleFacebookCallback'])->name('auth.facebook.callback');
 
+// Listen in English Routes
+Route::prefix('listen-in-english')->name('client.listen.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Client\ListenController::class, 'index'])->name('index');
+    Route::get('/easy-tv', [App\Http\Controllers\Client\ListenController::class, 'easyTv'])->name('easy-tv');
+    Route::get('/tv-movies', [App\Http\Controllers\Client\ListenController::class, 'tvMovies'])->name('tv-movies');
+    Route::get('/lesson/{id}', [App\Http\Controllers\Client\ListenController::class, 'lessonDetail'])->name('lesson.detail');
+});
+
