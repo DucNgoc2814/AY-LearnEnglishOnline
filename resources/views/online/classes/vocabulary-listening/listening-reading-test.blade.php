@@ -558,7 +558,7 @@
             </div>
         </div>
 
-        <!-- Question 10: Word Search Game -->
+        <!-- Question 10: Word Search -->
         <div class="question-card bg-white p-0 rounded-lg shadow-sm mb-4 overflow-hidden" data-question-id="10">
             <div class="question-header bg-primary text-white p-3">
                 <div class="d-flex align-items-center justify-content-between">
@@ -624,6 +624,99 @@
                 </div>
             </div>
         </div>
+
+        <!-- Question 11: Mystery Box Question -->
+        <div class="question-card bg-white p-0 rounded-lg shadow-sm mb-4 overflow-hidden" data-question-id="11">
+            <div class="question-header bg-primary text-white p-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="question-number-circle me-3 bg-white text-primary d-flex align-items-center justify-content-center"
+                            style="width: 35px; height: 35px; border-radius: 50%; font-weight: bold;">
+                            11
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">Câu 11:</span>
+                            <h6 class="m-0">Hộp bí mật</h6>
+                        </div>
+                    </div>
+                    <div class="question-type-badge bg-white text-primary px-3 py-1 rounded-pill">
+                        <small><i class="fas fa-box me-1"></i>Mystery Box</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-content p-4">
+                <!-- Mystery Boxes Grid -->
+                <div class="mystery-boxes-grid mb-4">
+                    <div class="row g-3">
+                        <div class="col-4 col-md-3">
+                            <div class="mystery-box" data-box-id="1">
+                                <div class="box-front">
+                                    <span class="box-number">1</span>
+                                </div>
+                                <div class="box-content d-none">
+                                    <h6 class="question-text">What is the opposite of "happy"?</h6>
+                                    <div class="options mt-3">
+                                        <button class="btn btn-outline-primary w-100 mb-2" data-correct="false">excited</button>
+                                        <button class="btn btn-outline-primary w-100 mb-2" data-correct="true">sad</button>
+                                        <button class="btn btn-outline-primary w-100 mb-2" data-correct="false">glad</button>
+                                        <button class="btn btn-outline-primary w-100" data-correct="false">cheerful</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <div class="mystery-box" data-box-id="2">
+                                <div class="box-front">
+                                    <span class="box-number">2</span>
+                                </div>
+                                <div class="box-content d-none">
+                                    <h6 class="question-text">Which word means "a place to live"?</h6>
+                                    <div class="options mt-3">
+                                        <button class="btn btn-outline-primary w-100 mb-2" data-correct="true">house</button>
+                                        <button class="btn btn-outline-primary w-100 mb-2" data-correct="false">car</button>
+                                        <button class="btn btn-outline-primary w-100 mb-2" data-correct="false">book</button>
+                                        <button class="btn btn-outline-primary w-100" data-correct="false">phone</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <div class="mystery-box" data-box-id="3">
+                                <div class="box-front">
+                                    <span class="box-number">3</span>
+                                </div>
+                                <div class="box-content d-none">
+                                    <h6 class="question-text">Complete the sentence: "I ___ to school every day."</h6>
+                                    <div class="options mt-3">
+                                        <button class="btn btn-outline-primary w-100 mb-2" data-correct="false">going</button>
+                                        <button class="btn btn-outline-primary w-100 mb-2" data-correct="true">go</button>
+                                        <button class="btn btn-outline-primary w-100 mb-2" data-correct="false">goes</button>
+                                        <button class="btn btn-outline-primary w-100" data-correct="false">went</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <div class="mystery-box" data-box-id="4">
+                                <div class="box-front">
+                                    <span class="box-number">4</span>
+                                </div>
+                                <div class="box-content d-none">
+                                    <h6 class="question-text">Which animal can fly?</h6>
+                                    <div class="options mt-3">
+                                        <button class="btn btn-outline-primary w-100 mb-2" data-correct="false">fish</button>
+                                        <button class="btn btn-outline-primary w-100 mb-2" data-correct="false">cat</button>
+                                        <button class="btn btn-outline-primary w-100 mb-2" data-correct="true">bird</button>
+                                        <button class="btn btn-outline-primary w-100" data-correct="false">dog</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Navigation Buttons -->
@@ -644,6 +737,7 @@
                 <button type="button" class="btn btn-outline-primary" style="min-width: 45px;">8</button>
                 <button type="button" class="btn btn-outline-primary" style="min-width: 45px;">9</button>
                 <button type="button" class="btn btn-outline-primary" style="min-width: 45px;">10</button>
+                <button type="button" class="btn btn-outline-primary" style="min-width: 45px;">11</button>
             </div>
         </div>
         <button class="btn btn-outline-primary px-4" id="nextQuestion">
@@ -1526,6 +1620,165 @@
             .grid-cell {
                 font-size: 0.875rem;
             }
+        }
+
+        /* Mystery Box Styles */
+        .mystery-boxes-grid {
+            padding: 20px;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .mystery-box {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%;
+            background: #fff;
+            border: 3px solid #0d6efd;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .mystery-box.completed {
+            border-color: #198754;
+            background: #f8f9fa;
+        }
+
+        .mystery-box.completed:not(.expanded) .box-front {
+            background: linear-gradient(135deg, #198754, #20c997);
+        }
+
+        .mystery-box.completed:not(.expanded):hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .mystery-box.completed .box-content {
+            background: #f8f9fa;
+        }
+
+        .mystery-box.completed .question-text {
+            color: #198754;
+        }
+
+        .mystery-box.completed .options button {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .mystery-box.completed .options button.correct {
+            background-color: #198754;
+            color: white;
+            border-color: #198754;
+        }
+
+        .mystery-box.completed .options button.incorrect {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .mystery-box.completed .options button:not(.correct):not(.incorrect) {
+            opacity: 0.5;
+        }
+
+        .mystery-box.expanded {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding-bottom: 0;
+            z-index: 10;
+        }
+
+        .mystery-box.hidden {
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        .mystery-box:hover:not(.expanded) {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Existing styles continue below */
+        .box-front {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+            border-radius: 12px;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .box-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .box-content .question-text {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .box-content .options {
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .box-content .options button {
+            transition: all 0.2s ease;
+            font-size: 1.2rem;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .box-content .options button:hover {
+            transform: translateX(5px);
+        }
+
+        .box-content .options button.correct {
+            background-color: #198754;
+            color: white;
+            border-color: #198754;
+        }
+
+        .box-content .options button.incorrect {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
     </style>
 @endpush
@@ -3041,6 +3294,107 @@
 
             // Initialize Word Search Game
             new WordSearchGame();
+
+            // Mystery Box Game Handler
+            const mysteryBoxes = document.querySelectorAll('.mystery-box');
+            let currentOpenBox = null;
+            const completedBoxes = new Set(); // Lưu trữ ID của các hộp đã hoàn thành
+
+            function resetAllBoxes() {
+                mysteryBoxes.forEach(box => {
+                    const boxFront = box.querySelector('.box-front');
+                    const boxContent = box.querySelector('.box-content');
+                    const boxId = box.getAttribute('data-box-id');
+
+                    // Reset về trạng thái ban đầu cho tất cả các hộp
+                    box.classList.remove('expanded', 'hidden');
+                    boxFront.style.display = 'flex';
+                    boxContent.classList.add('d-none');
+
+                    if (!completedBoxes.has(boxId)) {
+                        // Chỉ reset options cho các hộp chưa hoàn thành
+                        box.querySelectorAll('.options button').forEach(btn => {
+                            btn.classList.remove('correct', 'incorrect');
+                            btn.disabled = false;
+                        });
+                    }
+                });
+                currentOpenBox = null;
+            }
+
+            mysteryBoxes.forEach(box => {
+                box.addEventListener('click', function(e) {
+                    const boxFront = this.querySelector('.box-front');
+                    const boxContent = this.querySelector('.box-content');
+                    const boxId = this.getAttribute('data-box-id');
+
+                    // If clicking on an option button, don't hide the content
+                    if (e.target.classList.contains('btn')) {
+                        return;
+                    }
+
+                    // If this box is already open, close it and show all boxes
+                    if (!boxContent.classList.contains('d-none')) {
+                        resetAllBoxes();
+                        return;
+                    }
+
+                    // Hide all other boxes and expand this one
+                    mysteryBoxes.forEach(otherBox => {
+                        if (otherBox !== this) {
+                            otherBox.classList.add('hidden');
+                        }
+                    });
+
+                    // Open and expand this box
+                    this.classList.add('expanded');
+                    boxFront.style.display = 'none';
+                    boxContent.classList.remove('d-none');
+                    currentOpenBox = this;
+
+                    // Chỉ reset options nếu hộp chưa hoàn thành
+                    if (!completedBoxes.has(boxId)) {
+                        this.querySelectorAll('.options button').forEach(btn => {
+                            if (!btn.classList.contains('correct') && !btn.classList.contains('incorrect')) {
+                                btn.classList.remove('correct', 'incorrect');
+                                btn.disabled = false;
+                            }
+                        });
+                    }
+                });
+
+                // Handle option selection
+                const options = box.querySelectorAll('.options button');
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const boxId = box.getAttribute('data-box-id');
+                        // Nếu hộp đã hoàn thành, không cho phép chọn lại
+                        if (completedBoxes.has(boxId)) {
+                            return;
+                        }
+
+                        const isCorrect = this.getAttribute('data-correct') === 'true';
+
+                        if (isCorrect) {
+                            this.classList.add('correct');
+                            // Disable all options after correct answer
+                            options.forEach(opt => opt.disabled = true);
+
+                            // Đánh dấu hộp đã hoàn thành
+                            completedBoxes.add(boxId);
+                            box.classList.add('completed');
+
+                            // Wait for animation and then reset all boxes
+                            setTimeout(() => {
+                                resetAllBoxes();
+                            }, 1500);
+                        } else {
+                            this.classList.add('incorrect');
+                            this.disabled = true;
+                        }
+                    });
+                });
+            });
         });
     </script>
 @endpush
