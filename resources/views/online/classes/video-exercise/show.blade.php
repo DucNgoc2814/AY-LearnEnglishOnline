@@ -203,10 +203,22 @@
                                         <div class="card">
                                             <div class="card-body p-0">
                                                 <div class="ratio ratio-16x9">
-                                                    <iframe
-                                                        src="{{ App\Helpers\VideoHelper::getEmbedUrl($lesson->video_url) }}"
-                                                        title="{{ $lesson->title ?? 'Video Exercise' }}" allowfullscreen
-                                                        class="rounded" id="mainVideo">
+                                                    @php
+                                                        // Convert YouTube URL to embed URL
+                                                        $videoUrl = $lesson->video_url;
+                                                        $videoId = '';
+                                                        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $videoUrl, $match)) {
+                                                            $videoId = $match[1];
+                                                        }
+                                                        $embedUrl = 'https://www.youtube.com/embed/' . $videoId;
+                                                    @endphp
+                                                    <iframe src="{{ $embedUrl }}"
+                                                        title="{{ $lesson->title ?? 'Video Exercise' }}"
+                                                        frameborder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowfullscreen
+                                                        class="rounded shadow-sm"
+                                                        id="mainVideo">
                                                     </iframe>
                                                 </div>
                                             </div>
