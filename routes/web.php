@@ -199,6 +199,7 @@ Route::prefix('listen-in-english')->name('client.listen.')->group(function () {
     Route::get('/', [App\Http\Controllers\Client\ListenController::class, 'index'])->name('index');
     Route::get('/easy-tv', [App\Http\Controllers\Client\ListenController::class, 'easyTv'])->name('easy-tv');
     Route::get('/tv-movies', [App\Http\Controllers\Client\ListenController::class, 'tvMovies'])->name('tv-movies');
+    Route::get('/tv-movies/{id}', [App\Http\Controllers\Client\ListenController::class, 'tvMoviesDetail'])->name('tv-movies.detail');
     Route::get('/lesson/{id}', [App\Http\Controllers\Client\ListenController::class, 'lessonDetail'])->name('lesson.detail');
 });
 

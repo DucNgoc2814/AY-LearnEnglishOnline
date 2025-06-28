@@ -14,14 +14,14 @@
     <div class="row g-4">
         @php
             $shows = collect([
-                ['title' => 'Friends', 'episode' => 'The One Where It All Began', 'level' => 'Intermediate', 'duration' => 25],
-                ['title' => 'Modern Family', 'episode' => 'Pilot', 'level' => 'Intermediate', 'duration' => 30],
-                ['title' => 'The Office', 'episode' => 'Diversity Day', 'level' => 'Advanced', 'duration' => 28],
-                ['title' => 'Big Bang Theory', 'episode' => 'The Roommate Agreement', 'level' => 'Intermediate', 'duration' => 22],
-                ['title' => 'How I Met Your Mother', 'episode' => 'Purple Giraffe', 'level' => 'Advanced', 'duration' => 25],
-                ['title' => 'Brooklyn Nine-Nine', 'episode' => 'The Tagger', 'level' => 'Intermediate', 'duration' => 24],
-                ['title' => 'The Crown', 'episode' => 'Wolferton Splash', 'level' => 'Advanced', 'duration' => 35],
-                ['title' => 'Stranger Things', 'episode' => 'The Vanishing of Will Byers', 'level' => 'Beginner', 'duration' => 32],
+                ['id' => 1, 'title' => 'Friends', 'episode' => 'The One Where It All Began', 'level' => 'Intermediate', 'duration' => 25],
+                ['id' => 2, 'title' => 'Modern Family', 'episode' => 'Pilot', 'level' => 'Intermediate', 'duration' => 30],
+                ['id' => 3, 'title' => 'The Office', 'episode' => 'Diversity Day', 'level' => 'Advanced', 'duration' => 28],
+                ['id' => 4, 'title' => 'Big Bang Theory', 'episode' => 'The Roommate Agreement', 'level' => 'Intermediate', 'duration' => 22],
+                ['id' => 5, 'title' => 'How I Met Your Mother', 'episode' => 'Purple Giraffe', 'level' => 'Advanced', 'duration' => 25],
+                ['id' => 6, 'title' => 'Brooklyn Nine-Nine', 'episode' => 'The Tagger', 'level' => 'Intermediate', 'duration' => 24],
+                ['id' => 7, 'title' => 'The Crown', 'episode' => 'Wolferton Splash', 'level' => 'Advanced', 'duration' => 35],
+                ['id' => 8, 'title' => 'Stranger Things', 'episode' => 'The Vanishing of Will Byers', 'level' => 'Beginner', 'duration' => 32],
             ]);
 
             // Filter by level if selected
@@ -42,7 +42,7 @@
                     <h5 class="card-title">{{ $show['title'] }}</h5>
                     <p class="card-text">{{ $show['episode'] }}</p>
                     <div class="d-flex justify-content-between align-items-center">
-                        <a href="#" class="btn btn-outline-primary">Watch Now</a>
+                        <a href="{{ route('client.listen.tv-movies.detail', ['id' => $show['id']]) }}" class="btn btn-outline-primary">Watch Now</a>
                         <div class="text-muted">
                             <i class="fas fa-clock"></i> {{ $show['duration'] }} min
                         </div>
