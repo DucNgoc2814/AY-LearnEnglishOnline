@@ -23,40 +23,40 @@ class CourseRegistration extends BaseModel
                 'required',
                 'exists:students,id',
             ],
-            'status' => [
-                'required',
-                'in:pending,active,completed,cancelled',
-            ],
-            'fee_amount' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
-            'payment_status' => [
-                'required',
-                'in:pending,paid,refunded',
-            ],
-            'payment_method' => [
-                'required',
-                'string',
-            ],
-            'payment_date' => [
-                'nullable',
-                'date',
-            ],
-            'invoice_number' => [
-                'nullable',
-                'string',
-            ],
-            'enrollment_date' => [
-                'required',
-                'date',
-            ],
-            'completion_date' => [
-                'nullable',
-                'date',
-                'after:enrollment_date',
-            ],
+            // 'status' => [
+            //     'nullable',
+            //     'in:pending,active,completed,cancelled',
+            // ],
+            // 'fee_amount' => [
+            //     'nullable',
+            //     'numeric',
+            //     'min:0',
+            // ],
+            // 'payment_status' => [
+            //     'nullable',
+            //     'in:pending,paid,refunded',
+            // ],
+            // 'payment_method' => [
+            //     'nullable',
+            //     'string',
+            // ],
+            // 'payment_date' => [
+            //     'nullable',
+            //     'date',
+            // ],
+            // 'invoice_number' => [
+            //     'nullable',
+            //     'string',
+            // ],
+            // 'enrollment_date' => [
+            //     'nullable',
+            //     'date',
+            // ],
+            // 'completion_date' => [
+            //     'nullable',
+            //     'date',
+            //     'after:enrollment_date',
+            // ],
             'notes' => [
                 'nullable',
                 'string',
@@ -89,73 +89,73 @@ class CourseRegistration extends BaseModel
                 'separator' => ' - ', //Tùy chỉnh ký tự ngăn cách
                 'help' => 'Có thể chọn nhiều học viên cùng lúc'
             ],
-            'status' => [
-                'label' => 'Trạng thái',
-                'type' => 'select',
-                'options' => [
-                    'pending' => 'Chờ xử lý',
-                    'active' => 'Đang học',
-                    'completed' => 'Đã hoàn thành',
-                    'cancelled' => 'Đã hủy'
-                ],
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'fee_amount' => [
-                'label' => 'Học phí',
-                'type' => 'number',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'payment_status' => [
-                'label' => 'Trạng thái thanh toán',
-                'type' => 'select',
-                'options' => [
-                    'pending' => 'Chờ thanh toán',
-                    'paid' => 'Đã thanh toán',
-                    'refunded' => 'Đã hoàn tiền'
-                ],
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'payment_method' => [
-                'label' => 'Phương thức thanh toán',
-                'type' => 'text',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'payment_date' => [
-                'label' => 'Ngày thanh toán',
-                'type' => 'date',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'invoice_number' => [
-                'label' => 'Số hóa đơn',
-                'type' => 'text',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'enrollment_date' => [
-                'label' => 'Ngày đăng ký',
-                'type' => 'date',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'completion_date' => [
-                'label' => 'Ngày hoàn thành',
-                'type' => 'date',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
+            // 'status' => [
+            //     'label' => 'Trạng thái',
+            //     'type' => 'select',
+            //     'options' => [
+            //         'pending' => 'Chờ xử lý',
+            //         'active' => 'Đang học',
+            //         'completed' => 'Đã hoàn thành',
+            //         'cancelled' => 'Đã hủy'
+            //     ],
+            //     'searchable' => true,
+            //     'sortable' => true,
+            //     'editable' => true
+            // ],
+            // 'fee_amount' => [
+            //     'label' => 'Học phí',
+            //     'type' => 'number',
+            //     'searchable' => true,
+            //     'sortable' => true,
+            //     'editable' => true
+            // ],
+            // 'payment_status' => [
+            //     'label' => 'Trạng thái thanh toán',
+            //     'type' => 'select',
+            //     'options' => [
+            //         'pending' => 'Chờ thanh toán',
+            //         'paid' => 'Đã thanh toán',
+            //         'refunded' => 'Đã hoàn tiền'
+            //     ],
+            //     'searchable' => true,
+            //     'sortable' => true,
+            //     'editable' => true
+            // ],
+            // 'payment_method' => [
+            //     'label' => 'Phương thức thanh toán',
+            //     'type' => 'text',
+            //     'searchable' => true,
+            //     'sortable' => true,
+            //     'editable' => true
+            // ],
+            // 'payment_date' => [
+            //     'label' => 'Ngày thanh toán',
+            //     'type' => 'date',
+            //     'searchable' => true,
+            //     'sortable' => true,
+            //     'editable' => true
+            // ],
+            // 'invoice_number' => [
+            //     'label' => 'Số hóa đơn',
+            //     'type' => 'text',
+            //     'searchable' => true,
+            //     'sortable' => true,
+            //     'editable' => true
+            // ],
+            // 'enrollment_date' => [
+            //     'label' => 'Ngày đăng ký',
+            //     'type' => 'date',
+            //     'searchable' => true,
+            //     'sortable' => true,
+            //     'editable' => true
+            // ],
+            // 'completion_date' => [
+            //     'label' => 'Ngày hoàn thành',
+            //     'type' => 'date',
+            //     'searchable' => true,
+            //     'sortable' => true,
+            //     'editable' => true
+            // ],
             'notes' => [
                 'label' => 'Ghi chú',
                 'type' => 'textarea',

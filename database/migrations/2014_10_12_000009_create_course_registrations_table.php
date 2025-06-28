@@ -28,7 +28,7 @@ return new class extends Migration
             // Số hóa đơn
             $table->string('invoice_number')->nullable();
             // Ngày đăng ký
-            $table->date('enrollment_date');
+            $table->date('enrollment_date')->nullable();
             // Ngày hoàn thành khóa học
             $table->date('completion_date')->nullable();
             // Ghi chú về đăng ký

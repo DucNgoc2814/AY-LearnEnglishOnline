@@ -27,16 +27,16 @@ class Classes extends BaseModel
                 'date',
                 'after_or_equal:today',
             ],
-            'end_date' => [
-                'required',
-                'date',
-                'after:start_date',
-            ],
-            'enrollment_deadline' => [
-                'required',
-                'date',
-                'before_or_equal:start_date',
-            ],
+            // 'end_date' => [
+            //     'nullable',
+            //     'date',
+            //     'after:start_date',
+            // ],
+            // 'enrollment_deadline' => [
+            //     'nullable',
+            //     'date',
+            //     'before_or_equal:start_date',
+            // ],
             'max_students' => [
                 'required',
                 'integer',
@@ -54,8 +54,8 @@ class Classes extends BaseModel
                 'in:pending,active,completed,cancelled',
             ],
             'description' => ['nullable', 'string'],
-            'schedule' => ['nullable', 'json'],
-            'is_active' => ['boolean'],
+            // 'schedule' => ['nullable', 'json'],
+            // 'is_active' => ['boolean'],
         ];
     }
 
@@ -99,22 +99,22 @@ class Classes extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'end_date' => [
-                'label' => 'Ngày kết thúc',
-                'type' => 'date',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'enrollment_deadline' => [
-                'label' => 'Ngày đăng ký',
-                'type' => 'date',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
+            // 'end_date' => [
+            //     'label' => 'Ngày kết thúc',
+            //     'type' => 'date',
+            //     'searchable' => true,
+            //     'sortable' => true,
+            //     'editable' => true
+            // ],
+            // 'enrollment_deadline' => [
+            //     'label' => 'Ngày đăng ký',
+            //     'type' => 'date',
+            //     'searchable' => true,
+            //     'sortable' => true,
+            //     'editable' => true
+            // ],
             'max_students' => [
-                'label' => 'Số lượng học viên',
+                'label' => 'Số lượng học viên tối đa',
                 'type' => 'number',
                 'searchable' => true,
                 'sortable' => true,
@@ -147,20 +147,20 @@ class Classes extends BaseModel
                 'sortable' => false,
                 'editable' => true
             ],
-            'schedule' => [
-                'label' => 'Lịch trình',
-                'type' => 'json_editor',
-                'searchable' => false,
-                'sortable' => false,
-                'editable' => false
-            ],
-            'is_active' => [
-                'label' => 'Hoạt động',
-                'type' => 'checkbox',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
+            // 'schedule' => [
+            //     'label' => 'Lịch trình',
+            //     'type' => 'json_editor',
+            //     'searchable' => false,
+            //     'sortable' => false,
+            //     'editable' => false
+            // ],
+            // 'is_active' => [
+            //     'label' => 'Hoạt động',
+            //     'type' => 'checkbox',
+            //     'searchable' => true,
+            //     'sortable' => true,
+            //     'editable' => true
+            // ],
         ];
     }
 
