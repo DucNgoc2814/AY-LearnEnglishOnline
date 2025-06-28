@@ -1,6 +1,6 @@
 @extends('online.layouts.master')
 
-@section('title', 'Lớp học của tôi')
+@section('title', 'My Classes')
 
 @push('styles')
     <style>
@@ -376,16 +376,16 @@
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white py-3">
                 <h5 class="card-title mb-0 text-primary">
-                    <i class="fas fa-graduation-cap me-2"></i>Lớp học của tôi
+                    <i class="fas fa-graduation-cap me-2"></i>My Classes
                 </h5>
             </div>
             <div class="card-body">
                 <div class="filter-section">
                     <div class="filter-buttons">
-                        <button class="filter-btn active" data-filter="all">Tất cả lớp học</button>
-                        <button class="filter-btn" data-filter="upcoming">Sắp diễn ra</button>
-                        <button class="filter-btn" data-filter="current">Đang học</button>
-                        <button class="filter-btn" data-filter="completed">Đã hoàn thành</button>
+                        <button class="filter-btn active" data-filter="all">All Classes</button>
+                        <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+                        <button class="filter-btn" data-filter="current">Current</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
                     </div>
                 </div>
 
@@ -396,10 +396,10 @@
                         </div>
                     @elseif(!isset($hasClasses) || !$hasClasses)
                         <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>Bạn chưa đăng ký lớp học nào.
+                            <i class="fas fa-info-circle me-2"></i>You haven't enrolled in any classes yet.
                         </div>
                     @else
-                        <!-- Lớp sắp diễn ra -->
+                        <!-- Upcoming Classes -->
                         @if(isset($upcomingClasses) && $upcomingClasses->isNotEmpty())
                             @foreach($upcomingClasses as $class)
                                 <div class="class-card" data-type="upcoming">
@@ -411,54 +411,52 @@
                                                 @if($class->teacher)
                                                     <span>{{ $class->teacher->name ?? $class->teacher->employee_code ?? $class->teacher->full_name ?? 'EMP001' }}</span>
                                                 @else
-                                                    <span>Chưa phân công</span>
+                                                    <span>Not Assigned</span>
                                                 @endif
                                             </div>
                                             <div class="info-item">
                                                 <i class="fas fa-calendar"></i>
                                                 <span>{{ $class->formatted_schedule }}</span>
                                             </div>
-                                            <span class="class-status bg-info text-white">Sắp diễn ra</span>
+                                            <span class="class-status bg-info text-white">Upcoming</span>
                                         </div>
                                     </div>
                                     <div class="class-content">
                                         <div class="mb-3">
-                                            <strong>Ngày bắt đầu:</strong> {{ \Carbon\Carbon::parse($class->start_date)->format('d/m/Y') }}
+                                            <strong>Start Date:</strong> {{ \Carbon\Carbon::parse($class->start_date)->format('d/m/Y') }}
                                         </div>
                                         <div class="mb-3">
-                                            <strong>Trạng thái đăng ký:</strong>
+                                            <strong>Registration Status:</strong>
                                             <span class="badge {{ $class->stats['registration_status'] == 'active' ? 'bg-success' : 'bg-warning' }}">
-                                                {{ $class->stats['registration_status'] == 'active' ? 'Đã xác nhận' : 'Chờ xác nhận' }}
+                                                {{ $class->stats['registration_status'] == 'active' ? 'Confirmed' : 'Pending' }}
                                             </span>
                                         </div>
                                         <div class="mb-3">
-                                            <strong>Trạng thái thanh toán:</strong>
+                                            <strong>Payment Status:</strong>
                                             <span class="badge {{ $class->stats['payment_status'] == 'paid' ? 'bg-success' : 'bg-warning' }}">
-                                                {{ $class->stats['payment_status'] == 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán' }}
+                                                {{ $class->stats['payment_status'] == 'paid' ? 'Paid' : 'Unpaid' }}
                                             </span>
                                         </div>
                                         <div class="class-actions">
                                             <a href="{{ route('online.classes.show', ['id' => $class->id]) }}" class="action-btn" style="background-color: var(--primary-color); color: white !important;">
-                                                <i class="fas fa-eye me-2"></i>Xem chi tiết
+                                                <i class="fas fa-eye me-2"></i>View Details
                                             </a>
                                             <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
-                                                <i class="fas fa-calendar-alt me-2"></i>Lịch học
+                                                <i class="fas fa-calendar-alt me-2"></i>Schedule
                                             </a>
                                             <a href="{{ route('online.grades.index', ['class_id' => $class->id]) }}" class="action-btn btn-grade">
-                                                <i class="fas fa-chart-line me-2"></i>Xem điểm
+                                                <i class="fas fa-chart-line me-2"></i>View Grades
                                             </a>
                                             <a href="{{ route('online.classes.tests', ['class_id' => $class->id]) }}" class="action-btn btn-assignment">
-                                                <i class="fas fa-tasks me-2"></i>Bài tập
+                                                <i class="fas fa-tasks me-2"></i>Assignments
                                             </a>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Schedule Modal for upcoming class -->
                             @endforeach
                         @endif
 
-                        <!-- Lớp đang học -->
+                        <!-- Current Classes -->
                         @if(isset($currentClasses) && $currentClasses->isNotEmpty())
                             @foreach($currentClasses as $class)
                                 <div class="class-card" data-type="{{ \Carbon\Carbon::now()->gt(\Carbon\Carbon::parse($class->end_date)) ? 'completed' : 'current' }}">
@@ -470,7 +468,7 @@
                                                 @if($class->teacher)
                                                     <span>{{ $class->teacher->name ?? $class->teacher->employee_code ?? $class->teacher->full_name ?? 'EMP001' }}</span>
                                                 @else
-                                                    <span>Chưa phân công</span>
+                                                    <span>Not Assigned</span>
                                                 @endif
                                             </div>
                                             <div class="info-item">
@@ -481,15 +479,15 @@
                                                 $isEnded = \Carbon\Carbon::now()->gt(\Carbon\Carbon::parse($class->end_date));
                                             @endphp
                                             <span class="class-status {{ $isEnded ? 'status-completed' : 'status-active' }}">
-                                                {{ $isEnded ? 'Đã kết thúc' : 'Đang học' }}
+                                                {{ $isEnded ? 'Ended' : 'In Progress' }}
                                             </span>
                                         </div>
                                     </div>
                                     <div class="class-content">
                                         <div class="progress-section">
                                             <div class="progress-label">
-                                                <span>Tiến độ học tập</span>
-                                                <span>{{ $class->stats['attended_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} buổi</span>
+                                                <span>Learning Progress</span>
+                                                <span>{{ $class->stats['attended_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} sessions</span>
                                             </div>
                                             <div class="progress">
                                                 <div class="progress-bar" role="progressbar"
@@ -502,26 +500,24 @@
                                         </div>
                                         <div class="class-actions">
                                             <a href="{{ route('online.classes.show', ['id' => $class->id]) }}" class="action-btn" style="background-color: var(--primary-color); color: white !important;">
-                                                <i class="fas fa-eye me-2"></i>Xem chi tiết
+                                                <i class="fas fa-eye me-2"></i>View Details
                                             </a>
                                             <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
-                                                <i class="fas fa-calendar-alt me-2"></i>Lịch học
+                                                <i class="fas fa-calendar-alt me-2"></i>Schedule
                                             </a>
                                             <a href="{{ route('online.classes.tests', ['class_id' => $class->id]) }}" class="action-btn btn-assignment">
-                                                <i class="fas fa-tasks me-2"></i>Bài tập
+                                                <i class="fas fa-tasks me-2"></i>Assignments
                                             </a>
                                             <a href="{{ route('online.grades.index', ['class_id' => $class->id]) }}" class="action-btn btn-grade">
-                                                <i class="fas fa-chart-line me-2"></i>Xem điểm
+                                                <i class="fas fa-chart-line me-2"></i>Assignment Progress
                                             </a>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Schedule Modal for each current class -->
                             @endforeach
                         @endif
 
-                        <!-- Lớp đã hoàn thành -->
+                        <!-- Completed Classes -->
                         @if(isset($completedClasses) && $completedClasses->isNotEmpty())
                             @foreach($completedClasses as $class)
                                 <div class="class-card" data-type="completed">
@@ -533,14 +529,14 @@
                                                 @if($class->teacher)
                                                     <span>{{ $class->teacher->name ?? $class->teacher->employee_code ?? $class->teacher->full_name ?? 'EMP001' }}</span>
                                                 @else
-                                                    <span>Chưa phân công</span>
+                                                    <span>Not Assigned</span>
                                                 @endif
                                             </div>
                                             <div class="info-item">
                                                 <i class="fas fa-calendar"></i>
                                                 <span>{{ $class->formatted_schedule }}</span>
                                             </div>
-                                            <span class="class-status status-completed">Đã hoàn thành</span>
+                                            <span class="class-status status-completed">Completed</span>
                                         </div>
                                     </div>
                                     <div class="class-content">
@@ -549,11 +545,11 @@
                                         @endphp
                                         <div class="progress-section">
                                             <div class="progress-label">
-                                                <span>Tiến độ học tập</span>
+                                                <span>Learning Progress</span>
                                                 @if($isEnded)
-                                                    <span>{{ $class->stats['total_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} buổi</span>
+                                                    <span>{{ $class->stats['total_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} sessions</span>
                                                 @else
-                                                    <span>{{ $class->stats['attended_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} buổi</span>
+                                                    <span>{{ $class->stats['attended_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} sessions</span>
                                                 @endif
                                             </div>
                                             <div class="progress">
@@ -567,22 +563,20 @@
                                         </div>
                                         <div class="class-actions">
                                             <a href="{{ route('online.classes.show', ['id' => $class->id]) }}" class="action-btn" style="background-color: var(--primary-color); color: white !important;">
-                                                <i class="fas fa-eye me-2"></i>Xem chi tiết
+                                                <i class="fas fa-eye me-2"></i>View Details
                                             </a>
                                             <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
-                                                <i class="fas fa-calendar-alt me-2"></i>Lịch học
+                                                <i class="fas fa-calendar-alt me-2"></i>Schedule
                                             </a>
                                             <a href="{{ route('online.classes.tests', ['class_id' => $class->id]) }}" class="action-btn btn-assignment">
-                                                <i class="fas fa-tasks me-2"></i>Bài tập
+                                                <i class="fas fa-tasks me-2"></i>Assignments
                                             </a>
                                             <a href="{{ route('online.grades.index', ['class_id' => $class->id]) }}" class="action-btn btn-grade">
-                                                <i class="fas fa-chart-line me-2"></i>Xem điểm
+                                                <i class="fas fa-chart-line me-2"></i>View Grades
                                             </a>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Schedule Modal for each completed class -->
                             @endforeach
                         @endif
                     @endif

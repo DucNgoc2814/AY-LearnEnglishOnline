@@ -5,11 +5,6 @@
 @section('content')
 <div class="container-fluid px-4">
     <h1 class="mt-4">Vocabulary Progress</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="{{ route('online.teacher.classes.index') }}">Danh sách lớp</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('online.teacher.classes.show', ['id' => 1]) }}">Lớp IELTS 7.0</a></li>
-        <li class="breadcrumb-item active">Vocabulary Progress</li>
-    </ol>
 
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -34,11 +29,11 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="text-dark">
-                                    <div class="small text-muted mb-1">Tổng số bài tập</div>
-                                    <div class="fw-bold h5 mb-0">5</div>
+                                    <div class="small text-muted mb-1">Tổng số học viên</div>
+                                    <div class="fw-bold h5 mb-0">20</div>
                                 </div>
                                 <div class="text-dark">
-                                    <i class="fas fa-tasks fa-2x"></i>
+                                    <i class="fas fa-users fa-2x"></i>
                                 </div>
                             </div>
                         </div>
@@ -49,8 +44,8 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="text-dark">
-                                    <div class="small text-muted mb-1">Đã nộp</div>
-                                    <div class="fw-bold h5 mb-0">4/5</div>
+                                    <div class="small text-muted mb-1">Đã nộp trung bình</div>
+                                    <div class="fw-bold h5 mb-0">14/20</div>
                                 </div>
                                 <div class="text-dark">
                                     <i class="fas fa-check-circle fa-2x"></i>
@@ -64,7 +59,7 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="text-dark">
-                                    <div class="small text-muted mb-1">Tỷ lệ nộp</div>
+                                    <div class="small text-muted mb-1">Tỷ lệ đúng TB</div>
                                     <div class="fw-bold h5 mb-0">80.00%</div>
                                 </div>
                                 <div class="text-dark">
@@ -79,8 +74,8 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="text-dark">
-                                    <div class="small text-muted mb-1">Đang diễn ra</div>
-                                    <div class="fw-bold h5 mb-0">1</div>
+                                    <div class="small text-muted mb-1">Thời gian TB</div>
+                                    <div class="fw-bold h5 mb-0">20 phút</div>
                                 </div>
                                 <div class="text-dark">
                                     <i class="fas fa-clock fa-2x"></i>
@@ -335,6 +330,137 @@
     </div>
 </div>
 
+<!-- Modal Chi tiết tiến độ -->
+<div class="modal fade" id="progressDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chi tiết tiến độ học viên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="student-info mb-4">
+                    <div class="d-flex align-items-center">
+                        <img src="" class="rounded-circle me-3" width="60" height="60" id="studentAvatar">
+                        <div>
+                            <h5 class="mb-1" id="studentName"></h5>
+                            <p class="mb-0 text-muted" id="studentEmail"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quizlet Progress -->
+                <div class="card mb-3">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0">Quizlet Progress</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="quizlet-checkboxes mb-3">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="flashcardsCheck" disabled>
+                                        <label class="form-check-label" for="flashcardsCheck">
+                                            <i class="fas fa-clone me-1"></i> Học với Flashcards
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="learnCheck" disabled>
+                                        <label class="form-check-label" for="learnCheck">
+                                            <i class="fas fa-graduation-cap me-1"></i> Học (Learn)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="writeCheck" disabled>
+                                        <label class="form-check-label" for="writeCheck">
+                                            <i class="fas fa-pencil-alt me-1"></i> Viết (Write)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="testCheck" disabled>
+                                        <label class="form-check-label" for="testCheck">
+                                            <i class="fas fa-tasks me-1"></i> Kiểm tra (Test)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="last-activity text-muted">
+                            <small>Hoạt động gần nhất: <span id="quizletLastActivity">-</span></small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other Exercises Progress -->
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0">Chi tiết các bài tập</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Loại bài tập</th>
+                                        <th style="width: 150px">Số câu đã làm</th>
+                                        <th style="width: 200px">Thời gian làm gần nhất</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Dictation</td>
+                                        <td id="dictationProgress">0/0</td>
+                                        <td id="dictationLastAttempt">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Key Phrases</td>
+                                        <td id="keyPhrasesProgress">0/0</td>
+                                        <td id="keyPhrasesLastAttempt">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sentence Building</td>
+                                        <td id="sentenceBuildingProgress">0/0</td>
+                                        <td id="sentenceBuildingLastAttempt">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Grammar</td>
+                                        <td id="grammarProgress">0/0</td>
+                                        <td id="grammarLastAttempt">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Transcription</td>
+                                        <td id="transcriptionProgress">0/0</td>
+                                        <td id="transcriptionLastAttempt">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ending Sound</td>
+                                        <td id="endingSoundProgress">0/0</td>
+                                        <td id="endingSoundLastAttempt">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Listening and Reading</td>
+                                        <td id="listeningProgress">0/0</td>
+                                        <td id="listeningLastAttempt">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('styles')
 <style>
 .progress {
@@ -346,6 +472,45 @@
 }
 .table > :not(caption) > * > * {
     vertical-align: middle;
+}
+
+/* Styles cho modal chi tiết */
+.student-info {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 1rem;
+}
+
+.quizlet-checkboxes .form-check {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+}
+
+.quizlet-checkboxes .form-check:hover {
+    background-color: #f8f9fa;
+}
+
+.quizlet-checkboxes .form-check-input:checked {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.quizlet-checkboxes .form-check-input:disabled:checked {
+    opacity: 1;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+}
+
+.progress-sections .card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.last-activity {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #dee2e6;
 }
 </style>
 @endpush
@@ -367,6 +532,106 @@ $(document).ready(function() {
     $('.btn-primary').on('click', function() {
         // Add your export logic here
     });
+
+    // Khởi tạo modal
+    const progressModal = new bootstrap.Modal(document.getElementById('progressDetailModal'));
+
+    // Xử lý khi click nút xem chi tiết
+    $('.btn-primary[title="Xem chi tiết"]').on('click', function() {
+        const row = $(this).closest('tr');
+        const studentId = row.find('small.text-muted').text().replace('ID: ', '');
+
+        // Cập nhật thông tin học viên trong modal
+        $('#studentAvatar').attr('src', row.find('img').attr('src'));
+        $('#studentName').text(row.find('.fw-bold').text());
+        $('#studentEmail').text(row.find('td:eq(2)').text());
+
+        // Gọi API để lấy dữ liệu chi tiết
+        fetchStudentProgress(studentId);
+
+        // Hiển thị modal
+        progressModal.show();
+    });
+
+    // Hàm lấy dữ liệu chi tiết tiến độ học viên
+    function fetchStudentProgress(studentId) {
+        // Giả lập dữ liệu API - Thay thế bằng call API thực tế
+        const mockData = {
+            quizlet: {
+                flashcards: true,
+                learn: true,
+                write: false,
+                test: true,
+                lastActivity: '2024-03-15 14:30'
+            },
+            exercises: {
+                dictation: {
+                    completed: 8,
+                    total: 10,
+                    lastAttempt: '2024-03-15 14:00'
+                },
+                keyPhrases: {
+                    completed: 15,
+                    total: 20,
+                    lastAttempt: '2024-03-15 13:45'
+                },
+                sentenceBuilding: {
+                    completed: 12,
+                    total: 15,
+                    lastAttempt: '2024-03-15 13:30'
+                },
+                grammar: {
+                    completed: 18,
+                    total: 20,
+                    lastAttempt: '2024-03-15 13:15'
+                },
+                transcription: {
+                    completed: 5,
+                    total: 8,
+                    lastAttempt: '2024-03-15 13:00'
+                },
+                endingSound: {
+                    completed: 10,
+                    total: 10,
+                    lastAttempt: '2024-03-15 12:45'
+                },
+                listening: {
+                    completed: 25,
+                    total: 30,
+                    lastAttempt: '2024-03-15 12:30'
+                }
+            }
+        };
+
+        // Cập nhật Quizlet checkboxes
+        $('#flashcardsCheck').prop('checked', mockData.quizlet.flashcards);
+        $('#learnCheck').prop('checked', mockData.quizlet.learn);
+        $('#writeCheck').prop('checked', mockData.quizlet.write);
+        $('#testCheck').prop('checked', mockData.quizlet.test);
+        $('#quizletLastActivity').text(mockData.quizlet.lastActivity);
+
+        // Cập nhật tiến độ các bài tập
+        $('#dictationProgress').text(`${mockData.exercises.dictation.completed}/${mockData.exercises.dictation.total}`);
+        $('#dictationLastAttempt').text(mockData.exercises.dictation.lastAttempt);
+
+        $('#keyPhrasesProgress').text(`${mockData.exercises.keyPhrases.completed}/${mockData.exercises.keyPhrases.total}`);
+        $('#keyPhrasesLastAttempt').text(mockData.exercises.keyPhrases.lastAttempt);
+
+        $('#sentenceBuildingProgress').text(`${mockData.exercises.sentenceBuilding.completed}/${mockData.exercises.sentenceBuilding.total}`);
+        $('#sentenceBuildingLastAttempt').text(mockData.exercises.sentenceBuilding.lastAttempt);
+
+        $('#grammarProgress').text(`${mockData.exercises.grammar.completed}/${mockData.exercises.grammar.total}`);
+        $('#grammarLastAttempt').text(mockData.exercises.grammar.lastAttempt);
+
+        $('#transcriptionProgress').text(`${mockData.exercises.transcription.completed}/${mockData.exercises.transcription.total}`);
+        $('#transcriptionLastAttempt').text(mockData.exercises.transcription.lastAttempt);
+
+        $('#endingSoundProgress').text(`${mockData.exercises.endingSound.completed}/${mockData.exercises.endingSound.total}`);
+        $('#endingSoundLastAttempt').text(mockData.exercises.endingSound.lastAttempt);
+
+        $('#listeningProgress').text(`${mockData.exercises.listening.completed}/${mockData.exercises.listening.total}`);
+        $('#listeningLastAttempt').text(mockData.exercises.listening.lastAttempt);
+    }
 });
 </script>
 @endpush

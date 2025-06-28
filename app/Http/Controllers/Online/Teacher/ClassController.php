@@ -24,20 +24,33 @@ class ClassController extends Controller
             // Lấy ID giảng viên từ session
             $teacherId = session('user_id');
             if (!$teacherId) {
-                return view('online.teacher.classes.index', [
-                    'currentClasses' => collect(),
-                    'upcomingClasses' => collect(),
-                    'completedClasses' => collect(),
-                    'error' => 'Không tìm thấy thông tin giảng viên. Vui lòng đăng nhập lại.'
-                ]);
+                Log::error('Teacher ID not found in session');
+                return redirect()->route('online.login')
+                    ->with('notification', [
+                        'message' => 'Vui lòng đăng nhập lại.',
+                        'type' => 'error'
+                    ]);
             }
 
             // Kiểm tra xem có tồn tại giáo viên với ID này không
             $teacher = \App\Models\Employee::find($teacherId);
             if (!$teacher) {
-                Log::warning('Teacher not found with ID: ' . $teacherId);
-            } else {
-                Log::info('Teacher found: ' . $teacher->name);
+                Log::error('Teacher not found with ID: ' . $teacherId);
+                return redirect()->route('online.login')
+                    ->with('notification', [
+                        'message' => 'Không tìm thấy thông tin giảng viên. Vui lòng đăng nhập lại.',
+                        'type' => 'error'
+                    ]);
+            }
+
+            // Kiểm tra role của giảng viên
+            if (!in_array($teacher->role, ['teacher', 'teaching_assistant'])) {
+                Log::error('Invalid teacher role: ' . $teacher->role);
+                return redirect()->route('online.login')
+                    ->with('notification', [
+                        'message' => 'Bạn không có quyền truy cập trang này.',
+                        'type' => 'error'
+                    ]);
             }
 
             $classes = Classes::where('teacher_id', $teacherId)
@@ -476,6 +489,68 @@ class ClassController extends Controller
      */
     public function reflectionProgress($id)
     {
-        return view('online.teacher.classes.progress.reflection');
+        $class = Classes::findOrFail($id);
+        return view('online.teacher.classes.progress.reflection', compact('class'));
+    }
+
+    public function reflectionDetail($id, $student_id)
+    {
+        $class = Classes::findOrFail($id);
+        $student = $class->students()->findOrFail($student_id);
+        return view('online.teacher.classes.progress.reflection-detail', compact('class', 'student'));
+    }
+
+    public function saveReflection(Request $request, $id, $student_id)
+    {
+        $class = Classes::findOrFail($id);
+        $student = $class->students()->findOrFail($student_id);
+
+        // Validate request
+        $request->validate([
+            'answer1' => 'required|string',
+            'answer2' => 'required|string',
+            'answer3' => 'required|string',
+            'reflection1' => 'required|string',
+            'reflection2' => 'required|string',
+            'reflection3' => 'required|string',
+            'reflection4' => 'required|string',
+            'reflection5' => 'required|string',
+            'evaluation' => 'required|string|in:excellent,good,average,needsImprovement',
+            'teacherFeedback' => 'required|string'
+        ]);
+
+        // Save reflection data
+        $reflection = $student->reflections()->where('class_id', $id)->first();
+        if (!$reflection) {
+            $reflection = $student->reflections()->create([
+                'class_id' => $id
+            ]);
+        }
+
+        $reflection->update([
+            'answers' => [
+                'sentence_structures' => [
+                    $request->answer1,
+                    $request->answer2,
+                    $request->answer3
+                ],
+                'reflections' => [
+                    $request->reflection1,
+                    $request->reflection2,
+                    $request->reflection3,
+                    $request->reflection4,
+                    $request->reflection5
+                ]
+            ],
+            'evaluation' => $request->evaluation,
+            'teacher_feedback' => $request->teacherFeedback,
+            'last_edited_by' => auth()->id(),
+            'last_edited_at' => now()
+        ]);
+
+        return response()->json([
+            'message' => 'Reflection saved successfully',
+            'data' => $reflection
+        ]);
     }
 }

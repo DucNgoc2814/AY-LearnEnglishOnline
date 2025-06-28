@@ -189,13 +189,28 @@ Route::prefix('api/oxford')->middleware('web')->group(function () {
     Route::get('/word-info', [OxfordController::class, 'getWordInfo'])->withoutMiddleware(['csrf']);
 });
 
-Route::get('/video-exercise/{id}', [VideoExerciseController::class, 'show'])->name('video-exercise.show');
-Route::get('/reflection-exercise/{id}', [ReflectionExerciseController::class, 'show'])->name('reflection-exercise.show');
-Route::get('/video-handout', [VideoHandoutController::class, 'show'])->name('video-handout.show');
-Route::get('/video-shadowing', [VideoShadowingController::class, 'show'])->name('video-shadowing.show');
-Route::get('/vocabulary-listening', [VocabularyListeningController::class, 'show'])->name('vocabulary-listening.show');
 
 // Facebook Login Routes
 Route::get('auth/facebook', [SocialLoginController::class, 'redirectToFacebook'])->name('auth.facebook');
 Route::get('auth/facebook/callback', [SocialLoginController::class, 'handleFacebookCallback'])->name('auth.facebook.callback');
+
+// Listen in English Routes
+Route::prefix('listen-in-english')->name('client.listen.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Client\ListenController::class, 'index'])->name('index');
+    Route::get('/easy-tv', [App\Http\Controllers\Client\ListenController::class, 'easyTv'])->name('easy-tv');
+    Route::get('/tv-movies', [App\Http\Controllers\Client\ListenController::class, 'tvMovies'])->name('tv-movies');
+    Route::get('/tv-movies/{id}', [App\Http\Controllers\Client\ListenController::class, 'tvMoviesDetail'])->name('tv-movies.detail');
+    Route::get('/lesson/{id}', [App\Http\Controllers\Client\ListenController::class, 'lessonDetail'])->name('lesson.detail');
+});
+
+// Read to Lead Routes
+Route::prefix('read-to-lead')->name('client.read-to-lead.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Client\ReadToLeadController::class, 'index'])->name('index');
+    Route::get('/discovery', [App\Http\Controllers\Client\ReadToLeadController::class, 'discovery'])->name('discovery');
+    Route::get('/health-lifestyle', [App\Http\Controllers\Client\ReadToLeadController::class, 'healthLifestyle'])->name('health');
+    Route::get('/culture', [App\Http\Controllers\Client\ReadToLeadController::class, 'culture'])->name('culture');
+    Route::get('/travel', [App\Http\Controllers\Client\ReadToLeadController::class, 'travel'])->name('travel');
+    Route::get('/cuisine', [App\Http\Controllers\Client\ReadToLeadController::class, 'cuisine'])->name('cuisine');
+    Route::get('/article/{id}', [App\Http\Controllers\Client\ReadToLeadController::class, 'articleDetail'])->name('article.detail');
+});
 

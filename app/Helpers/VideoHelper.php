@@ -5,10 +5,10 @@ namespace App\Helpers;
 class VideoHelper
 {
     /**
-     * Chuyển đổi URL video từ tienganh-abc.com thành URL có thể nhúng
+     * Xử lý URL video để hiển thị trong iframe
      *
-     * @param string $url URL gốc từ tienganh-abc.com
-     * @return string URL có thể nhúng vào iframe
+     * @param string $url
+     * @return string
      */
     public static function getEmbedUrl($url)
     {
@@ -16,10 +16,10 @@ class VideoHelper
             return '';
         }
 
-        // Kiểm tra nếu là URL từ tienganh-abc.com
-        if (strpos($url, 'tienganh-abc.com/videos/') !== false) {
-            // Thêm /embed vào URL để có thể nhúng
-            $url = str_replace('/videos/', '/videos/embed/', $url);
+        // Xử lý URL từ tienganh-abc.com
+        if (strpos($url, 'tienganh-abc.com') !== false) {
+            // Trả về URL gốc nhưng thêm parameter để chỉ định hiển thị trong iframe
+            return $url . "?embed=true";
         }
 
         return $url;

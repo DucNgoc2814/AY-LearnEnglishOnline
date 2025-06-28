@@ -159,60 +159,71 @@
                                         @case(2)
                                             <!-- Dictation -->
                                             <div class="dictation-exercise" data-dictation-id="{{ $step['dictation_id'] }}">
-                                                @foreach ($step['dictation_exercises'] as $audio)
-                                                    <div class="mb-4">
-                                                        <h5 class="mb-3">{{ $audio['title'] }}</h5>
-                                                        @foreach ($audio['exercises'] as $exercise)
-                                                            <div class="exercise-item mb-4" data-answer="{{ $exercise['answer'] }}">
-                                                                <div class="mb-4">
-                                                                    @php
-                                                                        $mediaUrl = $exercise['audio_url'];
-                                                                        $fileType = $exercise['file_type'];
-                                                                    @endphp
+                                                @if($step['dictation_exercises']->isEmpty())
+                                                    <div class="alert alert-info">
+                                                        <i class="fas fa-info-circle me-2"></i>
+                                                        @if($current_lesson_id)
+                                                            Hiện tại chưa có bài tập dictation cho bài học này.
+                                                        @else
+                                                            Vui lòng chọn một bài học để xem các bài tập dictation.
+                                                        @endif
+                                                    </div>
+                                                @else
+                                                    @foreach ($step['dictation_exercises'] as $audio)
+                                                        <div class="mb-4">
+                                                            <h5 class="mb-3">{{ $audio['title'] }}</h5>
+                                                            @foreach ($audio['exercises'] as $exercise)
+                                                                <div class="exercise-item mb-4" data-answer="{{ $exercise['answer'] }}">
+                                                                    <div class="mb-4">
+                                                                        @php
+                                                                            $mediaUrl = $exercise['audio_url'];
+                                                                            $fileType = $exercise['file_type'];
+                                                                        @endphp
 
-                                                                    <div class="media-container">
-                                                                        @if($fileType == 'image')
-                                                                            <div class="image-preview rounded-lg overflow-hidden shadow-sm border border-gray-200">
-                                                                                <img src="{{ $mediaUrl }}" alt="Exercise Media" class="w-100 h-auto object-cover">
-                                                                            </div>
-                                                                        @elseif($fileType == 'video')
-                                                                            <div class="video-preview rounded-lg overflow-hidden shadow-sm border border-gray-200">
-                                                                                <video controls class="w-100">
-                                                                                    <source src="{{ $mediaUrl }}" type="video/mp4">
-                                                                                    Your browser does not support the video element.
-                                                                                </video>
-                                                                            </div>
-                                                                        @elseif($fileType == 'audio')
-                                                                            <div class="audio-preview rounded-lg overflow-hidden shadow-sm border border-gray-200 p-3 bg-light">
+                                                                        <div class="media-container">
+                                                                            @if($fileType == 'image')
+                                                                                <div class="image-preview rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                                                                                    <img src="{{ $mediaUrl }}" alt="Exercise Media" class="w-100 h-auto object-cover">
+                                                                                </div>
+                                                                            @elseif($fileType == 'video')
+                                                                                <div class="video-preview rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                                                                                    <video controls class="w-100">
+                                                                                        <source src="{{ $mediaUrl }}" type="video/mp4">
+                                                                                        Your browser does not support the video element.
+                                                                                    </video>
+                                                                                </div>
+                                                                            @elseif($fileType == 'audio')
+                                                                                <div class="audio-preview rounded-lg overflow-hidden shadow-sm border border-gray-200 p-3 bg-light">
 
-                                                                                <audio controls class="w-100">
-                                                                                    <source src="{{ $mediaUrl }}" type="audio/mpeg">
-                                                                                    <source src="{{ $mediaUrl }}" type="audio/wav">
-                                                                                    Your browser does not support the audio element.
-                                                                                </audio>
-                                                                            </div>
-                                                                        @endif
+                                                                                    <audio controls class="w-100">
+                                                                                        <source src="{{ $mediaUrl }}" type="audio/mpeg">
+                                                                                        <source src="{{ $mediaUrl }}" type="audio/wav">
+                                                                                        Your browser does not support the audio element.
+                                                                                    </audio>
+                                                                                </div>
+                                                                            @endif
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                                    <h6 class="mb-0">Exercise {{ $exercise['id'] }}</h6>
-                                                                    <button class="btn btn-sm btn-outline-primary check-script" onclick="checkScript(this)">
-                                                                        Check with the script
-                                                                    </button>
-                                                                </div>
-                                                                <div class="exercise-content">
-                                                                    <textarea class="form-control mb-2" rows="4" placeholder="Type your answer here...">{{ $exercise['text'] }}</textarea>
-                                                                    <div class="answer-feedback" style="display: none;">
-                                                                        <div class="alert alert-info">
-                                                                            <strong>Correct Answer:</strong>
-                                                                            <p class="mb-0 mt-2" style="white-space: pre-line;">{{ $exercise['answer'] }}</p>
+                                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                        <h6 class="mb-0">Exercise {{ $exercise['id'] }}</h6>
+                                                                        <button class="btn btn-sm btn-outline-primary check-script" onclick="checkScript(this)">
+                                                                            Check with the script
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="exercise-content">
+                                                                        <textarea class="form-control mb-2" rows="4" placeholder="Type your answer here...">{{ $exercise['text'] }}</textarea>
+                                                                        <div class="answer-feedback" style="display: none;">
+                                                                            <div class="alert alert-info">
+                                                                                <strong>Correct Answer:</strong>
+                                                                                <p class="mb-0 mt-2" style="white-space: pre-line;">{{ $exercise['answer'] }}</p>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                @endforeach
+                                                            @endforeach
+                                                        </div>
+                                                    @endforeach
+                                                @endif
 
                                                 <!-- Save Progress Button -->
                                                 <div class="text-center mt-4">
@@ -230,43 +241,54 @@
                                         @case(4)
                                             <!-- Sentence Building -->
                                             <div class="sentence-building">
-                                                @foreach ($step['sentences'] as $index => $sentence)
-                                                    <div class="sentence-container mb-4" data-answer="{{ $sentence['answer'] }}">
-                                                        <div class="d-flex justify-content-between align-items-center mb-3">
-                                                            <h6 class="mb-0">Câu {{ $index + 1 }}:</h6>
-                                                            <button class="btn btn-sm btn-outline-primary check-sentence"
-                                                                onclick="checkSentence(this)">
-                                                                Check with the answer
-                                                            </button>
-                                                        </div>
+                                                @if($step['message'])
+                                                    <div class="alert alert-{{ $step['message']['type'] }}">
+                                                        <i class="fas fa-info-circle me-2"></i>{{ $step['message']['message'] }}
+                                                    </div>
+                                                @else
+                                                    @foreach ($step['sentences'] as $index => $sentence)
+                                                        <div class="sentence-container mb-4"
+                                                            data-id="{{ $sentence['id'] }}"
+                                                            data-answer="{{ $sentence['answer'] }}"
+                                                            data-max-retries="{{ $sentence['max_retries'] }}"
+                                                            data-min-score="{{ $sentence['min_required_score'] }}">
+                                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                                <h6 class="mb-0">Câu {{ $index + 1 }}:</h6>
+                                                                <button class="btn btn-sm btn-outline-primary check-sentence"
+                                                                    onclick="checkSentence(this)">
+                                                                    Check with the answer
+                                                                </button>
+                                                            </div>
 
-                                                        <!-- Word Bank -->
-                                                        <div class="word-bank mb-3" id="wordBank{{ $index }}">
-                                                            @foreach ($sentence['words'] as $word)
-                                                                <div class="word-item" draggable="true">{{ $word }}</div>
-                                                            @endforeach
-                                                        </div>
+                                                            <!-- Word Bank -->
+                                                            <div class="word-bank mb-3" id="wordBank{{ $index }}">
+                                                                @foreach ($sentence['words'] as $word)
+                                                                    <div class="word-item" draggable="true">{{ $word }}</div>
+                                                                @endforeach
+                                                            </div>
 
-                                                        <!-- Sentence Building Area -->
-                                                        <div class="sentence-area" id="sentenceArea{{ $index }}">
-                                                            <div class="sentence-line"></div>
-                                                        </div>
+                                                            <!-- Sentence Building Area -->
+                                                            <div class="sentence-area" id="sentenceArea{{ $index }}">
+                                                                <div class="sentence-line"></div>
+                                                            </div>
 
-                                                        <!-- Answer Feedback -->
-                                                        <div class="answer-feedback mt-3" style="display: none;">
-                                                            <div class="alert alert-info">
-                                                                <strong>Correct Answer:</strong>
-                                                                <p class="mb-0 mt-2">{{ $sentence['answer'] }}</p>
+                                                            <!-- Answer Feedback -->
+                                                            <div class="answer-feedback mt-3" style="display: none;">
+                                                                <div class="alert alert-info">
+                                                                    <strong>Correct Answer:</strong>
+                                                                    <p class="mb-0 mt-2">{{ $sentence['answer'] }}</p>
+                                                                </div>
                                                             </div>
                                                         </div>
+                                                    @endforeach
+
+                                                    <!-- Save Progress Button -->
+                                                    <div class="text-center mt-4">
+                                                        <button class="btn btn-success save-sentence-progress" onclick="saveSentenceProgress()">
+                                                            <i class="fas fa-save me-2"></i>Lưu tiến độ
+                                                        </button>
                                                     </div>
-                                                @endforeach
-                                                <!-- Save Progress Button -->
-                                                <div class="text-center mt-4">
-                                                    <button class="btn btn-success save-sentence-progress" onclick="saveSentenceProgress()">
-                                                        <i class="fas fa-save me-2"></i>Lưu tiến độ
-                                                    </button>
-                                                </div>
+                                                @endif
                                             </div>
                                         @break
 
@@ -767,6 +789,14 @@
                 const feedback = container.querySelector('.answer-feedback');
                 feedback.style.display = 'block';
 
+                // Tính điểm và kiểm tra với điểm tối thiểu
+                const score = calculateSimilarity(userAnswer, correctAnswer);
+                const minRequiredScore = parseFloat(container.dataset.minScore);
+
+                // Cập nhật số lần thử
+                const currentAttempts = parseInt(container.dataset.attempts || 0) + 1;
+                container.dataset.attempts = currentAttempts;
+
                 // Check each word and highlight
                 words.forEach((word, index) => {
                     const correctWords = correctAnswer.split(' ');
@@ -777,9 +807,13 @@
                     }
                 });
 
-                // Disable dragging and checking
-                words.forEach(word => word.setAttribute('draggable', 'false'));
-                button.disabled = true;
+                // Kiểm tra số lần thử tối đa
+                const maxRetries = parseInt(container.dataset.maxRetries);
+                if (currentAttempts >= maxRetries || score >= minRequiredScore) {
+                    // Disable dragging and checking if max retries reached or score is sufficient
+                    words.forEach(word => word.setAttribute('draggable', 'false'));
+                    button.disabled = true;
+                }
             }
 
             function checkScript(button) {
@@ -928,6 +962,84 @@
                 })
                 .catch(error => {
                     // Show error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: error.message || 'Có lỗi xảy ra khi lưu tiến độ',
+                    });
+                });
+            }
+
+            function saveSentenceProgress() {
+                const containers = document.querySelectorAll('.sentence-container');
+                let completedCount = 0;
+                let attempts = {};
+                let currentPosition = 0;
+                let totalScore = 0;
+
+                containers.forEach((container, index) => {
+                    const sentenceId = container.dataset.id;
+                    const sentenceArea = container.querySelector('.sentence-area');
+                    const words = Array.from(sentenceArea.querySelectorAll('.word-item'));
+                    const userAnswer = words.map(word => word.textContent).join(' ');
+                    const correctAnswer = container.dataset.answer;
+
+                    // Tính điểm cho câu hiện tại
+                    const score = calculateSimilarity(userAnswer, correctAnswer);
+                    if (score >= parseFloat(container.dataset.minScore)) {
+                        completedCount++;
+                    }
+
+                    // Lưu số lần thử của câu
+                    attempts[sentenceId] = {
+                        attempts: parseInt(container.dataset.attempts || 0),
+                        score: score
+                    };
+
+                    // Cập nhật vị trí hiện tại (câu cuối cùng được làm)
+                    if (words.length > 0) {
+                        currentPosition = index;
+                    }
+
+                    totalScore += score;
+                });
+
+                // Tính điểm trung bình
+                const averageScore = totalScore / containers.length;
+
+                // Gửi dữ liệu lên server
+                fetch('/online/classes/vocabulary-listening/sentence/save-progress', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        sentence_building_id: containers[0].dataset.id,
+                        current_position: currentPosition,
+                        completed_count: completedCount,
+                        attempts: attempts,
+                        score: averageScore,
+                        lesson_id: '{{ $current_lesson_id }}'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Hiển thị thông báo thành công
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: data.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        throw new Error(data.message);
+                    }
+                })
+                .catch(error => {
+                    // Hiển thị thông báo lỗi
                     Swal.fire({
                         icon: 'error',
                         title: 'Lỗi!',

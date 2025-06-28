@@ -1,15 +1,6 @@
 @php
-    $words = [
-        ['word' => 'Unpleasant', 'phonetic' => '/ʌnˈpleznt/'],
-        ['word' => 'Extremely', 'phonetic' => ''],
-        ['word' => 'Suburbs', 'phonetic' => ''],
-        ['word' => 'Huge', 'phonetic' => ''],
-        ['word' => 'Community', 'phonetic' => ''],
-        ['word' => 'Fairly', 'phonetic' => ''],
-        ['word' => 'Variety', 'phonetic' => ''],
-        ['word' => 'Generous', 'phonetic' => ''],
-        ['word' => 'Specialty', 'phonetic' => ''],
-    ];
+    // Lấy danh sách từ từ dữ liệu được truyền vào từ controller
+    $words = $step['words'] ?? [];
 @endphp
 
 <div class="transcription-exercise">
@@ -29,61 +20,64 @@
 
     <!-- Transcription Table -->
     <div class="transcription-table">
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead class="bg-light">
-                    <tr>
-                        <th style="width: 50%">Từ</th>
-                        <th style="width: 50%">
-                            Phiên âm
-                            <br>
-                            <small class="text-muted">North American English</small>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($words as $index => $item)
-                        <tr class="word-row" data-word="{{ $item['word'] }}">
-                            <td class="word-cell">
-                                <div class="d-flex align-items-center">
-                                    <span class="word-number me-2">{{ $index + 1 }}.</span>
-                                    <span class="word-text">{{ $item['word'] }}</span>
-                                    <button class="btn btn-sm btn-link text-primary ms-2 listen-btn"
-                                        onclick="playAudio('{{ $item['word'] }}')" title="Nghe phát âm">
-                                        <i class="fas fa-volume-up"></i>
-                                    </button>
-                                </div>
-                            </td>
-                            <td class="phonetic-cell">
-                                <div class="input-group">
-                                    <input type="text" class="form-control phonetic-input"
-                                        placeholder="Nhập phiên âm..." value="{{ $item['phonetic'] }}"
-                                        data-correct="{{ $item['phonetic'] }}">
-                                    <button class="btn btn-outline-primary check-btn" onclick="checkPhonetic(this)"
-                                        type="button">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </div>
-                                <div class="feedback mt-2" style="display: none;">
-                                    <div class="alert alert-success py-1 px-2 mb-0">
-                                        <small><i class="fas fa-check-circle me-1"></i><span
-                                                class="feedback-text"></span></small>
-                                    </div>
-                                </div>
-                            </td>
+        @if(count($words) > 0)
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="bg-light">
+                        <tr>
+                            <th style="width: 50%">Từ</th>
+                            <th style="width: 50%">
+                                Phiên âm
+                                <br>
+                                <small class="text-muted">North American English</small>
+                            </th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        @foreach ($words as $index => $item)
+                            <tr class="word-row" data-word="{{ $item['word'] }}">
+                                <td class="word-cell">
+                                    <div class="d-flex align-items-center">
+                                        <span class="word-number me-2">{{ $index + 1 }}.</span>
+                                        <span class="word-text">{{ $item['word'] }}</span>
+                                        <button class="btn btn-sm btn-link text-primary ms-2 listen-btn"
+                                            onclick="playAudio('{{ $item['word'] }}')" title="Nghe phát âm">
+                                            <i class="fas fa-volume-up"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="phonetic-cell">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control phonetic-input"
+                                            placeholder="Nhập phiên âm..." value=""
+                                            data-correct="{{ $item['phonetic'] }}">
+                                        <button class="btn btn-outline-primary check-btn"
+                                            type="button"
+                                            data-correct-phonetic="{{ $item['phonetic'] }}">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="alert alert-info">
+                Chưa có dữ liệu transcription cho bài học này.
+            </div>
+        @endif
     </div>
 
     <!-- Save Progress Button -->
-    <div class="text-center mt-4">
-        <button class="btn btn-success save-progress" onclick="saveProgress()">
-            <i class="fas fa-save me-2"></i>Lưu tiến độ
-        </button>
-    </div>
+    @if(count($words) > 0)
+        <div class="text-center mt-4">
+            <button class="btn btn-success save-progress" onclick="saveProgress()">
+                <i class="fas fa-save me-2"></i>Lưu tiến độ
+            </button>
+        </div>
+    @endif
 </div>
 
 <style>
@@ -172,26 +166,42 @@
         color: #fff;
     }
 
-    .feedback .alert {
-        font-size: 0.875rem;
+    .phonetic-input.is-valid {
+        border-color: #198754;
+        background-color: #d1e7dd;
     }
 
-    .feedback .alert-success {
-        background-color: #d1fae5;
-        border-color: #34d399;
-        color: #065f46;
+    .phonetic-input.is-invalid {
+        border-color: #dc3545;
+        background-color: #f8d7da;
+    }
+
+    .phonetic-input.is-valid:focus,
+    .phonetic-input.is-invalid:focus {
+        box-shadow: none;
     }
 
     .save-progress {
-        background-color: #2563eb;
-        border-color: #2563eb;
-        padding: 0.75rem 1.5rem;
+        background-color: #198754 !important;
+        border-color: #198754 !important;
+        padding: 8px 16px;
+        font-size: 14px;
         font-weight: 500;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .save-progress:hover {
-        background-color: #1e40af;
-        border-color: #1e40af;
+        background-color: #157347 !important;
+        border-color: #157347 !important;
+    }
+
+    .save-progress:focus {
+        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+    }
+
+    .save-progress i {
+        font-size: 14px;
     }
 
     /* Responsive styles */
@@ -247,59 +257,111 @@
         }
     }
 
-    // Function to check phonetic transcription
-    function checkPhonetic(button) {
-        const row = button.closest('tr');
-        const input = row.querySelector('.phonetic-input');
-        const feedback = row.querySelector('.feedback');
-        const feedbackText = feedback.querySelector('.feedback-text');
-        const correctPhonetic = input.dataset.correct;
-        const userPhonetic = input.value.trim();
+    // Add event listeners when document is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add click event listeners to all check buttons
+        document.querySelectorAll('.check-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Lấy phiên âm đúng từ button
+                const correctPhonetic = this.getAttribute('data-correct-phonetic');
 
-        feedback.style.display = 'block';
+                // Lấy input và giá trị người dùng nhập
+                const inputElement = this.closest('.input-group').querySelector('.phonetic-input');
+                const userPhonetic = inputElement.value.trim();
 
-        if (userPhonetic === correctPhonetic) {
-            feedback.querySelector('.alert').className = 'alert alert-success py-1 px-2 mb-0';
-            feedbackText.textContent = 'Chính xác!';
-            input.classList.add('is-valid');
-            input.classList.remove('is-invalid');
-        } else {
-            feedback.querySelector('.alert').className = 'alert alert-danger py-1 px-2 mb-0';
-            feedbackText.textContent = `Đáp án đúng: ${correctPhonetic}`;
-            input.classList.add('is-invalid');
-            input.classList.remove('is-valid');
-        }
-    }
-
-    // Function to save progress
-    function saveProgress() {
-        const progress = [];
-        document.querySelectorAll('.word-row').forEach(row => {
-            const word = row.dataset.word;
-            const phonetic = row.querySelector('.phonetic-input').value;
-            progress.push({
-                word,
-                phonetic
+                // So sánh và hiển thị kết quả
+                if (userPhonetic === correctPhonetic) {
+                    inputElement.classList.add('is-valid');
+                    inputElement.classList.remove('is-invalid');
+                } else {
+                    inputElement.classList.add('is-invalid');
+                    inputElement.classList.remove('is-valid');
+                }
             });
         });
 
-        // Here you would typically make an API call to save the progress
-        console.log('Saving progress:', progress);
-
-        // Show success message
-        Swal.fire({
-            title: 'Đã lưu!',
-            text: 'Tiến độ của bạn đã được lưu thành công.',
-            icon: 'success',
-            confirmButtonText: 'OK'
-        });
-    }
-
-    // Initialize tooltips
-    document.addEventListener('DOMContentLoaded', function() {
+        // Add event listeners for tooltips
         const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         tooltips.forEach(tooltip => {
             new bootstrap.Tooltip(tooltip);
         });
     });
+
+    // Function to save progress
+    function saveProgress() {
+        const lessonId = {{ $current_lesson_id ?? 'null' }};
+
+        if (!lessonId) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Không tìm thấy thông tin bài học.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        // Kiểm tra xem có từ nào được nhập phiên âm chưa
+        let hasPhonetic = false;
+        const progress = [];
+
+        document.querySelectorAll('.word-row').forEach(row => {
+            const word = row.dataset.word;
+            const phoneticInput = row.querySelector('.phonetic-input');
+            const phonetic = phoneticInput ? phoneticInput.value.trim() : '';
+
+            if (phonetic) {
+                hasPhonetic = true;
+                progress.push({
+                    word,
+                    phonetic
+                });
+            }
+        });
+
+        // Nếu chưa có từ nào được nhập phiên âm
+        if (!hasPhonetic) {
+            Swal.fire({
+                title: 'Thông báo!',
+                text: 'Vui lòng nhập phiên âm cho ít nhất một từ trước khi lưu tiến độ.',
+                icon: 'warning',
+                confirmButtonText: 'Đã hiểu'
+            });
+            return;
+        }
+
+        // Gọi API để lưu tiến độ
+        fetch('/online/classes/vocabulary-listening/transcription/save-progress', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                lesson_id: lessonId,
+                progress: progress
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Thành công!',
+                    text: data.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                throw new Error(data.message);
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: error.message || 'Có lỗi xảy ra khi lưu tiến độ.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    }
 </script>

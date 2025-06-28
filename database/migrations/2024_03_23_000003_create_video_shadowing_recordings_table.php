@@ -18,6 +18,7 @@ return new class extends Migration
             $table->float('accuracy_score')->nullable(); // Điểm số độ chính xác (nếu có AI scoring)
             $table->text('feedback')->nullable(); // Phản hồi từ giáo viên hoặc hệ thống
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

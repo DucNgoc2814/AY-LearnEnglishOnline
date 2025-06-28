@@ -41,7 +41,7 @@ class VocabularyListeningKeyPhrase extends BaseModel
             'vietnamese_phrase' => 'required|string|max:255',
             'highlighted_words' => 'required|string',
             'incomplete_phrase' => 'required|string|max:255',
-            'correct_answer' => 'required|string|max:255',
+            'correct_answer' => 'required|string',
             'max_retries' => 'required|integer|min:1',
             'min_required_score' => 'required|numeric|min:0|max:100',
         ];

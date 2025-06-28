@@ -1,17 +1,11 @@
 @php
     // Word Bank sẽ được truyền từ controller
-    $wordBank = $step['grammar_exercise']['word_bank'] ?? [
-        'fairly large',
-        'extremely delicious',
-        'really stressful',
-        'pretty boring',
-        'somewhat expensive',
-        'really high',
-        'a bit boring',
-    ];
+    $wordBank = $step['grammar_exercise']['word_bank'] ?? [];
+    $message = $step['grammar_exercise']['message'] ?? null;
+    $grammarId = $step['grammar_exercise']['grammar_id'] ?? null;
 @endphp
 
-<div class="grammar-exercise">
+<div class="grammar-exercise" data-grammar-id="{{ $grammarId }}">
     <div class="exercise-header mb-4">
         <h5 class="mb-2">
             <i class="fas fa-language me-2"></i>Tìm từ đồng nghĩa
@@ -19,60 +13,66 @@
         <p class="text-muted mb-0">Hãy tìm từ đồng nghĩa phù hợp cho từ được bôi đỏ trong mỗi câu.</p>
     </div>
 
-    <!-- Word Bank -->
-    <div class="word-bank mb-4">
-        <h6 class="mb-3">Từ vựng có sẵn:</h6>
-        <div class="word-container" id="wordBank">
-            @foreach ($wordBank as $word)
-                <div class="word-item" draggable="true">{{ $word }}</div>
+    @if ($message)
+        <div class="alert alert-{{ $message['type'] }} mb-4">
+            <i class="fas fa-info-circle me-2"></i>{{ $message['message'] }}
+        </div>
+    @else
+        <!-- Word Bank -->
+        <div class="word-bank mb-4">
+            <h6 class="mb-3">Từ vựng có sẵn:</h6>
+            <div class="word-container" id="wordBank">
+                @foreach ($wordBank as $word)
+                    <div class="word-item" draggable="true">{{ $word }}</div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Questions -->
+        <div class="questions">
+            @foreach ($step['grammar_exercise']['questions'] as $index => $question)
+                <div class="question-item mb-4"
+                    data-answer="{{ $question['correct_synonym'] }}"
+                    data-target="{{ $question['vietnamese_word'] }}"
+                    class="question-item mb-4">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="question-number me-3">{{ $index + 1 }}</span>
+                        <div class="question-text flex-grow-1">
+                            @php
+                                $sentence = $question['sentence'];
+                                $vietnamese = $question['vietnamese_word'];
+                                // Tìm và highlight từ tiếng Việt trong câu
+                                $pattern = '/(' . preg_quote($vietnamese, '/') . ')/';
+                                $sentence = preg_replace($pattern, '<span class="target-word">$1</span>', $sentence);
+                            @endphp
+                            {!! $sentence !!}
+                        </div>
+                    </div>
+                    <div class="answer-zone" data-index="{{ $index }}">
+                        <div class="dropzone">
+                            <span class="placeholder">Kéo thả từ đồng nghĩa vào đây</span>
+                        </div>
+                    </div>
+                    <div class="feedback mt-2" style="display: none;">
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <span class="feedback-text"></span>
+                        </div>
+                    </div>
+                </div>
             @endforeach
         </div>
-    </div>
 
-    <!-- Questions -->
-    <div class="questions">
-        @foreach ($step['grammar_exercise']['questions'] as $index => $question)
-            <div class="question-item mb-4"
-                data-answer="{{ $question['correct_synonym'] }}"
-                data-target="{{ $question['vietnamese_word'] }}"
-                class="question-item mb-4">
-                <div class="d-flex align-items-center mb-2">
-                    <span class="question-number me-3">{{ $index + 1 }}</span>
-                    <div class="question-text flex-grow-1">
-                        @php
-                            $sentence = $question['sentence'];
-                            $vietnamese = $question['vietnamese_word'];
-                            // Tìm và highlight từ tiếng Việt trong câu
-                            $pattern = '/(' . preg_quote($vietnamese, '/') . ')/';
-                            $sentence = preg_replace($pattern, '<span class="target-word">$1</span>', $sentence);
-                        @endphp
-                        {!! $sentence !!}
-                    </div>
-                </div>
-                <div class="answer-zone" data-index="{{ $index }}">
-                    <div class="dropzone">
-                        <span class="placeholder">Kéo thả từ đồng nghĩa vào đây</span>
-                    </div>
-                </div>
-                <div class="feedback mt-2" style="display: none;">
-                    <div class="alert alert-success">
-                        <i class="fas fa-check-circle me-2"></i>
-                        <span class="feedback-text"></span>
-                    </div>
-                </div>
-            </div>
-        @endforeach
-    </div>
-
-    <!-- Check Answer Button -->
-    <div class="text-center mt-4">
-        <button class="btn btn-primary me-2" onclick="checkGrammarAnswers()">
-            <i class="fas fa-check me-2"></i>Kiểm tra đáp án
-        </button>
-        <button class="btn btn-success" onclick="saveProgress()">
-            <i class="fas fa-save me-2"></i>Lưu tiến độ
-        </button>
-    </div>
+        <!-- Check Answer Button -->
+        <div class="text-center mt-4">
+            <button class="btn btn-primary me-2" onclick="checkGrammarAnswers()">
+                <i class="fas fa-check me-2"></i>Kiểm tra đáp án
+            </button>
+            <button class="btn btn-success" onclick="saveProgress()">
+                <i class="fas fa-save me-2"></i>Lưu tiến độ
+            </button>
+        </div>
+    @endif
 </div>
 
 <style>
@@ -315,6 +315,76 @@
             text: `Bạn đã trả lời đúng ${correctCount} câu trên tổng số ${questionItems.length} câu.`,
             icon: correctCount === questionItems.length ? 'success' : 'info',
             confirmButtonText: 'OK'
+        });
+    }
+
+    function saveProgress() {
+        const questionItems = document.querySelectorAll('.question-item');
+        const completedItems = [];
+        let correctCount = 0;
+
+        questionItems.forEach((item, index) => {
+            const dropzone = item.querySelector('.dropzone');
+            const wordItem = dropzone.querySelector('.word-item');
+            const correctAnswer = item.dataset.answer;
+
+            if (wordItem && wordItem.textContent === correctAnswer) {
+                correctCount++;
+                completedItems.push({
+                    index: index,
+                    answer: wordItem.textContent,
+                    is_correct: true
+                });
+            } else if (wordItem) {
+                completedItems.push({
+                    index: index,
+                    answer: wordItem.textContent,
+                    is_correct: false
+                });
+            }
+        });
+
+        const progress = (completedItems.length / questionItems.length) * 100;
+        const score = (correctCount / questionItems.length) * 100;
+
+        // Lấy grammar_id từ data attribute của container
+        const grammarId = document.querySelector('.grammar-exercise').dataset.grammarId;
+
+        // Gọi API lưu tiến độ
+        fetch('/online/classes/vocabulary-listening/grammar/save-progress', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                grammar_id: grammarId,
+                progress: progress,
+                score: score,
+                completed_items: completedItems,
+                current_position: completedItems.length
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Thành công!',
+                    text: data.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                throw new Error(data.message);
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: error.message || 'Có lỗi xảy ra khi lưu tiến độ',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         });
     }
 </script>

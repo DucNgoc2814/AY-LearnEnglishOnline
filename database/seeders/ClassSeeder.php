@@ -52,7 +52,7 @@ class ClassSeeder extends Seeder
             ];
 
             // Create 30 classes
-            for ($i = 1; $i <= 30; $i++) {
+            for ($i = 1; $i <= 5; $i++) {
                 $teacherId = rand(1, 5); // Giả sử có 5 giáo viên
                 $timeSlot = $timeSlots[array_rand($timeSlots)];
                 $className = $classNames[array_rand($classNames)];

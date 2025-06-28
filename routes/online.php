@@ -20,6 +20,12 @@ use App\Http\Controllers\Online\ClassStudentController;
 use App\Http\Controllers\Online\Auth\GoogleLoginController;
 use App\Http\Controllers\Online\OnlineClassLessonController;
 use App\Http\Controllers\Online\VocabularyListeningDictationController;
+use App\Http\Controllers\VideoExerciseController;
+use App\Http\Controllers\ReflectionExerciseController;
+use App\Http\Controllers\VideoHandoutController;
+use App\Http\Controllers\Online\VideoShadowingController;
+use App\Http\Controllers\Online\VocabularyListeningController;
+use App\Http\Controllers\Online\VideoExerciseLessonController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +74,22 @@ Route::prefix('online')->name('online.')->group(function () {
                 // Add new route for saving dictation progress
                 Route::post('/vocabulary-listening/dictation/save-progress', [VocabularyListeningDictationController::class, 'saveProgress'])
                     ->name('vocabulary-listening.dictation.save-progress');
+
+                // Add new route for saving grammar progress
+                Route::post('/vocabulary-listening/grammar/save-progress', [VocabularyListeningController::class, 'saveGrammarProgress'])
+                    ->name('vocabulary-listening.grammar.save-progress');
+
+                // Add new route for saving key phrase progress
+                Route::post('/vocabulary-listening/phrases/save-progress', [VocabularyListeningController::class, 'savePhrasesProgress'])
+                    ->name('vocabulary-listening.phrases.save-progress');
+
+                // Add new route for saving sentence building progress
+                Route::post('/vocabulary-listening/sentence/save-progress', [VocabularyListeningController::class, 'saveSentenceProgress'])
+                    ->name('vocabulary-listening.sentence.save-progress');
+
+                // Add new route for transcription progress
+                Route::post('/vocabulary-listening/transcription/save-progress', [VocabularyListeningController::class, 'saveTranscriptionProgress'])
+                    ->name('vocabulary-listening.transcription.save-progress');
             });
 
             // Sessions
@@ -115,6 +137,8 @@ Route::prefix('online')->name('online.')->group(function () {
                         Route::get('/handout', [TeacherClassController::class, 'handoutProgress'])->name('handout');
                         Route::get('/shadowing', [TeacherClassController::class, 'shadowingProgress'])->name('shadowing');
                         Route::get('/reflection', [TeacherClassController::class, 'reflectionProgress'])->name('reflection');
+                        Route::get('/reflection/student/{student_id}', [TeacherClassController::class, 'reflectionDetail'])->name('reflection.detail');
+                        Route::post('/reflection/student/{student_id}/save', [TeacherClassController::class, 'saveReflection'])->name('reflection.save');
                     });
 
                     // Materials
@@ -174,6 +198,19 @@ Route::prefix('online')->name('online.')->group(function () {
                 Route::get('/', [NewsController::class, 'index'])->name('index');
                 Route::get('/{id}', [NewsController::class, 'show'])->name('show');
             });
+
+            // Exercise Routes
+            Route::prefix('video-exercise')->name('video-exercise.')->group(function () {
+                Route::get('/', [VideoExerciseLessonController::class, 'index'])->name('index');
+                Route::get('/{id}', [VideoExerciseLessonController::class, 'show'])->name('show');
+                Route::post('/', [VideoExerciseLessonController::class, 'store'])->name('store');
+                Route::put('/{id}', [VideoExerciseLessonController::class, 'update'])->name('update');
+                Route::delete('/{id}', [VideoExerciseLessonController::class, 'destroy'])->name('destroy');
+            });
+            Route::get('/reflection-exercise/{id}', [ReflectionExerciseController::class, 'show'])->name('reflection-exercise.show');
+            Route::get('/video-handout', [VideoHandoutController::class, 'show'])->name('video-handout.show');
+            Route::get('/video-shadowing/{id}', [VideoShadowingController::class, 'show'])->name('video-shadowing.show');
+            Route::get('/vocabulary-listening/{lesson_id?}', [\App\Http\Controllers\Online\VocabularyListeningController::class, 'show'])->name('vocabulary-listening.show');
         });
     });
 });

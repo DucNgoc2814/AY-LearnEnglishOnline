@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('lesson_id')->comment('ID của bài học')->constrained('lessons')->onDelete('cascade');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->string('video_url');
+            $table->string('audio_url');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -55,10 +55,10 @@ class AppServiceProvider extends ServiceProvider
 
         // Set default string length for MySQL older versions
         Schema::defaultStringLength(191);
-        
+
         // Set timezone for MySQL
         DB::statement('SET time_zone = "+07:00"');
-        
+
         // Set timezone for Carbon
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         Carbon::setLocale('vi');

@@ -81,7 +81,7 @@
                             <div class="accordion-item mb-3 level-1">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#beforeClassMaterials{{ $lesson->id }}" aria-expanded="true">
-                                        <i class="fas fa-hourglass-start me-2"></i> Before Class Materials
+                                        <i class="fas fa-hourglass-start me-2"></i> BEFORE CLASS
                                     </button>
                                 </h2>
                                 <div id="beforeClassMaterials{{ $lesson->id }}" class="accordion-collapse collapse show" data-bs-parent="#lesson{{ $lesson->id }}Materials">
@@ -91,7 +91,7 @@
                                             <div class="accordion-item level-2">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#movieLearning{{ $lesson->id }}" aria-expanded="true">
-                                                        <i class="fas fa-film me-2"></i> Học tiếng Anh qua phim
+                                                        <i class="fas fa-film me-2"></i> U.S. MOVIE
                                                     </button>
                                                 </h2>
                                                 <div id="movieLearning{{ $lesson->id }}" class="accordion-collapse collapse show" data-bs-parent="#beforeLessonsAccordion{{ $lesson->id }}">
@@ -102,13 +102,13 @@
                                                             </div>
                                                             <div class="d-flex w-100 justify-content-between">
                                                                 <div>
-                                                                    <h6 class="mb-0">Video Exercise - {{ $lesson->name }}</h6>
+                                                                    <h6 class="mb-0">YOUNG SHELDON </h6>
                                                                     <p class="mb-0 small text-muted">Xem video và làm theo các bước nhé.</p>
                                                                 </div>
                                                                 <div class="d-flex flex-column align-items-end">
                                                                     <div class="btn-group">
-                                                                        <a href="{{ route('video-exercise.show', ['id' => $lesson->id]) }}" class="btn btn-sm btn-outline-primary">
-                                                                            <i class="fas fa-play"></i> Làm bài
+                                                                        <a href="{{ route('online.video-exercise.show', ['id' => $lesson->id]) }}" class="btn btn-sm btn-outline-primary">
+                                                                            <i class="fas fa-play"></i> Start now!
                                                                         </a>
                                                                     </div>
                                                                 </div>
@@ -122,7 +122,7 @@
                                             <div class="accordion-item level-2">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#vocabListening{{ $lesson->id }}" aria-expanded="false">
-                                                        <i class="fas fa-headphones me-2"></i> Học từ vựng & luyện nghe
+                                                        <i class="fas fa-headphones me-2"></i> ACTIVE LISTENING
                                                     </button>
                                                 </h2>
                                                 <div id="vocabListening{{ $lesson->id }}" class="accordion-collapse collapse" data-bs-parent="#beforeLessonsAccordion{{ $lesson->id }}">
@@ -133,13 +133,13 @@
                                                             </div>
                                                             <div class="d-flex w-100 justify-content-between">
                                                                 <div>
-                                                                    <h6 class="mb-0">Vocabulary & Listening Practice</h6>
+                                                                    <h6 class="mb-0">UNIT 1: HOMETOWN</h6>
                                                                     <p class="mb-0 small text-muted">Học từ vựng và luyện nghe qua các bài tập tương tác.</p>
                                                                 </div>
                                                                 <div class="d-flex flex-column align-items-end">
                                                                     <div class="btn-group">
-                                                                        <a href="{{ route('vocabulary-listening.show') }}" class="btn btn-sm btn-outline-primary">
-                                                                            <i class="fas fa-headphones"></i> Làm bài
+                                                                        <a href="{{ route('online.vocabulary-listening.show', ['lesson_id' => $lesson->id]) }}" class="btn btn-sm btn-outline-primary">
+                                                                            <i class="fas fa-headphones"></i> Start now!
                                                                         </a>
                                                                     </div>
                                                                 </div>
@@ -157,7 +157,7 @@
                             <div class="accordion-item mb-3 level-1">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#duringClassMaterials{{ $lesson->id }}" aria-expanded="false">
-                                        <i class="fas fa-clock me-2"></i> During Class Materials
+                                        <i class="fas fa-clock me-2"></i> DURING CLASS
                                     </button>
                                 </h2>
                                 <div id="duringClassMaterials{{ $lesson->id }}" class="accordion-collapse collapse" data-bs-parent="#lesson{{ $lesson->id }}Materials">
@@ -167,7 +167,7 @@
                                             <div class="accordion-item level-2">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#videoHandout{{ $lesson->id }}" aria-expanded="false">
-                                                        <i class="fas fa-film me-2"></i> Xem video & handout
+                                                        <i class="fas fa-film me-2"></i> PRONUNCIATION
                                                     </button>
                                                 </h2>
                                                 <div id="videoHandout{{ $lesson->id }}" class="accordion-collapse collapse" data-bs-parent="#duringLessonsAccordion{{ $lesson->id }}">
@@ -178,13 +178,13 @@
                                                             </div>
                                                             <div class="d-flex w-100 justify-content-between">
                                                                 <div>
-                                                                    <h6 class="mb-0">Video Learning with Handouts</h6>
-                                                                    <p class="mb-0 small text-muted">Xem video và làm bài tập handout đi kèm.</p>
+                                                                    <h6 class="mb-0">PRONUNCIATION - {{ $lesson->name }}</h6>
+                                                                    <p class="mb-0 small text-muted">Xem video và Start now! tập handout đi kèm.</p>
                                                                 </div>
                                                                 <div class="d-flex flex-column align-items-end">
                                                                     <div class="btn-group">
-                                                                        <a href="{{ route('video-handout.show') }}" class="btn btn-sm btn-outline-primary">
-                                                                            <i class="fas fa-play"></i> Xem video và làm bài
+                                                                        <a href="{{ route('online.video-handout.show') }}" class="btn btn-sm btn-outline-primary">
+                                                                            <i class="fas fa-play"></i> Xem video và Start now!
                                                                         </a>
                                                                     </div>
                                                                 </div>
@@ -198,7 +198,7 @@
                                             <div class="accordion-item level-2">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#videoShadowing{{ $lesson->id }}" aria-expanded="false">
-                                                        <i class="fas fa-film me-2"></i> Xem video Shadowing
+                                                        <i class="fas fa-film me-2"></i> SHADOWING
                                                     </button>
                                                 </h2>
                                                 <div id="videoShadowing{{ $lesson->id }}" class="accordion-collapse collapse" data-bs-parent="#duringLessonsAccordion{{ $lesson->id }}">
@@ -209,12 +209,12 @@
                                                             </div>
                                                             <div class="d-flex w-100 justify-content-between">
                                                                 <div>
-                                                                    <h6 class="mb-0">Video Shadowing Practice</h6>
+                                                                    <h6 class="mb-0">SHADOWING - {{ $lesson->name }}</h6>
                                                                     <p class="mb-0 small text-muted">Luyện phát âm theo phương pháp Shadowing.</p>
                                                                 </div>
                                                                 <div class="d-flex flex-column align-items-end">
                                                                     <div class="btn-group">
-                                                                        <a href="{{ route('video-shadowing.show') }}" class="btn btn-sm btn-outline-primary">
+                                                                        <a href="{{ route('online.video-shadowing.show', ['id' => $lesson->id]) }}" class="btn btn-sm btn-outline-primary">
                                                                             <i class="fas fa-play"></i> Xem video
                                                                         </a>
                                                                     </div>
@@ -233,7 +233,7 @@
                             <div class="accordion-item mb-3 level-1">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#afterClassMaterials{{ $lesson->id }}" aria-expanded="false">
-                                        <i class="fas fa-hourglass-end me-2"></i> After Class Materials
+                                        <i class="fas fa-hourglass-end me-2"></i>AFTER CLASS
                                     </button>
                                 </h2>
                                 <div id="afterClassMaterials{{ $lesson->id }}" class="accordion-collapse collapse" data-bs-parent="#lesson{{ $lesson->id }}Materials">
@@ -243,7 +243,7 @@
                                             <div class="accordion-item level-2">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#reflection{{ $lesson->id }}" aria-expanded="false">
-                                                        <i class="fas fa-pen-fancy me-2"></i> Viết bài Reflection
+                                                        <i class="fas fa-pen-fancy me-2"></i> REFLECTION
                                                     </button>
                                                 </h2>
                                                 <div id="reflection{{ $lesson->id }}" class="accordion-collapse collapse" data-bs-parent="#afterLessonsAccordion{{ $lesson->id }}">
@@ -254,12 +254,12 @@
                                                             </div>
                                                             <div class="d-flex w-100 justify-content-between">
                                                                 <div>
-                                                                    <h6 class="mb-0">Viết bài Reflection</h6>
+                                                                    <h6 class="mb-0">REFLECTION - {{ $lesson->name }}</h6>
                                                                     <p class="mb-0 small text-muted">Viết bài phản ánh về những gì bạn đã học được.</p>
                                                                 </div>
                                                                 <div class="d-flex flex-column align-items-end">
                                                                     <div class="btn-group">
-                                                                        <a href="{{ route('reflection-exercise.show', ['id' => $lesson->id]) }}" class="btn btn-sm btn-outline-primary">
+                                                                        <a href="{{ route('online.reflection-exercise.show', ['id' => $lesson->id]) }}" class="btn btn-sm btn-outline-primary">
                                                                             <i class="fas fa-pen"></i> Viết bài
                                                                         </a>
                                                                     </div>

@@ -123,4 +123,8 @@ class VocabularyListeningEndingSound extends BaseModel
     {
         return $this->belongsTo(Lesson::class);
     }
+    protected static function bootHasSlug()
+    {
+        // Override to disable slug generation
+    }
 }
