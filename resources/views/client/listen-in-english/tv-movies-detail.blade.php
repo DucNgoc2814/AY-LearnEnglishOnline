@@ -10,7 +10,8 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="card-title mb-0">{{ $show['title'] ?? 'Friends' }} - {{ $show['episode'] ?? 'The One Where It All Began' }}</h4>
+                            <h4 class="card-title mb-0">{{ $show['title'] ?? 'Friends' }} -
+                                {{ $show['episode'] ?? 'The One Where It All Began' }}</h4>
                             <span class="badge bg-primary">Level {{ $show['level'] ?? 'Intermediate' }}</span>
                         </div>
                         <div class="lesson-info mb-3">
@@ -46,18 +47,50 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="accordion" id="lessonAccordion">
-                            <!-- Grammar -->
+                            <!-- Questions -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#grammarCollapse">
-                                        <i class="fas fa-book me-2"></i> Grammar
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#questionsCollapse">
+                                        <i class="fas fa-question-circle me-2"></i> Questions
                                     </button>
                                 </h2>
-                                <div id="grammarCollapse" class="accordion-collapse collapse"
+                                <div id="questionsCollapse" class="accordion-collapse collapse"
                                     data-bs-parent="#lessonAccordion">
                                     <div class="accordion-body">
-                                        @include('client.listen-in-english.tv-movies-detail.partials.grammar')
+                                        @include('client.listen-in-english.lesson-detail.partials.questions')
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Script -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#scriptCollapse">
+                                        <i class="fas fa-file-alt me-2"></i> Script
+                                    </button>
+                                </h2>
+                                <div id="scriptCollapse" class="accordion-collapse collapse"
+                                    data-bs-parent="#lessonAccordion">
+                                    <div class="accordion-body">
+                                        @include('client.listen-in-english.lesson-detail.partials.script')
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dialogue Practice -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#dialogueCollapse">
+                                        <i class="fas fa-comments me-2"></i> Dialogue Practice
+                                    </button>
+                                </h2>
+                                <div id="dialogueCollapse" class="accordion-collapse collapse"
+                                    data-bs-parent="#lessonAccordion">
+                                    <div class="accordion-body">
+                                        @include('client.listen-in-english.lesson-detail.partials.dialogue-practice')
                                     </div>
                                 </div>
                             </div>
@@ -74,6 +107,69 @@
                                     data-bs-parent="#lessonAccordion">
                                     <div class="accordion-body">
                                         @include('client.listen-in-english.tv-movies-detail.partials.sentence-building')
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Listen & Repeat -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#listenRepeatCollapse">
+                                        <i class="fas fa-microphone me-2"></i> Listen & Repeat
+                                    </button>
+                                </h2>
+                                <div id="listenRepeatCollapse" class="accordion-collapse collapse"
+                                    data-bs-parent="#lessonAccordion">
+                                    <div class="accordion-body">
+                                        @include('client.listen-in-english.lesson-detail.partials.listen-repeat')
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Grammar -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#grammarCollapse">
+                                        <i class="fas fa-book me-2"></i> Grammar
+                                    </button>
+                                </h2>
+                                <div id="grammarCollapse" class="accordion-collapse collapse"
+                                    data-bs-parent="#lessonAccordion">
+                                    <div class="accordion-body">
+                                        @include('client.listen-in-english.tv-movies-detail.partials.grammar')
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Grammar Check -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#grammarCheckCollapse">
+                                        <i class="fas fa-check-circle me-2"></i> Grammar Check
+                                    </button>
+                                </h2>
+                                <div id="grammarCheckCollapse" class="accordion-collapse collapse"
+                                    data-bs-parent="#lessonAccordion">
+                                    <div class="accordion-body">
+                                        @include('client.listen-in-english.lesson-detail.partials.grammar-check')
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Discussions -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#discussionsCollapse">
+                                        <i class="fas fa-users me-2"></i> Discussions
+                                    </button>
+                                </h2>
+                                <div id="discussionsCollapse" class="accordion-collapse collapse"
+                                    data-bs-parent="#lessonAccordion">
+                                    <div class="accordion-body">
+                                        @include('client.listen-in-english.lesson-detail.partials.discussion')
                                     </div>
                                 </div>
                             </div>

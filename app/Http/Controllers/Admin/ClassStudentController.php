@@ -28,62 +28,40 @@ class ClassStudentController extends BaseController
         try {
             $classId = $request->input('class_id');
             if (!$classId) {
-                return response()->json(['error' => 'Class ID is required'], 400);
+                return response()->json(['error' => 'Vui lòng chọn lớp học'], 400);
             }
 
             $class = Classes::findOrFail($classId);
 
-            // Lấy danh sách học viên đã đăng ký khóa học tương ứng với lớp
-            $registrations = CourseRegistration::where('course_id', $class->course_id)
-                ->where('status', 'active')
+            // Get all registrations for this course that don't have a class assignment
+            $availableStudents = DB::table('course_registrations as cr')
+                ->join('course_registration_student as crs', 'cr.id', '=', 'crs.course_registration_id')
+                ->join('students as s', 's.id', '=', 'crs.student_id')
+                ->leftJoin('class_students as cs', function($join) {
+                    $join->on('cr.id', '=', 'cs.registration_id')
+                         ->whereNull('cs.deleted_at');
+                })
+                ->where('cr.course_id', $class->course_id)
+                ->whereNull('s.deleted_at')
+                ->whereNull('cs.id')
+                ->select(
+                    DB::raw("CONCAT(cr.id, '-', s.id) as id"),
+                    's.full_name'
+                )
+                ->distinct()
                 ->get();
 
             $options = [];
-            foreach ($registrations as $registration) {
-                // Lấy danh sách học viên từ bảng trung gian
-                $students = DB::table('course_registration_student')
-                    ->join('students', 'students.id', '=', 'course_registration_student.student_id')
-                    ->where('course_registration_student.course_registration_id', $registration->id)
-                    ->whereNull('students.deleted_at')
-                    ->select('students.*')
-                    ->get();
-
-                foreach ($students as $student) {
-                    // Kiểm tra xem học viên đã được xếp vào lớp nào chưa
-                    $currentClass = ClassStudent::where('registration_id', $registration->id)
-                        ->where('status', 'active')
-                        ->with('class')
-                        ->first();
-
-                    $key = $registration->id . '-' . $student->id;
-
-                    // Loại bỏ prefix HD nếu đã có trong invoice_number
-                    $invoiceNumber = $registration->invoice_number;
-                    if (!str_starts_with($invoiceNumber, 'HD')) {
-                        $invoiceNumber = 'HD' . $invoiceNumber;
-                    }
-
-                    // Thêm thông tin lớp học hiện tại nếu có
-                    $displayText = sprintf(
-                        "%s - %s",
-                        $student->full_name,
-                        $invoiceNumber
-                    );
-
-                    if ($currentClass) {
-                        // Chỉ hiển thị thông tin lớp nếu học viên đang học lớp khác với lớp đang chọn
-                        if ($currentClass->class_id != $classId) {
-                            $displayText .= sprintf(" (Đang học lớp: %s)", $currentClass->class->name);
-                        }
-                    }
-
-                    $options[$key] = $displayText;
-                }
+            foreach ($availableStudents as $student) {
+                // Create display text with just the student name
+                $options[$student->id] = $student->full_name;
             }
 
             return response()->json($options);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error('Lỗi trong quá trình lấy danh sách học viên: ' . $e->getMessage());
+            Log::error('Chi tiết lỗi: ' . $e->getTraceAsString());
+            return response()->json(['error' => 'Đã xảy ra lỗi hệ thống'], 500);
         }
     }
 }

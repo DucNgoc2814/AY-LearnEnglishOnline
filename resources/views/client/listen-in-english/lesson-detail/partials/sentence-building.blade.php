@@ -1,27 +1,27 @@
 @php
     $sentences = [
         [
-            'words' => 'Rob / see / Jenny / street / and / offer / her / coffee',
+            'words' => ['Rob', 'see', 'Jenny', 'street', 'and', 'offer', 'her', 'coffee'],
             'number' => 1
         ],
         [
-            'words' => 'Jenny / thank / Rob / coffee',
+            'words' => ['Jenny', 'thank', 'Rob', 'coffee'],
             'number' => 2
         ],
         [
-            'words' => 'Jenny / have / other / meeting / Daniel / 9:30',
+            'words' => ['Jenny', 'have', 'other', 'meeting', 'Daniel', '9:30'],
             'number' => 3
         ],
         [
-            'words' => 'Rob / going / interview / theater / director / twenty / minute',
+            'words' => ['Rob', 'going', 'interview', 'theater', 'director', 'twenty', 'minute'],
             'number' => 4
         ],
         [
-            'words' => 'Jenny / accidental / spill / coffee / Rob / while / she / check / phone',
+            'words' => ['Jenny', 'accidental', 'spill', 'coffee', 'Rob', 'while', 'she', 'check', 'phone'],
             'number' => 5
         ],
         [
-            'words' => 'Jenny / apologise / spill / coffee / Rob',
+            'words' => ['Jenny', 'apologise', 'spill', 'coffee', 'Rob'],
             'number' => 6
         ]
     ];
@@ -29,7 +29,7 @@
 
 <div class="sentence-building-container">
     <div class="instructions mb-3">
-        <p>Viết câu về video clip sử dụng các từ cho sẵn. Bạn có thể thay đổi dạng từ hoặc thêm từ, nhưng không được thay đổi thứ tự từ.</p>
+        <p>Kéo và thả các từ để tạo thành câu hoàn chỉnh. Bạn có thể thay đổi dạng từ hoặc thêm từ khi cần thiết.</p>
         <p class="text-muted">
             <small>[ ] = bắt buộc, ( ) = không bắt buộc</small>
         </p>
@@ -39,19 +39,29 @@
     <div class="sentence-item mb-4">
         <div class="sentence-header">
             <h6 class="mb-2">Sentence {{ $sentence['number'] }}</h6>
-            <div class="word-bank mb-2">
-                {{ $sentence['words'] }}
+
+            <!-- Word Bank -->
+            <div class="word-bank mb-2" id="word-bank-{{ $sentence['number'] }}">
+                @foreach($sentence['words'] as $word)
+                <div class="word-item" draggable="true" data-word="{{ $word }}">{{ $word }}</div>
+                @endforeach
             </div>
         </div>
-        <div class="sentence-input">
-            <input type="text" class="form-control mb-2" placeholder="Nhập câu của bạn...">
-            <div class="d-flex gap-2">
-                <button class="btn btn-primary btn-sm show-answer">Show</button>
-                <button class="btn btn-secondary btn-sm hide-answer" style="display: none;">Hide</button>
+
+        <!-- Drop Zone -->
+        <div class="sentence-builder mb-2">
+            <div class="drop-zone" id="drop-zone-{{ $sentence['number'] }}">
+                <div class="drop-zone-placeholder">Kéo từ vào đây để tạo câu</div>
             </div>
-            <div class="answer mt-2" style="display: none;">
-                <!-- Đáp án sẽ được hiển thị ở đây qua JavaScript -->
-            </div>
+        </div>
+
+        <div class="sentence-controls">
+            <button class="btn btn-danger btn-sm clear-sentence">Clear</button>
+            <button class="btn btn-primary btn-sm show-answer">Show Answer</button>
+            <button class="btn btn-secondary btn-sm hide-answer" style="display: none;">Hide Answer</button>
+        </div>
+        <div class="answer mt-2" style="display: none;">
+            <!-- Đáp án sẽ được hiển thị ở đây qua JavaScript -->
         </div>
     </div>
     @endforeach
@@ -66,7 +76,64 @@
     background-color: #f8f9fa;
     padding: 10px;
     border-radius: 5px;
-    font-family: monospace;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 50px;
+}
+
+.word-item {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: move;
+    user-select: none;
+    display: inline-block;
+    margin: 2px;
+    font-size: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+}
+
+.word-item:hover {
+    background-color: #e9ecef;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.word-item.dragging {
+    opacity: 0.5;
+    background-color: #e9ecef;
+}
+
+.sentence-builder {
+    margin-top: 10px;
+}
+
+.drop-zone {
+    min-height: 60px;
+    border: 2px dashed #dee2e6;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    background-color: #fff;
+    transition: all 0.3s;
+}
+
+.drop-zone.drag-over {
+    background-color: #e9ecef;
+    border-color: #6c757d;
+}
+
+.drop-zone-placeholder {
+    color: #6c757d;
+    text-align: center;
+    width: 100%;
+    font-style: italic;
 }
 
 .sentence-item {
@@ -74,9 +141,19 @@
     padding-bottom: 15px;
 }
 
+.sentence-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
 .answer {
     color: #28a745;
     font-weight: 500;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
 }
 </style>
 
@@ -91,6 +168,69 @@ document.addEventListener('DOMContentLoaded', function() {
         6: "Jenny apologises for spilling coffee on Rob"
     };
 
+    // Drag and Drop functionality
+    document.querySelectorAll('.word-item').forEach(word => {
+        word.addEventListener('dragstart', function(e) {
+            this.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', this.dataset.word);
+        });
+
+        word.addEventListener('dragend', function() {
+            this.classList.remove('dragging');
+        });
+    });
+
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        });
+
+        zone.addEventListener('dragleave', function() {
+            this.classList.remove('drag-over');
+        });
+
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+
+            const word = e.dataTransfer.getData('text/plain');
+            const placeholder = this.querySelector('.drop-zone-placeholder');
+            if (placeholder) {
+                placeholder.remove();
+            }
+
+            const wordElement = document.createElement('div');
+            wordElement.className = 'word-item';
+            wordElement.textContent = word;
+            wordElement.draggable = true;
+
+            // Add drag functionality to the new word in drop zone
+            wordElement.addEventListener('dragstart', function(e) {
+                e.dataTransfer.setData('text/plain', this.textContent);
+                this.classList.add('dragging');
+            });
+
+            wordElement.addEventListener('dragend', function() {
+                this.classList.remove('dragging');
+            });
+
+            // Double click to remove word
+            wordElement.addEventListener('dblclick', function() {
+                this.remove();
+                if (zone.children.length === 0) {
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'drop-zone-placeholder';
+                    placeholder.textContent = 'Kéo từ vào đây để tạo câu';
+                    zone.appendChild(placeholder);
+                }
+            });
+
+            this.appendChild(wordElement);
+        });
+    });
+
+    // Show/Hide Answer functionality
     document.querySelectorAll('.show-answer').forEach(button => {
         button.addEventListener('click', function() {
             const sentenceItem = this.closest('.sentence-item');
@@ -101,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
             answerDiv.textContent = answers[sentenceNumber];
             answerDiv.style.display = 'block';
             this.style.display = 'none';
-            hideButton.style.display = 'block';
+            hideButton.style.display = 'inline-block';
         });
     });
 
@@ -113,7 +253,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
             answerDiv.style.display = 'none';
             this.style.display = 'none';
-            showButton.style.display = 'block';
+            showButton.style.display = 'inline-block';
+        });
+    });
+
+    // Clear sentence functionality
+    document.querySelectorAll('.clear-sentence').forEach(button => {
+        button.addEventListener('click', function() {
+            const sentenceItem = this.closest('.sentence-item');
+            const dropZone = sentenceItem.querySelector('.drop-zone');
+
+            dropZone.innerHTML = '<div class="drop-zone-placeholder">Kéo từ vào đây để tạo câu</div>';
         });
     });
 });

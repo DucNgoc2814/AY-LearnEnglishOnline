@@ -27,35 +27,18 @@ class Classes extends BaseModel
                 'date',
                 'after_or_equal:today',
             ],
-            // 'end_date' => [
-            //     'nullable',
-            //     'date',
-            //     'after:start_date',
-            // ],
-            // 'enrollment_deadline' => [
-            //     'nullable',
-            //     'date',
-            //     'before_or_equal:start_date',
-            // ],
             'max_students' => [
-                'required',
+                'nullable',
                 'integer',
                 'min:1',
                 'gte:min_students',
             ],
             'min_students' => [
-                'required',
+                'nullable',
                 'integer',
                 'min:1',
             ],
-            'status' => [
-                'required',
-                'string',
-                'in:pending,active,completed,cancelled',
-            ],
             'description' => ['nullable', 'string'],
-            // 'schedule' => ['nullable', 'json'],
-            // 'is_active' => ['boolean'],
         ];
     }
 
@@ -99,20 +82,6 @@ class Classes extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            // 'end_date' => [
-            //     'label' => 'Ngày kết thúc',
-            //     'type' => 'date',
-            //     'searchable' => true,
-            //     'sortable' => true,
-            //     'editable' => true
-            // ],
-            // 'enrollment_deadline' => [
-            //     'label' => 'Ngày đăng ký',
-            //     'type' => 'date',
-            //     'searchable' => true,
-            //     'sortable' => true,
-            //     'editable' => true
-            // ],
             'max_students' => [
                 'label' => 'Số lượng học viên tối đa',
                 'type' => 'number',
@@ -127,19 +96,6 @@ class Classes extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'status' => [
-                'label' => 'Trạng thái',
-                'type' => 'select',
-                'options' => [
-                    'pending' => 'Chưa bắt đầu',
-                    'active' => 'Đang diễn ra',
-                    'completed' => 'Đã hoàn tất',
-                    'cancelled' => 'Đã hủy bỏ'
-                ],
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
             'description' => [
                 'label' => 'Mô tả',
                 'type' => 'textarea',
@@ -147,20 +103,6 @@ class Classes extends BaseModel
                 'sortable' => false,
                 'editable' => true
             ],
-            // 'schedule' => [
-            //     'label' => 'Lịch trình',
-            //     'type' => 'json_editor',
-            //     'searchable' => false,
-            //     'sortable' => false,
-            //     'editable' => false
-            // ],
-            // 'is_active' => [
-            //     'label' => 'Hoạt động',
-            //     'type' => 'checkbox',
-            //     'searchable' => true,
-            //     'sortable' => true,
-            //     'editable' => true
-            // ],
         ];
     }
 
@@ -209,10 +151,10 @@ class Classes extends BaseModel
         return $this->hasManyThrough(
             Student::class,
             'App\Models\ClassStudent',
-            'class_id', // Foreign key on class_students table
-            'id', // Foreign key on students table
-            'id', // Local key on classes table
-            'registration_id' // Local key on class_students table
+            'class_id',
+            'id',
+            'id',
+            'registration_id'
         );
     }
 
@@ -234,10 +176,10 @@ class Classes extends BaseModel
         return $this->hasManyThrough(
             ClassSession::class,
             ClassSchedule::class,
-            'class_id',    // Foreign key on class_schedules table
-            'schedule_id', // Foreign key on class_sessions table
-            'id',          // Local key on classes table
-            'id'           // Local key on class_schedules table
+            'class_id',
+            'schedule_id',
+            'id',
+            'id'
         );
     }
 
@@ -258,29 +200,9 @@ class Classes extends BaseModel
 
     public function updateCurrentStudents(): self
     {
-        $this->current_students = $this->students()->wherePivot('status', 'active')->count();
+        $this->current_students = $this->students()->count();
         $this->save();
         return $this;
-    }
-
-    public function scopeActive($query)
-    {
-        return $query->where('status', 'active');
-    }
-
-    public function scopeUpcoming($query)
-    {
-        return $query->where('start_date', '>', now());
-    }
-
-    public function scopeOngoing($query)
-    {
-        return $query->where('start_date', '<=', now())
-            ->where('end_date', '>=', now());
-    }
-    public function scopeCompleted($query)
-    {
-        return $query->where('end_date', '<', now());
     }
 
     public function getAvailableSeats(): int
@@ -290,91 +212,20 @@ class Classes extends BaseModel
 
     public function isEnrollmentOpen(): bool
     {
-        if (!$this->start_date || !$this->end_date) {
+        if (!$this->start_date) {
             return true;
         }
-        return now()->lessThanOrEqualTo($this->end_date);
+        return now()->lessThanOrEqualTo($this->start_date);
     }
 
     public function getProgress(): float
     {
-        if (!$this->start_date || !$this->end_date) {
-            return 0;
-        }
-
-        $total = $this->end_date->diffInDays($this->start_date);
-        if ($total === 0) {
+        if (!$this->start_date) {
             return 0;
         }
 
         $elapsed = now()->diffInDays($this->start_date);
-        return min(100, round(($elapsed / $total) * 100, 2));
-    }
-
-    public function start()
-    {
-        $this->status = 'active';
-        $this->save();
-    }
-
-    public function complete()
-    {
-        $this->status = 'completed';
-        $this->save();
-    }
-
-    public function incrementEnrolledCount()
-    {
-        $this->increment('current_students');
-    }
-
-    public function decrementEnrolledCount()
-    {
-        $this->decrement('current_students');
-    }
-
-    public function getCompletionRate(): float
-    {
-        $totalSessions = $this->sessions()->count();
-        if ($totalSessions === 0) {
-            return 0;
-        }
-
-        $completedSessions = $this->sessions()
-            ->where('status', 'completed')
-            ->count();
-
-        return round(($completedSessions / $totalSessions) * 100, 2);
-    }
-
-    public function getAttendanceRate(): float
-    {
-        $sessions = $this->sessions;
-        if ($sessions->isEmpty()) {
-            return 0;
-        }
-
-        $rates = $sessions->map(function ($session) {
-            return $session->getAttendanceRate();
-        });
-
-        return round($rates->avg(), 2);
-    }
-
-    public function isStudentEnrolled($studentId): bool
-    {
-        return $this->students()
-            ->where('student_id', $studentId)
-            ->exists();
-    }
-
-    public function getNextSession()
-    {
-        return $this->sessions()
-            ->where('session_date', '>=', now())
-            ->orderBy('session_date')
-            ->orderBy('start_time')
-            ->first();
+        return min(100, round(($elapsed / 30) * 100, 2)); // Assuming a standard 30-day period
     }
 
     /**

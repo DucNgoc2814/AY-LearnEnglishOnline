@@ -370,11 +370,48 @@
             background-color: #007bff;
             color: white;
         }
+
+        /* Add styles for text highlighting */
+        ::selection {
+            background-color: #fff9c4; /* Light yellow background */
+            color: inherit;
+        }
+
+        ::-moz-selection {
+            background-color: #fff9c4; /* Light yellow background */
+            color: inherit;
+        }
+
+        .highlighted {
+            background-color: #fff9c4;
+        }
     </style>
 
     <!-- Scripts -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Handle text selection highlighting
+            const articleContent = document.querySelector('.article-content');
+
+            articleContent.addEventListener('mouseup', function() {
+                const selection = window.getSelection();
+                const selectedText = selection.toString().trim();
+
+                if (selectedText) {
+                    // Remove any existing highlights first
+                    const range = selection.getRangeAt(0);
+                    const span = document.createElement('span');
+                    span.className = 'highlighted';
+
+                    try {
+                        range.surroundContents(span);
+                    } catch (e) {
+                        console.log('Could not highlight selection');
+                    }
+                }
+            });
+
+            // Handle toggle translation
             const toggleButtons = document.querySelectorAll('.toggle-translation');
 
             toggleButtons.forEach(button => {

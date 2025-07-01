@@ -35,7 +35,7 @@ class ClassStudent extends BaseModel
             ],
             'registration_id' => [
                 'required',
-                function ($attribute, $value, $fail) {
+                function ($attribute, $value, $fail) use ($id) {
                     // Extract registration_id from the composite key if needed
                     $registrationId = explode('-', $value)[0] ?? $value;
 
@@ -44,38 +44,33 @@ class ClassStudent extends BaseModel
                         return;
                     }
 
-                    if (!CourseRegistration::where('id', $registrationId)->exists()) {
+                    // Check if registration exists
+                    $registration = CourseRegistration::find($registrationId);
+                    if (!$registration) {
                         $fail('The selected registration does not exist.');
+                        return;
                     }
-                },
-                function ($attribute, $value, $fail) use ($id) {
-                    // Extract registration_id from the composite key if needed
-                    $registrationId = explode('-', $value)[0] ?? $value;
 
-                    $exists = ClassStudent::where('registration_id', $registrationId)
+                    // Check if student is already assigned to a class for this course
+                    $existingClassStudent = ClassStudent::where('registration_id', $registrationId)
                         ->where('id', '!=', $id)
-                        ->where('status', 'active')
                         ->whereNull('deleted_at')
-                        ->exists();
+                        ->first();
 
-                    if ($exists) {
-                        $fail('This registration is already assigned to a class.');
+                    if ($existingClassStudent) {
+                        $fail('This student is already assigned to another class in this course.');
+                    }
+
+                    // Check if the class belongs to the same course as the registration
+                    $class = Classes::find(request()->input('class_id'));
+                    if ($class && $class->course_id !== $registration->course_id) {
+                        $fail('The selected class does not belong to the student\'s registered course.');
                     }
                 }
             ],
-            'status' => [
-                'required',
-                'in:active,transferred,dropped'
-            ],
             'start_date' => [
                 'required',
-                'date',
-                'before_or_equal:end_date'
-            ],
-            'end_date' => [
-                'nullable',
-                'date',
-                'after_or_equal:start_date'
+                'date'
             ],
             'notes' => [
                 'nullable',
@@ -112,27 +107,8 @@ class ClassStudent extends BaseModel
                 'editable' => false,
                 'prefix' => 'HD'
             ],
-            'status' => [
-                'label' => 'Trạng thái',
-                'type' => 'select',
-                'options' => [
-                    'active' => 'Đang học',
-                    'transferred' => 'Đã chuyển lớp',
-                    'dropped' => 'Đã nghỉ học'
-                ],
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
             'start_date' => [
                 'label' => 'Ngày bắt đầu',
-                'type' => 'date',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            'end_date' => [
-                'label' => 'Ngày kết thúc',
                 'type' => 'date',
                 'searchable' => true,
                 'sortable' => true,
@@ -149,10 +125,17 @@ class ClassStudent extends BaseModel
     }
     public static function getFormFields()
     {
-        $fields = self::getFields();
-
-        // Thêm trường registration_id cho form
-        $fields['registration_id'] = [
+        $fields = [
+            'class_id' => [
+                'label' => 'Lớp học',
+                'type' => 'select',
+                'options' => Classes::pluck('name', 'id')->toArray(),
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true,
+                'help' => 'Chọn lớp học để xếp học viên vào'
+            ],
+            'registration_id' => [
             'label' => 'Học viên',
             'type' => 'select',
             'options' => [],  // Options sẽ được load động qua AJAX
@@ -161,24 +144,32 @@ class ClassStudent extends BaseModel
             'editable' => true,
             'depends' => ['class_id'],
             'placeholder' => 'Chọn lớp học trước',
-            'help' => 'Chọn học viên đã đăng ký khóa học',
+                'help' => 'Chỉ hiển thị học viên đã đăng ký khóa học và chưa được xếp vào lớp',
             'ajax' => [
                 'url' => '/admin/class-students/get-students',
                 'depends' => 'class_id'
             ]
+            ],
+            'start_date' => [
+                'label' => 'Ngày bắt đầu',
+                'type' => 'date',
+                'default' => now()->format('Y-m-d'),
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true,
+                'help' => 'Ngày bắt đầu học trong lớp này'
+            ],
+            'notes' => [
+                'label' => 'Ghi chú',
+                'type' => 'textarea',
+                'searchable' => true,
+                'sortable' => false,
+                'editable' => true,
+                'help' => 'Ghi chú thêm về việc xếp lớp (nếu cần)'
+            ]
         ];
 
-        // Sắp xếp lại các trường
-        $orderedFields = [
-            'class_id' => $fields['class_id'],
-            'registration_id' => $fields['registration_id'],
-            'status' => $fields['status'],
-            'start_date' => $fields['start_date'],
-            'end_date' => $fields['end_date'],
-            'notes' => $fields['notes']
-        ];
-
-        return $orderedFields;
+        return $fields;
     }
 
     /**

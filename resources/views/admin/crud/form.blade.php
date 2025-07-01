@@ -45,11 +45,17 @@
 
                                 @case('select')
                                     <select
-                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline {{ isset($options['multiple']) && $options['multiple'] ? 'select2-multiple' : '' }}"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline {{ isset($options['ajax']) ? 'select2-ajax' : '' }} {{ isset($options['multiple']) && $options['multiple'] ? 'select2-multiple' : '' }}"
                                         id="{{ $field }}"
                                         name="{{ $field }}{{ isset($options['multiple']) && $options['multiple'] ? '[]' : '' }}"
                                         {{ isset($options['multiple']) && $options['multiple'] ? 'multiple' : '' }}
+                                        data-placeholder="{{ $options['placeholder'] ?? 'Select...' }}"
+                                        @if(isset($options['ajax']))
+                                        data-ajax-url="{{ route('admin.class-students.get-students') }}"
+                                        data-depends="{{ $options['ajax']['depends'] ?? '' }}"
+                                        @endif
                                     >
+                                        <option value="">{{ $options['placeholder'] ?? 'Select...' }}</option>
                                         @foreach($options['options'] ?? [] as $value => $label)
                                             <option value="{{ $value }}"
                                                 {{ isset($options['multiple']) && $options['multiple']
@@ -154,7 +160,7 @@
                                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         id="{{ $field }}"
                                         name="{{ $field }}"
-                                        value="{{ old($field, isset($item) ? $item->$field : '') }}"
+                                        value="{{ old($field, isset($item) ? $item->$field : ($options['default'] ?? '')) }}"
                                         @if(isset($options['step'])) step="{{ $options['step'] }}" @endif
                                     >
                             @endswitch
@@ -416,66 +422,59 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded');
 
-    // Khởi tạo select2
-    if($.fn.select2) {
-        console.log('Select2 is loaded');
-        $('.select2-multiple').select2({
+    // Khởi tạo Select2 cho tất cả các select boxes
+    $('.select2-multiple, .select2-ajax').each(function() {
+        var $select = $(this);
+        var config = {
             theme: 'classic',
-            placeholder: 'Select items...',
-            allowClear: true,
-            width: '100%'
-        });
-    } else {
-        console.error('Select2 is not loaded');
-    }
+            width: '100%',
+            placeholder: $select.data('placeholder') || 'Select...',
+            allowClear: true
+        };
 
-    // Xử lý khi thay đổi lớp học
-    $('select[name="class_id"]').on('change', function() {
-        console.log('Class changed');
-        var classId = $(this).val();
-        var studentSelect = $('select[name="registration_id"]');
+        // Nếu là select2-ajax, thêm cấu hình ajax
+        if ($select.hasClass('select2-ajax')) {
+            var dependsOn = $select.data('depends');
+            config.ajax = {
+                url: $select.data('ajax-url'),
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    var query = {
+                        search: params.term,
+                        class_id: $('#' + dependsOn).val()
+                    };
+                    return query;
+                },
+                processResults: function (data) {
+                    return {
+                        results: Object.entries(data).map(([id, text]) => ({
+                            id: id,
+                            text: text
+                        }))
+                    };
+                },
+                cache: true
+            };
 
-        console.log('Selected class ID:', classId);
-
-        // Reset select box học viên
-        studentSelect.empty().append('<option value="">Chọn học viên...</option>');
-
-        if (!classId) {
-            return;
+            // Xử lý sự kiện change của trường phụ thuộc
+            if (dependsOn) {
+                $('#' + dependsOn).on('change', function() {
+                    $select.val(null).trigger('change');
+                });
+            }
         }
 
-        // Hiển thị loading
-        studentSelect.append('<option value="" disabled>Đang tải...</option>');
+        $select.select2(config);
+    });
 
-        // Gọi API để lấy danh sách học viên
-        $.ajax({
-            url: '{{ route("admin.class-students.get-students") }}',
-            method: 'GET',
-            data: { class_id: classId },
-            success: function(response) {
-                console.log('API Response:', response);
+    // Log để debug
+    console.log('Select2 initialized');
 
-                // Xóa option loading
-                studentSelect.empty().append('<option value="">Chọn học viên...</option>');
-
-                if (response && typeof response === 'object') {
-                    Object.keys(response).forEach(function(key) {
-                        studentSelect.append(new Option(response[key], key));
-                    });
-                }
-
-                // Trigger change để cập nhật Select2
-                studentSelect.trigger('change');
-            },
-            error: function(xhr, status, error) {
-                console.error('API Error:', error);
-                console.error('Status:', status);
-                console.error('Response:', xhr.responseText);
-
-                // Hiển thị lỗi trong select box
-                studentSelect.empty().append('<option value="">Có lỗi xảy ra khi tải danh sách học viên</option>');
-            }
-        });
+    // Xử lý khi thay đổi lớp học
+    $('#class_id').on('change', function() {
+        console.log('Class changed:', $(this).val());
+        $('#registration_id').val(null).trigger('change');
     });
 });
 
