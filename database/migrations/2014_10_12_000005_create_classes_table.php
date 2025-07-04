@@ -27,8 +27,6 @@ return new class extends Migration
             $table->integer('max_students')->default(20)->nullable();
             // Số học viên tối thiểu để mở lớp
             $table->integer('min_students')->default(1)->nullable();
-            // Trạng thái lớp học: chưa bắt đầu, đang diễn ra, đã hoàn thành, đã hủy
-            $table->enum('status', ['pending', 'active', 'completed', 'cancelled'])->default('pending');
             // Mô tả chi tiết về lớp học
             $table->text('description')->nullable();
             $table->timestamps();

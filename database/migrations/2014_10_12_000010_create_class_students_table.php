@@ -15,21 +15,19 @@ return new class extends Migration
             $table->id();
             // Khóa ngoại liên kết với lớp học
             $table->foreignId('class_id')->constrained('classes')->onDelete('cascade');
+            // Khóa ngoại liên kết với học viên
+            $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             // Khóa ngoại liên kết với đăng ký khóa học
             $table->foreignId('registration_id')->constrained('course_registrations')->onDelete('cascade');
-            // Trạng thái học viên trong lớp: đang học, đã chuyển lớp, đã nghỉ
-            $table->enum('status', ['active', 'transferred', 'dropped'])->default('active');
             // Ngày bắt đầu học trong lớp
             $table->date('start_date');
-            // Ngày kết thúc học trong lớp (khi chuyển lớp hoặc nghỉ học)
-            $table->date('end_date')->nullable();
             // Ghi chú về học viên trong lớp
             $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
-            // Một học viên chỉ có thể được xếp vào một lớp tại một thời điểm
-            $table->unique(['registration_id', 'class_id']);
+            // Một học viên chỉ có thể xuất hiện một lần trong một lớp tại một thời điểm
+            $table->unique(['class_id', 'student_id', 'registration_id']);
         });
     }
 

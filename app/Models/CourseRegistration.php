@@ -49,10 +49,10 @@ class CourseRegistration extends BaseModel
                 'sortable' => true,
                 'editable' => true,
                 'multiple' => true,
-                'relation' => 'students',
-                'display_fields' => ['student_code', 'full_name'],
-                'badge_color' => 'blue',
-                'separator' => ' - ',
+                'relation' => 'students', // Quan hệ với bảng students
+                'display_fields' => ['student_code', 'full_name'], //Chọn các trường cần hiển thị
+                'badge_color' => 'blue', // Tùy chỉnh màu sắc badge
+                'separator' => ' - ', //Tùy chỉnh ký tự ngăn cách
                 'help' => 'Có thể chọn nhiều học viên cùng lúc'
             ],
             'notes' => [
@@ -64,10 +64,6 @@ class CourseRegistration extends BaseModel
             ],
         ];
     }
-
-    /**
-     * Get fields for form (create/edit)
-     */
     public static function getFormFields()
     {
         $fields = [];
@@ -91,6 +87,31 @@ class CourseRegistration extends BaseModel
     {
         // Override to disable slug generation
     }
+    // Định nghĩa các giá trị cho status
+    const STATUS_PENDING = 'pending';
+    const STATUS_ACTIVE = 'active';
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_CANCELLED = 'cancelled';
+
+    // Các status có thể có
+    public static $statuses = [
+        self::STATUS_PENDING,
+        self::STATUS_ACTIVE,
+        self::STATUS_COMPLETED,
+        self::STATUS_CANCELLED
+    ];
+
+    // Định nghĩa các giá trị cho payment_status
+    const PAYMENT_PENDING = 'pending';
+    const PAYMENT_PAID = 'paid';
+    const PAYMENT_REFUNDED = 'refunded';
+
+    // Các payment_status có thể có
+    public static $paymentStatuses = [
+        self::PAYMENT_PENDING,
+        self::PAYMENT_PAID,
+        self::PAYMENT_REFUNDED
+    ];
 
     /**
      * Lấy thông tin học viên
@@ -115,18 +136,59 @@ class CourseRegistration extends BaseModel
     public function currentClass()
     {
         return $this->classStudents()
+            ->where('status', ClassStudent::STATUS_ACTIVE)
             ->first();
     }
 
     /**
      * Get the attendance records for this registration.
      */
-    public function attendances()
+    public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class, 'student_id', 'student_id')
             ->whereHas('classSession', function ($query) {
                 $query->where('class_id', $this->class_id);
             });
+    }
+
+    /**
+     * Scope a query to only include active registrations.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope a query to only include completed registrations.
+     */
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'completed');
+    }
+
+    /**
+     * Scope a query to only include pending registrations.
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    /**
+     * Scope a query to only include dropped registrations.
+     */
+    public function scopeDropped($query)
+    {
+        return $query->where('status', 'dropped');
+    }
+
+    /**
+     * Scope a query to filter by payment status.
+     */
+    public function scopePaymentStatus($query, $status)
+    {
+        return $query->where('payment_status', $status);
     }
 
     public function course()

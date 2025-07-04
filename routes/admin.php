@@ -67,20 +67,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Dashboard
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-        // Class Students Management
-        Route::prefix('class-students')->name('class-students.')->group(function () {
-            Route::get('/', [ClassStudentController::class, 'index'])->name('index');
-            Route::get('/create', [ClassStudentController::class, 'create'])->name('create');
-            Route::post('/', [ClassStudentController::class, 'store'])->name('store');
-            Route::get('/{id}/edit', [ClassStudentController::class, 'edit'])->name('edit');
-            Route::put('/{id}', [ClassStudentController::class, 'update'])->name('update');
-            Route::delete('/{id}', [ClassStudentController::class, 'destroy'])->name('destroy');
-            Route::put('/{id}/restore', [ClassStudentController::class, 'restore'])->name('restore');
-
-            // API để lấy danh sách học viên
-            Route::get('/get-students', [ClassStudentController::class, 'getStudents'])->name('get-students');
-        });
-
         // Users Management
         Route::controller(UserController::class)
             ->prefix('users')
@@ -721,32 +707,32 @@ Route::prefix('admin')->name('admin.')->group(function () {
             // Khôi phục từ thùng rác
             Route::put('/{id}/restore', [ReflectionExerciseQuestionController::class, 'restore'])->name('restore');
         });
-        // Route::prefix('class-students')->name('class-students.')->group(function () {
-        //     // Hiển thị danh sách
-        //     Route::get('/', [ClassStudentController::class, 'index'])->name('index');
+        Route::prefix('class-students')->name('class-students.')->group(function () {
+            // Hiển thị danh sách
+            Route::get('/', [ClassStudentController::class, 'index'])->name('index');
 
-        //     // Form tạo mới
-        //     Route::get('/create', [ClassStudentController::class, 'create'])->name('create');
+            // Form tạo mới
+            Route::get('/create', [ClassStudentController::class, 'create'])->name('create');
 
-        //     // Lưu dữ liệu mới
-        //     Route::post('/', [ClassStudentController::class, 'store'])->name('store');
+            // Lưu dữ liệu mới
+            Route::post('/', [ClassStudentController::class, 'store'])->name('store');
 
-        //     // Form chỉnh sửa
-        //     Route::get('/{id}/edit', [ClassStudentController::class, 'edit'])->name('edit');
+            // Form chỉnh sửa
+            Route::get('/{id}/edit', [ClassStudentController::class, 'edit'])->name('edit');
 
-        //     // Cập nhật dữ liệu
-        //     Route::put('/{id}', [ClassStudentController::class, 'update'])->name('update');
+            // Cập nhật dữ liệu
+            Route::put('/{id}', [ClassStudentController::class, 'update'])->name('update');
 
-        //     // Xóa mềm
-        //     Route::delete('/{id}', [ClassStudentController::class, 'destroy'])->name('destroy');
+            // Xóa mềm
+            Route::delete('/{id}', [ClassStudentController::class, 'destroy'])->name('destroy');
 
-        //     // Khôi phục từ thùng rác
-        //     Route::put('/{id}/restore', [ClassStudentController::class, 'restore'])->name('restore');
+            // Khôi phục từ thùng rác
+            Route::put('/{id}/restore', [ClassStudentController::class, 'restore'])->name('restore');
 
-        //     // API lấy danh sách học viên theo lớp
-        //     Route::get('/get-students', [ClassStudentController::class, 'getStudents'])
-        //         ->name('get-students');
-        // });
+            // API lấy danh sách học viên theo lớp
+            Route::get('/get-students', [ClassStudentController::class, 'getStudents'])
+                ->name('get-students');
+        });
         Route::prefix('classes')->name('classes.')->group(function () {
             // Hiển thị danh sách
             Route::get('/', [ClassController::class, 'index'])->name('index');

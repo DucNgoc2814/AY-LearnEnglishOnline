@@ -6,14 +6,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ClassStudent extends BaseModel
 {
-
-    /**
-     * Các trạng thái có thể có của học viên trong lớp
-     */
-    const STATUS_ACTIVE = 'active';
-    const STATUS_TRANSFERRED = 'transferred';
-    const STATUS_DROPPED = 'dropped';
-
     protected $appends = ['student_name', 'invoice_number'];
 
     public function getStudentNameAttribute()
@@ -35,7 +27,7 @@ class ClassStudent extends BaseModel
             ],
             'registration_id' => [
                 'required',
-                function ($attribute, $value, $fail) use ($id) {
+                function ($attribute, $value, $fail) {
                     // Extract registration_id from the composite key if needed
                     $registrationId = explode('-', $value)[0] ?? $value;
 
@@ -44,33 +36,33 @@ class ClassStudent extends BaseModel
                         return;
                     }
 
-                    // Check if registration exists
-                    $registration = CourseRegistration::find($registrationId);
-                    if (!$registration) {
+                    if (!CourseRegistration::where('id', $registrationId)->exists()) {
                         $fail('The selected registration does not exist.');
-                        return;
                     }
+                },
+                function ($attribute, $value, $fail) use ($id) {
+                    // Extract registration_id from the composite key if needed
+                    $registrationId = explode('-', $value)[0] ?? $value;
 
-                    // Check if student is already assigned to a class for this course
-                    $existingClassStudent = ClassStudent::where('registration_id', $registrationId)
+                    $exists = ClassStudent::where('registration_id', $registrationId)
                         ->where('id', '!=', $id)
                         ->whereNull('deleted_at')
-                        ->first();
+                        ->exists();
 
-                    if ($existingClassStudent) {
-                        $fail('This student is already assigned to another class in this course.');
-                    }
-
-                    // Check if the class belongs to the same course as the registration
-                    $class = Classes::find(request()->input('class_id'));
-                    if ($class && $class->course_id !== $registration->course_id) {
-                        $fail('The selected class does not belong to the student\'s registered course.');
+                    if ($exists) {
+                        $fail('This registration is already assigned to a class.');
                     }
                 }
             ],
             'start_date' => [
                 'required',
-                'date'
+                'date',
+                'before_or_equal:end_date'
+            ],
+            'end_date' => [
+                'nullable',
+                'date',
+                'after_or_equal:start_date'
             ],
             'notes' => [
                 'nullable',
@@ -114,6 +106,13 @@ class ClassStudent extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
+            'end_date' => [
+                'label' => 'Ngày kết thúc',
+                'type' => 'date',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true
+            ],
             'notes' => [
                 'label' => 'Ghi chú',
                 'type' => 'textarea',
@@ -123,19 +122,13 @@ class ClassStudent extends BaseModel
             ]
         ];
     }
+
     public static function getFormFields()
     {
-        $fields = [
-            'class_id' => [
-                'label' => 'Lớp học',
-                'type' => 'select',
-                'options' => Classes::pluck('name', 'id')->toArray(),
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true,
-                'help' => 'Chọn lớp học để xếp học viên vào'
-            ],
-            'registration_id' => [
+        $fields = self::getFields();
+
+        // Thêm trường registration_id cho form
+        $fields['registration_id'] = [
             'label' => 'Học viên',
             'type' => 'select',
             'options' => [],  // Options sẽ được load động qua AJAX
@@ -144,32 +137,23 @@ class ClassStudent extends BaseModel
             'editable' => true,
             'depends' => ['class_id'],
             'placeholder' => 'Chọn lớp học trước',
-                'help' => 'Chỉ hiển thị học viên đã đăng ký khóa học và chưa được xếp vào lớp',
+            'help' => 'Chọn học viên đã đăng ký khóa học',
             'ajax' => [
                 'url' => '/admin/class-students/get-students',
                 'depends' => 'class_id'
             ]
-            ],
-            'start_date' => [
-                'label' => 'Ngày bắt đầu',
-                'type' => 'date',
-                'default' => now()->format('Y-m-d'),
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true,
-                'help' => 'Ngày bắt đầu học trong lớp này'
-            ],
-            'notes' => [
-                'label' => 'Ghi chú',
-                'type' => 'textarea',
-                'searchable' => true,
-                'sortable' => false,
-                'editable' => true,
-                'help' => 'Ghi chú thêm về việc xếp lớp (nếu cần)'
-            ]
         ];
 
-        return $fields;
+        // Sắp xếp lại các trường
+        $orderedFields = [
+            'class_id' => $fields['class_id'],
+            'registration_id' => $fields['registration_id'],
+            'start_date' => $fields['start_date'],
+            'end_date' => $fields['end_date'],
+            'notes' => $fields['notes']
+        ];
+
+        return $orderedFields;
     }
 
     /**
@@ -179,6 +163,7 @@ class ClassStudent extends BaseModel
     {
         return self::getFields();
     }
+
     protected static function bootHasSlug()
     {
         // Override to disable slug generation
@@ -200,7 +185,7 @@ class ClassStudent extends BaseModel
     /**
      * Lấy thông tin lớp học
      */
-    public function class(): BelongsTo
+    public function class()
     {
         return $this->belongsTo(Classes::class, 'class_id');
     }
@@ -208,7 +193,7 @@ class ClassStudent extends BaseModel
     /**
      * Lấy thông tin đăng ký khóa học
      */
-    public function registration(): BelongsTo
+    public function registration()
     {
         return $this->belongsTo(CourseRegistration::class, 'registration_id');
     }
@@ -218,22 +203,7 @@ class ClassStudent extends BaseModel
      */
     public function student()
     {
-        return $this->hasOneThrough(
-            Student::class,
-            CourseRegistrationStudent::class,
-            'course_registration_id',
-            'id',
-            'registration_id',
-            'student_id'
-        );
-        // return $this->hasOneThrough(
-        //     Student::class,
-        //     CourseRegistration::class,
-        //     'id', // Foreign key on course_registrations table
-        //     'id', // Foreign key on students table
-        //     'registration_id', // Local key on class_students table
-        //     'student_id' // Local key on course_registrations table
-        // );
+        return $this->belongsTo(Student::class, 'student_id');
     }
 
     /**
@@ -252,79 +222,10 @@ class ClassStudent extends BaseModel
     }
 
     /**
-     * Kiểm tra xem học viên có đang học không
-     */
-    public function isActive(): bool
-    {
-        return $this->status === 'active' &&
-            (!$this->end_date || $this->end_date->isFuture());
-    }
-
-    /**
-     * Kiểm tra học viên đã chuyển lớp chưa
-     */
-    public function isTransferred(): bool
-    {
-        return $this->status === self::STATUS_TRANSFERRED;
-    }
-
-    /**
-     * Kiểm tra học viên đã nghỉ học chưa
-     */
-    public function isDropped(): bool
-    {
-        return $this->status === self::STATUS_DROPPED;
-    }
-
-    /**
-     * Scope lấy danh sách học viên đang học
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('status', 'active')
-            ->where(function ($q) {
-                $q->whereNull('end_date')
-                    ->orWhere('end_date', '>=', now());
-            });
-    }
-
-    /**
      * Scope lấy danh sách học viên theo lớp
      */
     public function scopeByClass($query, $classId)
     {
         return $query->where('class_id', $classId);
-    }
-
-    /**
-     * Chuyển học viên sang lớp khác
-     */
-    public function transferToClass($newClassId, $notes = null)
-    {
-        $this->update([
-            'status' => 'transferred',
-            'end_date' => now(),
-            'notes' => $notes
-        ]);
-
-        return self::create([
-            'class_id' => $newClassId,
-            'registration_id' => $this->registration_id,
-            'status' => 'active',
-            'start_date' => now(),
-            'notes' => "Chuyển từ lớp {$this->class->name}"
-        ]);
-    }
-
-    /**
-     * Cho học viên nghỉ học
-     */
-    public function dropOut($reason = null)
-    {
-        return $this->update([
-            'status' => 'dropped',
-            'end_date' => now(),
-            'notes' => $reason
-        ]);
     }
 }
