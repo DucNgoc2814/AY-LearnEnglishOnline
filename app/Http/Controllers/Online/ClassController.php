@@ -190,17 +190,18 @@ class ClassController extends Controller
         $now = Carbon::now();
         Log::debug('Current date/time', ['now' => $now->toDateTimeString()]);
 
-        // Phân loại theo status
-        $upcomingClasses = $classes->filter(function ($class) {
-            return $class->status === 'pending';
+        // Phân loại lớp học chỉ dựa vào thời gian
+        $upcomingClasses = $classes->filter(function ($class) use ($now) {
+            return Carbon::parse($class->start_date)->gt($now);
         });
 
-        $currentClasses = $classes->filter(function ($class) {
-            return $class->status === 'active';
+        $currentClasses = $classes->filter(function ($class) use ($now) {
+            return Carbon::parse($class->start_date)->lte($now) &&
+                   (!$class->end_date || Carbon::parse($class->end_date)->gte($now));
         });
 
-        $completedClasses = $classes->filter(function ($class) {
-            return $class->status === 'completed';
+        $completedClasses = $classes->filter(function ($class) use ($now) {
+            return $class->end_date && Carbon::parse($class->end_date)->lt($now);
         });
 
         Log::debug('Filtered classes by status', [

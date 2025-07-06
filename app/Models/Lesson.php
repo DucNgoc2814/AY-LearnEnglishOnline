@@ -16,7 +16,6 @@ class Lesson extends BaseModel
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'order_number' => 'required|integer|min:1',
-            'is_preview' => 'nullable|boolean',
         ];
     }
     public static function getFields()
@@ -51,13 +50,6 @@ class Lesson extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'is_preview' => [
-                'label' => 'Xem thử',
-                'type' => 'boolean',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ]
         ];
     }
     /**
