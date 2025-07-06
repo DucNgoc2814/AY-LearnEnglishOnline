@@ -23,24 +23,12 @@ return new class extends Migration
             $table->foreignId('teacher_id')->constrained('employees')->onDelete('cascade');
             // Thời gian bắt đầu khóa học
             $table->dateTime('start_date')->nullable();
-            // Thời gian kết thúc khóa học
-            $table->dateTime('end_date')->nullable();
-            // Hạn chót đăng ký vào lớp
-            $table->date('enrollment_deadline')->nullable();
             // Số học viên tối đa của lớp
-            $table->integer('max_students')->default(30);
+            $table->integer('max_students')->default(20)->nullable();
             // Số học viên tối thiểu để mở lớp
-            $table->integer('min_students')->default(5);
-            // Số học viên hiện tại trong lớp
-            $table->integer('current_students')->default(0);
-            // Trạng thái lớp học: chưa bắt đầu, đang diễn ra, đã hoàn thành, đã hủy
-            $table->enum('status', ['pending', 'active', 'completed', 'cancelled'])->default('pending');
+            $table->integer('min_students')->default(1)->nullable();
             // Mô tả chi tiết về lớp học
             $table->text('description')->nullable();
-            // Lịch học dự kiến dạng JSON (các ngày trong tuần và giờ học)
-            $table->json('schedule')->nullable();
-            // Trạng thái hoạt động của lớp
-            $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

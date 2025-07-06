@@ -4,13 +4,25 @@ namespace App\Models;
 
 class VideoExerciseQuestion extends BaseModel
 {
+    public static function mediaFields(): array
+    {
+        return [
+            'preview_video' => [
+                'type' => 'video',
+                'max_size' => 102400,
+                'mimes' => 'mp4,webm,ogg',
+                'label' => 'Video khóa học'
+            ]
+        ];
+    }
     public static function getBaseRules($id = null)
     {
         return [
             'video_exercise_lesson_id' => 'required|exists:video_exercise_lessons,id',
             'question_text' => 'required|string',
             'context_text' => 'nullable|string',
-            'correct_answer' => 'required|string'
+            'correct_answer' => 'required|string',
+            'time_point' => 'required|integer|min:0'
         ];
     }
 
@@ -24,6 +36,14 @@ class VideoExerciseQuestion extends BaseModel
                 'sortable' => true,
                 'editable' => true,
                 'options' => VideoExerciseLesson::pluck('title', 'id')->toArray(),
+            ],
+            'time_point' => [
+                'label' => 'Thời điểm xuất hiện (giây)',
+                'type' => 'number',
+                'searchable' => true,
+                'sortable' => true,
+                'editable' => true,
+                'min' => 0
             ],
             'question_text' => [
                 'label' => 'Nội dung câu hỏi',

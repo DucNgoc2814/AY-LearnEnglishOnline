@@ -7,8 +7,9 @@
         ],
         [
             'speaker' => 'JENNY',
-            'line' => 'Oh, hi Rob. Is that coffee [blank] for me?',
+            'line' => 'Oh, hi Rob. [blank] for me?',
             'answer' => 'Is that coffee',
+            'vietnamese_hint' => 'Đó có phải là cà phê',
             'has_blank' => true
         ],
         [
@@ -20,30 +21,35 @@
             'speaker' => 'JENNY',
             'line' => 'Oh wow. Thanks. That\'s so [blank] you.',
             'answer' => 'nice of',
+            'vietnamese_hint' => 'tốt bụng của',
             'has_blank' => true
         ],
         [
             'speaker' => 'ROB',
             'line' => 'No problem. [blank] meeting with Daniel?',
             'answer' => 'How\'s your',
+            'vietnamese_hint' => 'Cuộc họp của bạn thế nào',
             'has_blank' => true
         ],
         [
             'speaker' => 'JENNY',
             'line' => 'Yes. Another meeting. At [blank]?',
             'answer' => '9:30',
+            'vietnamese_hint' => '9:30',
             'has_blank' => true
         ],
         [
             'speaker' => 'ROB',
             'line' => 'I\'m going to the office too. I have [blank] minutes.',
             'answer' => 'twenty',
+            'vietnamese_hint' => 'hai mươi',
             'has_blank' => true
         ],
         [
             'speaker' => 'JENNY',
             'line' => 'Oh really? An [blank]?',
             'answer' => 'interview',
+            'vietnamese_hint' => 'cuộc phỏng vấn',
             'has_blank' => true
         ],
         [
@@ -55,6 +61,7 @@
             'speaker' => 'JENNY',
             'line' => 'That sounds [blank] interesting.',
             'answer' => 'very',
+            'vietnamese_hint' => 'rất',
             'has_blank' => true
         ]
     ];
@@ -78,7 +85,7 @@
             <div class="line-content">
                 @if($line['has_blank'])
                     <div class="practice-line">
-                        {!! str_replace('[blank]', '<span class="blank">_________</span>', $line['line']) !!}
+                        {!! str_replace('[blank]', '<span class="blank">' . ($line['vietnamese_hint'] ?? '_________') . '</span>', $line['line']) !!}
                         <div class="line-controls">
                             <button class="btn btn-primary btn-sm show-answer">s</button>
                             <button class="btn btn-secondary btn-sm hide-answer" style="display: none;">h</button>

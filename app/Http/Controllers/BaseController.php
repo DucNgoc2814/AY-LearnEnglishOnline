@@ -26,8 +26,8 @@ class BaseController extends Controller
         }
 
         return view($view, array_merge(
-            ['data' => $result['data']], 
+            ['data' => $result['data']],
             $extraData
         ));
     }
-} 
+}

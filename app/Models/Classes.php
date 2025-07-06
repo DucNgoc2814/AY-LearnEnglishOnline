@@ -22,21 +22,6 @@ class Classes extends BaseModel
                 'required',
                 'exists:employees,id',
             ],
-            'start_date' => [
-                'required',
-                'date',
-                'after_or_equal:today',
-            ],
-            // 'end_date' => [
-            //     'nullable',
-            //     'date',
-            //     'after:start_date',
-            // ],
-            // 'enrollment_deadline' => [
-            //     'nullable',
-            //     'date',
-            //     'before_or_equal:start_date',
-            // ],
             'max_students' => [
                 'required',
                 'integer',
@@ -48,14 +33,7 @@ class Classes extends BaseModel
                 'integer',
                 'min:1',
             ],
-            'status' => [
-                'required',
-                'string',
-                'in:pending,active,completed,cancelled',
-            ],
             'description' => ['nullable', 'string'],
-            // 'schedule' => ['nullable', 'json'],
-            // 'is_active' => ['boolean'],
         ];
     }
 
@@ -92,27 +70,6 @@ class Classes extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'start_date' => [
-                'label' => 'Ngày bắt đầu',
-                'type' => 'date',
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
-            // 'end_date' => [
-            //     'label' => 'Ngày kết thúc',
-            //     'type' => 'date',
-            //     'searchable' => true,
-            //     'sortable' => true,
-            //     'editable' => true
-            // ],
-            // 'enrollment_deadline' => [
-            //     'label' => 'Ngày đăng ký',
-            //     'type' => 'date',
-            //     'searchable' => true,
-            //     'sortable' => true,
-            //     'editable' => true
-            // ],
             'max_students' => [
                 'label' => 'Số lượng học viên tối đa',
                 'type' => 'number',
@@ -127,19 +84,6 @@ class Classes extends BaseModel
                 'sortable' => true,
                 'editable' => true
             ],
-            'status' => [
-                'label' => 'Trạng thái',
-                'type' => 'select',
-                'options' => [
-                    'pending' => 'Chưa bắt đầu',
-                    'active' => 'Đang diễn ra',
-                    'completed' => 'Đã hoàn tất',
-                    'cancelled' => 'Đã hủy bỏ'
-                ],
-                'searchable' => true,
-                'sortable' => true,
-                'editable' => true
-            ],
             'description' => [
                 'label' => 'Mô tả',
                 'type' => 'textarea',
@@ -147,20 +91,6 @@ class Classes extends BaseModel
                 'sortable' => false,
                 'editable' => true
             ],
-            // 'schedule' => [
-            //     'label' => 'Lịch trình',
-            //     'type' => 'json_editor',
-            //     'searchable' => false,
-            //     'sortable' => false,
-            //     'editable' => false
-            // ],
-            // 'is_active' => [
-            //     'label' => 'Hoạt động',
-            //     'type' => 'checkbox',
-            //     'searchable' => true,
-            //     'sortable' => true,
-            //     'editable' => true
-            // ],
         ];
     }
 

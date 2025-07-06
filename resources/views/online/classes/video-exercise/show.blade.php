@@ -4,7 +4,7 @@
     <div class="container py-4">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mb-4">U.S. MOVIE - {{ $lesson->title }}</h4>
+                <h4 class="card-title mb-4">U.S. MOVIE</h4>
 
                 <ul class="nav nav-tabs" id="exerciseTabs" role="tablist">
                     <li class="nav-item" role="presentation">

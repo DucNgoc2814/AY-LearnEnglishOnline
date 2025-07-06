@@ -108,22 +108,25 @@ class ClassController extends Controller
                     : 'Chưa có lịch cụ thể';
             }
 
-            // Phân loại lớp học CHỈ dựa trên status
-            $currentClasses = $classes->filter(function($class) {
-                return $class->status === 'active';
+            // Phân loại lớp học dựa trên ngày bắt đầu và kết thúc
+            $now = now();
+
+            $currentClasses = $classes->filter(function($class) use ($now) {
+                return $class->start_date <= $now &&
+                       (!$class->end_date || $class->end_date >= $now);
             });
 
-            $upcomingClasses = $classes->filter(function($class) {
-                return $class->status === 'pending';
+            $upcomingClasses = $classes->filter(function($class) use ($now) {
+                return $class->start_date > $now;
             });
 
-            $completedClasses = $classes->filter(function($class) {
-                return $class->status === 'completed';
+            $completedClasses = $classes->filter(function($class) use ($now) {
+                return $class->end_date && $class->end_date < $now;
             });
 
             // Log để kiểm tra
-            Log::info('Classes by status - Active: ' . $currentClasses->count() .
-                     ', Pending: ' . $upcomingClasses->count() .
+            Log::info('Classes by date - Current: ' . $currentClasses->count() .
+                     ', Upcoming: ' . $upcomingClasses->count() .
                      ', Completed: ' . $completedClasses->count());
 
             return view('online.teacher.classes.index', [
