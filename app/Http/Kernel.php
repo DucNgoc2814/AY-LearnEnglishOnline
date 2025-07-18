@@ -106,5 +106,6 @@ class Kernel extends HttpKernel
         'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
         'jwt' => \App\Http\Middleware\JwtMiddleware::class,
         'auth.online' => \App\Http\Middleware\RedirectIfNotOnline::class,
+        'check.course.access' => \App\Http\Middleware\CheckCourseAccess::class,
     ];
 }

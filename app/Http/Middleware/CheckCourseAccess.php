@@ -2,61 +2,40 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\CourseRegistration;
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use App\Models\Course;
-use App\Models\Enrollment;
+use Illuminate\Support\Facades\Auth;
 
 class CheckCourseAccess
 {
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure $next
-     * @return Response
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
-        $courseSlug = $request->route('courseSlug');
-        
-        // Kiểm tra user đã đăng nhập chưa
-        if (!auth()->check()) {
-            return redirect()->route('login')
-                ->with('error', 'Vui lòng đăng nhập để truy cập khóa học');
-        }
+        // Lấy ID khóa học từ route parameter
+        $courseId = $request->route('id');
 
-        $user = auth()->user();
-        
-        // Lấy thông tin khóa học
-        $course = Course::where('slug', $courseSlug)->first();
-        
-        if (!$course) {
-            abort(404, 'Không tìm thấy khóa học');
-        }
+        // Lấy ID học viên đang đăng nhập
+        $studentId = Auth::guard('student')->id();
 
-        // Kiểm tra xem user đã enrolled khóa học chưa
-        $hasEnrolled = Enrollment::where('userId', $user->id)
-            ->where('courseId', $course->id)
-            ->where('status', 'active') // hoặc trạng thái phù hợp với hệ thống của bạn
+        // Kiểm tra quyền truy cập
+        $hasAccess = CourseRegistration::whereHas('students', function($query) use ($studentId) {
+                $query->where('student_id', $studentId);
+            })
+            ->where('course_id', $courseId)
             ->exists();
-            
 
-        // Nếu là khóa học miễn phí
-        if ($course->is_free) {
-            return $next($request);
+        if (!$hasAccess) {
+            return redirect()->route('online.courses.index')
+                ->with('error', 'Bạn chưa đăng ký khóa học này');
         }
-
-        // Kiểm tra nếu user đã enrolled khóa học
-        if (!$hasEnrolled) {
-            return redirect()->route('detailCourse', $courseSlug)
-            ->with('notification', [
-                'message' => 'Bạn cần đăng ký khóa học này để truy cập.',
-                'type' => 'error'
-            ]);
-        }   
 
         return $next($request);
     }
-} 
+}

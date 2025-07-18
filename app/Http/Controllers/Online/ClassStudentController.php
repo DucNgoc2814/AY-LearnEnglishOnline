@@ -26,7 +26,11 @@ class ClassStudentController extends Controller
                     'upcomingClasses' => collect(),
                     'currentClasses' => collect(),
                     'completedClasses' => collect(),
-                    'error' => 'Vui lòng đăng nhập để xem thông tin lớp học.'
+                    'error' => 'Vui lòng đăng nhập để xem thông tin lớp học.',
+                    'hasAccessToCourse1' => false,
+                    'hasAccessToCourse2' => false,
+                    'hasAccessToCourse3' => false,
+                    'hasAccessToCourse4' => false
                 ]);
             }
 
@@ -40,7 +44,11 @@ class ClassStudentController extends Controller
                     'upcomingClasses' => collect(),
                     'currentClasses' => collect(),
                     'completedClasses' => collect(),
-                    'error' => 'Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.'
+                    'error' => 'Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.',
+                    'hasAccessToCourse1' => false,
+                    'hasAccessToCourse2' => false,
+                    'hasAccessToCourse3' => false,
+                    'hasAccessToCourse4' => false
                 ]);
             }
 
@@ -54,7 +62,11 @@ class ClassStudentController extends Controller
                     'upcomingClasses' => collect(),
                     'currentClasses' => collect(),
                     'completedClasses' => collect(),
-                    'error' => 'Bạn không có quyền truy cập vào trang này.'
+                    'error' => 'Bạn không có quyền truy cập vào trang này.',
+                    'hasAccessToCourse1' => false,
+                    'hasAccessToCourse2' => false,
+                    'hasAccessToCourse3' => false,
+                    'hasAccessToCourse4' => false
                 ]);
             }
 
@@ -133,7 +145,11 @@ class ClassStudentController extends Controller
                 'upcomingClasses' => $upcomingClasses,
                 'currentClasses' => $currentClasses,
                 'completedClasses' => $completedClasses,
-                'hasClasses' => $upcomingClasses->isNotEmpty() || $currentClasses->isNotEmpty() || $completedClasses->isNotEmpty()
+                'hasClasses' => $upcomingClasses->isNotEmpty() || $currentClasses->isNotEmpty() || $completedClasses->isNotEmpty(),
+                'hasAccessToCourse1' => true,
+                'hasAccessToCourse2' => true,
+                'hasAccessToCourse3' => true,
+                'hasAccessToCourse4' => true
             ]);
 
         } catch (\Exception $e) {
@@ -146,7 +162,11 @@ class ClassStudentController extends Controller
                 'upcomingClasses' => collect(),
                 'currentClasses' => collect(),
                 'completedClasses' => collect(),
-                'error' => 'Có lỗi xảy ra khi tải thông tin lớp học. Vui lòng thử lại sau.'
+                'error' => 'Có lỗi xảy ra khi tải thông tin lớp học. Vui lòng thử lại sau.',
+                'hasAccessToCourse1' => false,
+                'hasAccessToCourse2' => false,
+                'hasAccessToCourse3' => false,
+                'hasAccessToCourse4' => false
             ]);
         }
     }

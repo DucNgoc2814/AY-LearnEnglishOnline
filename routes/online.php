@@ -160,6 +160,20 @@ Route::prefix('online')->name('online.')->group(function () {
 
         // Shared Routes - Accessible by all authenticated users
         Route::group([], function () {
+            // Danh sách khóa học
+            Route::get('/courses', [App\Http\Controllers\Online\CourseController::class, 'index'])
+                ->name('courses.index');
+
+            // Chi tiết từng khóa học
+            Route::get('/courses/1', [App\Http\Controllers\Online\CourseController::class, 'show1'])
+                ->name('courses.show1');
+            Route::get('/courses/2', [App\Http\Controllers\Online\CourseController::class, 'show2'])
+                ->name('courses.show2');
+            Route::get('/courses/3', [App\Http\Controllers\Online\CourseController::class, 'show3'])
+                ->name('courses.show3');
+            Route::get('/courses/4', [App\Http\Controllers\Online\CourseController::class, 'show4'])
+                ->name('courses.show4');
+
             // Attendance
             Route::prefix('attendance')->name('attendance.')->group(function () {
                 Route::get('/', [AttendanceController::class, 'index'])->name('index');

@@ -64,64 +64,13 @@
             margin-right: 15px;
         }
 
-        .info-item:last-child {
-            margin-right: 0;
-        }
-
         .info-item i {
             margin-right: 8px;
             color: var(--primary-color);
         }
 
-        .class-status {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .status-active {
-            background-color: var(--success-light);
-            color: var(--success-color);
-        }
-
-        .status-completed {
-            background-color: var(--info-light);
-            color: var(--info-color);
-        }
-
         .class-content {
             padding: 20px;
-        }
-
-        .progress-section {
-            margin-bottom: 15px;
-        }
-
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: var(--gray-600);
-        }
-
-        .progress {
-            height: 8px;
-            border-radius: 4px;
-            background-color: var(--gray-200);
-        }
-
-        .progress-bar {
-            background-color: var(--primary-color);
-            border-radius: 4px;
-        }
-
-        .class-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
         }
 
         .action-btn {
@@ -135,237 +84,46 @@
             justify-content: center;
             transition: all 0.2s;
             min-width: 120px;
+            margin-right: 10px;
         }
 
-        .btn-schedule {
-            background-color: var(--warning-color);
-            color: white !important;
-            border: none;
-        }
-
-        .btn-schedule:hover {
-            background-color: #c25e02;
-            color: white !important;
-        }
-
-        .btn-assignment {
-            background-color: var(--success-color);
-            color: white !important;
-            border: none;
-        }
-
-        .btn-assignment:hover {
-            background-color: #1b5e20;
-            color: white !important;
-        }
-
-        .btn-grade {
-            background-color: var(--info-color);
-            color: white !important;
-            border: none;
-        }
-
-        .btn-grade:hover {
-            background-color: #01579b;
-            color: white !important;
-        }
-
-        .btn-outline-schedule {
-            border: 1px solid var(--warning-color);
-            color: var(--warning-color) !important;
-            background-color: transparent;
-        }
-
-        .btn-outline-schedule:hover {
-            background-color: var(--warning-color);
-            color: white !important;
-        }
-
-        .btn-outline-assignment {
-            border: 1px solid var(--success-color);
-            color: var(--success-color) !important;
-            background-color: transparent;
-        }
-
-        .btn-outline-assignment:hover {
-            background-color: var(--success-color);
-            color: white !important;
-        }
-
-        .btn-outline-grade {
-            border: 1px solid var(--info-color);
-            color: var(--info-color) !important;
-            background-color: transparent;
-        }
-
-        .btn-outline-grade:hover {
-            background-color: var(--info-color);
-            color: white !important;
-        }
-
-        .filter-section {
-            margin-bottom: 20px;
-        }
-
-        .filter-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .filter-btn {
-            padding: 8px 20px;
-            border: none;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .filter-btn.active {
+        .btn-view {
             background-color: var(--primary-color);
-            color: white;
+            color: white !important;
         }
 
-        .filter-btn:not(.active) {
-            background-color: var(--gray-200);
-            color: var(--gray-700);
+        .btn-view:hover {
+            background-color: var(--primary-hover);
         }
 
-        .filter-btn:hover:not(.active) {
-            background-color: var(--gray-300);
+        .btn-locked {
+            background-color: var(--gray-600);
+            color: white !important;
+            cursor: not-allowed;
+        }
+
+        .course-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .course-description {
+            color: var(--gray-600);
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
 
         @media (max-width: 768px) {
             .class-info {
-                flex-direction: row;
-                align-items: center;
-                gap: 10px;
-                margin-bottom: 15px;
-            }
-
-            .info-item {
-                margin-right: 10px;
-                font-size: 13px;
-            }
-
-            .info-item i {
-                font-size: 14px;
-            }
-
-            .class-title {
-                font-size: 16px;
-            }
-
-            .class-status {
-                font-size: 12px;
-                padding: 3px 10px;
-            }
-
-            .class-actions {
                 flex-direction: column;
+                gap: 10px;
             }
 
             .action-btn {
                 width: 100%;
-            }
-
-            .filter-buttons {
-                overflow-x: auto;
-                white-space: nowrap;
-                padding-bottom: 10px;
-            }
-
-            .filter-btn {
-                flex: 0 0 auto;
-            }
-        }
-
-        /* Modal styles */
-        .schedule-modal .modal-dialog {
-            max-width: 500px;
-            margin: 1.75rem auto;
-        }
-
-        @media (max-width: 576px) {
-            .schedule-modal .modal-dialog {
-                margin: 0.5rem;
-            }
-        }
-
-        .schedule-modal .modal-content {
-            border: none;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .schedule-modal .modal-header {
-            background-color: #0d6efd;
-            color: white;
-            padding: 1rem;
-        }
-
-        .schedule-modal .btn-close-white {
-            filter: brightness(0) invert(1);
-        }
-
-        .schedule-modal .modal-body {
-            padding: 0;
-        }
-
-        .schedule-modal .schedule-info {
-            background-color: #f8f9fa;
-            padding: 1rem;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .schedule-modal .table {
-            margin-bottom: 0;
-        }
-
-        .schedule-modal .table th {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .schedule-modal .table td {
-            vertical-align: middle;
-            padding: 0.75rem;
-        }
-
-        .schedule-modal .badge {
-            font-weight: 500;
-            padding: 0.5em 0.75em;
-        }
-
-        .schedule-modal .modal-footer {
-            border-top: 1px solid #dee2e6;
-            padding: 1rem;
-        }
-
-        .schedule-modal .btn-secondary {
-            background-color: #6c757d;
-            border: none;
-            padding: 0.5rem 1.5rem;
-        }
-
-        .schedule-modal .btn-secondary:hover {
-            background-color: #5a6268;
-        }
-
-        /* Table Responsive Fix */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        @media (max-width: 576px) {
-            .schedule-modal .table {
-                font-size: 0.875rem;
-            }
-
-            .schedule-modal .badge {
-                font-size: 0.75rem;
+                margin-bottom: 10px;
             }
         }
     </style>
@@ -376,241 +134,164 @@
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white py-3">
                 <h5 class="card-title mb-0 text-primary">
-                    <i class="fas fa-graduation-cap me-2"></i>My Classes
+                    <i class="fas fa-graduation-cap me-2"></i>Khóa học của tôi
                 </h5>
             </div>
             <div class="card-body">
-                <div class="filter-section">
-                    <div class="filter-buttons">
-                        <button class="filter-btn active" data-filter="all">All Classes</button>
-                        <button class="filter-btn" data-filter="upcoming">Upcoming</button>
-                        <button class="filter-btn" data-filter="current">Current</button>
-                        <button class="filter-btn" data-filter="completed">Completed</button>
-                    </div>
-                </div>
-
                 <div class="class-list">
-                    @if(isset($error))
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-circle me-2"></i>{{ $error }}
+                    <!-- Khóa học 1 -->
+                    <div class="class-card">
+                        <div class="class-header">
+                            <img src="{{ asset('images/course1.jpg') }}" alt="Course 1" class="course-image">
+                            <h3 class="class-title">Khóa học IELTS Cơ bản</h3>
+                            <div class="class-info">
+                                <div class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>3 tháng</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-book"></i>
+                                    <span>12 bài học</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-signal"></i>
+                                    <span>Cơ bản</span>
+                                </div>
+                            </div>
                         </div>
-                    @elseif(!isset($hasClasses) || !$hasClasses)
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>You haven't enrolled in any classes yet.
+                        <div class="class-content">
+                            <p class="course-description">
+                                Khóa học IELTS cơ bản dành cho người mới bắt đầu, giúp xây dựng nền tảng vững chắc cho kỳ thi IELTS.
+                            </p>
+                            <div class="class-actions">
+                                @if($hasAccessToCourse1)
+                                    <a href="{{ route('online.classes.show', ['id' => 1]) }}" class="action-btn btn-view">
+                                        <i class="fas fa-eye me-2"></i>Xem khóa học
+                                    </a>
+                                @else
+                                    <button class="action-btn btn-locked" disabled>
+                                        <i class="fas fa-lock me-2"></i>Chưa đăng ký
+                                    </button>
+                                @endif
+                            </div>
                         </div>
-                    @else
-                        <!-- Upcoming Classes -->
-                        @if(isset($upcomingClasses) && $upcomingClasses->isNotEmpty())
-                            @foreach($upcomingClasses as $class)
-                                <div class="class-card" data-type="upcoming">
-                                    <div class="class-header">
-                                        <h3 class="class-title">{{ $class->name }} ({{ $class->code }})</h3>
-                                        <div class="class-info">
-                                            <div class="info-item">
-                                                <i class="fas fa-user"></i>
-                                                @if($class->teacher)
-                                                    <span>{{ $class->teacher->name ?? $class->teacher->employee_code ?? $class->teacher->full_name ?? 'EMP001' }}</span>
-                                                @else
-                                                    <span>Not Assigned</span>
-                                                @endif
-                                            </div>
-                                            <div class="info-item">
-                                                <i class="fas fa-calendar"></i>
-                                                <span>{{ $class->formatted_schedule }}</span>
-                                            </div>
-                                            <span class="class-status bg-info text-white">Upcoming</span>
-                                        </div>
-                                    </div>
-                                    <div class="class-content">
-                                        <div class="mb-3">
-                                            <strong>Start Date:</strong> {{ \Carbon\Carbon::parse($class->start_date)->format('d/m/Y') }}
-                                        </div>
-                                        <div class="mb-3">
-                                            <strong>Registration Status:</strong>
-                                            <span class="badge {{ $class->stats['registration_status'] == 'active' ? 'bg-success' : 'bg-warning' }}">
-                                                {{ $class->stats['registration_status'] == 'active' ? 'Confirmed' : 'Pending' }}
-                                            </span>
-                                        </div>
-                                        <div class="mb-3">
-                                            <strong>Payment Status:</strong>
-                                            <span class="badge {{ $class->stats['payment_status'] == 'paid' ? 'bg-success' : 'bg-warning' }}">
-                                                {{ $class->stats['payment_status'] == 'paid' ? 'Paid' : 'Unpaid' }}
-                                            </span>
-                                        </div>
-                                        <div class="class-actions">
-                                            <a href="{{ route('online.classes.show', ['id' => $class->id]) }}" class="action-btn" style="background-color: var(--primary-color); color: white !important;">
-                                                <i class="fas fa-eye me-2"></i>View Details
-                                            </a>
-                                            <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
-                                                <i class="fas fa-calendar-alt me-2"></i>Schedule
-                                            </a>
-                                            <a href="{{ route('online.grades.index', ['class_id' => $class->id]) }}" class="action-btn btn-grade">
-                                                <i class="fas fa-chart-line me-2"></i>View Grades
-                                            </a>
-                                            <a href="{{ route('online.classes.tests', ['class_id' => $class->id]) }}" class="action-btn btn-assignment">
-                                                <i class="fas fa-tasks me-2"></i>Assignments
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        @endif
+                    </div>
 
-                        <!-- Current Classes -->
-                        @if(isset($currentClasses) && $currentClasses->isNotEmpty())
-                            @foreach($currentClasses as $class)
-                                <div class="class-card" data-type="{{ \Carbon\Carbon::now()->gt(\Carbon\Carbon::parse($class->end_date)) ? 'completed' : 'current' }}">
-                                    <div class="class-header">
-                                        <h3 class="class-title">{{ $class->name }} ({{ $class->code }})</h3>
-                                        <div class="class-info">
-                                            <div class="info-item">
-                                                <i class="fas fa-user"></i>
-                                                @if($class->teacher)
-                                                    <span>{{ $class->teacher->name ?? $class->teacher->employee_code ?? $class->teacher->full_name ?? 'EMP001' }}</span>
-                                                @else
-                                                    <span>Not Assigned</span>
-                                                @endif
-                                            </div>
-                                            <div class="info-item">
-                                                <i class="fas fa-calendar"></i>
-                                                <span>{{ $class->formatted_schedule }}</span>
-                                            </div>
-                                            @php
-                                                $isEnded = \Carbon\Carbon::now()->gt(\Carbon\Carbon::parse($class->end_date));
-                                            @endphp
-                                            <span class="class-status {{ $isEnded ? 'status-completed' : 'status-active' }}">
-                                                {{ $isEnded ? 'Ended' : 'In Progress' }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="class-content">
-                                        <div class="progress-section">
-                                            <div class="progress-label">
-                                                <span>Learning Progress</span>
-                                                <span>{{ $class->stats['attended_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} sessions</span>
-                                            </div>
-                                            <div class="progress">
-                                                <div class="progress-bar" role="progressbar"
-                                                    style="width: {{ $class->stats['attendance_rate'] ?? 0 }}%"
-                                                    aria-valuenow="{{ $class->stats['attendance_rate'] ?? 0 }}"
-                                                    aria-valuemin="0"
-                                                    aria-valuemax="100">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="class-actions">
-                                            <a href="{{ route('online.classes.show', ['id' => $class->id]) }}" class="action-btn" style="background-color: var(--primary-color); color: white !important;">
-                                                <i class="fas fa-eye me-2"></i>View Details
-                                            </a>
-                                            <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
-                                                <i class="fas fa-calendar-alt me-2"></i>Schedule
-                                            </a>
-                                            <a href="{{ route('online.classes.tests', ['class_id' => $class->id]) }}" class="action-btn btn-assignment">
-                                                <i class="fas fa-tasks me-2"></i>Assignments
-                                            </a>
-                                            <a href="{{ route('online.grades.index', ['class_id' => $class->id]) }}" class="action-btn btn-grade">
-                                                <i class="fas fa-chart-line me-2"></i>Assignment Progress
-                                            </a>
-                                        </div>
-                                    </div>
+                    <!-- Khóa học 2 -->
+                    <div class="class-card">
+                        <div class="class-header">
+                            <img src="{{ asset('images/course2.jpg') }}" alt="Course 2" class="course-image">
+                            <h3 class="class-title">Khóa học IELTS Trung cấp</h3>
+                            <div class="class-info">
+                                <div class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>4 tháng</span>
                                 </div>
-                            @endforeach
-                        @endif
+                                <div class="info-item">
+                                    <i class="fas fa-book"></i>
+                                    <span>16 bài học</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-signal"></i>
+                                    <span>Trung cấp</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="class-content">
+                            <p class="course-description">
+                                Khóa học IELTS trung cấp giúp nâng cao kỹ năng và hướng tới band điểm 6.0-7.0.
+                            </p>
+                            <div class="class-actions">
+                                @if($hasAccessToCourse2)
+                                    <a href="{{ route('online.classes.show', ['id' => 2]) }}" class="action-btn btn-view">
+                                        <i class="fas fa-eye me-2"></i>Xem khóa học
+                                    </a>
+                                @else
+                                    <button class="action-btn btn-locked" disabled>
+                                        <i class="fas fa-lock me-2"></i>Chưa đăng ký
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
 
-                        <!-- Completed Classes -->
-                        @if(isset($completedClasses) && $completedClasses->isNotEmpty())
-                            @foreach($completedClasses as $class)
-                                <div class="class-card" data-type="completed">
-                                    <div class="class-header">
-                                        <h3 class="class-title">{{ $class->name }} ({{ $class->code }})</h3>
-                                        <div class="class-info">
-                                            <div class="info-item">
-                                                <i class="fas fa-user"></i>
-                                                @if($class->teacher)
-                                                    <span>{{ $class->teacher->name ?? $class->teacher->employee_code ?? $class->teacher->full_name ?? 'EMP001' }}</span>
-                                                @else
-                                                    <span>Not Assigned</span>
-                                                @endif
-                                            </div>
-                                            <div class="info-item">
-                                                <i class="fas fa-calendar"></i>
-                                                <span>{{ $class->formatted_schedule }}</span>
-                                            </div>
-                                            <span class="class-status status-completed">Completed</span>
-                                        </div>
-                                    </div>
-                                    <div class="class-content">
-                                        @php
-                                            $isEnded = true; // For completed classes, always mark as ended
-                                        @endphp
-                                        <div class="progress-section">
-                                            <div class="progress-label">
-                                                <span>Learning Progress</span>
-                                                @if($isEnded)
-                                                    <span>{{ $class->stats['total_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} sessions</span>
-                                                @else
-                                                    <span>{{ $class->stats['attended_sessions'] ?? 0 }}/{{ $class->stats['total_sessions'] ?? 0 }} sessions</span>
-                                                @endif
-                                            </div>
-                                            <div class="progress">
-                                                <div class="progress-bar" role="progressbar"
-                                                    style="width: {{ $isEnded ? 100 : ($class->stats['attendance_rate'] ?? 0) }}%"
-                                                    aria-valuenow="{{ $isEnded ? 100 : ($class->stats['attendance_rate'] ?? 0) }}"
-                                                    aria-valuemin="0"
-                                                    aria-valuemax="100">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="class-actions">
-                                            <a href="{{ route('online.classes.show', ['id' => $class->id]) }}" class="action-btn" style="background-color: var(--primary-color); color: white !important;">
-                                                <i class="fas fa-eye me-2"></i>View Details
-                                            </a>
-                                            <a href="#" class="action-btn btn-schedule" data-bs-toggle="modal" data-bs-target="#scheduleModal{{ $class->id }}">
-                                                <i class="fas fa-calendar-alt me-2"></i>Schedule
-                                            </a>
-                                            <a href="{{ route('online.classes.tests', ['class_id' => $class->id]) }}" class="action-btn btn-assignment">
-                                                <i class="fas fa-tasks me-2"></i>Assignments
-                                            </a>
-                                            <a href="{{ route('online.grades.index', ['class_id' => $class->id]) }}" class="action-btn btn-grade">
-                                                <i class="fas fa-chart-line me-2"></i>View Grades
-                                            </a>
-                                        </div>
-                                    </div>
+                    <!-- Khóa học 3 -->
+                    <div class="class-card">
+                        <div class="class-header">
+                            <img src="{{ asset('images/course3.jpg') }}" alt="Course 3" class="course-image">
+                            <h3 class="class-title">Khóa học IELTS Nâng cao</h3>
+                            <div class="class-info">
+                                <div class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>4 tháng</span>
                                 </div>
-                            @endforeach
-                        @endif
-                    @endif
+                                <div class="info-item">
+                                    <i class="fas fa-book"></i>
+                                    <span>20 bài học</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-signal"></i>
+                                    <span>Nâng cao</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="class-content">
+                            <p class="course-description">
+                                Khóa học IELTS nâng cao dành cho học viên muốn đạt band điểm 7.0-8.0.
+                            </p>
+                            <div class="class-actions">
+                                @if($hasAccessToCourse3)
+                                    <a href="{{ route('online.classes.show', ['id' => 3]) }}" class="action-btn btn-view">
+                                        <i class="fas fa-eye me-2"></i>Xem khóa học
+                                    </a>
+                                @else
+                                    <button class="action-btn btn-locked" disabled>
+                                        <i class="fas fa-lock me-2"></i>Chưa đăng ký
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Khóa học 4 -->
+                    <div class="class-card">
+                        <div class="class-header">
+                            <img src="{{ asset('images/course4.jpg') }}" alt="Course 4" class="course-image">
+                            <h3 class="class-title">Khóa học IELTS Chuyên sâu</h3>
+                            <div class="class-info">
+                                <div class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>6 tháng</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-book"></i>
+                                    <span>24 bài học</span>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-signal"></i>
+                                    <span>Chuyên sâu</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="class-content">
+                            <p class="course-description">
+                                Khóa học IELTS chuyên sâu giúp học viên đạt band điểm 8.0-9.0 và làm chủ hoàn toàn kỹ năng.
+                            </p>
+                            <div class="class-actions">
+                                @if($hasAccessToCourse4)
+                                    <a href="{{ route('online.classes.show', ['id' => 4]) }}" class="action-btn btn-view">
+                                        <i class="fas fa-eye me-2"></i>Xem khóa học
+                                    </a>
+                                @else
+                                    <button class="action-btn btn-locked" disabled>
+                                        <i class="fas fa-lock me-2"></i>Chưa đăng ký
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
-
-@push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const classCards = document.querySelectorAll('.class-card');
-
-            filterButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    // Add active class to clicked button
-                    this.classList.add('active');
-
-                    const filterType = this.getAttribute('data-filter');
-
-                    // Show/hide cards based on filter
-                    classCards.forEach(card => {
-                        if (filterType === 'all') {
-                            card.style.display = 'block';
-                        } else {
-                            card.style.display = card.getAttribute('data-type') === filterType ? 'block' : 'none';
-                        }
-                    });
-                });
-            });
-        });
-    </script>
-@endpush
