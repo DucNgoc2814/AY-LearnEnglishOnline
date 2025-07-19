@@ -1,3 +1,4 @@
+{{-- Copy CSS from materials.blade.php --}}
 <style>
     .materials-container .accordion-button {
         background-color: transparent !important;
@@ -69,21 +70,27 @@
     <div class="accordion" id="lessonsAccordion">
         @php
             $lessons = [
-                ['id' => 1, 'name' => 'IELTS Introduction and Overview'],
-                ['id' => 2, 'name' => 'Basic Writing Skills'],
-                ['id' => 3, 'name' => 'Understanding Task 1'],
-                ['id' => 4, 'name' => 'Understanding Task 2'],
-                ['id' => 5, 'name' => 'Basic Reading Skills'],
-                ['id' => 6, 'name' => 'Reading Question Types'],
-                ['id' => 7, 'name' => 'Basic Listening Skills'],
-                ['id' => 8, 'name' => 'Listening Section Types'],
-                ['id' => 9, 'name' => 'Speaking Part 1 Basics'],
-                ['id' => 10, 'name' => 'Speaking Part 2 Basics'],
-                ['id' => 11, 'name' => 'Speaking Part 3 Basics'],
-                ['id' => 12, 'name' => 'Essential Grammar Review'],
-                ['id' => 13, 'name' => 'Basic Vocabulary Building'],
-                ['id' => 14, 'name' => 'Practice Tests'],
-                ['id' => 15, 'name' => 'Final Review and Strategy']
+                ['id' => 1, 'name' => 'Expert Writing Analysis Techniques'],
+                ['id' => 2, 'name' => 'Advanced Statistical Data Analysis'],
+                ['id' => 3, 'name' => 'Complex Process and System Description'],
+                ['id' => 4, 'name' => 'Expert Essay Writing Strategies'],
+                ['id' => 5, 'name' => 'Advanced Argumentative Techniques'],
+                ['id' => 6, 'name' => 'Academic Vocabulary Mastery'],
+                ['id' => 7, 'name' => 'Expert Grammar and Style'],
+                ['id' => 8, 'name' => 'Advanced Academic Reading'],
+                ['id' => 9, 'name' => 'Research Paper Analysis'],
+                ['id' => 10, 'name' => 'Speed Reading Mastery'],
+                ['id' => 11, 'name' => 'Expert Listening Techniques'],
+                ['id' => 12, 'name' => 'Complex Academic Lectures'],
+                ['id' => 13, 'name' => 'Multi-accent Comprehension'],
+                ['id' => 14, 'name' => 'Expert Speaking Strategies'],
+                ['id' => 15, 'name' => 'Advanced Debate Techniques'],
+                ['id' => 16, 'name' => 'Professional Presentation Skills'],
+                ['id' => 17, 'name' => 'Native-like Pronunciation'],
+                ['id' => 18, 'name' => 'Expert Mock Tests'],
+                ['id' => 19, 'name' => 'Advanced Error Analysis'],
+                ['id' => 20, 'name' => 'Band 9 Strategies'],
+                ['id' => 21, 'name' => 'Final Expert Assessment']
             ];
         @endphp
 

@@ -1,3 +1,4 @@
+{{-- Copy CSS from materials.blade.php --}}
 <style>
     .materials-container .accordion-button {
         background-color: transparent !important;
@@ -69,21 +70,20 @@
     <div class="accordion" id="lessonsAccordion">
         @php
             $lessons = [
-                ['id' => 1, 'name' => 'IELTS Introduction and Overview'],
-                ['id' => 2, 'name' => 'Basic Writing Skills'],
-                ['id' => 3, 'name' => 'Understanding Task 1'],
-                ['id' => 4, 'name' => 'Understanding Task 2'],
-                ['id' => 5, 'name' => 'Basic Reading Skills'],
-                ['id' => 6, 'name' => 'Reading Question Types'],
-                ['id' => 7, 'name' => 'Basic Listening Skills'],
-                ['id' => 8, 'name' => 'Listening Section Types'],
-                ['id' => 9, 'name' => 'Speaking Part 1 Basics'],
-                ['id' => 10, 'name' => 'Speaking Part 2 Basics'],
-                ['id' => 11, 'name' => 'Speaking Part 3 Basics'],
-                ['id' => 12, 'name' => 'Essential Grammar Review'],
-                ['id' => 13, 'name' => 'Basic Vocabulary Building'],
-                ['id' => 14, 'name' => 'Practice Tests'],
-                ['id' => 15, 'name' => 'Final Review and Strategy']
+                ['id' => 1, 'name' => 'Introduction to IELTS Writing Task 1'],
+                ['id' => 2, 'name' => 'Describing Graphs and Charts'],
+                ['id' => 3, 'name' => 'Describing Processes and Maps'],
+                ['id' => 4, 'name' => 'IELTS Writing Task 2 Essay Types'],
+                ['id' => 5, 'name' => 'Developing Arguments'],
+                ['id' => 6, 'name' => 'IELTS Reading Strategies'],
+                ['id' => 7, 'name' => 'Skimming and Scanning Techniques'],
+                ['id' => 8, 'name' => 'Reading for Detail'],
+                ['id' => 9, 'name' => 'IELTS Listening Skills'],
+                ['id' => 10, 'name' => 'Note-taking Strategies'],
+                ['id' => 11, 'name' => 'Speaking Part 1: Introduction'],
+                ['id' => 12, 'name' => 'Speaking Part 2: Cue Card'],
+                ['id' => 13, 'name' => 'Speaking Part 3: Discussion'],
+                ['id' => 14, 'name' => 'Mock Test and Review']
             ];
         @endphp
 

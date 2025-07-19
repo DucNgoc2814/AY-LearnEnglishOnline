@@ -3,9 +3,6 @@
         <h5 class="mb-0">
             <i class="fas fa-video me-2"></i> Link Zoom phòng học trực tuyến
         </h5>
-        <span class="badge {{ $class->status === 'active' ? 'bg-success' : 'bg-secondary' }}">
-            {{ $class->status === 'active' ? 'Đang hoạt động' : 'Chưa kích hoạt' }}
-        </span>
     </div>
 
     <div class="card mb-4">
@@ -45,7 +42,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="alert alert-info">
                 <div class="d-flex">
                     <div class="me-3">
@@ -68,7 +65,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="accordion" id="scheduleAccordion">
         <div class="accordion-item">
             <h2 class="accordion-header">
@@ -122,7 +119,7 @@
         // Initialize clipboard.js for copy buttons
         if (typeof ClipboardJS !== 'undefined') {
             new ClipboardJS('.copy-btn');
-            
+
             // Show tooltip on copy
             document.querySelectorAll('.copy-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -136,4 +133,4 @@
         }
     });
 </script>
-@endpush 
+@endpush

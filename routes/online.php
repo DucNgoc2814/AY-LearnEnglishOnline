@@ -165,13 +165,13 @@ Route::prefix('online')->name('online.')->group(function () {
                 ->name('courses.index');
 
             // Chi tiết từng khóa học
-            Route::get('/courses/1', [App\Http\Controllers\Online\CourseController::class, 'show1'])
-                ->name('courses.show1');
-            Route::get('/courses/2', [App\Http\Controllers\Online\CourseController::class, 'show2'])
+            Route::get('/courses/show', [App\Http\Controllers\Online\CourseController::class, 'show1'])
+                ->name('courses.show');
+            Route::get('/courses/show2', [App\Http\Controllers\Online\CourseController::class, 'show2'])
                 ->name('courses.show2');
-            Route::get('/courses/3', [App\Http\Controllers\Online\CourseController::class, 'show3'])
+            Route::get('/courses/show3', [App\Http\Controllers\Online\CourseController::class, 'show3'])
                 ->name('courses.show3');
-            Route::get('/courses/4', [App\Http\Controllers\Online\CourseController::class, 'show4'])
+            Route::get('/courses/show4', [App\Http\Controllers\Online\CourseController::class, 'show4'])
                 ->name('courses.show4');
 
             // Attendance

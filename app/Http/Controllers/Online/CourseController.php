@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\Online;
 
 use App\Http\Controllers\Controller;
-use App\Models\Course;
-use App\Models\CourseRegistration;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
@@ -15,14 +12,11 @@ class CourseController extends Controller
      */
     public function index()
     {
-        // Lấy ID của học viên đang đăng nhập
-        $studentId = Auth::guard('student')->id();
-
         // Kiểm tra quyền truy cập cho từng khóa học
-        $hasAccessToCourse1 = $this->checkCourseAccess(1, $studentId);
-        $hasAccessToCourse2 = $this->checkCourseAccess(2, $studentId);
-        $hasAccessToCourse3 = $this->checkCourseAccess(3, $studentId);
-        $hasAccessToCourse4 = $this->checkCourseAccess(4, $studentId);
+        $hasAccessToCourse1 = true; // Tạm thời set true để test
+        $hasAccessToCourse2 = true;
+        $hasAccessToCourse3 = true;
+        $hasAccessToCourse4 = true;
 
         return view('online.classes.index', compact(
             'hasAccessToCourse1',
@@ -33,84 +27,106 @@ class CourseController extends Controller
     }
 
     /**
-     * Hiển thị chi tiết khóa học 1
+     * Hiển thị khóa học 1 - Basic
      */
     public function show1()
     {
-        if (!$this->checkCourseAccess(1, Auth::guard('student')->id())) {
-            return redirect()->route('online.courses.index')
-                ->with('error', 'Bạn chưa đăng ký khóa học này');
-        }
+        $stats = [
+            'completed_lessons' => 5,
+            'completion_rate' => 33,
+            'total_exercises' => 30
+        ];
 
-        $stats = $this->getCourseStats(1);
-        return view('online.classes.show', compact('stats'));
+        $class = (object)[
+            'id' => 1, // Thêm id
+            'name' => 'Basic IELTS Course',
+            'code' => 'IELTS-BASIC',
+            'teacher' => (object)[
+                'name' => 'John Smith'
+            ],
+            'students' => collect([1,2,3,4,5]), // Giả lập 5 học viên
+            'formatted_schedule' => 'Mon, Wed, Fri',
+            'status' => 'active'
+        ];
+
+        return view('online.classes.show', compact('stats', 'class'));
     }
 
     /**
-     * Hiển thị chi tiết khóa học 2
+     * Hiển thị khóa học 2 - Intermediate
      */
     public function show2()
     {
-        if (!$this->checkCourseAccess(2, Auth::guard('student')->id())) {
-            return redirect()->route('online.courses.index')
-                ->with('error', 'Bạn chưa đăng ký khóa học này');
-        }
+        $stats = [
+            'completed_lessons' => 3,
+            'completion_rate' => 21,
+            'total_exercises' => 28
+        ];
 
-        $stats = $this->getCourseStats(2);
-        return view('online.classes.show2', compact('stats'));
+        $class = (object)[
+            'id' => 2, // Thêm id
+            'name' => 'Intermediate IELTS Course',
+            'code' => 'IELTS-INT',
+            'teacher' => (object)[
+                'name' => 'Mary Johnson'
+            ],
+            'students' => collect([1,2,3,4,5,6]), // Giả lập 6 học viên
+            'formatted_schedule' => 'Tue, Thu, Sat',
+            'status' => 'active'
+        ];
+
+        return view('online.classes.show2', compact('stats', 'class'));
     }
 
     /**
-     * Hiển thị chi tiết khóa học 3
+     * Hiển thị khóa học 3 - Advanced
      */
     public function show3()
     {
-        if (!$this->checkCourseAccess(3, Auth::guard('student')->id())) {
-            return redirect()->route('online.courses.index')
-                ->with('error', 'Bạn chưa đăng ký khóa học này');
-        }
+        $stats = [
+            'completed_lessons' => 8,
+            'completion_rate' => 40,
+            'total_exercises' => 40
+        ];
 
-        $stats = $this->getCourseStats(3);
-        return view('online.classes.show3', compact('stats'));
+        $class = (object)[
+            'id' => 3, // Thêm id
+            'name' => 'Advanced IELTS Course',
+            'code' => 'IELTS-ADV',
+            'teacher' => (object)[
+                'name' => 'David Wilson'
+            ],
+            'students' => collect([1,2,3,4,5,6,7]), // Giả lập 7 học viên
+            'formatted_schedule' => 'Mon, Wed, Fri',
+            'status' => 'active'
+        ];
+
+        return view('online.classes.show3', compact('stats', 'class'));
     }
 
     /**
-     * Hiển thị chi tiết khóa học 4
+     * Hiển thị khóa học 4 - Expert
      */
     public function show4()
     {
-        if (!$this->checkCourseAccess(4, Auth::guard('student')->id())) {
-            return redirect()->route('online.courses.index')
-                ->with('error', 'Bạn chưa đăng ký khóa học này');
-        }
-
-        $stats = $this->getCourseStats(4);
-        return view('online.classes.show4', compact('stats'));
-    }
-
-    /**
-     * Kiểm tra quyền truy cập khóa học
-     */
-    private function checkCourseAccess($courseId, $studentId)
-    {
-        return CourseRegistration::whereHas('students', function($query) use ($studentId) {
-                $query->where('student_id', $studentId);
-            })
-            ->where('course_id', $courseId)
-            ->exists();
-    }
-
-    /**
-     * Lấy thống kê của khóa học
-     */
-    private function getCourseStats($courseId)
-    {
-        // Giả lập dữ liệu thống kê
-        // Trong thực tế bạn sẽ lấy từ database
-        return [
-            'completed_lessons' => rand(0, 24),
-            'completion_rate' => rand(0, 100),
-            'total_exercises' => rand(10, 30)
+        $stats = [
+            'completed_lessons' => 10,
+            'completion_rate' => 48,
+            'total_exercises' => 42
         ];
+
+        $class = (object)[
+            'id' => 4, // Thêm id
+            'name' => 'Expert IELTS Course',
+            'code' => 'IELTS-EXP',
+            'teacher' => (object)[
+                'name' => 'Sarah Brown'
+            ],
+            'students' => collect([1,2,3,4,5,6,7,8]), // Giả lập 8 học viên
+            'formatted_schedule' => 'Tue, Thu, Sat',
+            'status' => 'active'
+        ];
+
+        return view('online.classes.show4', compact('stats', 'class'));
     }
 }

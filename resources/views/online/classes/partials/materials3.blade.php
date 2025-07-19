@@ -1,3 +1,4 @@
+{{-- Copy CSS from materials.blade.php --}}
 <style>
     .materials-container .accordion-button {
         background-color: transparent !important;
@@ -69,21 +70,26 @@
     <div class="accordion" id="lessonsAccordion">
         @php
             $lessons = [
-                ['id' => 1, 'name' => 'IELTS Introduction and Overview'],
-                ['id' => 2, 'name' => 'Basic Writing Skills'],
-                ['id' => 3, 'name' => 'Understanding Task 1'],
-                ['id' => 4, 'name' => 'Understanding Task 2'],
-                ['id' => 5, 'name' => 'Basic Reading Skills'],
-                ['id' => 6, 'name' => 'Reading Question Types'],
-                ['id' => 7, 'name' => 'Basic Listening Skills'],
-                ['id' => 8, 'name' => 'Listening Section Types'],
-                ['id' => 9, 'name' => 'Speaking Part 1 Basics'],
-                ['id' => 10, 'name' => 'Speaking Part 2 Basics'],
-                ['id' => 11, 'name' => 'Speaking Part 3 Basics'],
-                ['id' => 12, 'name' => 'Essential Grammar Review'],
-                ['id' => 13, 'name' => 'Basic Vocabulary Building'],
-                ['id' => 14, 'name' => 'Practice Tests'],
-                ['id' => 15, 'name' => 'Final Review and Strategy']
+                ['id' => 1, 'name' => 'Advanced Writing Task 1 Analysis'],
+                ['id' => 2, 'name' => 'Complex Data Interpretation'],
+                ['id' => 3, 'name' => 'Advanced Process Description'],
+                ['id' => 4, 'name' => 'Writing Task 2 Advanced Structures'],
+                ['id' => 5, 'name' => 'Critical Thinking in Essays'],
+                ['id' => 6, 'name' => 'Advanced Vocabulary Usage'],
+                ['id' => 7, 'name' => 'Complex Grammar Structures'],
+                ['id' => 8, 'name' => 'Advanced Reading Techniques'],
+                ['id' => 9, 'name' => 'Academic Reading Strategies'],
+                ['id' => 10, 'name' => 'Speed Reading Skills'],
+                ['id' => 11, 'name' => 'Advanced Listening Skills'],
+                ['id' => 12, 'name' => 'Academic Lecture Comprehension'],
+                ['id' => 13, 'name' => 'Multiple Speaker Dialogues'],
+                ['id' => 14, 'name' => 'Advanced Speaking Techniques'],
+                ['id' => 15, 'name' => 'Complex Topic Discussion'],
+                ['id' => 16, 'name' => 'Advanced Pronunciation'],
+                ['id' => 17, 'name' => 'Fluency Development'],
+                ['id' => 18, 'name' => 'Advanced Mock Tests'],
+                ['id' => 19, 'name' => 'Error Analysis and Correction'],
+                ['id' => 20, 'name' => 'Final Assessment and Review']
             ];
         @endphp
 

@@ -1,6 +1,6 @@
 @extends('online.layouts.master')
 
-@section('title', $class->name)
+@section('title', 'Basic IELTS Course')
 
 @push('styles')
     <style>
@@ -221,7 +221,7 @@
 @section('content')
     <div class="container py-4">
         <div class="class-header">
-            <h1 class="class-title">{{ $class->class->name }} ({{ $class->class->code }})</h1>
+            <h1 class="class-title">Basic IELTS Course</h1>
             <div class="class-meta">
                 <div class="meta-item">
                     <i class="fas fa-user-tie"></i>
@@ -231,12 +231,12 @@
                 <div class="meta-item">
                     <i class="fas fa-users"></i>
                     <span class="meta-label">Class Size:</span>
-                    <span>{{ $class->students->count() }} students</span>
+                    <span>{{ $class->students->count() ?? 0 }} students</span>
                 </div>
                 <div class="meta-item">
                     <i class="fas fa-calendar"></i>
                     <span class="meta-label">Schedule:</span>
-                    <span>{{ $class->formatted_schedule }}</span>
+                    <span>{{ $class->formatted_schedule ?? 'Not Assigned' }}</span>
                 </div>
                 <div class="meta-item">
                     <i class="fas fa-clock"></i>
@@ -303,11 +303,7 @@
 
         <div class="tab-content">
             <div class="tab-pane fade show active" id="materials" role="tabpanel">
-                @include('online.classes.partials.materials', [
-                    'class' => $class,
-                    'course' => $course ?? null,
-                    'lessons' => $lessons ?? []
-                ])
+                @include('online.classes.partials.materials')
             </div>
             <div class="tab-pane fade" id="zoom" role="tabpanel">
                 @include('online.classes.partials.zoom', ['class' => $class])
@@ -328,19 +324,6 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Load lessons data when materials tab is shown
-            const materialsTab = document.querySelector('#materials-tab');
-            materialsTab.addEventListener('shown.bs.tab', function (e) {
-                fetch('{{ route("online.classes.lessons", ["id" => $class->id]) }}')
-                    .then(response => response.text())
-                    .then(html => {
-                        document.querySelector('#materials').innerHTML = html;
-                    })
-                    .catch(error => {
-                        console.error('Error loading lessons:', error);
-                    });
-            });
-
             // Handle tab persistence
             const activeTab = localStorage.getItem('activeClassTab');
             if (activeTab) {

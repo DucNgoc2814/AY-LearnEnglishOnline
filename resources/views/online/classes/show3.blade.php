@@ -1,6 +1,6 @@
 @extends('online.layouts.master')
 
-@section('title', 'Khóa học IELTS Nâng cao')
+@section('title', 'Advanced IELTS Course')
 
 @push('styles')
     <style>
@@ -152,22 +152,22 @@
 @section('content')
     <div class="container py-4">
         <div class="class-header">
-            <h1 class="class-title">Khóa học IELTS Nâng cao</h1>
+            <h1 class="class-title">Advanced IELTS Course</h1>
             <div class="class-meta">
                 <div class="meta-item">
                     <i class="fas fa-clock"></i>
-                    <span class="meta-label">Thời lượng:</span>
-                    <span>4 tháng</span>
+                    <span class="meta-label">Duration:</span>
+                    <span>4 months</span>
                 </div>
                 <div class="meta-item">
                     <i class="fas fa-book"></i>
-                    <span class="meta-label">Số bài học:</span>
-                    <span>20 bài học</span>
+                    <span class="meta-label">Lessons:</span>
+                    <span>20 lessons</span>
                 </div>
                 <div class="meta-item">
                     <i class="fas fa-signal"></i>
-                    <span class="meta-label">Trình độ:</span>
-                    <span>Nâng cao</span>
+                    <span class="meta-label">Level:</span>
+                    <span>Advanced</span>
                 </div>
             </div>
         </div>
@@ -175,19 +175,19 @@
         <div class="quick-stats">
             <div class="stat-card">
                 <div class="stat-value">20</div>
-                <div class="stat-label">Tổng số bài học</div>
+                <div class="stat-label">Total Lessons</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">{{ $stats['completed_lessons'] ?? 0 }}</div>
-                <div class="stat-label">Bài học đã hoàn thành</div>
+                <div class="stat-label">Completed Lessons</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">{{ $stats['completion_rate'] ?? 0 }}%</div>
-                <div class="stat-label">Tỷ lệ hoàn thành</div>
+                <div class="stat-label">Completion Rate</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value">{{ $stats['total_exercises'] ?? 0 }}</div>
-                <div class="stat-label">Bài tập</div>
+                <div class="stat-label">Exercises</div>
             </div>
         </div>
 
@@ -195,41 +195,41 @@
             <li class="nav-item" role="presentation">
                 <a class="nav-link active" id="materials-tab" data-bs-toggle="tab" href="#materials" role="tab">
                     <i class="fas fa-book"></i>
-                    Tài liệu học
+                    Course Materials
                 </a>
             </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="zoom-tab" data-bs-toggle="tab" href="#zoom" role="tab">
                     <i class="fas fa-video"></i>
-                    Lớp học trực tuyến
+                    Live Classes
                 </a>
             </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="exercises-tab" data-bs-toggle="tab" href="#exercises" role="tab">
                     <i class="fas fa-tasks"></i>
-                    Bài tập
+                    Exercises
                 </a>
             </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="progress-tab" data-bs-toggle="tab" href="#progress" role="tab">
                     <i class="fas fa-chart-line"></i>
-                    Tiến độ học tập
+                    Progress
                 </a>
             </li>
         </ul>
 
         <div class="tab-content">
             <div class="tab-pane fade show active" id="materials" role="tabpanel">
-                @include('online.classes.partials.materials', ['course' => 3])
+                @include('online.classes.partials.materials3')
             </div>
             <div class="tab-pane fade" id="zoom" role="tabpanel">
-                @include('online.classes.partials.zoom', ['course' => 3])
+                @include('online.classes.partials.zoom')
             </div>
             <div class="tab-pane fade" id="exercises" role="tabpanel">
-                @include('online.classes.partials.exercises', ['course' => 3])
+                @include('online.classes.partials.exercises')
             </div>
             <div class="tab-pane fade" id="progress" role="tabpanel">
-                @include('online.classes.partials.progress', ['course' => 3])
+                @include('online.classes.partials.progress')
             </div>
         </div>
     </div>
@@ -238,12 +238,14 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Handle tab persistence
             const activeTab = localStorage.getItem('activeClassTab');
             if (activeTab) {
                 const tab = new bootstrap.Tab(document.querySelector(`a[href="${activeTab}"]`));
                 tab.show();
             }
 
+            // Store active tab
             document.querySelectorAll('.simple-tabs .nav-link').forEach(tab => {
                 tab.addEventListener('shown.bs.tab', function(e) {
                     localStorage.setItem('activeClassTab', e.target.getAttribute('href'));
