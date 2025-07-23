@@ -174,7 +174,7 @@ class VocabularyListeningController extends Controller
         }
 
         // Word bank cho grammar exercises
-        $wordBank = $grammarExercises->pluck('correct_synonym')->unique()->values()->toArray();
+        $wordBank = collect($grammarExercises)->pluck('correct_synonym')->unique()->values()->toArray();
 
         $data = [
             'title' => 'Vocabulary & Listening Practice',
@@ -218,7 +218,7 @@ class VocabularyListeningController extends Controller
                     'title' => 'GRAMMAR (Trạng từ + Tính từ)',
                     'description' => 'Kéo thả từ trong hộp để di chuyển đáp án lên câu hỏi',
                     'grammar_exercise' => [
-                        'grammar_id' => $grammarExercises->isNotEmpty() ? $grammarExercises->first()['id'] : null,
+                        'grammar_id' => !empty($grammarExercises) ? $grammarExercises[0]['id'] : null,
                         'word_bank' => $wordBank,
                         'questions' => $grammarExercises,
                         'message' => $grammarMessage
