@@ -67,13 +67,21 @@ return [
                     'name' => 'Basic Writing Skills',
                     'structure' => [
                         'before_class' => [
+                            'us_movie' => [
+                                'title' => 'U.S. MOVIE',
+                                'icon' => 'fas fa-film',
+                                'icon_color' => 'text-danger',
+                                'description' => 'Watch Young Sheldon Episode 1: Introduction to IELTS',
+                                'route' => 'online.video-exercise.show',
+                                'video_id' => 'basic_2_1'
+                            ],
                             'active_listening' => [
                                 'title' => 'ACTIVE LISTENING',
                                 'icon' => 'fas fa-headphones',
                                 'icon_color' => 'text-info',
                                 'description' => 'Listen and learn basic writing vocabulary',
                                 'route' => 'online.vocabulary-listening.show',
-                                'material_id' => 'basic_2_1'
+                                'material_id' => 'basic_2_2'
                             ]
                         ],
                         'during_class' => [
@@ -83,7 +91,17 @@ return [
                                 'icon_color' => 'text-success',
                                 'description' => 'Practice basic sentence structures',
                                 'route' => 'online.video-handout.show',
-                                'exercise_id' => 'basic_2_2'
+                                'material_id' => 'basic_2_3'
+                            ]
+                        ],
+                        'after_class' => [
+                            'reflection' => [
+                                'title' => 'REFLECTION',
+                                'icon' => 'fas fa-pen-fancy',
+                                'icon_color' => 'text-primary',
+                                'description' => 'Write your thoughts about IELTS basics',
+                                'route' => 'online.reflection-exercise.show',
+                                'exercise_id' => 'basic_2_4'
                             ]
                         ]
                     ]
@@ -185,25 +203,78 @@ return [
                         ],
                         'during_class' => [
                             'graph_analysis' => [
-                                'title' => 'GRAPH ANALYSIS',
+                                'title' => 'PRONUNCIATION',
                                 'icon' => 'fas fa-chart-line',
                                 'icon_color' => 'text-primary',
                                 'description' => 'Learn to analyze different types of graphs',
-                                'route' => 'online.graph-exercise.show',
-                                'exercise_id' => 'intermediate_1_2'
+                                'route' => 'online.summary-of-all-exercises.course-two.before.video-handout.show',
+                                'material_id' => 'intermediate_1_2'
                             ],
                             'vocabulary_practice' => [
-                                'title' => 'VOCABULARY',
+                                'title' => 'SHADOWING PRACTICE',
                                 'icon' => 'fas fa-book',
                                 'icon_color' => 'text-success',
                                 'description' => 'Learn vocabulary for describing trends',
-                                'route' => 'online.vocabulary-exercise.show',
-                                'exercise_id' => 'intermediate_1_3'
+                                'route' => 'online.video-exercise.show',
+                                'material_id' => 'intermediate_1_3'
+                            ]
+                        ],
+                        'after_class' => [
+                            'reflection' => [
+                                'title' => 'REFLECTION',
+                                'icon' => 'fas fa-pen-fancy',
+                                'icon_color' => 'text-primary',
+                                'description' => 'Write your thoughts about IELTS basics',
+                                'route' => 'online.reflection-exercise.show',
+                                'exercise_id' => 'intermediate_1_4'
+                            ]
+                        ]
+                    ]
+                ],
+                [
+                    'id' => 2,
+                    'name' => 'Introduction to IELTS Writing Task 2',
+                    'structure' => [
+                        'before_class' => [
+                            'us_movie' => [
+                                'title' => 'U.S. MOVIE',
+                                'icon' => 'fas fa-film',
+                                'icon_color' => 'text-danger',
+                                'description' => 'Watch TED Talk: Data Visualization',
+                                'route' => 'online.video-exercise.show',
+                                'video_id' => 'intermediate_1_1'
+                            ]
+                        ],
+                        'during_class' => [
+                            'graph_analysis' => [
+                                'title' => 'PRONUNCIATION',
+                                'icon' => 'fas fa-chart-line',
+                                'icon_color' => 'text-primary',
+                                'description' => 'Learn to analyze different types of graphs',
+                                'route' => 'online.summary-of-all-exercises.course-two.before.video-handout.show2',
+                                'material_id' => 'intermediate_1_2'
+                            ],
+                            'vocabulary_practice' => [
+                                'title' => 'SHADOWING PRACTICE',
+                                'icon' => 'fas fa-book',
+                                'icon_color' => 'text-success',
+                                'description' => 'Learn vocabulary for describing trends',
+                                'route' => 'online.video-exercise.show',
+                                'material_id' => 'intermediate_1_3'
+                            ]
+                        ],
+                        'after_class' => [
+                            'reflection' => [
+                                'title' => 'REFLECTION',
+                                'icon' => 'fas fa-pen-fancy',
+                                'icon_color' => 'text-primary',
+                                'description' => 'Write your thoughts about IELTS basics',
+                                'route' => 'online.reflection-exercise.show',
+                                'exercise_id' => 'intermediate_1_4'
                             ]
                         ]
                     ]
                 ]
-                // ... other intermediate lessons
             ]
         ],
         'advanced' => [

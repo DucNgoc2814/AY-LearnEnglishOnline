@@ -48,6 +48,42 @@ class VideoHandoutController extends Controller
                     ]
                 ],
             ],
+            'step' => [
+                'short_u_exercise' => [
+                    'exercise_id' => 'short_u_1',
+                    'word_bank' => [
+                        'love', 'much', 'lunch', 'happy', 'honey',
+                        'don\'t', 'cup', 'sun', 'fun', 'run'
+                    ],
+                    'questions' => [
+                        [
+                            'target_word' => 'love',
+                            'phonetic' => '/lʌv/',
+                            'correct_word' => 'sun'
+                        ],
+                        [
+                            'target_word' => 'much',
+                            'phonetic' => '/mʌtʃ/',
+                            'correct_word' => 'fun'
+                        ],
+                        [
+                            'target_word' => 'lunch',
+                            'phonetic' => '/lʌntʃ/',
+                            'correct_word' => 'run'
+                        ],
+                        [
+                            'target_word' => 'cup',
+                            'phonetic' => '/kʌp/',
+                            'correct_word' => 'love'
+                        ],
+                        [
+                            'target_word' => 'honey',
+                            'phonetic' => '/ˈhʌni/',
+                            'correct_word' => 'much'
+                        ]
+                    ]
+                ]
+            ],
             'exercises' => [
                 'pronunciation' => [
                     'title' => 'Pronunciation',
@@ -139,6 +175,34 @@ class VideoHandoutController extends Controller
             ]
         ];
 
-        return view('online.classes.video-handout.show', $data);
+        return view('online.classes.summary-of-all-exercises.course-two.before.video-handout.show', $data);
+    }
+
+    public function show2()
+    {
+        $data = [
+            'title' => 'Video Learning with Handouts - Part 2',
+            'video_folders' => [
+                [
+                    'id' => 1,
+                    'name' => 'Unit 1: Basic Conversations',
+                    'videos' => [
+                        [
+                            'id' => 1,
+                            'title' => 'Greeting and Introduction',
+                            'description' => 'Learn basic greetings and self-introduction',
+                            'url' => 'https://www.youtube.com/embed/video1',
+                        ],
+                    ]
+                ],
+            ],
+            'handout' => [
+                'title' => 'Handout Exercise - Part 2',
+                'pdf_url' => asset('handouts/exercise2.pdf'),
+                'description' => 'Làm bài tập trong file handout sau khi xem video.'
+            ]
+        ];
+
+        return view('online.classes.summary-of-all-exercises.course-two.before.video-handout.show2', $data);
     }
 }

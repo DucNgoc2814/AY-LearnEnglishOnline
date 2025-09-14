@@ -225,6 +225,18 @@ Route::prefix('online')->name('online.')->group(function () {
             Route::get('/video-handout', [VideoHandoutController::class, 'show'])->name('video-handout.show');
             Route::get('/video-shadowing/{id}', [VideoShadowingController::class, 'show'])->name('video-shadowing.show');
             Route::get('/vocabulary-listening/{lesson_id?}', [\App\Http\Controllers\Online\VocabularyListeningController::class, 'show'])->name('vocabulary-listening.show');
+
+            // Summary of all exercises routes
+            Route::prefix('summary-of-all-exercises')->name('summary-of-all-exercises.')->group(function () {
+                Route::prefix('course-two')->name('course-two.')->group(function () {
+                    Route::prefix('before')->name('before.')->group(function () {
+                        Route::get('/video-handout/show', [VideoHandoutController::class, 'show'])
+                            ->name('video-handout.show');
+                        Route::get('/video-handout/show2', [VideoHandoutController::class, 'show2'])
+                            ->name('video-handout.show2');
+                    });
+                });
+            });
         });
     });
 });
